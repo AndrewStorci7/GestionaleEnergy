@@ -1,34 +1,70 @@
-import Image from "next/image";
+'use client'
 
-export default function Header() {
+import Image from "next/image";
+import { useState, useEffect } from "react";
+
+export default function Header( {facility} ) {
+
+    const [date, setDate] = useState(new Date().toLocaleDateString());
+    const [time, setTime] = useState(new Date().toLocaleTimeString());
+    const [turn, setFacility] = useState("Turno 1");
+
+    /**
+     * Update the time every second
+     */
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTime(new Date().toLocaleTimeString());
+            setDate(new Date().toLocaleDateString());
+
+            let _hour = time.getHours;
+            console.log(_hour);
+            switch (_hour) {
+                case _hour >= 6 && _hour <= 12:
+                    setFacility("Turno 1");
+                    break;
+                case _hour > 12 && _hour <= 18:
+                    setFacility("Turno 2");
+                    break;
+                case _hour > 18 && _hour <= 24:
+                    setFacility("Turno 3");
+                    break;
+                default:
+                    setFacility("Turno 1");
+                    break;
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    });
 
     return (
-        <div className="w-[95%] h-[30px] m-[2.5%] bg-primary ">
+        <div className="w-full bg-white text-primary font-bold text-2xl rounded-[5px]">
             <div className="grid grid-cols-7 gap-4">
-                {/* LOGO */}
-                <div className="col-span-2">
-                <Image
-                    src="/logo-oe.webp"
-                    width={200}
-                    height={100}
-                    alt="Oppimitti Energy Logo"
-                />
-                </div> {/* end LOGO */}
-                <div className="p-[5px] bg-white ">
-                    Impianto A
-                </div>
-                <div className="">
-                    Turno 2
-                </div>
-                <div className="">
-                    Data
-                </div>
-                <div className="">
-                    Ora
-                </div>
-                <div className="">
+                {/* logo */}
+                <div className="col-span-2 p-[5px]">
+                    <Image
+                        src="/logo-oe.webp"
+                        width={200}
+                        height={100}
+                        alt="Oppimitti Energy Logo"
+                    />
+                </div> {/* end logo */}
+                <div className="place-content-center">
+                    {facility}
+                </div> {/* end facility */}
+                <div className="place-content-center">
+                    {turn}
+                </div> {/* end turns */}
+                <div className="place-content-center">
+                    {date}
+                </div> {/* end date */}
+                <div className="place-content-center">
+                    {time}
+                </div> {/* end time */}
+                <div className="place-content-center">
                     Utente
-                </div>
+                </div> {/* end user */}
             </div>
         </div>
     );
