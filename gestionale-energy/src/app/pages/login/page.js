@@ -4,13 +4,13 @@
  */
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
 
-const LoginPage = () => {
+export default function LoginPage() {
 
     const router = useRouter();
 
@@ -23,14 +23,34 @@ const LoginPage = () => {
         e.preventDefault();
         
         // Basic form validation (you can add more robust validation)
-        if (!username || !password) {
+        if (!username || !password || !facility) {
             setError('Please fill in both fields.');
             return;
         } else {
-            Cookies.set('user-type', username, { expires: 1 });
-            router.push('../Pressista');
+            let json = {
+                name: username, facility: facility
+            };
+            Cookies.set('user-info', JSON.stringify(json), { expires: 1 });
+            switch (username) {
+                case "admin":
+                    router.push('/pages/admin');
+                    break;
+                case "pressista":
+                    router.push('/pages/pressista');
+                    break;
+                case "carrellista":
+                    router.push('/pages/carrellista');
+                    break;
+                default:
+                    router.push('/pages/pressista');
+                    break;
+            }
         }
     };
+
+    const handleChange = (e) => {
+        setFacility(e.target.value);
+    }; 
 
     return (
         <div className={styles.container}>
@@ -48,8 +68,10 @@ const LoginPage = () => {
                     <label className={styles.label} htmlFor="email">Impianto:</label>
                     <select
                         className={styles.input}
+                        onChange={handleChange}
                         required
                     >
+                        <option value="">Seleziona un&apos;impianto</option>
                         <option value="Impianto A">Impianto A</option>
                         <option value="Impianto B">Impianto B</option>
                     </select>
@@ -84,5 +106,3 @@ const LoginPage = () => {
         </div>
     );
 };
-
-export default LoginPage;

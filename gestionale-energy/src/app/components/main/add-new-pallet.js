@@ -1,7 +1,7 @@
 export default function AddPallet() {
 
     return(
-        <div className="w-1/2">
+        <div className="w-1/2 font-bold">
             <div className="flex flex-row-reverse">
                 <button className="m-[10px] rounded-md bg-green-600 p-[5px]">
                     Aggiungi

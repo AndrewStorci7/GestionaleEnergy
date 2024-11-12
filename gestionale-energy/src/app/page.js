@@ -1,8 +1,7 @@
-import Image from "next/image";
-import Footer from "@/components/footer/foooter";
-import Header from "@/components/header/header";
-import MainContent from "@/components/main/main-content";
-import LoginPage from "@/pages/Login/Login";
+'use client';
+
+import LoginPage from "@/app/pages/login/page";
+import App from "next/app";
 
 export default function Home() {
 

@@ -8,10 +8,14 @@ import TableContent from "./table-content";
 export default function MainContent( {type}, props ) {
 
     return(
-        <>
+        <div 
+            {...props}
+        >
             <SearchInput />
-            <TableContent />
+            <TableContent 
+                type={type}
+            />
             <AddPallet />
-        </>
+        </div>
     );
 }

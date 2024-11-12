@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-export default function Header( {facility} ) {
+export default function Header( {facility, username} ) {
 
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
@@ -62,8 +62,8 @@ export default function Header( {facility} ) {
                 <div className="place-content-center">
                     {time}
                 </div> {/* end time */}
-                <div className="place-content-center">
-                    Utente
+                <div className="place-content-center bg-primary m-[40px] pl-[20%] rounded-md text-white">
+                    {username}
                 </div> {/* end user */}
             </div>
         </div>
