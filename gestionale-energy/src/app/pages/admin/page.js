@@ -11,12 +11,18 @@ export default function Pressista() {
 
     const [facility, setFacility] = useState("");
     const [user, setUser] = useState("");
-
-    const cookies = JSON.parse(Cookies.get('user-info'));
+    const [cookies, setCookies] = useState([]);
 
     useEffect(() => {
-        setFacility(cookies.facility);
-        setUser(cookies.name);
+        try {
+            setCookies(JSON.parse(Cookies.get('user-info')));
+            if (cookies) {
+                setFacility(cookies.facility);
+                setUser(cookies.name);
+            }
+        } catch (_err) {
+            console.log(`Error: ${_err}`);
+        }
         // TODO set data for type user
     }, []);
 
