@@ -2,9 +2,9 @@
 
 import Cookies from "js-cookie";
 
-import Footer from "@@/components/footer/foooter";
-import Header from "@@/components/header/header";
-import MainContent from "@@/components/main/main-content";
+import Footer from "@/app/components/footer/foooter";
+import Header from "@/app/components/header/header";
+import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
 
 export default function Pressista() {

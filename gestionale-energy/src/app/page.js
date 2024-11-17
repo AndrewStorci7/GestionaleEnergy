@@ -1,5 +1,6 @@
 'use client';
 
+import getEnv from "./config";
 import LoginPage from "@/app/pages/login/page";
 import App from "next/app";
 
