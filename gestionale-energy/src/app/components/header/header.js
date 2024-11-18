@@ -3,11 +3,11 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-export default function Header( {facility, username} ) {
+export default function Header( {implant, username} ) {
 
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
-    const [turn, setFacility] = useState("Turno 1");
+    const [turn, setTurn] = useState("Turno 1");
 
     /**
      * Update the time every second
@@ -18,19 +18,18 @@ export default function Header( {facility, username} ) {
             setDate(new Date().toLocaleDateString());
 
             let _hour = time.getHours;
-            console.log(_hour);
             switch (_hour) {
                 case _hour >= 6 && _hour <= 12:
-                    setFacility("Turno 1");
+                    setTurn("Turno 1");
                     break;
                 case _hour > 12 && _hour <= 18:
-                    setFacility("Turno 2");
+                    setTurn("Turno 2");
                     break;
                 case _hour > 18 && _hour <= 24:
-                    setFacility("Turno 3");
+                    setTurn("Turno 3");
                     break;
                 default:
-                    setFacility("Turno 1");
+                    setTurn("Turno 1");
                     break;
             }
         }, 1000);
@@ -51,8 +50,8 @@ export default function Header( {facility, username} ) {
                     />
                 </div> {/* end logo */}
                 <div className="place-content-center">
-                    {facility}
-                </div> {/* end facility */}
+                    {implant}
+                </div> {/* end implant */}
                 <div className="place-content-center">
                     {turn}
                 </div> {/* end turns */}
@@ -62,7 +61,7 @@ export default function Header( {facility, username} ) {
                 <div className="place-content-center">
                     {time}
                 </div> {/* end time */}
-                <div className="place-content-center bg-primary m-[40px] pl-[20%] rounded-md text-white">
+                <div className="place-content-center bg-primary m-[40px] pl-[5px] rounded-md text-white">
                     {username}
                 </div> {/* end user */}
             </div>

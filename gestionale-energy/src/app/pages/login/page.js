@@ -9,47 +9,78 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
+import getEnv from '@/app/config';
+import md5 from 'md5';
+
+const URL = getEnv('srvurl');
+const PORT = getEnv('srvport');
+const srvurl = `${URL}:${PORT}`;
 
 export default function LoginPage() {
 
     const router = useRouter();
 
-    const [facility, setFacility] = useState('');
+    const [implant, setImplant] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // Basic form validation (you can add more robust validation)
-        if (!username || !password || !facility) {
+        // Basic form validation
+        if (!username || !password || !implant) {
             setError('Please fill in both fields.');
             return;
         } else {
-            let json = {
-                name: username, facility: facility
-            };
-            Cookies.set('user-info', JSON.stringify(json), { expires: 1 });
-            switch (username) {
-                case "admin":
-                    router.push('/pages/admin');
-                    break;
-                case "pressista":
-                    router.push('/pages/pressista');
-                    break;
-                case "carrellista":
-                    router.push('/pages/carrellista');
-                    break;
-                default:
-                    router.push('/pages/pressista');
-                    break;
+
+            // Crypting the password with innested md5
+            let crypted_pw = md5(md5(password));
+
+            try {
+                
+                const resp = await fetch(srvurl + '/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username, password: crypted_pw}),
+                });
+                const res = await resp.json();
+
+                if (res[0].code) {
+                    setError(`Errore: ${res[0].message}`);
+                } else {
+
+                    let json = {
+                        name: res[0].username, implant: implant, type: res[0].type
+                    };
+                    Cookies.set('user-info', JSON.stringify(json), { expires: 1 });
+
+                    // console.log(res[0].type);
+
+                    switch (res[0].type) {
+                        case "admin":
+                            router.push('/pages/admin');
+                            break;
+                        case "pressista":
+                            router.push('/pages/pressista');
+                            break;
+                        case "carrellista":
+                            router.push('/pages/carrellista');
+                            break;
+                        default:
+                            router.push('/pages/pressista');
+                            break;
+                    }
+                }
+                
+            } catch (error) {
+                setError(`Errore: ${error}`)
             }
         }
     };
 
     const handleChange = (e) => {
-        setFacility(e.target.value);
+        setImplant(e.target.value);
     }; 
 
     return (

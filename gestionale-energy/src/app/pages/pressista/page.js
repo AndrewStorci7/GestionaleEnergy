@@ -9,16 +9,18 @@ import { useEffect, useState } from "react";
 
 export default function Pressista() {
 
-    const [facility, setFacility] = useState("");
+    const [implant, setImplant] = useState("");
     const [user, setUser] = useState("");
     const [cookies, setCookies] = useState([]);
+    const [type, setType] = useState("");
 
-    useEffect(() => {
+    useEffect(async () => {
         try {
-            setCookies(JSON.parse(Cookies.get('user-info')));
+            setCookies(JSON.parse(await Cookies.get('user-info')));
             if (cookies) {
-                setFacility(cookies.facility);
+                setImplant(cookies.implant);
                 setUser(cookies.name);
+                setType(Cookies.type);
             }
         } catch (_err) {
             console.log(`Error: ${_err}`);
@@ -27,14 +29,16 @@ export default function Pressista() {
         // TODO set data for type user
     }, []);
 
+    console.log(`Cookies { \n\tUsername: ${username};\n\tType: ${type};\n\tImplant: ${implant}`)
+
     return(
         <div className="w-[95%] m-[2.5%]">
             <Header 
-                facility={facility}
+                facility={implant}
                 username={user}
             />
             <MainContent 
-                type={"userType"}
+                type={type}
             />
             <Footer />
         </div>
