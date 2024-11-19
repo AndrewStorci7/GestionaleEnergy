@@ -1,32 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoIosWarning } from "react-icons/io";
 import { MdWork } from "react-icons/md";
 
-export default function Icon( {type} ) {
+export default function Icon({ type = "" }) {
 
-    const _icon = <></>;
+    const icon = useMemo(() => {
 
-    useEffect(() => {
         switch (type) {
-            case 'completed': {
-                _icon = <FaCheck className="grid text-checked text-2xl" />
-            }
-            case 'warning': {
-                _icon = <IoIosWarning className="grid text-error text-2xl" />
-            }
-            case 'working': {
-                _icon = <MdWork className="absolute text-waiting text-2xl" />
-            }
-            default: {
-                _icon = <MdWork className="absolute text-waiting text-2xl" />
-            }
+            case 'completed':
+                return <FaCheck className="text-checked text-2xl" />
+            case 'warning':
+                return <IoIosWarning className="text-error text-2xl" />
+            case 'working':
+                return <MdWork className="text-waiting text-2xl" />
+            default:
+                return <MdWork className="text-waiting text-2xl" />
         }
-    }, []);
-
+    }, [type]);
+    
     return (
-        <div className="w-full relative">
-            {_icon}
+        <div className="w-full grid place-content-center">
+            {icon}
         </div>
     );
 }

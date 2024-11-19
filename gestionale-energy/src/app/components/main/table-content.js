@@ -6,7 +6,7 @@ export default function TableContent({type}) {
     switch (type) {
         case "admin": {
             return(
-                <div className="grid grid-cols-2 pt-[30px] relative">
+                <div className="grid grid-cols-2 pt-[30px] relative mt-[20px]">
                     <label htmlFor="gest-on-table2" className="absolute font-bold text-2xl bg-primary text-white px-[15px] rounded-t-[5px]">Pressista</label>
                     <table className="table-auto w-full p-[20px] rounded-tl-[10px]">
                         <thead className="bg-primary text-white">
@@ -131,7 +131,7 @@ export default function TableContent({type}) {
         }
         case "pressista": {
             return(
-                <div className="grid grid-cols-2 pt-[30px]">
+                <div className="grid grid-cols-2 pt-[30px] mt-[20px]">
                     <table className="table-auto w-full p-[20px] rounded-tl-[10px]">
                         <thead className="bg-primary">
                             <tr>
@@ -259,7 +259,7 @@ export default function TableContent({type}) {
         }
         case "carrellista": {
             return(
-                <div className="grid grid-cols-2 pt-[30px]">
+                <div className="grid grid-cols-2 pt-[30px] mt-[20px]">
                     <table className="table-auto w-full p-[20px] rounded-tl-[10px]">
                         <thead className="bg-primaryON">
                             <tr>
@@ -387,7 +387,7 @@ export default function TableContent({type}) {
         }
         default: {
             return(
-                <div className="grid grid-cols-2 pt-[30px]">
+                <div className="grid grid-cols-2 pt-[30px] mt-[20px]">
                     <table className="table-auto w-full p-[20px] rounded-tl-[10px]">
                         <thead className="bg-primary">
                             <tr>
