@@ -1,10 +1,10 @@
 /**
  * Getter of the Key from .env file
  * 
- * @param {*} key 
+ * @param {string} key 
  * @returns Environment Key
  */
 
-const getEnv = (key) => process.env[key];
+const getEnv = (key, defaultvalue = "") => process.env[key] || defaultvalue;
 
 export default getEnv;

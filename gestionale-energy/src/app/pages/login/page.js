@@ -4,31 +4,50 @@
  */
 'use client';
 
+import getEnv from '@/app/config';
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
 
+const URL = getEnv('REACT_APP_URL', 'http://localhost');
+const PORT = getEnv('REACT_APP_PORT', 3070);
+const srvurl = URL + ":" + PORT; 
+
 export default function LoginPage() {
 
     const router = useRouter();
 
-    const [facility, setFacility] = useState('');
+    const [implant, setImplants] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         
         // Basic form validation (you can add more robust validation)
-        if (!username || !password || !facility) {
+        if (!username || !password || !implant) {
             setError('Please fill in both fields.');
             return;
         } else {
+
+            try {
+                const res = await fetch(srvurl + '/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password }),
+                });
+                const data = await res.json();
+                console.log(`Data received: ${data}`)
+            } catch (error) {
+                console.log(`Error from server: ${error}`);
+            }
+
+            /*
             let json = {
-                name: username, facility: facility
+                name: username, implant: implant
             };
             Cookies.set('user-info', JSON.stringify(json), { expires: 1 });
             switch (username) {
@@ -45,11 +64,12 @@ export default function LoginPage() {
                     router.push('/pages/pressista');
                     break;
             }
+                    */
         }
     };
 
     const handleChange = (e) => {
-        setFacility(e.target.value);
+        setImplants(e.target.value);
     }; 
 
     return (
