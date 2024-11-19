@@ -4,22 +4,18 @@
  */
 'use client';
 
-import getEnv from '@/app/config';
+// import getEnv from '@/app/config';
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
-import getEnv from '@/app/config';
+import getEnv from '@@/config';
 import md5 from 'md5';
 
 const URL = getEnv('srvurl');
 const PORT = getEnv('srvport');
 const srvurl = `${URL}:${PORT}`;
-
-const URL = getEnv('REACT_APP_URL', 'http://localhost');
-const PORT = getEnv('REACT_APP_PORT', 3070);
-const srvurl = URL + ":" + PORT; 
 
 export default function LoginPage() {
 
@@ -51,8 +47,8 @@ export default function LoginPage() {
                 });
                 const res = await resp.json();
 
-                if (res[0].code) {
-                    setError(`Errore: ${res[0].message}`);
+                if (res.code) {
+                    setError(`${res.message}`);
                 } else {
 
                     let json = {

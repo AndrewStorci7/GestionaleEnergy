@@ -20,6 +20,9 @@ app.use(express.json());
 // Allow CORS
 app.use(cors());
 
+/**
+ * Login route
+ */
 app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -29,8 +32,8 @@ app.post('/login', async (req, res) => {
             console.log(JSON.stringify(rows))
             res.json(rows)
         } else {
-            console.log(JSON.stringify({ error: 1, message: "No user found" }))
-            res.json({ error: 1, message: "No user found" });
+            console.log(JSON.stringify({ code: 1, message: "Credenziali errate" }))
+            res.json({ code: 1, message: "Credenziali errate" });
         }
     } catch (error) {
         console.log(error);

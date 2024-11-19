@@ -1,18 +1,17 @@
 import CheckButton from "./select-button";
+import Icon from "./get-icon";
 
 export default function TableContent({type}) {
 
     switch (type) {
         case "admin": {
             return(
-                <div className="grid grid-cols-2 pt-[30px]">
+                <div className="grid grid-cols-2 pt-[30px] relative">
+                    <label htmlFor="gest-on-table2" className="absolute font-bold text-2xl bg-primary text-white px-[15px] rounded-t-[5px]">Pressista</label>
                     <table className="table-auto w-full p-[20px] rounded-tl-[10px]">
-                        <thead className="bg-primary">
+                        <thead className="bg-primary text-white">
                             <tr>
-                                <th>Pressista</th>
-                            </tr>
-                            <tr>
-                                <th>Seleziona</th>
+                                <th>Sel.</th>
                                 <th>Lavorazione</th>
                                 <th>Plastica</th>
                                 <th>Codice</th>
@@ -28,7 +27,7 @@ export default function TableContent({type}) {
                         <tbody className="bg-secondary text-black">
                             <tr>
                                 <td><CheckButton /></td>
-                                <td>Prova valore 1</td>
+                                <td><Icon type={"completed"} /></td>
                                 <td>prova valore 2</td>
                                 <td>prova valore 3</td>
                                 <td>Prova valore 4</td>
@@ -41,7 +40,7 @@ export default function TableContent({type}) {
                             </tr>
                             <tr>
                                 <td><CheckButton /></td>
-                                <td>Prova valore 1</td>
+                                <td><Icon type={"warning"} /></td>
                                 <td>prova valore 2</td>
                                 <td>prova valore 3</td>
                                 <td>Prova valore 4</td>
@@ -54,7 +53,7 @@ export default function TableContent({type}) {
                             </tr>
                             <tr>
                                 <td><CheckButton /></td>
-                                <td>Prova valore 1</td>
+                                <td><Icon type={"working"} /></td>
                                 <td>prova valore 2</td>
                                 <td>prova valore 3</td>
                                 <td>Prova valore 4</td>
@@ -67,13 +66,12 @@ export default function TableContent({type}) {
                             </tr>
                         </tbody>
                     </table>
-                    <table className="table-auto w-full p-[20px] rounded-tl-[10px]">
-                        <thead className="bg-primaryON">
+
+                    <label htmlFor="gest-on-table2" className="absolute left-[50%] font-bold text-2xl bg-secondary px-[15px] rounded-t-[5px]">Carrellista</label>
+                    <table id="gest-on-table2" className="table-auto w-full p-[20px] rounded-tl-[10px]">
+                        <thead className="bg-secondary">
                             <tr>
-                                <th>Carrellista</th>
-                            </tr>
-                            <tr>
-                                <th>Seleziona</th>
+                                <th>Sel.</th>
                                 <th>Condiz. Balla Carrel.</th>
                                 <th>Motivaz.</th>
                                 <th>Peso (Kg)</th>
@@ -140,7 +138,7 @@ export default function TableContent({type}) {
                                 <th>Pressista</th>
                             </tr>
                             <tr>
-                                <th>Seleziona</th>
+                                <th>Sel.</th>
                                 <th>Lavorazione</th>
                                 <th>Plastica</th>
                                 <th>Codice</th>
