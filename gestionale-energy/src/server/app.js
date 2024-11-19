@@ -8,23 +8,28 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 const db = require('./db');
 
 const app = express();
-const PORT = process.env.REACT_APP_SERVER_PORT || 3060;
-const URL = process.env.REACT_APP_SERVER_URL || 'http://localhost';
+const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
+const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
 
 // Middleware to parse in JSON
 app.use(express.json());
+// Allow CORS
+app.use(cors());
 
-app.get('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         console.log(`Username received: ${username}; \nPassword received: ${password}`);
-        const [rows] = await db.query(`SELECT type, username, password FROM user WHERE username=${username} AND password=${password}`);
-        if (rows) {
+        const [rows] = await db.query(`SELECT type, username, name, surname FROM user WHERE user.username='${username}' AND user.password='${password}'`);
+        if (rows && rows.length > 0) {
+            console.log(JSON.stringify(rows))
             res.json(rows)
         } else {
+            console.log(JSON.stringify({ error: 1, message: "No user found" }))
             res.json({ error: 1, message: "No user found" });
         }
     } catch (error) {
