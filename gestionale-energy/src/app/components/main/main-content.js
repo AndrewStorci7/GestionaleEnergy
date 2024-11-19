@@ -3,7 +3,7 @@
 import { useState } from "react";
 import SearchInput from "./search";
 import AddPallet from "./add-new-pallet";
-import TableContent from "./table-content";
+import Table from "./table/table";
 
 export default function MainContent( {type}, props ) {
 
@@ -12,7 +12,7 @@ export default function MainContent( {type}, props ) {
             {...props}
         >
             <SearchInput />
-            <TableContent 
+            <Table 
                 type={type}
             />
             <AddPallet />

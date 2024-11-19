@@ -1,29 +1,18 @@
-import CheckButton from "./select-button";
-import Icon from "./get-icon";
+import TableHeader from "./table-header";
+import CheckButton from "../select-button";
+import Icon from "../get-icon";
 
-export default function TableContent({type}) {
+export default function Table({type}) {
+    
+    const _CMNSTYLE_DIV = "grid grid-cols-2 pt-[30px] relative mt-[20px]";
+    const _CMNSTYLE_TABLE = "table-auto w-full p-[20px] rounded-tl-[10px]"; 
 
     switch (type) {
         case "admin": {
             return(
-                <div className="grid grid-cols-2 pt-[30px] relative mt-[20px]">
-                    <label htmlFor="gest-on-table2" className="absolute font-bold text-2xl bg-primary text-white px-[15px] rounded-t-[5px]">Pressista</label>
-                    <table className="table-auto w-full p-[20px] rounded-tl-[10px]">
-                        <thead className="bg-primary text-white">
-                            <tr>
-                                <th>Sel.</th>
-                                <th>Lavorazione</th>
-                                <th>Plastica</th>
-                                <th>Codice</th>
-                                <th>Utiliz. REI</th>
-                                <th>Condiz. Balla Pressa</th>
-                                <th>Balla Selez.</th>
-                                <th>Note Pressista</th>
-                                <th>Conf.</th>
-                                <th>Data Ins.</th>
-                                <th>Ora Ins.</th>
-                            </tr>
-                        </thead>
+                <div className={_CMNSTYLE_DIV}>
+                    <table className={_CMNSTYLE_TABLE}>
+                        <TableHeader type={"presser"} />
                         <tbody className="bg-secondary text-black">
                             <tr>
                                 <td><CheckButton /></td>
@@ -38,37 +27,11 @@ export default function TableContent({type}) {
                                 <td>Prova valore 5</td>
                                 <td>Prova valore 4</td>
                             </tr>
-                            <tr>
-                                <td><CheckButton /></td>
-                                <td><Icon type={"warning"} /></td>
-                                <td>prova valore 2</td>
-                                <td>prova valore 3</td>
-                                <td>Prova valore 4</td>
-                                <td>Prova valore 5</td>
-                                <td>Prova valore 4</td>
-                                <td>Prova valore 5</td>
-                                <td>Prova valore 4</td>
-                                <td>Prova valore 5</td>
-                                <td>Prova valore 4</td>
-                            </tr>
-                            <tr>
-                                <td><CheckButton /></td>
-                                <td><Icon type={"working"} /></td>
-                                <td>prova valore 2</td>
-                                <td>prova valore 3</td>
-                                <td>Prova valore 4</td>
-                                <td>Prova valore 5</td>
-                                <td>Prova valore 4</td>
-                                <td>Prova valore 5</td>
-                                <td>Prova valore 4</td>
-                                <td>Prova valore 5</td>
-                                <td>Prova valore 4</td>
-                            </tr>
                         </tbody>
                     </table>
 
                     <label htmlFor="gest-on-table2" className="absolute left-[50%] font-bold text-2xl bg-secondary px-[15px] rounded-t-[5px]">Carrellista</label>
-                    <table id="gest-on-table2" className="table-auto w-full p-[20px] rounded-tl-[10px]">
+                    <table id="gest-on-table2" className="table-auto w-full p-[20px] rounded-tl-[10px] opacity-50">
                         <thead className="bg-secondary">
                             <tr>
                                 <th>Sel.</th>

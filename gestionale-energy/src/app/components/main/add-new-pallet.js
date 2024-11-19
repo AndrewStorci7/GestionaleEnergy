@@ -1,4 +1,13 @@
-export default function AddPallet() {
+/**
+ * Custom component for adding, updating or erase a bale 
+ * 
+ * @author Andrea Storci from Oppimittinetworking
+ * 
+ * @param {ref} bale
+ * 
+ * @returns 
+ */
+export default function AddPallet({ bale }) {
 
     return(
         <div className="w-1/2 font-bold">
