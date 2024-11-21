@@ -5,7 +5,7 @@ import SearchInput from "./search";
 import AddPallet from "./add-new-pallet";
 import Table from "./table/table";
 
-export default function MainContent( {type}, props ) {
+export default function MainContent({ type }, props ) {
 
     return(
         <div 

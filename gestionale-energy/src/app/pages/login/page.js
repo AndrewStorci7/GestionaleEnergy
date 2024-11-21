@@ -46,32 +46,20 @@ export default function LoginPage() {
                     body: JSON.stringify({username, password: crypted_pw}),
                 });
                 const res = await resp.json();
+                // console.log(res)
 
-                if (res.code) {
+                if (res[0].code) {
                     setError(`${res.message}`);
                 } else {
-
                     let json = {
-                        name: res[0].username, implant: implant, type: res[0].type
+                        id_user: res[0].id,
+                        name: res[0].username, 
+                        implant: implant, 
+                        type: res[0].type,
+                        last_a: res[0].last_access,
                     };
-                    Cookies.set('user-info', JSON.stringify(json), { expires: 1 });
-
-                    // console.log(res[0].type);
-
-                    switch (res[0].type) {
-                        case "admin":
-                            router.push('/pages/admin');
-                            break;
-                        case "pressista":
-                            router.push('/pages/pressista');
-                            break;
-                        case "carrellista":
-                            router.push('/pages/carrellista');
-                            break;
-                        default:
-                            router.push('/pages/pressista');
-                            break;
-                    }
+                    Cookies.set('user-info', JSON.stringify(json), { sameSite: 'Strict', secure: false, path: '/', expires: 1 });
+                    router.push('/pages/panel')
                 }
                 
             } catch (error) {

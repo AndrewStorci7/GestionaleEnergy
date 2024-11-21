@@ -6,9 +6,9 @@
  *  
  * @returns 
  */
-export default function TableHeader({ type, primary = true }) {
+export default function TableHeader({ type, primary = false }) {
 
-    const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
+    // const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
     const bg_style = (primary) ? 'bg-primary' : 'bg-secondary';
     const left_fixed = (!primary) ? 'left-[50%]' : null;
     const text = "";
@@ -17,7 +17,7 @@ export default function TableHeader({ type, primary = true }) {
         case 'presser': {
             return (
                 <>
-                    <label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Pressista</label>
+                    {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Pressista</label>*/}
                     <thead className={`${bg_style} text-white`}>
                         <tr>
                             {(primary) ? <th>Sel.</th> : null}
@@ -39,7 +39,7 @@ export default function TableHeader({ type, primary = true }) {
         case 'wheelman': {
             return (
                 <>
-                    <label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Carrellista</label>
+                    {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Carrellista</label>*/}
                     <thead className={`${bg_style} text-white`}>
                         <tr>
                             {(primary) ? <th>Sel.</th> : null}
