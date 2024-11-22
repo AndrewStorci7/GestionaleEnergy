@@ -83,7 +83,7 @@ WHERE wheelman_bale.id_wheelman = ${id_user}`
  */
 app.post('/presser', async (req, res) => {
     try {
-        const id_user = req.body;
+        const { id_user } = req.body;
         console.log(`Id received: ${id_user}\n`);
         const [rows] = await db.query(
 `SELECT
@@ -104,8 +104,9 @@ WHERE user.id = ${id_user}`
         );
 
         if (rows && rows.length > 0) {
-            console.log(JSON.stringify(rows))
-            res.json(rows)
+            // const json_resp = JSON.stringify({code: 0, data: rows});
+            console.log({code: 0, data: rows})
+            res.json({code: 0, data: rows})
         } else {
             console.log(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
             res.json({ code: 1, message: "Nessuna balla trovata" });

@@ -1,6 +1,8 @@
 import getEnv from '@@/config';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import CheckButton from "../select-button";
+import Icon from "../get-icon";
 
 const URL = getEnv('srvurl');
 const PORT = getEnv('srvport');
@@ -21,9 +23,10 @@ export default function TableContent({ type, primary = false }) {
 
     const _CMNSTYLE_TBODY = (primary) ? "bg-secondary text-black" : "bg-gray-200 text-black";
 
-    const [idUser, setIdUser] = useState(0);
+    // const [idUser, setIdUser] = useState();
     // const [url, setUrl] = useState("");
     const [content, setContent] = useState([]);
+    const [error, setError] = useState("");
 
     // TODO
     // Creare una componente custom che permetta di gestire in maniera dinamica
@@ -52,31 +55,27 @@ export default function TableContent({ type, primary = false }) {
     
     useEffect(() =>  {
         const fetchData = async () => {
-    
-            const cookies = await JSON.parse(Cookies.get('user-info'));
-            const id = cookies.id_user; 
-            setIdUser(id)
-            console.log(`TableContent: \n\tId User: ${idUser}`);
-            const url = getUrl(type)
-
-            console.log("url: " + url)
-    
             try {
-                console.log("qui1")
+                const cookies = await JSON.parse(Cookies.get('user-info'));
+                const id_user = cookies.id_user; 
+                const url = getUrl(type)
+                
                 const resp = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ idUser }),
+                    body: JSON.stringify({ id_user }),
                 });
 
-                console.log("qui2")
                 if (!resp.ok) {
                     throw new Error("Network response was not ok");
                 }
 
-                console.log("qui3")
                 const data = await resp.json();
-                setContent(data);
+                
+                if (data.code === 0)
+                    setContent(data.data);
+                else
+                    setError(data.message);                
 
             } catch (error) {
                 // Handle error
@@ -88,10 +87,44 @@ export default function TableContent({ type, primary = false }) {
 
     return (
         <tbody className={_CMNSTYLE_TBODY}>
-            {/* idUser */}
-            {content.map((_d, _i) => {
-                console.log(_d, _i);
-            })}
+            {(error === "") ?  
+                content.map((_m, _i) => (
+                    <tr key={_i}>
+                        {(primary) ? 
+                            <>
+                                <td key={"check_btn" + _i}><CheckButton /></td>
+                                <td key={"status" + _i}><Icon type={"completed"} /></td>
+                            </>
+                        :
+                            null
+                        }
+                        {Object.keys(_m).map((key, __i) => (
+                            (key === "data_ins") ? (
+                                <>
+                                    {/* estraggo la data */}
+                                    <td key={"data" + _i + __i}>
+                                        {_m[key]}
+                                    </td>
+                                    {/* estraggo l'ora */}
+                                    <td key={"hour" + _i + __i}>
+                                        {_m[key].get}
+                                    </td>
+                                </>
+                            ) : (
+                                <td key={key + _i + __i} value={_m[key]}>{_m[key]}</td>
+                            )
+                        ))}
+                        <td key={"confirme" + _i}>
+                            {(primary) ? 
+                                null
+                            :
+                                null
+                            }
+                        </td>
+                    </tr>
+                ))
+            : null
+            }
         </tbody>
     )
 }

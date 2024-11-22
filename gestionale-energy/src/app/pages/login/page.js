@@ -48,17 +48,17 @@ export default function LoginPage() {
                 const res = await resp.json();
                 // console.log(res)
 
-                if (res[0].code) {
+                if (res.code) {
                     setError(`${res.message}`);
                 } else {
-                    let json = {
+                    const json = {
                         id_user: res[0].id,
                         name: res[0].username, 
                         implant: implant, 
                         type: res[0].type,
                         last_a: res[0].last_access,
                     };
-                    Cookies.set('user-info', JSON.stringify(json), { sameSite: 'Strict', secure: false, path: '/', expires: 1 });
+                    Cookies.set('user-info', JSON.stringify(json), { sameSite: 'Strict', path: '/', expires: 1 });
                     router.push('/pages/panel')
                 }
                 

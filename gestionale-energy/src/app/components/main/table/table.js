@@ -67,7 +67,7 @@ export default function Table({ type }) {
                 </>
             );
         }
-        case "pressista": {
+        case "presser": {
             return(
                 <>
                     <h1 className={_CMNSTYLE_TITLE}>Pagina Pressista</h1>
@@ -86,7 +86,7 @@ export default function Table({ type }) {
                 </>
             );
         }
-        case "carrellista": {
+        case "wheelman": {
             return(
                 <>
                     <h1 className={_CMNSTYLE_TITLE}>Pagina Carrellista</h1>

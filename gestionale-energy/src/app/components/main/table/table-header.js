@@ -28,9 +28,9 @@ export default function TableHeader({ type, primary = false }) {
                             <th>Condiz. Balla Pressa</th>
                             <th>Balla Selez.</th>
                             <th>Note Pressista</th>
-                            <th>Conf.</th>
                             <th>Data Ins.</th>
                             <th>Ora Ins.</th>
+                            <th>Conf.</th>
                         </tr>
                     </thead>
                 </>
