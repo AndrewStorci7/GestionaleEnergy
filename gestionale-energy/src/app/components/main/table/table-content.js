@@ -28,17 +28,7 @@ export default function TableContent({ type, primary = false }) {
     const [content, setContent] = useState([]);
     const [error, setError] = useState("");
 
-    // TODO
-    // Creare una componente custom che permetta di gestire in maniera dinamica
-    // il contenuto delle varie balle, differenziato da 'presser' e 'wheelman'.
-    // I dati dovranno essere presi tramite un fetch alla rotte:
-    // - `/presser`
-    // - `/wheelman`
-
     const getUrl = (type) => {
-
-        type = ''
-
         switch (type) {
             case 'admin':
                 return srvurl + "/admin"
@@ -103,20 +93,22 @@ export default function TableContent({ type, primary = false }) {
                                 <>
                                     {/* estraggo la data */}
                                     <td key={"data" + _i + __i}>
-                                        {_m[key]}
+                                        {_m[key].substr(0, 10).replaceAll('-', '/')}
                                     </td>
                                     {/* estraggo l'ora */}
                                     <td key={"hour" + _i + __i}>
-                                        {_m[key].get}
+                                        {_m[key].substr(11, 8)}
                                     </td>
                                 </>
                             ) : (
                                 <td key={key + _i + __i} value={_m[key]}>{_m[key]}</td>
                             )
                         ))}
-                        <td key={"confirme" + _i}>
+                        <td key={"confirm" + _i}>
                             {(primary) ? 
-                                null
+                                <button className='bg-green-600 p-[3px] rounded-md'>
+                                    OK
+                                </button>
                             :
                                 null
                             }

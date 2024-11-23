@@ -18,7 +18,7 @@ export default function Table({ type }) {
                 <>
                     <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore</h1>
                     <div className={_CMNSTYLE_DIV}>
-                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
+                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Visualizzazione Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
                             <TableContent type={"presser"} primary />
@@ -41,7 +41,7 @@ export default function Table({ type }) {
                             */}
                         </table>
 
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} bg-secondary left-[50%]`}>Carrellista</label>
+                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} bg-secondary left-[50%]`}>Visualizzazione Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
                             <TableContent type={"wheelman"}/>

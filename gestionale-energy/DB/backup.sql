@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.40, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: oppimittienergy
+-- Host: localhost    Database: oppimittienergy
 -- ------------------------------------------------------
--- Server version	8.0.40
+-- Server version	8.0.40-0ubuntu0.24.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -135,6 +135,7 @@ CREATE TABLE `pb_wb` (
 
 LOCK TABLES `pb_wb` WRITE;
 /*!40000 ALTER TABLE `pb_wb` DISABLE KEYS */;
+INSERT INTO `pb_wb` VALUES (2,2);
 /*!40000 ALTER TABLE `pb_wb` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,7 +171,7 @@ CREATE TABLE `presser_bale` (
   CONSTRAINT `presser_bale_ibfk_7` FOREIGN KEY (`id_plastic`) REFERENCES `code_plastic` (`code`),
   CONSTRAINT `presser_bale_ibfk_8` FOREIGN KEY (`id_rei`) REFERENCES `rei` (`id`),
   CONSTRAINT `presser_bale_ibfk_9` FOREIGN KEY (`id_cpb`) REFERENCES `cond_presser_bale` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -179,6 +180,7 @@ CREATE TABLE `presser_bale` (
 
 LOCK TABLES `presser_bale` WRITE;
 /*!40000 ALTER TABLE `presser_bale` DISABLE KEYS */;
+INSERT INTO `presser_bale` VALUES (1,2,'CTA/M',2,2,2,NULL,'2024-11-23 09:11:20'),(2,1,'CSS',1,1,1,'Prova nota','2024-11-23 09:14:54');
 /*!40000 ALTER TABLE `presser_bale` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,9 +323,10 @@ CREATE TABLE `wheelman_bale` (
   `id_cwb` int unsigned NOT NULL,
   `id_rnt` int unsigned NOT NULL,
   `id_wd` int unsigned NOT NULL,
-  `note` int DEFAULT NULL,
+  `note` text,
   `printed` tinyint(1) DEFAULT '0',
   `data_ins` datetime DEFAULT (now()),
+  `weigth` int unsigned DEFAULT NULL COMMENT 'Peso (kg)',
   PRIMARY KEY (`id`),
   KEY `id_wd` (`id_wd`),
   KEY `id_wheelman` (`id_wheelman`),
@@ -336,7 +339,7 @@ CREATE TABLE `wheelman_bale` (
   CONSTRAINT `wheelman_bale_ibfk_5` FOREIGN KEY (`id_wheelman`) REFERENCES `user` (`id`),
   CONSTRAINT `wheelman_bale_ibfk_6` FOREIGN KEY (`id_cwb`) REFERENCES `cond_wheelman_bale` (`id`),
   CONSTRAINT `wheelman_bale_ibfk_7` FOREIGN KEY (`id_rnt`) REFERENCES `reas_not_tying` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -345,6 +348,7 @@ CREATE TABLE `wheelman_bale` (
 
 LOCK TABLES `wheelman_bale` WRITE;
 /*!40000 ALTER TABLE `wheelman_bale` DISABLE KEYS */;
+INSERT INTO `wheelman_bale` VALUES (1,3,1,1,1,NULL,0,'2024-11-23 09:14:22',NULL),(2,1,1,1,1,'Test',0,'2024-11-23 09:15:35',NULL);
 /*!40000 ALTER TABLE `wheelman_bale` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -357,4 +361,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-21 10:54:08
+-- Dump completed on 2024-11-23 11:53:26

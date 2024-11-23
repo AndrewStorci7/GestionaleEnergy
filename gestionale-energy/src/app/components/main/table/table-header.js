@@ -21,16 +21,16 @@ export default function TableHeader({ type, primary = false }) {
                     <thead className={`${bg_style} text-white`}>
                         <tr>
                             {(primary) ? <th>Sel.</th> : null}
-                            <th>Lavorazione</th>
+                            <th>Stato</th>
                             <th>Plastica</th>
                             <th>Codice</th>
                             <th>Utiliz. REI</th>
                             <th>Condiz. Balla Pressa</th>
                             <th>Balla Selez.</th>
-                            <th>Note Pressista</th>
-                            <th>Data Ins.</th>
-                            <th>Ora Ins.</th>
-                            <th>Conf.</th>
+                            <th>Note</th>
+                            <th>Data</th>
+                            <th>Ora</th>
+                            <th></th>
                         </tr>
                     </thead>
                 </>
@@ -47,12 +47,12 @@ export default function TableHeader({ type, primary = false }) {
                             <th>Motivaz.</th>
                             <th>Peso (Kg)</th>
                             <th>Utiliz. REI</th>
-                            <th>Condiz. Balla Pressa</th>
+                            <th>Condiz. Balla Carrello</th>
                             <th>Balla Selez.</th>
-                            <th>Note Pressista</th>
-                            <th>Conf.</th>
-                            <th>Data Ins.</th>
-                            <th>Ora Ins.</th>
+                            <th>Note</th>
+                            <th>Data</th>
+                            <th>Ora</th>
+                            {(primary) ? <th></th> : null}
                         </tr>
                     </thead>
                 </>

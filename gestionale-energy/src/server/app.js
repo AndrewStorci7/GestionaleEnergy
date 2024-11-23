@@ -121,7 +121,7 @@ WHERE user.id = ${id_user}`
  * Bale route
  */
 app.post('/bale', async (req, res) => {
-
+    
 });
 
 app.listen(PORT, () => {
