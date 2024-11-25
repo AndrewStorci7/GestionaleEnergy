@@ -38,7 +38,7 @@ export default function Header( {implant, username} ) {
     });
 
     return (
-        <div className="w-full bg-white text-primary font-bold text-2xl rounded-[5px]">
+        <div className="w-full bg-white text-thirdary font-bold text-2xl rounded-[5px]">
             <div className="grid grid-cols-7 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">

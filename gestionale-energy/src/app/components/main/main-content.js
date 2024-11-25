@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import SearchInput from "./search";
-import AddPallet from "./add-new-pallet";
+import AddBale from "./add-new-bale";
 import Table from "./table/table";
 
 export default function MainContent({ type }, props ) {
@@ -15,7 +15,7 @@ export default function MainContent({ type }, props ) {
             <Table 
                 type={type}
             />
-            <AddPallet />
+            <AddBale />
         </div>
     );
 }

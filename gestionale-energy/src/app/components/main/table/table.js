@@ -8,7 +8,9 @@ export default function Table({ type }) {
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
     const _CMNSTYLE_DIV = "grid grid-cols-2 pt-[30px] relative mt-[20px]";
     const _CMNSTYLE_TABLE = "table-auto w-full p-[20px] rounded-tl-[10px]"; 
-    const _CMNSTYLE_LABEL = "absolute top-[-2px] font-bold text-2xl px-[15px] rounded-t-[5px] text-white";
+    const _CMNSTYLE_LABEL = "absolute top-[-2px] font-bold text-2xl px-[15px] rounded-t-[5px]";
+    const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] opacity-50";
+    // const text_color = (primary) ? "text-white" : "text-black";
     // const bg_style = (primary) ? 'bg-primary' : 'bg-secondary';
     // const left_fixed = (!primary) ? 'left-[50%]' : null;
 
@@ -18,50 +20,16 @@ export default function Table({ type }) {
                 <>
                     <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore</h1>
                     <div className={_CMNSTYLE_DIV}>
-                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Visualizzazione Pressista</label>
-                        <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
+                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary`}>Pressista</label>
+                        <table id="gest-on-table" className={`${_CMNSTYLE_TABLE}`}>
                             <TableHeader type={"presser"} primary />
                             <TableContent type={"presser"} primary />
-                            {/*
-                            <tbody className="bg-secondary text-black">
-                                <tr>
-                                    <td><CheckButton /></td>
-                                    <td><Icon type={"completed"} /></td>
-                                    <td>prova valore 2</td>
-                                    <td>prova valore 3</td>
-                                    <td>Prova valore 4</td>
-                                    <td>Prova valore 5</td>
-                                    <td>Prova valore 4</td>
-                                    <td>Prova valore 5</td>
-                                    <td>Prova valore 4</td>
-                                    <td>Prova valore 5</td>
-                                    <td>Prova valore 4</td>
-                                </tr>
-                            </tbody>
-                            */}
                         </table>
 
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} bg-secondary left-[50%]`}>Visualizzazione Carrellista</label>
-                        <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
+                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY} text-black`}>Carrellista</label>
+                        <table id="gest-on-table2" className={`${_CMNSTYLE_TABLE}`}>
                             <TableHeader type={"wheelman"}/>
                             <TableContent type={"wheelman"}/>
-                            {/*
-                            <tbody className="bg-gray-200 text-black">
-                                <tr>
-                                    <td><CheckButton /></td>
-                                    <td>Prova valore 1</td>
-                                    <td>prova valore 2</td>
-                                    <td>prova valore 3</td>
-                                    <td>Prova valore 4</td>
-                                    <td>Prova valore 5</td>
-                                    <td>Prova valore 4</td>
-                                    <td>Prova valore 5</td>
-                                    <td>Prova valore 4</td>
-                                    <td>Prova valore 5</td>
-                                    <td>Prova valore 4</td>
-                                </tr>
-                            </tbody>
-                            */}
                         </table>
                     </div>
                 </>
@@ -77,7 +45,7 @@ export default function Table({ type }) {
                             <TableHeader type={"presser"} primary />
                             <TableContent type={"presser"} primary />
                         </table>
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} bg-secondary left-[50%]`}>Carrellista</label>
+                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
                             <TableContent type={"wheelman"}/>

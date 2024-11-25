@@ -9,7 +9,8 @@
 export default function TableHeader({ type, primary = false }) {
 
     // const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
-    const bg_style = (primary) ? 'bg-primary' : 'bg-secondary';
+    const bg_style = (primary) ? 'bg-primary' : 'bg-thirdary opacity-50';
+    const text_color = (primary) ? 'text-white' : 'text-black';
     const left_fixed = (!primary) ? 'left-[50%]' : null;
     const text = "";
 
@@ -18,7 +19,7 @@ export default function TableHeader({ type, primary = false }) {
             return (
                 <>
                     {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Pressista</label>*/}
-                    <thead className={`${bg_style} text-white`}>
+                    <thead className={`${bg_style} ${text_color}`}>
                         <tr>
                             {(primary) ? <th>Sel.</th> : null}
                             <th>Stato</th>
@@ -40,7 +41,7 @@ export default function TableHeader({ type, primary = false }) {
             return (
                 <>
                     {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Carrellista</label>*/}
-                    <thead className={`${bg_style} text-white`}>
+                    <thead className={`${bg_style} ${text_color}`}>
                         <tr>
                             {(primary) ? <th>Sel.</th> : null}
                             <th>Condiz. Balla Carrel.</th>

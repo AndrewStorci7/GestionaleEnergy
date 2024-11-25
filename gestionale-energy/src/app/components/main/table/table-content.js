@@ -21,7 +21,7 @@ console.log("ID : " + prova)
  */
 export default function TableContent({ type, primary = false }) {
 
-    const _CMNSTYLE_TBODY = (primary) ? "bg-secondary text-black" : "bg-gray-200 text-black";
+    const _CMNSTYLE_TBODY = (primary) ? "bg-gray-200 text-black" : "bg-gray-200 text-black opacity-50";
 
     // const [idUser, setIdUser] = useState();
     // const [url, setUrl] = useState("");
@@ -62,6 +62,8 @@ export default function TableContent({ type, primary = false }) {
 
                 const data = await resp.json();
                 
+                console.log(data)
+
                 if (data.code === 0)
                     setContent(data.data);
                 else
