@@ -21,13 +21,40 @@ console.log("ID : " + prova)
  */
 export default function TableContent({ type, primary = false }) {
 
-    const _CMNSTYLE_TBODY = (primary) ? "bg-gray-200 text-black" : "bg-gray-200 text-black opacity-50";
+    const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
+    const _CMNSTYLE_TD = "border border-slate-400";
+    const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
 
-    // const [idUser, setIdUser] = useState();
-    // const [url, setUrl] = useState("");
     const [content, setContent] = useState([]);
     const [error, setError] = useState("");
 
+    /**
+     * Get Background Color
+     * 
+     * @param {string} type 
+     * @returns 
+     */
+    const getBgColor = (type) => {
+        switch (type) {
+            case 'admin':
+                return "bg-primary_2"
+            case 'presser':
+                return "bg-primary_2"
+            case 'wheelman':
+                return "bg-secondary_2"
+            case 'both':
+                return "bg-secondary_2"
+            default:
+                return "bg-primary_2"
+        }
+    }
+
+    /**
+     * Get Url of route
+     * 
+     * @param {string} type 
+     * @returns 
+     */
     const getUrl = (type) => {
         switch (type) {
             case 'admin':
@@ -62,15 +89,15 @@ export default function TableContent({ type, primary = false }) {
 
                 const data = await resp.json();
                 
-                console.log(data)
+                // console.log(`Dati ${type}:`, data)
 
-                if (data.code === 0)
+                if (data.code === 0) {
                     setContent(data.data);
-                else
-                    setError(data.message);                
-
+                } else {
+                    setError(data.message);
+                }
             } catch (error) {
-                // Handle error
+                console.log(error)
             }
         }
 
@@ -78,47 +105,56 @@ export default function TableContent({ type, primary = false }) {
     }, [type]);
 
     return (
-        <tbody className={_CMNSTYLE_TBODY}>
-            {(error === "") ?  
-                content.map((_m, _i) => (
-                    <tr key={_i}>
-                        {(primary) ? 
-                            <>
-                                <td key={"check_btn" + _i}><CheckButton /></td>
-                                <td key={"status" + _i}><Icon type={"completed"} /></td>
-                            </>
-                        :
-                            null
+        <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
+            {(error === "") ? ( 
+                content.map((_m, _i) => {
+
+                    // Variabili locali
+                    let date = "";
+                    let hour = "";
+
+                    Object.keys(_m).map((key, __i) => {
+                        if (key === "data_ins") {
+                            date = _m[key].substr(0, 10).replaceAll('-', '/');
+                            hour = _m[key].substr(11, 8);
                         }
-                        {Object.keys(_m).map((key, __i) => (
-                            (key === "data_ins") ? (
+                    })
+
+                    return (
+                        <tr className={`${_CMNSTYLE_TD}`} key={_i}>
+                            {(primary) && (
                                 <>
-                                    {/* estraggo la data */}
-                                    <td key={"data" + _i + __i}>
-                                        {_m[key].substr(0, 10).replaceAll('-', '/')}
-                                    </td>
-                                    {/* estraggo l'ora */}
-                                    <td key={"hour" + _i + __i}>
-                                        {_m[key].substr(11, 8)}
-                                    </td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton /></td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={"completed"} /></td>
                                 </>
-                            ) : (
-                                <td key={key + _i + __i} value={_m[key]}>{_m[key]}</td>
-                            )
-                        ))}
-                        <td key={"confirm" + _i}>
-                            {(primary) ? 
-                                <button className='bg-green-600 p-[3px] rounded-md'>
-                                    OK
-                                </button>
-                            :
-                                null
-                            }
-                        </td>
-                    </tr>
-                ))
-            : null
-            }
+                            )}
+                            {Object.keys(_m).map((key, __i) => (
+                                (key === "is_printed") ? (
+                                    <td className={`${_CMNSTYLE_TD} font-bold`} key={key + _i + __i} value={_m[key]}>
+                                        {(_m[key] == 0) ? "Stampato" : "Da stamp."}
+                                    </td>
+                                ) : (key !== "data_ins") ? (
+                                    <td className={`${_CMNSTYLE_TD}`} key={key + _i + __i} value={_m[key]}>{_m[key]}</td>
+                                ) : null
+                            ))}
+                            {(primary) && (
+                                <td className={`${_CMNSTYLE_TD}`} key={"confirm" + _i}>
+                                    <button 
+                                    className='bg-thirdary font-bold p-[3px] w-[50px] rounded-md'
+                                    onClick={() => console.log("TODO")}
+                                    >
+                                        OK
+                                    </button>
+                                </td>
+                            )}
+                            {/* Data */}
+                            <td className={`${_CMNSTYLE_TD}`} key={"data" + _i}>{date}</td>
+                            {/* Ore */}
+                            <td className={`${_CMNSTYLE_TD}`} key={"hour" + _i}>{hour}</td>
+                        </tr>
+                    )
+                })
+            ) : error }
         </tbody>
     )
 }

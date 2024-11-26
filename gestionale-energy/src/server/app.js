@@ -38,14 +38,14 @@ const handlePresserData = async (req, res) => {
         presser_bale.id_presser = user.id AND
         presser_bale.id_rei = rei.id AND
         presser_bale.id_sb = selected_bale.id
-        WHERE user.id = ${id_user}`
+        WHERE user.id = ${id_user} LIMIT 100`
     )
 
     if (rows && rows.length > 0) {
         // const json_resp = JSON.stringify({code: 0, data: rows});
         console.log(`Content Presser from DB: ${JSON.stringify(rows)}`)
         // res.json({code: 0, data: rows})
-        return rows
+        return { code: 0, rows }
     } else {
         console.log(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
         // res.json({ code: 1, message: "Nessuna balla trovata" });
@@ -57,26 +57,26 @@ const handleWheelmanData = async (req, res) => {
     const { id_user } = req.body;
     console.log(`Id Wheelman received: ${id_user}\n`);
     const [rows] = await db.query(
-`SELECT 
-cond_wheelman_bale.type AS 'condition', 
-reas_not_tying.name AS 'reason',
-wheelman_bale.weight AS 'weight',
-warehouse_dest.name AS 'warehouse',
-wheelman_bale.note AS 'notes',
-wheelman_bale.printed AS 'is_printed',
-wheelman_bale.data_ins AS 'data_ins'
-FROM wheelman_bale JOIN reas_not_tying JOIN cond_wheelman_bale JOIN warehouse_dest JOIN user
-ON wheelman_bale.id_wheelman = user.id AND
-wheelman_bale.id_cwb = cond_wheelman_bale.id AND
-wheelman_bale.id_rnt = reas_not_tying.id AND
-wheelman_bale.id_wd = warehouse_dest.id
-WHERE wheelman_bale.id_wheelman = ${id_user}`
+        `SELECT 
+        cond_wheelman_bale.type AS 'condition', 
+        reas_not_tying.name AS 'reason',
+        wheelman_bale.weight AS 'weight',
+        warehouse_dest.name AS 'warehouse',
+        wheelman_bale.note AS 'notes',
+        wheelman_bale.printed AS 'is_printed',
+        wheelman_bale.data_ins AS 'data_ins'
+        FROM wheelman_bale JOIN reas_not_tying JOIN cond_wheelman_bale JOIN warehouse_dest JOIN user
+        ON wheelman_bale.id_wheelman = user.id AND
+        wheelman_bale.id_cwb = cond_wheelman_bale.id AND
+        wheelman_bale.id_rnt = reas_not_tying.id AND
+        wheelman_bale.id_wd = warehouse_dest.id
+        WHERE wheelman_bale.id_wheelman = ${id_user} LIMIT 100`
     );
 
     if (rows && rows.length > 0) {
         console.log(`Content Wheelman from DB: ${JSON.stringify(rows)}`)
         // res.json(rows)
-        return rows
+        return { code: 0, rows }
     } else {
         console.log(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
         return { code: 1, message: "Nessuna balla trovata" }
@@ -110,7 +110,14 @@ app.post('/login', async (req, res) => {
 app.post('/wheelman', async (req, res) => {
     try {
         const data = await handleWheelmanData(req, res);
-        res.json({ code: 0, data })
+        
+        console.log(data)
+        
+        if (data.code !== 0) {
+            res.json(data)
+        } else {
+            res.json({ code: 0, data: data.rows })
+        }
     } catch (error) {
         console.error(error);
         res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
@@ -123,7 +130,14 @@ app.post('/wheelman', async (req, res) => {
 app.post('/presser', async (req, res) => {
     try {
         const data = await handlePresserData(req, res);
-        res.json({ code: 0, data })
+        
+        console.log(data)
+
+        if (data.code !== 0) {
+            res.json(data)
+        } else {
+            res.json({ code: 0, data: data.rows })
+        }
     } catch (error) {
         console.error(error);
         res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)

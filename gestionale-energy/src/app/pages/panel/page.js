@@ -11,6 +11,8 @@ export default function Admin() {
 
     const [implant, setImplant] = useState("");
     const [user, setUser] = useState("");
+    const [name, setName] = useState("");
+    const [surname, setSurname] = useState("");
     const [type, setType] = useState("");
 
     useEffect(() => {
@@ -19,8 +21,10 @@ export default function Admin() {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 if (cookies) {
                     setImplant(cookies.implant);
-                    setUser(cookies.name);
+                    setUser(cookies.username);
                     setType(cookies.type);
+                    setName(cookies.name);
+                    setSurname(cookies.surname);
                     console.log(`Cookies { \n\tUsername: ${user};\n\tType: ${type};\n\tImplant: ${implant}`)
                 }
             } catch (_err) {
@@ -38,6 +42,9 @@ export default function Admin() {
             <Header 
                 implant={implant}
                 username={user}
+                type={type}
+                name={name}
+                surname={surname}
             />
             <MainContent 
                 type={type}

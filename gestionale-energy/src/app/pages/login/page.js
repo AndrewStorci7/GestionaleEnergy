@@ -53,7 +53,9 @@ export default function LoginPage() {
                 } else {
                     const json = {
                         id_user: res[0].id,
-                        name: res[0].username, 
+                        name: res[0].name,
+                        surname: res[0].surname,
+                        username: res[0].username, 
                         implant: implant, 
                         type: res[0].type,
                         last_a: res[0].last_access,

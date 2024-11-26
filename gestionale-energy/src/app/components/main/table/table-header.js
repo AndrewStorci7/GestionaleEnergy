@@ -7,31 +7,49 @@
  * @returns 
  */
 export default function TableHeader({ type, primary = false }) {
+    
+    const getBgColor = (type) => {
+        switch (type) {
+            case 'admin':
+                return "bg-primary"
+            case 'presser':
+                return "bg-primary"
+            case 'wheelman':
+                return "bg-secondary"
+            case 'both':
+                return "bg-secondary"
+            default:
+                return "bg-primary"
+        }
+    }
 
     // const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
-    const bg_style = (primary) ? 'bg-primary' : 'bg-thirdary opacity-50';
+    const _CMNSTYLE_TD = "border border-slate-400";
+    const _MAX_HEIGHT = "h-[50px]";
+    const bg_style = (primary) ? getBgColor(type) : 'bg-thirdary opacity-50';
     const text_color = (primary) ? 'text-white' : 'text-black';
     const left_fixed = (!primary) ? 'left-[50%]' : null;
     const text = "";
+
 
     switch (type) {
         case 'presser': {
             return (
                 <>
                     {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Pressista</label>*/}
-                    <thead className={`${bg_style} ${text_color}`}>
+                    <thead className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}>
                         <tr>
-                            {(primary) ? <th>Sel.</th> : null}
-                            <th>Stato</th>
-                            <th>Plastica</th>
-                            <th>Codice</th>
-                            <th>Utiliz. REI</th>
-                            <th>Condiz. Balla Pressa</th>
-                            <th>Balla Selez.</th>
-                            <th>Note</th>
-                            <th>Data</th>
-                            <th>Ora</th>
-                            <th></th>
+                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
+                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>Stato</th>}
+                            <th className={`${_CMNSTYLE_TD}`}>Plastica</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Codice</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Utiliz. REI</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Condiz. Balla Pressa</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Balla Selez.</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Note</th>
+                            {(primary) && <th className={`${_CMNSTYLE_TD}`}></th>}
+                            <th className={`${_CMNSTYLE_TD}`}>Data</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Ora</th>
                         </tr>
                     </thead>
                 </>
@@ -41,19 +59,19 @@ export default function TableHeader({ type, primary = false }) {
             return (
                 <>
                     {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Carrellista</label>*/}
-                    <thead className={`${bg_style} ${text_color}`}>
+                    <thead className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}>
                         <tr>
-                            {(primary) ? <th>Sel.</th> : null}
-                            <th>Condiz. Balla Carrel.</th>
-                            <th>Motivaz.</th>
-                            <th>Peso (Kg)</th>
-                            <th>Utiliz. REI</th>
-                            <th>Condiz. Balla Carrello</th>
-                            <th>Balla Selez.</th>
-                            <th>Note</th>
-                            <th>Data</th>
-                            <th>Ora</th>
-                            {(primary) ? <th></th> : null}
+                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
+                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>Stato</th>}
+                            <th className={`${_CMNSTYLE_TD}`}>Condiz. Balla Carrel.</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Motivaz.</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Peso (Kg)</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Balla Selez.</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Note</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Stato stampa</th>
+                            {(primary) && <th className={`${_CMNSTYLE_TD}`}></th>}
+                            <th className={`${_CMNSTYLE_TD}`}>Data</th>
+                            <th className={`${_CMNSTYLE_TD}`}>Ora</th>
                         </tr>
                     </thead>
                 </>

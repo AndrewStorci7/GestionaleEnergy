@@ -3,11 +3,40 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
-export default function Header( {implant, username} ) {
+export default function Header({ implant, username, type, name, surname }) {
+
+    const _CMN_PLACE_CENTER = "place-content-center";
 
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
     const [turn, setTurn] = useState("Turno 1");
+
+    /**
+     * Get Background Color
+     * 
+     * @param {string} type 
+     * @returns 
+     */
+    const getBgColor = (type) => {
+        switch (type) {
+            case 'admin':
+                return "bg-primary"
+            case 'presser':
+                return "bg-primary"
+            case 'wheelman':
+                return "bg-secondary"
+            case 'both':
+                return "bg-secondary"
+            default:
+                return "bg-primary"
+        }
+    }
+
+    const logout = () =>  {
+        // TODO
+        // logout
+        console.log("Logout")
+    }
 
     /**
      * Update the time every second
@@ -49,20 +78,34 @@ export default function Header( {implant, username} ) {
                         alt="Oppimitti Energy Logo"
                     />
                 </div> {/* end logo */}
-                <div className="place-content-center">
+                <div className={`${_CMN_PLACE_CENTER}`}>
                     {implant}
                 </div> {/* end implant */}
-                <div className="place-content-center">
+                <div className={`${_CMN_PLACE_CENTER}`}>
                     {turn}
                 </div> {/* end turns */}
-                <div className="place-content-center">
+                <div className={`${_CMN_PLACE_CENTER}`}>
                     {date}
                 </div> {/* end date */}
-                <div className="place-content-center">
+                <div className={`${_CMN_PLACE_CENTER}`}>
                     {time}
                 </div> {/* end time */}
-                <div className="place-content-center bg-primary m-[40px] pl-[5px] rounded-md text-white">
-                    {username}
+                <div className="realtive">
+                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)} w-full px-[10px] rounded-t-md text-white`}>
+                        {username}
+                    </div>
+                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)}_2 w-full px-[10px]`}>
+                        <span className="w-fit">{name} {surname}</span>
+                    </div>
+                    <div className={`flex justify-end ${getBgColor(type)}_2 w-full p-[10px] rounded-b-md`}>
+                        <button
+                        className="rounded-md bg-gray-300 px-[5px]"
+                        onClick={logout}
+                        >
+                            Logout
+                        </button>
+                    </div>
+
                 </div> {/* end user */}
             </div>
         </div>
