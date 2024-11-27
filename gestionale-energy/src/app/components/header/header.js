@@ -2,10 +2,15 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { getEnv } from "@/app/config";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Header({ implant, username, type, name, surname }) {
 
     const _CMN_PLACE_CENTER = "place-content-center";
+
+    const router = useRouter();
 
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
@@ -32,10 +37,14 @@ export default function Header({ implant, username, type, name, surname }) {
         }
     }
 
-    const logout = () =>  {
-        // TODO
-        // logout
-        console.log("Logout")
+    /**
+     * Logout handler
+     * 
+     * Remove the setted Cookie 'user-info'
+     */
+    const logout = () => {
+        Cookies.remove('user-info', { path: '/', domain: getEnv('NEXT_PUBLIC_APP_DOMAIN') })
+        router.push('/pages/login')
     }
 
     /**
@@ -46,21 +55,17 @@ export default function Header({ implant, username, type, name, surname }) {
             setTime(new Date().toLocaleTimeString());
             setDate(new Date().toLocaleDateString());
 
-            let _hour = time.getHours;
-            switch (_hour) {
-                case _hour >= 6 && _hour <= 12:
-                    setTurn("Turno 1");
-                    break;
-                case _hour > 12 && _hour <= 18:
-                    setTurn("Turno 2");
-                    break;
-                case _hour > 18 && _hour <= 24:
-                    setTurn("Turno 3");
-                    break;
-                default:
-                    setTurn("Turno 1");
-                    break;
-            }
+            let _hour = parseInt(time.split(":")[0])
+            // console.log(_hour)
+            if (_hour >= 6 && _hour <= 12)
+                setTurn("Turno 1");
+            else if (_hour > 12 && _hour <= 18)
+                setTurn("Turno 2");
+            else if (_hour > 18 && _hour <= 24)
+                setTurn("Turno 3");
+            else
+                setTurn("Turno ciao");
+
         }, 1000);
 
         return () => clearInterval(interval);

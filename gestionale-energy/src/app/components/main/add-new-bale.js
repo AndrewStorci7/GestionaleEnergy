@@ -1,8 +1,6 @@
-import getEnv from '@@/config';
+import { getSrvUrl } from '@@/config';
 
-const URL = getEnv('srvurl');
-const PORT = getEnv('srvport');
-const srvurl = `${URL}:${PORT}`;
+const srvurl = getSrvUrl()
 
 /**
  * Custom component for adding, updating or erase a bale 

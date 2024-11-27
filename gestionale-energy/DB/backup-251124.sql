@@ -281,7 +281,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin','Andrea','Storci','andrea','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:09:45'),(2,'presser','Pressista','1','utente01','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:51:52'),(3,'wheelman','Carrellista','1','utente02','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:51:52'),(4,'both','Amministratore','1','utente03','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:51:52');
+INSERT INTO `user` VALUES (1,'admin','Andrea','Storci','andrea','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:09:45'),(2,'presser','Gianluca','Oppimitti','utente01','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:51:52'),(3,'wheelman','Mario','Rossi','utente02','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:51:52'),(4,'both','Isabella','Bozzuffi','utente03','c3284d0f94606de1fd2af172aba15bf3','2024-11-19 11:51:52');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

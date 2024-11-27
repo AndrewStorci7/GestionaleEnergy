@@ -1,17 +1,17 @@
 /**
  * Getter of the Key from .env file
  * 
- * @param {*} key
- * @param {*} defaultKey 
+ * @param {*} key           [ 'srvurl' | 'srvport' ]
+ * @param {*} defaultKey    
  * 
  * @returns Environment Key
  */
 
 const getEnv = (key, defaultKey = "") => {
 
-    if (defaultKey !== "") {
-        return defaultKey;
-    }
+    // if (defaultKey !== "") {
+    //     return defaultKey;
+    // }
 
     switch (key) {
         case 'srvurl' || 'SRVURL': {
@@ -20,10 +20,27 @@ const getEnv = (key, defaultKey = "") => {
         case 'srvport' || 'SRVPORT': {
             return process.env.NEXT_PUBLIC_SERVER_PORT;
         }
+        case 'domain' || 'DOMAIN': {
+            return process.env.NEXT_PUBLIC_APP_DOMAIN
+        }
         default: {
-            return undefined;
+            return defaultKey;
         }
     }
 };
 
-export default getEnv;
+/**
+ * Getter of the server url 
+ * 
+ * @returns 
+ */
+const getSrvUrl = () =>  {
+
+    const URL = getEnv('srvurl');
+    const PORT = getEnv('srvport');
+    const srvurl = `${URL}:${PORT}`;
+
+    return srvurl
+}
+
+export { getEnv, getSrvUrl };

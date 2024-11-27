@@ -10,12 +10,10 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
-import getEnv from '@@/config';
+import { getSrvUrl } from '@@/config';
 import md5 from 'md5';
 
-const URL = getEnv('srvurl');
-const PORT = getEnv('srvport');
-const srvurl = `${URL}:${PORT}`;
+const srvurl = getSrvUrl()
 
 export default function LoginPage() {
 

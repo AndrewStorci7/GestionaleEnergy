@@ -9,10 +9,15 @@ import { useEffect, useState } from "react";
 
 export default function Admin() {
 
+    // Impianto
     const [implant, setImplant] = useState("");
+    // Utente
     const [user, setUser] = useState("");
+    // Nome
     const [name, setName] = useState("");
+    // Cognome
     const [surname, setSurname] = useState("");
+    // Tipo utente [ 'admin' | 'presser' | 'wheelman' | 'both' ]
     const [type, setType] = useState("");
 
     useEffect(() => {
@@ -25,7 +30,6 @@ export default function Admin() {
                     setType(cookies.type);
                     setName(cookies.name);
                     setSurname(cookies.surname);
-                    console.log(`Cookies { \n\tUsername: ${user};\n\tType: ${type};\n\tImplant: ${implant}`)
                 }
             } catch (_err) {
                 console.log(`Error: ${_err}`);
@@ -33,8 +37,6 @@ export default function Admin() {
         }
 
         fetchData();
-        
-        // TODO set data for type user
     }, []);
 
     return(

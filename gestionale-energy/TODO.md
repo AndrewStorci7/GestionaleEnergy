@@ -17,6 +17,11 @@
 ## Header (`<Header>`)
 
 - Cambiare la visualizzazione dei dati dell'utente:
-    - [ ] Adattare il colore dello sfondo in base al tipo di utente
-    - [ ] Aggiungere la denominazione sotto allo username
-    - [ ] Aggiungere tasto **logout**
+    - [x] Adattare il colore dello sfondo in base al tipo di utente
+    - [x] Aggiungere la denominazione sotto allo username
+    - [x] Aggiungere tasto **logout**
+- [x] Creare funzione per **logout**
+- [x] Sistemare controllo turno, il controllo deve avvenire con l'ora:
+    - Dalle **6** alle **12**: **Turno 1**
+    - Dalle **12** alle **18**: **Turno 2**
+    - Dalle **18** alle **24**: **Turno 3**

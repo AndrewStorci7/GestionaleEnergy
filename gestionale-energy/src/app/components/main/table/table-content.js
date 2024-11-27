@@ -1,14 +1,10 @@
-import getEnv from '@@/config';
+import { getSrvUrl } from '@@/config';
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
 
-const URL = getEnv('srvurl');
-const PORT = getEnv('srvport');
-const srvurl = `${URL}:${PORT}`;
-const prova = Cookies.get('user-info').id_user
-console.log("ID : " + prova)
+const srvurl = getSrvUrl()
 
 /**
  * Custom component for handling the data of a bale
