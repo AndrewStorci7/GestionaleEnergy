@@ -14,8 +14,9 @@
 - Modificare il pulsante di conferma per **l'inserimento sul DB**
     - [x] Cambiare il colore del pulsante di conferma in grigio (`thirdary`) e renderlo più grande
     - [x] Spostare il pulsante sulla terzultima colonna ed inserire la data e l'ora dopo averlo cliccato
-- [ ] Spostare ed "incollare" i pulsanti sopra il **footer**
-- [ ] Inserire **overflow** (scorrimento) solo nella visualizzazione della tabella
+- [x] Spostare ed "incollare" i pulsanti sopra il **footer**
+- [x] Inserire **overflow** (scorrimento) solo nella visualizzazione della tabella
+- [ ] Modificare e inserire `inner box-shadow` (informarsi su `tailwindcss`)
 
 ### Header (`<Header>`)
 
@@ -25,13 +26,13 @@
     - [x] Aggiungere tasto **logout**
 - [x] Creare funzione per **logout**
 - [x] Sistemare controllo turno, il controllo deve avvenire con l'ora:
-    - Dalle **6** alle **12**: **Turno 1**
-    - Dalle **12** alle **18**: **Turno 2**
-    - Dalle **18** alle **24**: **Turno 3**
+    - Dalle **6** alle **14**: **Turno 1**
+    - Dalle **14** alle **22**: **Turno 2**
+    - Dalle **22** alle **6**: **Turno 3**
 
 ### Barra di ricerca (`<Search>`)
 
-- [ ] Costrutire la barra di ricerca
+- [x] Costrutire la barra di ricerca
 
 ## Backend :space_invader:
 
@@ -42,4 +43,4 @@
 
 ### Database 
 
-- [ ] Inserire dati per test
+- [x] Inserire dati per test

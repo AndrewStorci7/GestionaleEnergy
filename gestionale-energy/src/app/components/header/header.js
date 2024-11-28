@@ -57,11 +57,11 @@ export default function Header({ implant, username, type, name, surname }) {
 
             let _hour = parseInt(time.split(":")[0])
             // console.log(_hour)
-            if (_hour >= 6 && _hour <= 12)
+            if (_hour >= 6 && _hour < 14)
                 setTurn("Turno 1");
-            else if (_hour > 12 && _hour <= 18)
+            else if (_hour >= 14 && _hour < 22)
                 setTurn("Turno 2");
-            else if (_hour > 18 && _hour <= 24)
+            else if (_hour >= 22 && _hour < 6)
                 setTurn("Turno 3");
             else
                 setTurn("Turno ciao");

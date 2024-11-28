@@ -1,7 +1,7 @@
 'use client';
 
 // import { useState } from "react";
-import SearchInput from "./search";
+import SearchInput from "./search/search";
 import AddBale from "./add-new-bale";
 import Table from "./table/table";
 
@@ -11,7 +11,7 @@ export default function MainContent({ type }, props ) {
         <div 
             {...props}
         >
-            <SearchInput />
+            <SearchInput type={type} />
             <Table 
                 type={type}
             />

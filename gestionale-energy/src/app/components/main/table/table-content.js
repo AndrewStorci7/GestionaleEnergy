@@ -70,7 +70,7 @@ export default function TableContent({ type, primary = false }) {
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
-                const id_user = cookies.id_user; 
+                const id_user = cookies.id_user;
                 const url = getUrl(type)
                 
                 const resp = await fetch(url, {
@@ -136,7 +136,7 @@ export default function TableContent({ type, primary = false }) {
                             {(primary) && (
                                 <td className={`${_CMNSTYLE_TD}`} key={"confirm" + _i}>
                                     <button 
-                                    className='bg-thirdary font-bold p-[3px] w-[50px] rounded-md'
+                                    className='w-full bg-thirdary font-bold p-[3px]'
                                     onClick={() => console.log("TODO")}
                                     >
                                         OK

@@ -40,7 +40,7 @@ export default function Admin() {
     }, []);
 
     return(
-        <div className="w-[95%] m-[2.5%]">
+        <div className="w-[95%] m-[2.5%] overflow-hidden">
             <Header 
                 implant={implant}
                 username={user}

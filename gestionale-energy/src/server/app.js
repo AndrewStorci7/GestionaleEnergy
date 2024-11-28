@@ -58,7 +58,7 @@ const handleWheelmanData = async (req, res) => {
     console.log(`Id Wheelman received: ${id_user}\n`);
     const [rows] = await db.query(
         `SELECT 
-        cond_wheelman_bale.type AS 'condition', 
+        cond_wheelman_bale.type AS 'condition',
         reas_not_tying.name AS 'reason',
         wheelman_bale.weight AS 'weight',
         warehouse_dest.name AS 'warehouse',
@@ -83,6 +83,7 @@ const handleWheelmanData = async (req, res) => {
     }
 };
 
+
 /**
  * Login route
  */
@@ -104,6 +105,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
+
 /**
  * Wheelman route
  */
@@ -123,6 +125,7 @@ app.post('/wheelman', async (req, res) => {
         res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
     }
 });
+
 
 /**
  * Presser route
@@ -144,6 +147,7 @@ app.post('/presser', async (req, res) => {
     }
 });
 
+
 /**
  * Bale route
  */
@@ -157,6 +161,7 @@ app.post('/bale', async (req, res) => {
         res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
     }
 });
+
 
 /**
  * Add Bale on DB
@@ -191,6 +196,134 @@ app.post('/add-bale', async (req, res) =>  {
 });
 
 
+/**
+ * Select plastic data
+ */
+app.get('/plastic', async (req, res) => {
+    try {
+        const [select] = await db.query(
+            "SELECT code_plastic.code, code_plastic.type AS plastic_type, code_plastic.desc FROM code_plastic"
+        );
+
+        if (select && select.length > 0) {
+            console.log(`Type of plastic from DB: \n\t${JSON.stringify(select)}`)
+            res.json({ code: 0, data: select })
+        } else {
+            res.json({ code: 1, message: "No data fetched" })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    }
+});
+
+
+/**
+ * Condition Wheelman Bale data
+ */
+app.get('/cdbc', async (req, res) => {
+    try {
+        const [select] = await db.query(
+            "SELECT cond_presser_bale.type FROM cond_presser_bale"
+        );
+
+        if (select && select.length > 0) {
+            console.log(`Type of condition presser bale from DB: \n\t${JSON.stringify(select)}`)
+            res.json({ code: 0, data: select })
+        } else {
+            res.json({ code: 1, message: "No data fetched" })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    }
+});
+
+
+/**
+ * Condition Presser Bale route
+ */
+app.get('/cdbp', async (req, res) => {
+    try {
+        const [select] = await db.query(
+            "SELECT cond_wheelman_bale.type FROM cond_wheelman_bale"
+        );
+
+        if (select && select.length > 0) {
+            console.log(`Type of condition wheelman bale from DB: \n\t${JSON.stringify(select)}`)
+            res.json({ code: 0, data: select })
+        } else {
+            res.json({ code: 1, message: "No data fetched" })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    }
+});
+
+
+/**
+ * Warehouse Destination route
+ */
+app.get('/dest-wh', async (req, res) => {
+    try {
+        const [select] = await db.query(
+            "SELECT warehouse_dest.name FROM warehouse_dest"
+        );
+
+        if (select && select.length > 0) {
+            console.log(`Type of warehouse destination from DB: \n\t${JSON.stringify(select)}`)
+            res.json({ code: 0, data: select })
+        } else {
+            res.json({ code: 1, message: "No data fetched" })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    }
+});
+
+/**
+ * REI route
+ */
+app.get('/rei', async (req, res) => {
+    try {
+        const [select] = await db.query(
+            "SELECT rei.name FROM rei"
+        );
+
+        if (select && select.length > 0) {
+            console.log(`Type of rei from DB: \n\t${JSON.stringify(select)}`)
+            res.json({ code: 0, data: select })
+        } else {
+            res.json({ code: 1, message: "No data fetched" })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    }
+});
+
+/**
+ * Selected Bale route
+ */
+app.get('/selected-b', async (req, res) => {
+    try {
+        const [select] = await db.query(
+            "SELECT selected_bale.name FROM selected_bale"
+        );
+
+        if (select && select.length > 0) {
+            console.log(`Type of selected bale from DB: \n\t${JSON.stringify(select)}`)
+            res.json({ code: 0, data: select })
+        } else {
+            res.json({ code: 1, message: "No data fetched" })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on ${URL}:${PORT}`);
