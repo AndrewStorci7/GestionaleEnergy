@@ -38,14 +38,14 @@ export default function AddBale({ bale }) {
     return(
         <div className="w-1/2 font-bold">
             <div className="flex flex-row-reverse">
-                <button className="m-[10px] rounded-md bg-blue-600 p-[5px]">
-                    Modifica
-                </button>
-                <button className="m-[10px] rounded-md bg-red-600 p-[5px]">
+                <button className="m-[10px] rounded-md bg-gray-300 p-[5px]">
                     Elimina
                 </button>
+                <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[50px]">
+                    Modifica
+                </button>
                 <button 
-                className="m-[10px] rounded-md bg-green-600 p-[5px] mr-[50px]"
+                className="m-[10px] rounded-md bg-gray-300 p-[5px]"
                 onClick={addNewBale}
                 >
                     Aggiungi

@@ -18,7 +18,7 @@ const srvurl = getSrvUrl()
 export default function TableContent({ type, primary = false }) {
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
-    const _CMNSTYLE_TD = "border border-slate-400";
+    const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
 
     const [content, setContent] = useState([]);
@@ -100,14 +100,19 @@ export default function TableContent({ type, primary = false }) {
         fetchData();
     }, [type]);
 
+    // test
+    let i = 0;
+
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
-            {(error === "") ? ( 
+            {(error === "") ? (
+                
                 content.map((_m, _i) => {
 
                     // Variabili locali
                     let date = "";
                     let hour = "";
+                    ++i;
 
                     Object.keys(_m).map((key, __i) => {
                         if (key === "data_ins") {
@@ -121,7 +126,7 @@ export default function TableContent({ type, primary = false }) {
                             {(primary) && (
                                 <>
                                     <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton /></td>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={"completed"} /></td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={(i <= 3) ? "working" : "completed"} /></td>
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (
@@ -134,9 +139,9 @@ export default function TableContent({ type, primary = false }) {
                                 ) : null
                             ))}
                             {(primary) && (
-                                <td className={`${_CMNSTYLE_TD}`} key={"confirm" + _i}>
+                                <td className={`${_CMNSTYLE_TD} relative`} key={"confirm" + _i}>
                                     <button 
-                                    className='w-full bg-thirdary font-bold p-[3px]'
+                                    className='w-full bg-gray-300 font-bold p-[3px] m-[6px] w-[60px]'
                                     onClick={() => console.log("TODO")}
                                     >
                                         OK
