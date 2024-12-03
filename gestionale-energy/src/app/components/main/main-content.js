@@ -4,6 +4,7 @@
 import SearchInput from "./search/search";
 import AddBale from "./add-new-bale";
 import Table from "./table/table";
+import BtnWheelman from "./btn-wheelman";
 
 export default function MainContent({ type }, props ) {
 
@@ -15,7 +16,12 @@ export default function MainContent({ type }, props ) {
             <Table 
                 type={type}
             />
-            <AddBale />
+            {(type === 'presser') ? (
+                <AddBale/>
+            ) : (type === 'wheelman') ? (
+               <BtnWheelman/>
+            ) : null
+            } 
         </div>
     );
 }
