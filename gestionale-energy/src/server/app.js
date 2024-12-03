@@ -38,7 +38,7 @@ const handlePresserData = async (req, res) => {
         presser_bale.id_presser = user.id AND
         presser_bale.id_rei = rei.id AND
         presser_bale.id_sb = selected_bale.id
-        WHERE user.id = ${id_user} LIMIT 100`
+        WHERE TIME(presser_bale.data_ins) LIMIT 100`
     )
 
     if (rows && rows.length > 0) {
@@ -315,6 +315,27 @@ app.get('/selected-b', async (req, res) => {
 
         if (select && select.length > 0) {
             console.log(`Type of selected bale from DB: \n\t${JSON.stringify(select)}`)
+            res.json({ code: 0, data: select })
+        } else {
+            res.json({ code: 1, message: "No data fetched" })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    }
+});
+
+/**
+ * Implants route
+ */
+app.get('/implants', async (req, res) =>  {
+    try {
+        const [select] = await db.query(
+            "SELECT * FROM implants"
+        );
+
+        if (select && select.length > 0) {
+            console.log(`Type of implants from DB: \n\t${JSON.stringify(select)}`)
             res.json({ code: 0, data: select })
         } else {
             res.json({ code: 1, message: "No data fetched" })

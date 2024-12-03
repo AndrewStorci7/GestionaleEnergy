@@ -5,6 +5,12 @@ import SearchInput from "./search/search";
 import AddBale from "./add-new-bale";
 import Table from "./table/table";
 
+/**
+ * 
+ * @param {string} type     [ 'presser' | 'wheelman' | 'both' | 'admin' ] 
+ * @param {*} props 
+ * @returns 
+ */
 export default function MainContent({ type }, props ) {
 
     return(
@@ -15,7 +21,12 @@ export default function MainContent({ type }, props ) {
             <Table 
                 type={type}
             />
-            <AddBale />
+            {(type === 'presser') ? (
+                <AddBale />
+            ) : (type === 'wheelman') ? (
+                null
+            ) : null
+            }
         </div>
     );
 }

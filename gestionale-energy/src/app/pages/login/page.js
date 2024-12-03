@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
 import { getSrvUrl } from '@@/config';
 import md5 from 'md5';
+import SelectImplants from '@/app/components/main/select-implant';
 
 const srvurl = getSrvUrl()
 
@@ -54,7 +55,8 @@ export default function LoginPage() {
                         name: res[0].name,
                         surname: res[0].surname,
                         username: res[0].username, 
-                        implant: implant, 
+                        implantId: implant.id_implant,
+                        implant: implant.text_implant, 
                         type: res[0].type,
                         last_a: res[0].last_access,
                     };
@@ -69,7 +71,7 @@ export default function LoginPage() {
     };
 
     const handleChange = (e) => {
-        setImplant(e.target.value);
+        setImplant({id_implant: e.target.dataId, text_implant: e.target.value});
     }; 
 
     return (
@@ -86,15 +88,11 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.inputGroup}>
                     <label className={styles.label} htmlFor="email">Impianto:</label>
-                    <select
-                        className={styles.input}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Seleziona un&apos;impianto</option>
-                        <option value="Impianto A">Impianto A</option>
-                        <option value="Impianto B">Impianto B</option>
-                    </select>
+                    <SelectImplants 
+                    onChange={handleChange}
+                    className={styles.input}
+                    required
+                    />
                 </div>
                 <div className={styles.inputGroup}>
                     <label className={styles.label} htmlFor="email">Username:</label>
