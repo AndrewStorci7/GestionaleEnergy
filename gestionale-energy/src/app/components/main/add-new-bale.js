@@ -11,28 +11,31 @@ const srvurl = getSrvUrl()
  * 
  * @returns 
  */
-export default function AddBale({ bale }) {
+export default function AddBale({ implant, idUser, clickAddHandle }) {
 
     const addNewBale = async () =>  {
 
-        const test = {
-            id_presser: 1,
-            id_plastic: '\'IPS/C\'',
-            id_rei: null,
-            id_cpb: null,
-            id_sb: null,
-            note: 'Prova inserimento da AddBale',
+        const data = {
+            id_presser: idUser,
+            id_implant: implant
         }
-
-        console.log(JSON.stringify(test))
 
         const check = await fetch(srvurl + '/add-bale', {
             method: 'POST',
-            body: JSON.stringify({ data: test}),
-            headers: {'Content-Type': 'application/json' }
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify({ data }),
         })
 
-        console.log(check)
+        const resp = await check.json().data
+
+        if (!check.ok) {
+            // TODO insierire componente ErrorAlert
+            console.log("Errore")
+        } else {
+            // console.log("OK")
+            clickAddHandle(resp)
+        }
+        
     }
 
     return(

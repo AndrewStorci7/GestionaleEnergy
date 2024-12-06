@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
+import InsertNewBale from '../insert-new-bale';
 
 const srvurl = getSrvUrl()
 
@@ -11,11 +12,15 @@ const srvurl = getSrvUrl()
  * 
  * @param {string}  type    [ 'presser' | 'wheelman' | 'both' | 'admin' ]
  *                          Il tipo della pagina
+ * 
+ * @param {boolean} add     [ true | false ]
+ *                          True se il bottone di aggiunta è stato premuto, altrimenti false
+ * 
  * @param {boolean} primary Serve per settare correttamente il colore dello sfondo   
  * 
  * @returns
  */
-export default function TableContent({ type, primary = false }) {
+export default function TableContent({ type, add, ids, primary = false }) {
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
@@ -105,6 +110,9 @@ export default function TableContent({ type, primary = false }) {
 
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
+            {(add) && ( 
+                <InsertNewBale type={type} mod={primary} ids={ids} primary={primary} />
+            )}
             {(error === "") ? (
                 
                 content.map((_m, _i) => {

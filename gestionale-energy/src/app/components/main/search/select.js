@@ -7,7 +7,7 @@ const srvurl = getSrvUrl()
  * 
  * @author Andrea Storci from Oppimittinetworking
  * 
- * @param {string} searchFor      [ Ricerca per
+ * @param {string}   searchFor   [ Ricerca per
  *                                  'status'        => Stato lavorazione 
  *                                  'plastic'       => Tipo o codice plastica 
  *                                  'cdbc'          => Condizione balla carrellista
@@ -15,14 +15,19 @@ const srvurl = getSrvUrl()
  *                                  'dest-wh'       => magazzino di destinazione
  *                                  'rei'           => Utilizzo REI
  *                                  'selected-b'    => Balla selezionata
- *                                ]
- * @param {string} id     
+ *                                  'reason'        => Motivazione
+ *                               ]   
+ * @param {string}   id          Id of the component
+ * @param {boolean}  fixedW      Se true andrà a settare per default una larghezza fissa
+ * @param {any}      value       Variabile nella quale salvare l'opzione selezionata
+ * @param {function} onChange    Funzione che gestisce il salvataggio del dato
  *  
  * @returns 
  */
-export default function SelectInput({ searchFor, id, type }) {
+export default function SelectInput({ searchFor, id, fixedW, value, onChange, type }, props) {
 
-    const _CMNSTYLE_SELECT = "rounded-md"
+    const fixed_width = (fixedW) && "w-full" 
+    const _CMNSTYLE_SELECT = `rounded-md ${fixed_width}`
 
     // Rotta per server
     const [error, setError] = useState("")
@@ -45,6 +50,8 @@ export default function SelectInput({ searchFor, id, type }) {
                 return srvurl + "/rei"
             case "selected-b":
                 return srvurl + "/selected-b"
+            case "reason":
+                return srvurl + "/reason"
         }
     }
 
@@ -52,8 +59,6 @@ export default function SelectInput({ searchFor, id, type }) {
         const fetchData = async () => {
             try {
                 const url = getUrl(searchFor)
-
-                console.log(url)
 
                 if (url != -1) {
                     const resp = await fetch(url, {
@@ -82,27 +87,48 @@ export default function SelectInput({ searchFor, id, type }) {
         }
 
         fetchData();
-    }, [searchFor])
+    }, [searchFor, value, onChange])
 
     return (
         <select
         id={id}
         className={`${_CMNSTYLE_SELECT}`}
+        value={value}
+        onChange={onChange}
         >
             <option value={""}>-</option>
             {content.map((_m, _i) => {
                 if (typeof _m === "object" && _m !== null) {
+
+                    // Variabili locali 
                     let code = "";
+                    let data = ""
                     let str = "";
                     let tmp = "";
+
+                    // Controllo per impostare componente <option> correttamente:
+                    // <option value={id}>name</option>
                     Object.keys(_m).map((key, __i) => {
-                        code = (key === "code") && _m[key];
-                        tmp = (key === "desc") ? `\(${_m[key]}\)` : (key !== "plastic_type") ? _m[key] : "";
+                        code += (key === "code" || key === "id") ? _m[key] : "";
+                        data = (key === "desc") ? _m[key] : "";
+                        tmp = (key === "desc") ? `\(${_m[key]}\)` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
                         str += tmp + " "; 
+
+                        // console.log("Actual value: " + _m[key] + "\nValue saved: " + code)
+                        // console.log("Value saved: ", code)
                     })
-                    return <option key={"object" + _i} value={code}>{str}</option>
+
+                    return ( 
+                        <option key={"option-" + _i} value={code} data-code={data}>
+                            {str}
+                        </option>
+                    )
                 } else {
-                    return <option key={_m + _i} value={_m}>{_m}</option>
+                    return (
+                        <option key={_m[_i] + _i} value={_m}>
+                            {_m}
+                        </option>
+                    )
                 }
             })}
         </select>

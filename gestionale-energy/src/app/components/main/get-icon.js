@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoIosWarning } from "react-icons/io";
 import { MdWork } from "react-icons/md";
+import { RiErrorWarningFill } from "react-icons/ri";
 
 export default function Icon({ type = "" }) {
 
@@ -11,11 +12,11 @@ export default function Icon({ type = "" }) {
             case 'completed':
                 return <FaCheck className="text-checked text-2xl" />
             case 'warning':
-                return <IoIosWarning className="text-error text-2xl" />
+                return <RiErrorWarningFill className="text-error text-2xl" />
             case 'working':
-                return <MdWork className="text-waiting text-2xl" />
+                return <IoIosWarning className="text-waiting text-2xl" />
             default:
-                return <MdWork className="text-waiting text-2xl" />
+                return <IoIosWarning className="text-waiting text-2xl" />
         }
     }, [type]);
     

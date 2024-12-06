@@ -4,6 +4,7 @@
 import SearchInput from "./search/search";
 import AddBale from "./add-new-bale";
 import Table from "./table/table";
+import { useState } from "react";
 
 /**
  * 
@@ -11,7 +12,15 @@ import Table from "./table/table";
  * @param {*} props 
  * @returns 
  */
-export default function MainContent({ type }, props ) {
+export default function MainContent({ type, implant, idUser, ...props}) {
+
+    const [addWasClicked, setState] = useState(false)
+    const [response, setResp] = useState([])
+
+    const addHandle = (resp) => {
+        setState(true)
+        setResp(resp)
+    }
 
     return(
         <div 
@@ -20,9 +29,15 @@ export default function MainContent({ type }, props ) {
             <SearchInput type={type} />
             <Table 
                 type={type}
+                add={addWasClicked}
+                dataNew={response}
             />
             {(type === 'presser') ? (
-                <AddBale />
+                <AddBale 
+                    implant={implant}
+                    idUser={idUser}
+                    clickAddHandle={addHandle}
+                />
             ) : (type === 'wheelman') ? (
                 null
             ) : null

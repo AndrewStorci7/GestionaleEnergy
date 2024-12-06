@@ -5,7 +5,7 @@
 'use client';
 
 // import getEnv from '@/app/config';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -18,7 +18,11 @@ const srvurl = getSrvUrl()
 
 export default function LoginPage() {
 
+    // Router
     const router = useRouter();
+
+    // Reference
+    const selectRef = useRef();
 
     const [implant, setImplant] = useState('');
     const [username, setUsername] = useState('');
@@ -55,7 +59,7 @@ export default function LoginPage() {
                         name: res[0].name,
                         surname: res[0].surname,
                         username: res[0].username, 
-                        implantId: implant.id_implant,
+                        id_implant: implant.id_implant,
                         implant: implant.text_implant, 
                         type: res[0].type,
                         last_a: res[0].last_access,
@@ -70,8 +74,11 @@ export default function LoginPage() {
         }
     };
 
-    const handleChange = (e) => {
-        setImplant({id_implant: e.target.dataId, text_implant: e.target.value});
+    const handleChange = () => {
+        const value = selectRef.current.value;
+        const text = selectRef.current.options[selectRef.current.selectedIndex].text;
+        console.log(value, text)
+        setImplant({id_implant: value, text_implant: text});
     }; 
 
     return (
@@ -89,8 +96,9 @@ export default function LoginPage() {
                 <div className={styles.inputGroup}>
                     <label className={styles.label} htmlFor="email">Impianto:</label>
                     <SelectImplants 
+                    ref={selectRef}
                     onChange={handleChange}
-                    className={styles.input}
+                    // className={styles.input}
                     required
                     />
                 </div>

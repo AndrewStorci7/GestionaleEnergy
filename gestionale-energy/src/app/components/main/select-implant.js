@@ -11,7 +11,7 @@ import React, { useEffect, useState } from 'react'
 
 const srvurl = getSrvUrl();
 
-export default function SelectImplants({ onChange }, props) {
+export default function SelectImplants({ onChange, ref }, props) {
     
     // const _CMNSTYLE_SELECT = "rounded-md"
 
@@ -44,13 +44,14 @@ export default function SelectImplants({ onChange }, props) {
     
     return (
         <select
+            ref={ref}
             onChange={onChange}
             {...props}
         >
             <option value={""}>Seleziona un&apos;impianto</option>
             {content.map((_m, _i) => {
                 let value = "", text = "";
-                console.log()
+                // console.log()
                 
                 Object.keys(_m).map((key, __i) => {
                     if (key === "id")
@@ -61,8 +62,8 @@ export default function SelectImplants({ onChange }, props) {
                 return ( 
                     <option
                     key={value + text}
-                    dataId={value}
-                    value={text}
+                    // dataId={value}
+                    value={value}
                     >
                         {text}
                     </option>

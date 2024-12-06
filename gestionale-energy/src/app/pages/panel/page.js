@@ -11,6 +11,10 @@ export default function Admin() {
 
     // Impianto
     const [implant, setImplant] = useState("");
+    // Id Impianto
+    const [idImplant, setIdImplant] = useState("");
+    // Id Utente
+    const [idUser, setIdUser] = useState("");
     // Utente
     const [user, setUser] = useState("");
     // Nome
@@ -26,6 +30,8 @@ export default function Admin() {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 if (cookies) {
                     setImplant(cookies.implant);
+                    setIdImplant(cookies.id_implant);
+                    setIdUser(cookies.id_user);
                     setUser(cookies.username);
                     setType(cookies.type);
                     setName(cookies.name);
@@ -50,6 +56,8 @@ export default function Admin() {
             />
             <MainContent 
                 type={type}
+                implant={idImplant}
+                idUser={idUser}
             />
             <Footer />
         </div>
