@@ -1,4 +1,6 @@
+import ErrorAlert from '@/app/pages/daniele/error-alert';
 import { getSrvUrl } from '@@/config';
+import React, { useState } from "react";
 
 const srvurl = getSrvUrl()
 
@@ -12,10 +14,9 @@ const srvurl = getSrvUrl()
  * @returns 
  */
 export default function AddBale({ bale }) {
-
-    const addNewBale = async () =>  {
-
-        const test = {
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const addNewBale = () =>  {
+        /* const test = {
             id_presser: 1,
             id_plastic: '\'IPS/C\'',
             id_rei: null,
@@ -32,21 +33,31 @@ export default function AddBale({ bale }) {
             headers: {'Content-Type': 'application/json' }
         })
 
-        console.log(check)
+        console.log(check) */
     }
 
-    return(
+    const gestioneErrori = () => {
+        setShowErrorAlert(true);
+    };
+
+    const closeAlert = () => {
+        setShowErrorAlert(false);
+    };
+
+    return (
         <div className="w-1/2 font-bold">
+            {showErrorAlert && <ErrorAlert error="Questo e' un errore" onClose={closeAlert} />}
+            
             <div className="flex flex-row-reverse">
-                <button className="m-[10px] rounded-md bg-gray-300 p-[5px]">
+                <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={gestioneErrori}>
                     Elimina
                 </button>
-                <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[50px]">
+                <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[50px]" onClick={gestioneErrori}>
                     Modifica
                 </button>
                 <button 
-                className="m-[10px] rounded-md bg-gray-300 p-[5px]"
-                onClick={addNewBale}
+                    className="m-[10px] rounded-md bg-gray-300 p-[5px]"
+                    onClick={addNewBale}
                 >
                     Aggiungi
                 </button>

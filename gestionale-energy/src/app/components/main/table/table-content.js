@@ -17,9 +17,9 @@ const srvurl = getSrvUrl()
  */
 export default function TableContent({ type, primary = false }) {
 
-    const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
-    const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
-    const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
+    const _CMNSTYLE_TBODY = (primary) ? "text-black" : " text-black opacity-50 ";
+    const _CMNSTYLE_TD = "border border-slate-400 h-[40px] ";
+    const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop ";
 
     const [content, setContent] = useState([]);
     const [error, setError] = useState("");
@@ -33,9 +33,9 @@ export default function TableContent({ type, primary = false }) {
     const getBgColor = (type) => {
         switch (type) {
             case 'admin':
-                return "bg-primary_2"
+                return "bg-primary_2" //Da Modificare
             case 'presser':
-                return "bg-primary_2"
+                return "bg-primary_2" //Da Modificare
             case 'wheelman':
                 return "bg-secondary_2"
             case 'both':

@@ -6,6 +6,7 @@ import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
+import ErrorAlert from "../daniele/error-alert";
 
 export default function Admin() {
 
@@ -33,6 +34,9 @@ export default function Admin() {
                 }
             } catch (_err) {
                 console.log(`Error: ${_err}`);
+                return(
+                <ErrorAlert/> 
+                )
             }
         }
 

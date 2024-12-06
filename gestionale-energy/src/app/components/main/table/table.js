@@ -20,9 +20,9 @@ export default function Table({ type }) {
             return(
                 <>
                     {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Amminstratore Sviluppatore</h1> */}
-                    <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
+                    <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2) ' }}>
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary`}>Pressista</label>
-                        <table id="gest-on-table" className={`${_CMNSTYLE_TABLE}`}>
+                        <table id="gest-on-table" className={`${_CMNSTYLE_TABLE}` }>
                             <TableHeader type={"presser"} primary />
                             <TableContent type={"presser"} primary />
                         </table>
@@ -47,7 +47,7 @@ export default function Table({ type }) {
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} primary />
+                            <TableContent type={"presser"} primary style={{overflow:'hidden'}}/>
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
@@ -62,7 +62,7 @@ export default function Table({ type }) {
             return(
                 <>
                     {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Carrellista</h1> */}
-                    <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
+                    <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2) ' }}>
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-secondary`}>Carrellista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"} primary />
@@ -84,11 +84,11 @@ export default function Table({ type }) {
             return(
                 <>
                     {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore Interno</h1> */}
-                    <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
+                    <div className={_CMNSTYLE_DIV } style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} primary />
+                            <TableContent type={"presser"} primary/>
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
