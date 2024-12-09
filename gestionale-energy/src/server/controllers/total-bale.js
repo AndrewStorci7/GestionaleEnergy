@@ -71,8 +71,24 @@ class TotalBale extends Common {
     /**
      * Get a total of bale as the format
      */
-    async get() {
+    async get(req, res) {
+        try {
+            const { body } = req.body;
 
+            /**
+SELECT *
+FROM pb_wb JOIN presser_bale JOIN wheelman_bale JOIN implants
+ON pb_wb.id_pb = presser_bale.id AND
+pb_wb.id_wb = wheelman_bale.id AND
+pb_wb.id_implant = implants.id
+WHERE implants.id = 1 AND DATE(presser_bale.data_ins) = CURDATE()
+AND TIME(presser_bale.data_ins) BETWEEN '06:00:00' AND '12:00:00';
+             */
+
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
     }
 
     /**

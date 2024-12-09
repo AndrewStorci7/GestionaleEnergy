@@ -64,19 +64,22 @@ export default function TableContent({ type, add, ids, noData, primary = false }
      * @param {string} type 
      * @returns 
      */
-    const getUrl = (type) => {
-        switch (type) {
-            case 'admin':
-                return srvurl + "/admin"
-            case 'presser':
-                return srvurl + "/presser"
-            case 'wheelman':
-                return srvurl + "/wheelman"
-            case 'both':
-                return srvurl + "/both" 
-            default:
-                return srvurl + "/presser"
-        }
+    const getUrl = () => {
+
+        return srvurl + '/bale';
+
+        // switch (type) {
+        //     case 'admin':
+        //         return srvurl + "/admin"
+        //     case 'presser':
+        //         return srvurl + "/presser"
+        //     case 'wheelman':
+        //         return srvurl + "/wheelman"
+        //     case 'both':
+        //         return srvurl + "/both" 
+        //     default:
+        //         return srvurl + "/presser"
+        // }
     } 
     
     useEffect(() =>  {
@@ -84,7 +87,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 const id_user = cookies.id_user;
-                const url = getUrl(type)
+                const url = getUrl()
                 
                 const resp = await fetch(url, {
                     method: 'POST',

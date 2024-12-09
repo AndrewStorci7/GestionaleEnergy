@@ -1,7 +1,7 @@
 const Common = require('./main/common');
 const Console = require('../inc/console');
 
-const console = new Console("Selected Bale");
+const console = new Console("Sel Bale");
 
 /**
  * Balla selezionata informazioni
