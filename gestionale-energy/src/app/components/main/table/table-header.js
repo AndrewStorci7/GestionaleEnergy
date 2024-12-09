@@ -47,7 +47,7 @@ export default function TableHeader({ type, primary = false }) {
                             <th className={`${_CMNSTYLE_TD}`}>Condiz. Balla Pressa</th>
                             <th className={`${_CMNSTYLE_TD}`}>Balla Selez.</th>
                             <th className={`${_CMNSTYLE_TD}`}>Note</th>
-                            {(primary) && <th className={`${_CMNSTYLE_TD}`}></th>}
+                            {(primary) && <th className={`${_CMNSTYLE_TD} w-[40px]`}></th>}
                             <th className={`${_CMNSTYLE_TD}`}>Data</th>
                             <th className={`${_CMNSTYLE_TD}`}>Ora</th>
                         </tr>

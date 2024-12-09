@@ -1,5 +1,5 @@
 const Common = require('./common');
-const Console = require('../inc/console');
+const Console = require('../../inc/console');
 
 const console = new Console("Bale");
 

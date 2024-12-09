@@ -16,11 +16,17 @@ const srvurl = getSrvUrl()
  * @param {boolean} add     [ true | false ]
  *                          True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
+ * @param {object}  ids     Oggetto contenente gli ID delle balle create
+ *                          L'oggeto sarà null se il bottone aggiungi non è stato cliccato
+ * 
+ * @param {function}noData  Funzione che aggiorna lo stato della variabile noData.
+ *                          Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
+ * 
  * @param {boolean} primary Serve per settare correttamente il colore dello sfondo   
  * 
  * @returns
  */
-export default function TableContent({ type, add, ids, primary = false }) {
+export default function TableContent({ type, add, ids, noData, primary = false }) {
 
     console.log("TableContent", ids)
 
@@ -29,7 +35,7 @@ export default function TableContent({ type, add, ids, primary = false }) {
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
 
     const [content, setContent] = useState([]);
-    const [error, setError] = useState("");
+    const [isEmpty, setEmpty] = useState(false)
 
     /**
      * Get Background Color
@@ -97,7 +103,8 @@ export default function TableContent({ type, add, ids, primary = false }) {
                 if (data.code === 0) {
                     setContent(data.data);
                 } else {
-                    setError(data.message);
+                    setEmpty(!isEmpty);
+                    noData(data.message);
                 }
             } catch (error) {
                 console.log(error)
@@ -115,7 +122,7 @@ export default function TableContent({ type, add, ids, primary = false }) {
             {(add) && ( 
                 <InsertNewBale type={type} mod={primary} ids={ids} primary={primary} />
             )}
-            {(error === "") ? (
+            {(!isEmpty) ? (
                 
                 content.map((_m, _i) => {
 
@@ -151,7 +158,7 @@ export default function TableContent({ type, add, ids, primary = false }) {
                             {(primary) && (
                                 <td className={`${_CMNSTYLE_TD} relative`} key={"confirm" + _i}>
                                     <button 
-                                    className='w-full bg-gray-300 font-bold p-[3px] m-[6px] w-[60px]'
+                                    className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
                                     onClick={() => console.log("TODO")}
                                     >
                                         OK
@@ -165,7 +172,7 @@ export default function TableContent({ type, add, ids, primary = false }) {
                         </tr>
                     )
                 })
-            ) : error }
+            ) : null }
         </tbody>
     )
 }

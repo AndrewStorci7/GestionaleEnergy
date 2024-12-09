@@ -20,7 +20,7 @@ class Console {
      */
     error(str) {
         var date = new Date()
-        var ret = `[${date.toLocaleString()}][ ${this.location} ]\t[${_red} Error ${_reset}]: `;
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location} ${_reset}][${_red} ${'Error'.padEnd(3)} ${_reset}]: `;
         let msg = "Generic error"
         if (str != "") {
             msg = `${str}`;
@@ -36,11 +36,12 @@ class Console {
      */
     info(str) {
         var date = new Date()
-        var ret = `[${date.toLocaleString()}][ ${this.location} ]\t[${_cyan} Info ${_reset}]: `;
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(8)} ${_reset}][${_cyan} ${'Info'.padEnd(3)} ${_reset}]: `;
         let msg = "Generic Info"
         if (str != "") {
-            msg = `${str}`;
-            // console.log(`${Date.now()} [ ${this.location} ][${_red} Error ${_reset}]: \n${str}`)
+            if (typeof str === "object")
+                msg = `${JSON.stringify(str)}`;
+            else msg = `${str}`;
         }
 
         console.log(ret + msg);
@@ -52,11 +53,12 @@ class Console {
      */
     insert(str) {
         var date = new Date()
-        var ret = `[${date.toLocaleString()}][ ${this.location} ]\t[${_green} Success ${_reset}]: `;
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location} ${_reset}][${_green} ${'Success'.padEnd(3)} ${_reset}]: `;
         let msg = `${_green}Insert Info${_reset}: `
         if (str != "") {
-            msg += `${str}`;
-            // console.log(`${Date.now()} [ ${this.location} ][${_red} Error ${_reset}]: \n${str}`)
+            if (typeof str === "object")
+                msg = `${JSON.stringify(str)}`;
+            else msg = `${str}`;
         }
 
         console.log(ret + msg);
@@ -68,11 +70,12 @@ class Console {
      */
     delete(str) {
         var date = new Date()
-        var ret = `[${date.toLocaleString()}][ ${this.location} ]\t[${_blue} Success ${_reset}]: `;
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location} ${_reset}][${_blue} ${'Success'.padEnd(3)} ${_reset}]: `;
         let msg = `${_blue}Delete Info${_reset}: `
         if (str != "") {
-            msg += `${str}`;
-            // console.log(`${Date.now()} [ ${this.location} ][${_red} Error ${_reset}]: \n${str}`)
+            if (typeof str === "object")
+                msg = `${JSON.stringify(str)}`;
+            else msg = `${str}`;
         }
 
         console.log(ret + msg);

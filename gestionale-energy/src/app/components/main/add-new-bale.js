@@ -27,20 +27,18 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
         })
 
         const resp = await check.json()
-        // console.log("Add Cliecked: ", resp.data)
 
         if (!check.ok) {
             // TODO insierire componente ErrorAlert
             console.log("Errore")
         } else {
-            // console.log("OK")
             clickAddHandle(resp.data)
         }
         
     }
 
     return(
-        <div className="w-1/2 font-bold">
+        <div className="w-1/2 font-bold relative z-[9999]">
             <div className="flex flex-row-reverse">
                 <button className="m-[10px] rounded-md bg-gray-300 p-[5px]">
                     Elimina

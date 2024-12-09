@@ -1,4 +1,4 @@
-const Console = require('../inc/console');
+const Console = require('../../inc/console');
 
 const console = new Console("Common");
 
