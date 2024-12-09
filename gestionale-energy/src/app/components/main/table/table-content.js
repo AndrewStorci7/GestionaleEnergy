@@ -22,6 +22,8 @@ const srvurl = getSrvUrl()
  */
 export default function TableContent({ type, add, ids, primary = false }) {
 
+    console.log("TableContent", ids)
+
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";

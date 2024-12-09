@@ -17,6 +17,9 @@ const srvurl = getSrvUrl();
  * @param {boolean} mod     [ true | false]
  *                          True se è possibile modificare i dati, altrimenti false
  * 
+ * @param {object}  ids     Oggetto contenente gli ID delle nuove balle create
+ *                          L.oggetto sarà diverso da null quando il bottone aggiungi verrà cliccato
+ * 
  * @param {boolean} primary [ true | false ]
  *                          True se è primario (mostrerà alcune opzioni aggiuntive) 
  * 
@@ -24,7 +27,7 @@ const srvurl = getSrvUrl();
  */
 export default function InsertNewBale({ type, mod, ids, primary }) {
     
-    console.log("IDS:" + ids)
+    console.log("IDS: ", ids)
 
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
 
@@ -52,6 +55,8 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
      */
     const handleClick = (f) => {
         try {
+            // console.log("Id pressista: " + ids.id_presser_bale + ", Id carrellista: " + ids.id_wheelman_bale)
+
             const cookie = JSON.parse(Cookies.get('user-info'));
             let url = "";
             let body = {};

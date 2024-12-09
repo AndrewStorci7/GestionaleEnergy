@@ -18,6 +18,7 @@ export default function MainContent({ type, implant, idUser, ...props}) {
     const [response, setResp] = useState([])
 
     const addHandle = (resp) => {
+        console.log("Main Content: ", resp)
         setState(true)
         setResp(resp)
     }
@@ -31,6 +32,7 @@ export default function MainContent({ type, implant, idUser, ...props}) {
                 type={type}
                 add={addWasClicked}
                 dataNew={response}
+                // ids={response}
             />
             {(type === 'presser') ? (
                 <AddBale 
