@@ -7,6 +7,7 @@ import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
 import ErrorAlert from "../daniele/error-alert";
+import CheckCookie from "@/app/components/main/check-cookie";
 
 export default function Admin() {
 
@@ -20,18 +21,20 @@ export default function Admin() {
     const [surname, setSurname] = useState("");
     // Tipo utente [ 'admin' | 'presser' | 'wheelman' | 'both' ]
     const [type, setType] = useState("");
-
+    
     useEffect(() => {
         async function fetchData() {
             try {
+
                 const cookies = await JSON.parse(Cookies.get('user-info'));
+                
                 if (cookies) {
                     setImplant(cookies.implant);
                     setUser(cookies.username);
                     setType(cookies.type);
                     setName(cookies.name);
-                    setSurname(cookies.surname);
-                }
+                    setSurname(cookies.surname);  
+                }else(CheckCookie())
             } catch (_err) {
                 console.log(`Error: ${_err}`);
                 return(
@@ -44,6 +47,7 @@ export default function Admin() {
     }, []);
 
     return(
+        
         <div className="w-[95%] m-[2.5%] overflow-hidden">
             <Header 
                 implant={implant}

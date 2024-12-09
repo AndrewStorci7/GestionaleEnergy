@@ -1,8 +1,15 @@
-import React from 'react'
-import ErrorAlert from './error-alert'
+import React from 'react';
+import ErrorAlert from './error-alert';
+import CheckCookie from '../../components/main/check-cookie'; 
 
-export default function page() {
+export default function Page() { 
+  console.log("Hey");
+
   return (
-    <ErrorAlert/>
-  )
+    <div>
+      <CheckCookie />  
+    </div>
+  );
 }
+
+

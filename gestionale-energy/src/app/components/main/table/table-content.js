@@ -33,15 +33,15 @@ export default function TableContent({ type, primary = false }) {
     const getBgColor = (type) => {
         switch (type) {
             case 'admin':
-                return "bg-primary_2" //Da Modificare
+                return "bg-primary_2" //Copre Shadow Box
             case 'presser':
-                return "bg-primary_2" //Da Modificare
+                return "bg-primary_2" 
             case 'wheelman':
-                return "bg-secondary_2"
+                return "bg-secondary_2" 
             case 'both':
-                return "bg-secondary_2"
+                return "bg-secondary_2" 
             default:
-                return "bg-primary_2"
+                return "bg-primary_2" //
         }
     }
 
