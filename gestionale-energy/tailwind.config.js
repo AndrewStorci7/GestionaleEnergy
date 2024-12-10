@@ -18,6 +18,8 @@ module.exports = {
         secondary: '#1c6a06',
         secondary_2: '#F0FEEC',
         secondary_3: '#B2F99F',
+        thirdary_1:'#0047AB',
+        thirdary_2:'#A7C7E7',
         thirdary: '#998fa0',
         checked: '#7EE285',
         error: '#E74545',

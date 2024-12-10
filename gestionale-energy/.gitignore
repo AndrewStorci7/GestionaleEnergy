@@ -40,4 +40,4 @@ yarn-error.log*
 next-env.d.ts
 
 # file di daniele
-src\app\pages\daniele*
+/daniele*

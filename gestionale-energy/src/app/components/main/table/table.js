@@ -85,7 +85,7 @@ export default function Table({ type }) {
                 <>
                     {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore Interno</h1> */}
                     <div className={_CMNSTYLE_DIV } style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
-                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
+                       {/* <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
                             <TableContent type={"presser"} primary/>
@@ -93,8 +93,27 @@ export default function Table({ type }) {
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"}/>
+                                     <TableContent type={"wheelman"}/>
                         </table>
+                       */}
+                       <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-thirdary_1 `}>Amministrazione</label>
+                       <div class="grid-cols-1 bg-blue-100	mt-5 border-2 border-black">
+                       <h1 class="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
+                       <div class="grid grid-cols-2 gap-1 mt-20">
+                        <button  class="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. IMPIANTO A</button>
+                        <button  class="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. TEMPI IMP A</button>
+                        <button  class="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. IMPIANTO B</button>
+                        <button  class="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. TEMPI IMP B</button>
+                        <button  class="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. IMPIANTO A e B</button>
+                        <button  class="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. TEMPI IMP A e B</button>
+                       </div>
+                       </div>
+                       <div class="grid-cols-1 bg-blue-100	 border-2 border-black mt-5">
+                       <h1 class="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
+                       <div class="grid grid-cols-4 gap-4 bg-thirdary_2">
+                            
+                       </div>
+                       </div>
                     </div>
                 </>
             );

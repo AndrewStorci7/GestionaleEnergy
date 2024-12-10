@@ -2,7 +2,7 @@
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 
-const CheckCookie = () => {
+/* const CheckCookie = () => {
   const router = useRouter();
     const cookieValue = Cookies.get('user-info');
     
@@ -15,7 +15,7 @@ const CheckCookie = () => {
   }, [router];
 
   return null;
-}
+} */
 
 
 
