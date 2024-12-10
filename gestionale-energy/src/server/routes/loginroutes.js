@@ -5,7 +5,7 @@ module.exports = (db) => {
     const router = express.Router();
     const controller = new Controller(db);
 
-    router.post('/login', (req, res) => controller.get(req, res));
+    router.post('/login', (req, res) => controller.check(req, res));
 
     return router;
 }

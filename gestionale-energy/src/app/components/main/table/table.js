@@ -109,16 +109,17 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                 <>
                     {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore Interno</h1> */}
                     <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
-                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
+                        {/* <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} primary />
+                            <TableHeader type={"presser"}/>
+                            <TableContent type={"presser"}/>
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
                             <TableContent type={"wheelman"}/>
-                        </table>
+                        </table> */}
+                        
                     </div>
                 </>
             );

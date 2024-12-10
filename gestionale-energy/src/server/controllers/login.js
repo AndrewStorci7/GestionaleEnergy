@@ -1,4 +1,5 @@
-const Console = require('../inc/console')
+const Console = require('../inc/console');
+const Common = require('./main/common');
 
 const console = new Console("Login")
 
@@ -10,17 +11,18 @@ const console = new Console("Login")
  * 
  * @author Andrea Storci from Oppimittinetworking
  */
-class Login {
+class Login extends Common {
 
-    constructor() {
-        this.username = null;
-        this.type = null;
+    constructor(db, id, username, type) {
+        super(db, id)
+        this.username = username;
+        this.type = type;
     }
 
     async check(req, res) {
         try {
             const { username, password } = req.body;
-            const [rows] = await db.query(`SELECT * FROM user WHERE user.username='${username}' AND user.password='${password}'`);
+            const [rows] = await this.db.query(`SELECT * FROM user WHERE user.username='${username}' AND user.password='${password}'`);
             if (rows && rows.length > 0) {
                 res.json(rows)
             } else {

@@ -68,31 +68,31 @@ export default function TableContent({ type, add, ids, noData, primary = false }
 
         return srvurl + '/bale';
 
-        // switch (type) {
-        //     case 'admin':
-        //         return srvurl + "/admin"
-        //     case 'presser':
-        //         return srvurl + "/presser"
-        //     case 'wheelman':
-        //         return srvurl + "/wheelman"
-        //     case 'both':
-        //         return srvurl + "/both" 
-        //     default:
-        //         return srvurl + "/presser"
-        // }
+        switch (type) {
+            case 'admin':
+                return srvurl + "/admin"
+            case 'presser':
+                return srvurl + "/p-bale"
+            case 'wheelman':
+                return srvurl + "/w-bale"
+            case 'both':
+                return srvurl + "/both" 
+            default:
+                return srvurl + "/p-bale"
+        }
     } 
     
     useEffect(() =>  {
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
-                const id_user = cookies.id_user;
+                const id_implant = cookies.id_implant;
                 const url = getUrl()
                 
                 const resp = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ id_user }),
+                    body: JSON.stringify({ id_implant }),
                 });
 
                 if (!resp.ok) {
@@ -100,8 +100,6 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                 }
 
                 const data = await resp.json();
-                
-                // console.log(`Dati ${type}:`, data)
 
                 if (data.code === 0) {
                     setContent(data.data);

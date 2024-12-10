@@ -3,6 +3,8 @@ const Common = require('./main/common')
 const PresserBale = require('./presser')
 const WheelmanBale = require('./wheelman')
 
+const axios = require('axios')
+
 const console = new Console("TotalBale")
 
 /**
@@ -15,6 +17,8 @@ class TotalBale extends Common {
         this.idPB = idPB;
         this.idWB = idWB;
         this.implant = implant;
+        this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}` 
+        this.presserbale = new PresserBale(this.db)
     }
 
     /**
@@ -73,17 +77,40 @@ class TotalBale extends Common {
      */
     async get(req, res) {
         try {
-            const { body } = req.body;
+            const { id_implant } = req.body;
+    
+            console.info(`body received: ${id_implant}`)
 
-            /**
-SELECT *
-FROM pb_wb JOIN presser_bale JOIN wheelman_bale JOIN implants
+            const presserResult = [];
+            const wheelmanResult = [];
+            const turn = super.checkTurn();
+
+            const [select] = await this.db.query(
+`SELECT 
+pb_wb.id_pb,
+pb_wb.id_wb
+FROM pb_wb JOIN presser_bale JOIN wheelman_bale JOIN implants 
 ON pb_wb.id_pb = presser_bale.id AND
 pb_wb.id_wb = wheelman_bale.id AND
-pb_wb.id_implant = implants.id
-WHERE implants.id = 1 AND DATE(presser_bale.data_ins) = CURDATE()
-AND TIME(presser_bale.data_ins) BETWEEN '06:00:00' AND '12:00:00';
-             */
+pb_wb.id_implant = implants.id 
+WHERE pb_wb.id_implant = ${id_implant} 
+AND DATE(presser_bale.data_ins) = CURDATE() 
+AND DATE(wheelman_bale.data_ins) = CURDATE()
+AND TIME(presser_bale.data_ins) ${turn}
+AND TIME(wheelman_bale.data_ins) ${turn} LIMIT 100;`
+            );
+
+            console.info(select)
+
+            // TOFIX
+            select.forEach((e) => {
+                // console.info(e.id_pb)
+                const res = this.presserbale.handlePresserData(e.id_pb)
+                console.info("Handler: " + res)
+                presserResult.push(this.presserbale.handlePresserData(e.id_pb))
+            });
+
+            // console.info(presserResult)
 
         } catch (error) {
             console.error(error)
@@ -94,8 +121,78 @@ AND TIME(presser_bale.data_ins) BETWEEN '06:00:00' AND '12:00:00';
     /**
      * Get all bale grouped by turn and implant
      */
-    async getAll() {
+    async getAllWheelmanBale(req, res, returnResult = false) {
+        try {
+            const { body } = req.body;
+            const id_implant = body.id_implant;
+            const turn = super.checkTurn();
 
+            const [select] = await this.db.query(
+`SELECT
+cond_wheelman_bale.type AS 'condition',
+reas_not_tying.name AS 'reason',
+wheelman_bale.weight AS 'weight',
+warehouse_dest.name AS 'warehouse',
+wheelman_bale.note AS 'notes',
+wheelman_bale.printed AS 'is_printed',
+wheelman_bale.data_ins AS 'data_ins'
+FROM pb_wb JOIN presser_bale JOIN wheelman_bale JOIN implants JOIN reas_not_tying JOIN cond_wheelman_bale JOIN warehouse_dest
+ON pb_wb.id_pb = presser_bale.id AND
+pb_wb.id_wb = wheelman_bale.id AND
+pb_wb.id_implant = implants.id AND
+wheelman_bale.id_cwb = cond_wheelman_bale.id AND
+wheelman_bale.id_rnt = reas_not_tying.id AND
+wheelman_bale.id_wd = warehouse_dest.id
+WHERE implants.id = ${id_implant}
+AND DATE(wheelman_bale.data_ins) = CURDATE()
+AND TIME(wheelman_bale.data_ins) ${turn} LIMIT 100;`
+            );
+
+            console.info(select)
+
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
+    }
+
+    /**
+     * Get all bale grouped by turn and implant
+     */
+    async getAllPresserBale(req, res, returnResult = false) {
+        try {
+            const { body } = req.body;
+            const id_implant = body.id_implant;
+            const turn = super.checkTurn();
+
+            const [select] = await this.db.query(
+`SELECT
+code_plastic.code AS 'plastic',
+code_plastic.desc AS 'code',
+rei.name AS 'rei',
+cond_presser_bale.type AS 'condition',
+selected_bale.name AS 'selected_bale',
+presser_bale.note AS 'notes',
+presser_bale.data_ins AS 'data_ins'
+FROM pb_wb JOIN presser_bale JOIN wheelman_bale JOIN implants JOIN code_plastic JOIN cond_presser_bale JOIN rei JOIN selected_bale
+ON pb_wb.id_pb = presser_bale.id AND
+pb_wb.id_wb = wheelman_bale.id AND
+pb_wb.id_implant = implants.id AND
+presser_bale.id_plastic = code_plastic.code AND
+presser_bale.id_presser = user.id AND
+presser_bale.id_rei = rei.id AND
+presser_bale.id_sb = selected_bale.id
+WHERE implants.id = ${id_implant}
+AND DATE(wheelman_bale.data_ins) = CURDATE()
+AND TIME(wheelman_bale.data_ins) ${turn} LIMIT 100;`
+            );
+
+            console.info(select)
+
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
     }
 }
 

@@ -35,12 +35,12 @@ class PresserBale extends Bale {
         }
     }
 
-    handlePresserData = async (req) => {
-        const { id_user } = req.body;
+    handlePresserData = (req) => {
+        const id = req;
         
-        console.info(`Id Presser received: ${id_user}`)
+        console.info(`Data received: ${id}`)
 
-        const [rows] = await this.db.query(
+        const [rows] = this.db.query(
             `SELECT
             code_plastic.code AS 'plastic',
             code_plastic.desc AS 'code',
@@ -49,18 +49,17 @@ class PresserBale extends Bale {
             selected_bale.name AS 'selected_bale',
             presser_bale.note AS 'notes',
             presser_bale.data_ins AS 'data_ins'
-            FROM presser_bale JOIN code_plastic JOIN cond_presser_bale JOIN rei JOIN selected_bale JOIN user
+            FROM presser_bale JOIN code_plastic JOIN cond_presser_bale JOIN rei JOIN selected_bale
             ON presser_bale.id_cpb = cond_presser_bale.id AND
             presser_bale.id_plastic = code_plastic.code AND
-            presser_bale.id_presser = user.id AND
             presser_bale.id_rei = rei.id AND
             presser_bale.id_sb = selected_bale.id
-            WHERE TIME(presser_bale.data_ins) LIMIT 100`
+            WHERE presser_bale.id = ${id} LIMIT 1`
         )
     
         if (rows && rows.length > 0) {
-            console.info(JSON.stringify(rows))
-            return { code: 0, rows }
+            // console.info(JSON.stringify(rows))
+            return rows
         } else {
             console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
             return { code: 1, message: "Nessuna balla trovata" }
