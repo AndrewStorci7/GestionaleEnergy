@@ -1,5 +1,5 @@
 const express = require('express');
-const Login = require('../inc/login');
+const Login = require('../controllers/login');
 
 const router = express.Router();
 const loginManager = new Login();

@@ -42,16 +42,21 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
         })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         console.log(check) */
 =======
         const resp = await check.json().data
+=======
+        const resp = await check.json()
+        // console.log("Add Cliecked: ", resp.data)
+>>>>>>> master
 
         if (!check.ok) {
             // TODO insierire componente ErrorAlert
             console.log("Errore")
         } else {
             // console.log("OK")
-            clickAddHandle(resp)
+            clickAddHandle(resp.data)
         }
         
 >>>>>>> master
