@@ -1,4 +1,4 @@
-const Bale = require('./bale')
+const Bale = require('./main/bale')
 const Console = require('../inc/console');
 
 const console = new Console("Wheelman");
@@ -66,7 +66,7 @@ class WheelmanBale extends Bale {
         }
     };
 
-    async getWheelmanBale(req, res) {
+    async get(req, res) {
         try {
             const data = await this.handleWheelmanData(req);
             
@@ -83,8 +83,30 @@ class WheelmanBale extends Bale {
         }
     }
 
-    async setPresserBale(req, res) {
+    async set(req, res) {
         // TODO
+    }
+
+    async update(req, res) {
+        try {
+            const { body } = req.body;
+    
+            console.info(body)
+
+            const [check] = await this.db.query(
+                `UPDATE wheelman_bale 
+                SET id_wheelman=${body.id_user}, id_cwb=${body.id_cwb}, id_rnt=${body.id_rnt}, id_wd=${body.id_wd}, note='${body.note}', printed=${body.isPrinted}, data_ins=NOW(), weigth=${body.weight}`
+            );
+    
+            if (check) {
+                res.json({ code: 0 });
+            } else {
+                res.json({ code: 1, message: "Errore nella modifica di una balla" });
+            }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
     }
 
 }

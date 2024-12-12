@@ -1,31 +1,28 @@
-const Common = require('./main/common');
-const Console = require('../inc/console');
+const Console = require('../inc/console')
+const Common = require('./main/common')
 
-const console = new Console("Plastic");
+const console = new Console("TotalBale")
 
 /**
- * Codici plastiche
- * (Plastic code)
+ * Magazzino di destinazione
+ * (Warehouse Destination)
  * 
  * @author Andrea Storci from Oppimittinetworking
  */
-class Plastic extends Common {
-    
+class Warehouse extends Common {
+
     constructor(db, id, name) {
-        super(db, id);
+        super(db, id)
         this.name = name;
     }
 
     /**
-     * Get plastic code information
-     * 
-     * @param {object} req  object request 
-     * @param {object} res  object response 
+     * Get a total of bale as the format
      */
-    async get(req, res) {
+    async get() {
         try {
             const [select] = await this.db.query(
-                "SELECT code_plastic.code AS code, code_plastic.type AS plastic_type, code_plastic.desc FROM code_plastic"
+                "SELECT * FROM warehouse_dest"
             );
     
             if (select && select.length > 0) {
@@ -41,12 +38,11 @@ class Plastic extends Common {
     }
 
     /**
-     * Set a new plastic code
-     * 
+     * Get all bale grouped by turn and implant
      */
-    async set(req, res) {
-        // TODO
+    async getAll() {
+
     }
 }
 
-module.exports = Plastic
+module.exports = Warehouse

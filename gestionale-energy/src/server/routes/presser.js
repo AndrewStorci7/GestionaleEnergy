@@ -1,11 +1,12 @@
 const express = require('express');
-const PresserController = require('../controllers/presser');
+const Controller = require('../controllers/presser');
 
 module.exports = (db) => {
     const router = express.Router();
-    const presserCtrl = new PresserController(db);
+    const controller = new Controller(db);
 
-    router.post('/presser', (req, res) => presserCtrl.getPresserBale(req, res));
+    router.post('/presser', (req, res) => controller.get(req, res));
+    router.post('/upresserbale', (req, res) => controller.update(req, res));
 
     return router;
 }

@@ -1,15 +1,15 @@
 const Common = require('./main/common');
 const Console = require('../inc/console');
 
-const console = new Console("Plastic");
+const console = new Console("Reason");
 
 /**
- * Codici plastiche
- * (Plastic code)
+ * Motivazione balla
+ * (Reason)
  * 
  * @author Andrea Storci from Oppimittinetworking
  */
-class Plastic extends Common {
+class Reason extends Common {
     
     constructor(db, id, name) {
         super(db, id);
@@ -17,7 +17,7 @@ class Plastic extends Common {
     }
 
     /**
-     * Get plastic code information
+     * Get reason for not tying information
      * 
      * @param {object} req  object request 
      * @param {object} res  object response 
@@ -25,7 +25,7 @@ class Plastic extends Common {
     async get(req, res) {
         try {
             const [select] = await this.db.query(
-                "SELECT code_plastic.code AS code, code_plastic.type AS plastic_type, code_plastic.desc FROM code_plastic"
+                "SELECT * FROM reas_not_tying"
             );
     
             if (select && select.length > 0) {
@@ -41,12 +41,14 @@ class Plastic extends Common {
     }
 
     /**
-     * Set a new plastic code
+     * Set a new reason
      * 
+     * @param {object} req  object request 
+     * @param {object} res  object response 
      */
     async set(req, res) {
         // TODO
     }
 }
 
-module.exports = Plastic
+module.exports = Reason

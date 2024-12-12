@@ -48,20 +48,23 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
         const resp = await check.json().data
 =======
         const resp = await check.json()
+<<<<<<< HEAD
         // console.log("Add Cliecked: ", resp.data)
+>>>>>>> master
+=======
 >>>>>>> master
 
         if (!check.ok) {
             // TODO insierire componente ErrorAlert
             console.log("Errore")
         } else {
-            // console.log("OK")
             clickAddHandle(resp.data)
         }
         
 >>>>>>> master
     }
 
+<<<<<<< HEAD
     const gestioneErrori = () => {
         setShowErrorAlert(true);
     };
@@ -74,6 +77,10 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
         <div className="w-1/2 font-bold">
             {showErrorAlert && <ErrorAlert error="Questo e' un errore" onClose={closeAlert} />}
             
+=======
+    return(
+        <div className="w-1/2 font-bold relative z-[9999]">
+>>>>>>> master
             <div className="flex flex-row-reverse">
                 <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={gestioneErrori}>
                     Elimina

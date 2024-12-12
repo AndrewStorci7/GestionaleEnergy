@@ -15,13 +15,22 @@ import { useState } from "react";
  */
 export default function MainContent({ type, implant, idUser, ...props}) {
 
+    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
+    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center"
+
+    const [isEmpty, setEmpty] = useState(false)
+    const [msgEmpty, setMsg] = useState("")
     const [addWasClicked, setState] = useState(false)
     const [response, setResp] = useState([])
-
+    
     const addHandle = (resp) => {
-        console.log("Main Content: ", resp)
         setState(true)
         setResp(resp)
+    }
+
+    const noData = (msg) =>  {
+        setEmpty(!isEmpty)
+        setMsg(msg)
     }
 
     return(
@@ -32,9 +41,16 @@ export default function MainContent({ type, implant, idUser, ...props}) {
             <Table 
                 type={type}
                 add={addWasClicked}
+                emptyData={noData}
                 dataNew={response}
-                // ids={response}
             />
+            {(!addWasClicked) ? (
+                <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
+                    <h1 className={`${_CMNSTYLE_EMPTY}`}>
+                        {msgEmpty}
+                    </h1>
+                </div>
+            ) : null }
             {(type === 'presser') ? (
                 <AddBale 
                     implant={implant}

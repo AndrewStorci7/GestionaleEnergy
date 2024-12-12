@@ -54,7 +54,8 @@ export default function Admin() {
 
     return(
         
-        <div className="w-[95%] m-[2.5%] overflow-hidden">
+        
+        <div className="w-[98%] m-[1%] overflow-hidden">
             <CheckCookie/>
             <Header 
                 implant={implant}

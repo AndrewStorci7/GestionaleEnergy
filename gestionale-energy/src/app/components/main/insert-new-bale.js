@@ -26,10 +26,8 @@ const srvurl = getSrvUrl();
  * @returns 
  */
 export default function InsertNewBale({ type, mod, ids, primary }) {
-    
-    console.log("IDS: ", ids)
 
-    const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
+    const _CMNSTYLE_TD = "border border-slate-400 h-[45px]";
 
     // Dati Pressista
     const [plastic, setPlastic] = useState(""); // Id plastica
@@ -166,7 +164,7 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
                     {(primary) ? (
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
-                            className='w-full bg-gray-300 font-bold p-[3px] m-[6px] w-[60px]'
+                            className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
                             onClick={() => handleClick(true)}
                             >
                                 OK
@@ -245,7 +243,7 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
                     {(primary) ? (
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
-                            className='w-full bg-gray-300 font-bold p-[3px] m-[6px] w-[60px]'
+                            className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
                             onClick={() => handleClick(false)}
                             >
                                 OK
