@@ -73,7 +73,7 @@ export default function SearchInput({ type }) {
                     <label 
                     className={`${_CMNSTYLE_LABEL}`}
                     htmlFor={`search-input-${searchFor[0]}`} >{label_title[0]}</label>
-                    <SelectInput id={`search-input-${searchFor[0]}`} searchFor={searchFor[0]} />
+                    <SelectInput id={`search-input-${searchFor[0]}`} searchFor={searchFor[0]}/>
                 </div>
                 <div>
                     <label 

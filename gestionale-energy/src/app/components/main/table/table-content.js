@@ -33,7 +33,7 @@ export default function TableContent({ type, primary = false }) {
     const getBgColor = (type) => {
         switch (type) {
             case 'admin':
-                return "bg-primary_2" //Copre Shadow Box
+                return "bg-primary_2" 
             case 'presser':
                 return "bg-primary_2" 
             case 'wheelman':
@@ -141,7 +141,7 @@ export default function TableContent({ type, primary = false }) {
                             {(primary) && (
                                 <td className={`${_CMNSTYLE_TD} relative`} key={"confirm" + _i}>
                                     <button 
-                                    className='w-full bg-gray-300 font-bold p-[3px] m-[6px] w-[60px]'
+                                    className='w-auto bg-gray-300 font-bold p-[3px] m-[6px] w-[60px] '
                                     onClick={() => console.log("TODO")}
                                     >
                                         OK

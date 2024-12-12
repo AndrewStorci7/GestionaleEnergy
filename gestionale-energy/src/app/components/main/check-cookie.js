@@ -1,24 +1,24 @@
-'use client'
+'use client';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-/* const CheckCookie = () => {
+const CheckCookie = () => {
   const router = useRouter();
+
+  useEffect(() => {
     const cookieValue = Cookies.get('user-info');
-    
     console.log('Checking cookie: ', cookieValue);
 
     if (!cookieValue) {
-      router.push('/pages/login'); 
+      router.push('/pages/login');
       console.log('Redirecting to login...');
     }
-  }, [router];
+  }, [router]);
 
   return null;
-} */
-
-
-
+};
+ export default CheckCookie
 
 
 

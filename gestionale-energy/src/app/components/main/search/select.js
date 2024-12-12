@@ -45,6 +45,8 @@ export default function SelectInput({ searchFor, id, type }) {
                 return srvurl + "/rei"
             case "selected-b":
                 return srvurl + "/selected-b"
+            case "implants":
+                return  srvurl + "/implants"
         }
     }
 

@@ -7,7 +7,7 @@ import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
 import ErrorAlert from "../daniele/error-alert";
-//import CheckCookie from "@/app/components/main/check-cookie";
+import CheckCookie from "@/app/components/main/check-cookie";
 
 export default function Admin() {
 
@@ -49,6 +49,7 @@ export default function Admin() {
     return(
         
         <div className="w-[95%] m-[2.5%] overflow-hidden">
+            <CheckCookie/>
             <Header 
                 implant={implant}
                 username={user}
