@@ -13,6 +13,7 @@ const srvurl = getSrvUrl()
  * 
  * @returns 
  */
+<<<<<<< HEAD
 export default function AddBale({ bale }) {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
     const addNewBale = () =>  {
@@ -23,17 +24,37 @@ export default function AddBale({ bale }) {
             id_cpb: null,
             id_sb: null,
             note: 'Prova inserimento da AddBale',
-        }
+=======
+export default function AddBale({ implant, idUser, clickAddHandle }) {
 
-        console.log(JSON.stringify(test))
+    const addNewBale = async () =>  {
+
+        const data = {
+            id_presser: idUser,
+            id_implant: implant
+>>>>>>> master
+        }
 
         const check = await fetch(srvurl + '/add-bale', {
             method: 'POST',
-            body: JSON.stringify({ data: test}),
-            headers: {'Content-Type': 'application/json' }
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify({ data }),
         })
 
+<<<<<<< HEAD
         console.log(check) */
+=======
+        const resp = await check.json().data
+
+        if (!check.ok) {
+            // TODO insierire componente ErrorAlert
+            console.log("Errore")
+        } else {
+            // console.log("OK")
+            clickAddHandle(resp)
+        }
+        
+>>>>>>> master
     }
 
     const gestioneErrori = () => {

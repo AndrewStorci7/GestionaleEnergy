@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 export default function Admin() {
 
     const [implant, setImplant] = useState("");
+    // const [idUser, setIdUser] = useState("");
     const [user, setUser] = useState("");
     const [type, setType] = useState("");
 
@@ -21,7 +22,7 @@ export default function Admin() {
                     setImplant(cookies.implant);
                     setUser(cookies.name);
                     setType(cookies.type);
-                    console.log(`Cookies { \n\tUsername: ${user};\n\tType: ${type};\n\tImplant: ${implant}`)
+                    // setIdUser(cookies.id_user);
                 }
             } catch (_err) {
                 console.log(`Error: ${_err}`);
@@ -41,6 +42,8 @@ export default function Admin() {
             />
             <MainContent 
                 type={type}
+                implant={implant}
+                idUser={idUser}
             />
             <Footer />
         </div>

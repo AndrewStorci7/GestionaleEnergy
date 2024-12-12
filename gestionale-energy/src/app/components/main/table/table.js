@@ -4,7 +4,9 @@ import Icon from "../get-icon";
 import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
-export default function Table({ type }) {
+
+
+export default function Table({ type, add, dataNew }) {
     
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
     const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll "; // inset-0 shadow-inner 
@@ -25,7 +27,7 @@ export default function Table({ type }) {
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={`${_CMNSTYLE_TABLE}` }>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} primary />
+                            <TableContent type={"presser"} add={add} ids={dataNew} primary />
                         </table>
 
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY} text-black`}>
@@ -34,7 +36,7 @@ export default function Table({ type }) {
                         </label>
                         <table id="gest-on-table2" className={`${_CMNSTYLE_TABLE}`}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"}/>
+                            <TableContent type={"wheelman"} add={add} />
                         </table>
                     </div>
                 </>
@@ -48,12 +50,12 @@ export default function Table({ type }) {
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary `}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} primary style={{overflow:'hidden'}}/>
+                            <TableContent type={"presser"} add={add} primary />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"}/>
+                            <TableContent type={"wheelman"} add={add} />
                         </table>
                     </div>
                 </>
@@ -89,12 +91,12 @@ export default function Table({ type }) {
                        {/* <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} primary/>
+                            <TableContent type={"presser"} add={add} primary />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                                     <TableContent type={"wheelman"}/>
+                            <TableContent type={"wheelman"} add={add} />
                         </table>
                        */}
                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-thirdary_1 `}>Amministrazione</label>

@@ -5,17 +5,17 @@ CREATE TABLE `code_plastic` (
 );
 
 CREATE TABLE `warehouse_dest` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(150)
 );
 
 CREATE TABLE `rei` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(255)
 );
 
 CREATE TABLE `user` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type` varchar(255),
   `name` varchar(150),
   `surname` varchar(150),
@@ -25,55 +25,56 @@ CREATE TABLE `user` (
 );
 
 CREATE TABLE `implants` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL
 );
 
 CREATE TABLE `cond_presser_bale` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type` varchar(150) NOT NULL
 );
 
 CREATE TABLE `cond_wheelman_bale` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `type` varchar(150) NOT NULL
 );
 
 CREATE TABLE `selected_bale` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL
 );
 
 CREATE TABLE `reas_not_tying` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `name` varchar(150) NOT NULL
 );
 
 CREATE TABLE `presser_bale` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `id_presser` uinteger NOT NULL,
-  `id_plastic` varchar(200) NOT NULL,
-  `id_rei` uinteger NOT NULL,
-  `id_cpb` uinteger NOT NULL,
-  `id_sb` uinteger NOT NULL,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id_presser` INT UNSIGNED NULL,
+  `id_plastic` varchar(200) NULL,
+  `id_rei` INT UNSIGNED NULL,
+  `id_cpb` INT UNSIGNED NULL,
+  `id_sb` INT UNSIGNED NULL,
   `note` text,
   `data_ins` datatime DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE `wheelman_bale` (
-  `id` uinteger PRIMARY KEY NOT NULL AUTO_INCREMENT,
-  `id_wheelman` uinteger NOT NULL,
-  `id_cwb` uinteger NOT NULL,
-  `id_rnt` uinteger NOT NULL,
-  `id_wd` uinteger NOT NULL,
-  `note` integer,
+  `id` INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `id_wheelman` INT UNSIGNED NULL,
+  `id_cwb` INT UNSIGNED NULL,
+  `id_rnt` INT UNSIGNED NULL,
+  `id_wd` INT UNSIGNED NULL,
+  `note` text,
   `printed` bool DEFAULT false,
   `data_ins` datatime DEFAULT (CURRENT_TIMESTAMP)
 );
 
 CREATE TABLE `pb_wb` (
-  `id_pb` uinteger NOT NULL,
-  `id_wb` uinteger NOT NULL,
+  `id_pb` INT UNSIGNED NOT NULL,
+  `id_wb` INT UNSIGNED NOT NULL,
+  `id_implants` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id_pb`, `id_wb`)
 );
 
@@ -98,3 +99,5 @@ ALTER TABLE `wheelman_bale` ADD FOREIGN KEY (`id_wd`) REFERENCES `warehouse_dest
 ALTER TABLE `pb_wb` ADD FOREIGN KEY (`id_wb`) REFERENCES `wheelman_bale` (`id`);
 
 ALTER TABLE `pb_wb` ADD FOREIGN KEY (`id_pb`) REFERENCES `presser_bale` (`id`);
+
+ALTER TABLE `pb_wb` ADD FOREIGN KEY (`id_implants`) REFERENCES `implants` (`id`);

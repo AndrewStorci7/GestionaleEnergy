@@ -5,19 +5,24 @@
 'use client';
 
 // import getEnv from '@/app/config';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
 import { getSrvUrl } from '@@/config';
 import md5 from 'md5';
+import SelectImplants from '@/app/components/main/select-implant';
 
 const srvurl = getSrvUrl()
 
 export default function LoginPage() {
 
+    // Router
     const router = useRouter();
+
+    // Reference
+    const selectRef = useRef();
 
     const [implant, setImplant] = useState('');
     const [username, setUsername] = useState('');
@@ -54,7 +59,8 @@ export default function LoginPage() {
                         name: res[0].name,
                         surname: res[0].surname,
                         username: res[0].username, 
-                        implant: implant, 
+                        id_implant: implant.id_implant,
+                        implant: implant.text_implant, 
                         type: res[0].type,
                         last_a: res[0].last_access,
                     };
@@ -68,8 +74,11 @@ export default function LoginPage() {
         }
     };
 
-    const handleChange = (e) => {
-        setImplant(e.target.value);
+    const handleChange = () => {
+        const value = selectRef.current.value;
+        const text = selectRef.current.options[selectRef.current.selectedIndex].text;
+        console.log(value, text)
+        setImplant({id_implant: value, text_implant: text});
     }; 
 
     return (
@@ -86,15 +95,12 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.inputGroup}>
                     <label className={styles.label} htmlFor="email">Impianto:</label>
-                    <select
-                        className={styles.input}
-                        onChange={handleChange}
-                        required
-                    >
-                        <option value="">Seleziona un&apos;impianto</option>
-                        <option value="Impianto A">Impianto A</option>
-                        <option value="Impianto B">Impianto B</option>
-                    </select>
+                    <SelectImplants 
+                    ref={selectRef}
+                    onChange={handleChange}
+                    // className={styles.input}
+                    required
+                    />
                 </div>
                 <div className={styles.inputGroup}>
                     <label className={styles.label} htmlFor="email">Username:</label>
