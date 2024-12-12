@@ -122,7 +122,7 @@ DROP TABLE IF EXISTS `pb_wb`;
 CREATE TABLE `pb_wb` (
   `id_pb` int unsigned NOT NULL,
   `id_wb` int unsigned NOT NULL,
-  `id_implant` int unsigned DEFAULT NULL,
+  `id_implant` int unsigned NOT NULL,
   PRIMARY KEY (`id_pb`,`id_wb`),
   KEY `id_wb` (`id_wb`),
   CONSTRAINT `pb_wb_ibfk_1` FOREIGN KEY (`id_wb`) REFERENCES `wheelman_bale` (`id`),

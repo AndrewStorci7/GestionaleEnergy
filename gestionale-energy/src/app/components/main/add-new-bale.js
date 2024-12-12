@@ -13,26 +13,15 @@ const srvurl = getSrvUrl()
  * 
  * @returns 
  */
-<<<<<<< HEAD
-export default function AddBale({ bale }) {
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
-    const addNewBale = () =>  {
-        /* const test = {
-            id_presser: 1,
-            id_plastic: '\'IPS/C\'',
-            id_rei: null,
-            id_cpb: null,
-            id_sb: null,
-            note: 'Prova inserimento da AddBale',
-=======
 export default function AddBale({ implant, idUser, clickAddHandle }) {
+
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const addNewBale = async () =>  {
 
         const data = {
             id_presser: idUser,
             id_implant: implant
->>>>>>> master
         }
 
         const check = await fetch(srvurl + '/add-bale', {
@@ -41,18 +30,7 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
             body: JSON.stringify({ data }),
         })
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        console.log(check) */
-=======
-        const resp = await check.json().data
-=======
         const resp = await check.json()
-<<<<<<< HEAD
-        // console.log("Add Cliecked: ", resp.data)
->>>>>>> master
-=======
->>>>>>> master
 
         if (!check.ok) {
             // TODO insierire componente ErrorAlert
@@ -60,11 +38,8 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
         } else {
             clickAddHandle(resp.data)
         }
-        
->>>>>>> master
     }
 
-<<<<<<< HEAD
     const gestioneErrori = () => {
         setShowErrorAlert(true);
     };
@@ -73,14 +48,9 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
         setShowErrorAlert(false);
     };
 
-    return (
+    return(
         <div className="w-1/2 font-bold">
             {showErrorAlert && <ErrorAlert error="Questo e' un errore" onClose={closeAlert} />}
-            
-=======
-    return(
-        <div className="w-1/2 font-bold relative z-[9999]">
->>>>>>> master
             <div className="flex flex-row-reverse">
                 <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={gestioneErrori}>
                     Elimina
