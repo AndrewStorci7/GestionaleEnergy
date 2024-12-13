@@ -22,7 +22,7 @@ const srvurl = getSrvUrl()
  * @param {function}noData  Funzione che aggiorna lo stato della variabile noData.
  *                          Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
  * 
- * @param {boolean} primary Serve per settare correttamente il colore dello sfondo   
+ * @ run devparam {boolean} primary Serve per settare correttamente il colore dello sfondo   
  * 
  * @returns
  */

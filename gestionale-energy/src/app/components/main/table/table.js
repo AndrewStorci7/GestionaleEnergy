@@ -124,17 +124,19 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                         </table>
                        */}
                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-thirdary_1 `}>Amministrazione</label>
-                       <div className="grid-cols-1 bg-blue-100	mt-5 border-2 border-slate-400 ">
+                       <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
+                       <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
+                       <div className="grid-cols-1 bg-blue-100	mt-5 border-2 border-slate-400">
                          <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
                          <div className="grid grid-cols-2 gap-1 mt-20">
-                            <button  onClick={DownloadReport} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. IMPIANTO A</button>
-                            <button  onClick={DownloadReport} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. TEMPI IMP A</button>
-                            <button  onClick={DownloadReport} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. IMPIANTO B</button>
-                            <button  onClick={DownloadReport} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. TEMPI IMP B</button>
-                            <button  onClick={DownloadReport} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. IMPIANTO A e B</button>
-                            <button  onClick={DownloadReport} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mb-2">GIOR. TEMPI IMP A e B</button>
+                           <DownloadReport downloadFor={"file1"}>GIOR. IMPIANTO A</DownloadReport>
+                           <DownloadReport downloadFor={"file2"}>GIOR. TEMPI IMP A</DownloadReport>
+                           <DownloadReport downloadFor={"file3"}> GIOR. IMPIANTO B</DownloadReport>
+                           <DownloadReport downloadFor={"file4"}>GIOR. TEMPI IMP B</DownloadReport>
+                           <DownloadReport downloadFor={"file5"}>GIOR. IMPIANTO A e B</DownloadReport>
+                           <DownloadReport downloadFor={"file6"}>GIOR. TEMPI IMP A e B</DownloadReport>
+                         </div>
                         </div>
-                       </div>
                        <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-5">
                          <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
                          <div className="grid grid-cols-3 gap-1 mt-20">
@@ -158,9 +160,8 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                         </select>
                         <p></p>
                        <p></p>
-                        <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5">VISUALIZZA</button>
-                       <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</button>
-                            
+                        <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
+                        <DownloadReport  downloadFor={"File_Scaricato"} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</DownloadReport>
                        </div>
                        </div>
                     </div>
