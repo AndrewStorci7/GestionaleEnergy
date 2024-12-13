@@ -29,6 +29,31 @@ class Common {
         else
             return "";
     }
+
+    convertSpecialCharsToHex(inputString) {
+        if (!inputString) return '';
+    
+        return inputString.split('').map(char => {
+            const charCode = char.charCodeAt(0);
+            
+            if (!/[a-zA-Z0-9]/.test(char)) {
+                return `\\x${charCode.toString(16).padStart(2, '0')}`;
+            }
+            return char;
+        }).join('');
+    }
+
+    async prova(req, res) {
+        try {
+            const {body} = req.body 
+            console.info(`stringa normale: ${body}`)
+            const stringa = this.convertSpecialCharsToHex(body)
+            console.info(`stringa convertita: ${stringa}`)
+        } catch (error) {
+            console.error(error)
+            res.status(500)
+        }
+    }
 }
 
 module.exports = Common

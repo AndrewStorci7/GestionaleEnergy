@@ -14,6 +14,9 @@ module.exports = (db) => {
     // Get all bale from a search or a filter
     // router.post('/s-bale', (req, res) => totalBaleController.get(req, res));
 
+    // TEST converisone stringhe
+    router.post('/injection', (req, res) => totalBaleController.prova(req, res)) 
+
     // TEST
     router.post('/bale', (req, res) => totalBaleController.get(req, res));
     return router;
