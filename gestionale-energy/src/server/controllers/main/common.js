@@ -21,13 +21,13 @@ class Common {
         const _hour = rangeTime.getHours();
 
         if (_hour >= 6 && _hour < 14)
-            return "BETWEEN '06:00:00' AND '13:59:59'";
+            return ['06:00:00', '13:59:59'];
         else if (_hour >= 14 && _hour < 22)
-            return "BETWEEN '14:00:00' AND '21:59:59'";
+            return ['14:00:00', '21:59:59'];
         else if (_hour >= 22 && _hour < 6)
-            return "BETWEEN '22:00:00' AND '05:59:59'";
+            return ['22:00:00', '05:59:59'];
         else
-            return "";
+            return ['', ''];
     }
 
     convertSpecialCharsToHex(inputString) {

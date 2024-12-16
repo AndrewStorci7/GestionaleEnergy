@@ -36,30 +36,29 @@ class WheelmanBale extends Bale {
     }
 
     handleWheelmanData = async (req) => {
-        const { id_user } = req.body;
+        const {id} = req.body;
         
-        console.info(`Id Presser received: ${id_user}`);
+        console.info(`Id Presser received: ${id}`);
         
         const [rows] = await this.db.query(
-            `SELECT 
-            cond_wheelman_bale.type AS 'condition',
-            reas_not_tying.name AS 'reason',
-            wheelman_bale.weight AS 'weight',
-            warehouse_dest.name AS 'warehouse',
-            wheelman_bale.note AS 'notes',
-            wheelman_bale.printed AS 'is_printed',
-            wheelman_bale.data_ins AS 'data_ins'
-            FROM wheelman_bale JOIN reas_not_tying JOIN cond_wheelman_bale JOIN warehouse_dest JOIN user
-            ON wheelman_bale.id_wheelman = user.id AND
-            wheelman_bale.id_cwb = cond_wheelman_bale.id AND
-            wheelman_bale.id_rnt = reas_not_tying.id AND
-            wheelman_bale.id_wd = warehouse_dest.id
-            WHERE wheelman_bale.id_wheelman = ${id_user} LIMIT 100`
+            "SELECT wheelman_bale.id AS 'id', cond_wheelman_bale.type AS 'condition', " + 
+            "reas_not_tying.name AS 'reason', " +
+            "wheelman_bale.weight AS 'weight', " +
+            "warehouse_dest.name AS 'warehouse', " +
+            "wheelman_bale.note AS 'notes', " +
+            "wheelman_bale.printed AS 'is_printed', " +
+            "wheelman_bale.data_ins AS 'data_ins' " +
+            "FROM wheelman_bale JOIN reas_not_tying JOIN cond_wheelman_bale JOIN warehouse_dest " +
+            "ON wheelman_bale.id_cwb = cond_wheelman_bale.id AND " +
+            "wheelman_bale.id_rnt = reas_not_tying.id AND " +
+            "wheelman_bale.id_wd = warehouse_dest.id " +
+            "WHERE wheelman_bale.id = ? LIMIT 1",
+            [id]
         );
     
         if (rows && rows.length > 0) {
-            console.info(JSON.stringify(rows)) // test
-            return { code: 0, rows }
+            // console.info(rows) // test
+            return rows
         } else {
             console.info({ code: 1, message: "Nessuna balla trovata" }) // test
             return { code: 1, message: "Nessuna balla trovata" }
@@ -70,7 +69,7 @@ class WheelmanBale extends Bale {
         try {
             const data = await this.handleWheelmanData(req);
             
-            console.info(data) // test
+            // console.info(data) // test
             
             if (data.code !== 0) {
                 res.json(data)
@@ -94,8 +93,9 @@ class WheelmanBale extends Bale {
             console.info(body)
 
             const [check] = await this.db.query(
-                `UPDATE wheelman_bale 
-                SET id_wheelman=${body.id_user}, id_cwb=${body.id_cwb}, id_rnt=${body.id_rnt}, id_wd=${body.id_wd}, note='${body.note}', printed=${body.isPrinted}, data_ins=NOW(), weigth=${body.weight}`
+                "UPDATE wheelman_bale SET id_wheelman=?, id_cwb=?, id_rnt=?, id_wd=?, note=?, printed=?, data_ins=NOW(), weigth=?" + 
+                "WHERE id=?",
+                [body.id_user, body.id_cwb, body.id_rnt, body.id_wd, body.note, body.isPrinted, body.weight, body.where]
             );
     
             if (check) {
