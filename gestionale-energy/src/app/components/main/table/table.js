@@ -34,33 +34,12 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                 <>
                     <h1 className={_CMNSTYLE_TITLE}>Pagina Amminstratore Sviluppatore</h1>
                     <p>In fase di sviluppo</p>
-                    {/* <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
-                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary`}>Pressista</label>
-                        <table id="gest-on-table" className={`${_CMNSTYLE_TABLE}`}>
-                            <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} add={add} ids={dataNew} noData={noData} primary />
-                        </table>
-
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY} text-black`}>
-                            Carrellista
-                            {_CMN_ONLY_VIEW}
-                        </label>
-                        <table id="gest-on-table2" className={`${_CMNSTYLE_TABLE}`}>
-                            <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={add} />
-                        </table>
-
-                        <p className={`${(isEmpty) ? "visible" : "invisible"}`}>
-                            {}
-                        </p>
-                    </div> */}
                 </>
             );
         }
         case "presser": {
             return(
                 <>
-                    {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Pressista</h1> */}
                     <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
@@ -85,7 +64,6 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
         case "wheelman": {
             return(
                 <>
-                    {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Carrellista</h1> */}
                     <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-secondary`}>Carrellista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
@@ -107,18 +85,7 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
         case 'both': {
             return(
                 <>
-                    {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore Interno</h1> */}
                     <div className={_CMNSTYLE_DIV} style={{ boxShadow: 'inset 0 -8px 6px rgba(91, 75, 73, 0.2)' }}>
-                        {/* <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
-                        <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"presser"}/>
-                            <TableContent type={"presser"}/>
-                        </table>
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
-                        <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"}/>
-                        </table> */}
                         
                     </div>
                 </>

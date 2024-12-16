@@ -2,6 +2,9 @@
 require('dotenv').config();
 
 const mysql = require('mysql2');
+const Console = require('./console');
+
+const console = new Console("Database");
 
 const DB_HOST = process.env.NEXT_PUBLIC_APP_DB_HOST;
 const DB_PORT = process.env.NEXT_PUBLIC_APP_DB_PORT;
@@ -16,5 +19,19 @@ const pool = mysql.createPool({
     database: DB_NAME,
     port: DB_PORT,
 });
+
+const originalQuery = pool.query.bind(pool);
+pool.query = (sql, params, callback) => {
+    console.info(`\n[QUERY] ${sql}`);
+    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
+    return originalQuery(sql, params, callback);
+};
+
+const originalExecute = pool.execute.bind(pool);
+pool.execute = (sql, params, callback) => {
+    console.info(`\n[EXECUTE] ${sql}`);
+    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
+    return originalExecute(sql, params, callback);
+};
 
 module.exports = pool.promise();

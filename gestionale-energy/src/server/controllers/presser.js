@@ -12,7 +12,7 @@ const console = new Console("Presser");
  */
 class PresserBale extends Bale {
 
-    constructor(db, id, idUser, plastic, rei, cpb, sb, note, datetime) {
+    constructor(db, id = 0, idUser, plastic, rei, cpb, sb, note, datetime = "") {
         super(db, id, datetime)
         this.idUser = idUser;
         this.plastic = plastic;
@@ -35,30 +35,33 @@ class PresserBale extends Bale {
         }
     }
 
-    handlePresserData = (req) => {
-        const id = req;
+    handlePresserData = async (req) => {
+        
+        const {id} = req;
         
         console.info(`Data received: ${id}`)
 
-        const [rows] = this.db.query(
-            `SELECT
-            code_plastic.code AS 'plastic',
-            code_plastic.desc AS 'code',
-            rei.name AS 'rei',
-            cond_presser_bale.type AS 'condition',
-            selected_bale.name AS 'selected_bale',
-            presser_bale.note AS 'notes',
-            presser_bale.data_ins AS 'data_ins'
-            FROM presser_bale JOIN code_plastic JOIN cond_presser_bale JOIN rei JOIN selected_bale
-            ON presser_bale.id_cpb = cond_presser_bale.id AND
-            presser_bale.id_plastic = code_plastic.code AND
-            presser_bale.id_rei = rei.id AND
-            presser_bale.id_sb = selected_bale.id
-            WHERE presser_bale.id = ${id} LIMIT 1`
+        const [rows] = await this.db.query(
+            "SELECT presser_bale.id AS 'id', code_plastic.code AS 'plastic', " +
+            "code_plastic.desc AS 'code', " +
+            "rei.name AS 'rei', " +
+            "cond_presser_bale.type AS 'condition', " +
+            "selected_bale.name AS 'selected_bale', " +
+            "presser_bale.note AS 'notes', " +
+            "presser_bale.data_ins AS 'data_ins' " +
+            "FROM presser_bale JOIN code_plastic JOIN cond_presser_bale JOIN rei JOIN selected_bale " +
+            "ON presser_bale.id_cpb = cond_presser_bale.id AND " +
+            "presser_bale.id_plastic = code_plastic.code AND " +
+            "presser_bale.id_rei = rei.id AND " +
+            "presser_bale.id_sb = selected_bale.id " +
+            "WHERE presser_bale.id = ? LIMIT 1",
+            [id]
         )
     
+        // console.info(rows)
+
         if (rows && rows.length > 0) {
-            // console.info(JSON.stringify(rows))
+            // console.info(rows)
             return rows
         } else {
             console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
@@ -68,9 +71,9 @@ class PresserBale extends Bale {
 
     async get(req, res) {
         try {
-            const data = await this.handlePresserData(req);
+            const data = await this.handlePresserData(req.body);
             
-            console.info(data)
+            // console.info(data) // test
     
             if (data.code !== 0) {
                 res.json(data)
@@ -89,13 +92,14 @@ class PresserBale extends Bale {
 
     async update(req, res) {
         try {
-            const { body } = req.body;
+            const {body} = req.body;
             
             console.info(body)
     
             const [check] = await this.db.query(
-                `UPDATE presser_bale 
-                SET id_presser=${body.id_user} , id_plastic='${body.id_plastic}', id_rei=${body.id_rei}, id_cpb=${body.id_cpb}, id_sb=${body.id_sb}, note='${body.note}', data_ins=NOW()`
+                "UPDATE presser_bale SET id_presser=? , id_plastic=?, id_rei=?, id_cpb=?, id_sb=?, note=?, data_ins=NOW()" +
+                "WHERE id=?",
+                [body.id_user, body.id_plastic, body.id_rei, body.id_cpb, body.id_sb, body.note, body.where]
             );
     
             if (check) {

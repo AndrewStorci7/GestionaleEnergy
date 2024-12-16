@@ -28,8 +28,6 @@ const srvurl = getSrvUrl()
  */
 export default function TableContent({ type, add, ids, noData, primary = false }) {
 
-    console.log("TableContent", ids)
-
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
@@ -101,8 +99,15 @@ export default function TableContent({ type, add, ids, noData, primary = false }
 
                 const data = await resp.json();
 
+                console.log(data)
+
                 if (data.code === 0) {
-                    setContent(data.data);
+                    if (type === "presser")
+                        setContent(data.presser)
+                    else if (type === "wheelman")
+                        setContent(data.wheelman)
+                    else
+                        setContent([])
                 } else {
                     setEmpty(!isEmpty);
                     noData(data.message);
@@ -130,17 +135,20 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                     // Variabili locali
                     let date = "";
                     let hour = "";
+                    let id = 0;
                     ++i;
 
                     Object.keys(_m).map((key, __i) => {
-                        if (key === "data_ins") {
+                        if (key === "id") {
+                            id = _m[key]
+                        } else if (key === "data_ins") {
                             date = _m[key].substr(0, 10).replaceAll('-', '/');
                             hour = _m[key].substr(11, 8);
                         }
                     })
 
                     return (
-                        <tr className={`${_CMNSTYLE_TD}`} key={_i}>
+                        <tr className={`${_CMNSTYLE_TD}`} key={_i} data-bale-id={id}>
                             {(primary) && (
                                 <>
                                     <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton /></td>
@@ -148,7 +156,9 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (
-                                (key === "is_printed") ? (
+                                (key == "id") ? (
+                                    null
+                                ) : (key === "is_printed") ? (
                                     <td className={`${_CMNSTYLE_TD} font-bold`} key={key + _i + __i} value={_m[key]}>
                                         {(_m[key] == 0) ? "Stampato" : "Da stamp."}
                                     </td>
