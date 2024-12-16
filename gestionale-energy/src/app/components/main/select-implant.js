@@ -8,6 +8,7 @@
 
 import { getSrvUrl } from '@/app/config';
 import React, { useEffect, useState } from 'react'
+import ErrorAlert from './error-alert';
 
 const srvurl = getSrvUrl();
 
@@ -31,11 +32,13 @@ export default function SelectImplants({ onChange, ref }, props) {
                     setContent(res.data)
                 } else {
                     // TODO da cambiare con alert
-                    setError(`Errore: ${error}`)
+                    //setError(`Errore: ${error}`)
+                    <ErrorAlert error={error}/>
                 }
             } catch (error) {
                 // TODO da cambiare con alert
-                setError(`Errore: ${error}`)
+                //setError(`Errore: ${error}`)
+                <ErrorAlert error={error}/>
             }
         }
 

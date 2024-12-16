@@ -6,6 +6,7 @@ import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
+import ErrorAlert from "../../../components/main/error-alert";
 
 export default function Pressista() {
 
@@ -22,8 +23,9 @@ export default function Pressista() {
                 setUser(cookies.name);
                 setType(Cookies.type);
             }
-        } catch (_err) {
-            console.log(`Error: ${_err}`);
+        } catch (error) {
+            //console.log(`Error: ${_err}`);
+            <ErrorAlert error={error}/>
         }
         
         // TODO set data for type user

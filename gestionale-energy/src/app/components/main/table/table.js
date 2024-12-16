@@ -110,8 +110,14 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
         case 'both': {
             return(
                 <>
+                <div className="grid grid-cols-3 gap-2 pt-[30px] relative mt-[20px]  ">
+                <button className={` bg-primary`}>Pressista</button>
+                <button  className={`  bg-secondary`}>Carrellista</button>
+                <button className={`  bg-thirdary_1  `}>Amministrazione</button>
+                </div>
+                        
                     {/* <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore Interno</h1> */}
-                    <div className={`${_CMNSTYLE_DIV} shadow-lg`}>
+                    <div className={`grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll`}>
                        {/* <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"}/>
@@ -123,15 +129,15 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                             <TableContent type={"wheelman"}/>
                         </table>
                        */}
-                       <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-thirdary_1 `}>Amministrazione</label>
-                       <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
-                       <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} bg-primary`}>Pressista</label>
+                       
+                        
+                       
                        <div className="grid-cols-1 bg-blue-100	mt-5 border-2 border-slate-400">
                          <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
                          <div className="grid grid-cols-2 gap-1 mt-20">
                            <DownloadReport downloadFor={"file1"}>GIOR. IMPIANTO A</DownloadReport>
                            <DownloadReport downloadFor={"file2"}>GIOR. TEMPI IMP A</DownloadReport>
-                           <DownloadReport downloadFor={"file3"}> GIOR. IMPIANTO B</DownloadReport>
+                           <DownloadReport downloadFor={"file3"}>GIOR. IMPIANTO B</DownloadReport>
                            <DownloadReport downloadFor={"file4"}>GIOR. TEMPI IMP B</DownloadReport>
                            <DownloadReport downloadFor={"file5"}>GIOR. IMPIANTO A e B</DownloadReport>
                            <DownloadReport downloadFor={"file6"}>GIOR. TEMPI IMP A e B</DownloadReport>

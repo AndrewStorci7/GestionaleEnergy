@@ -6,6 +6,7 @@ import CheckButton from "./select-button"
 import Icon from './get-icon';
 import SelectInput from './search/select'
 import Cookies from 'js-cookie';
+import ErrorAlert from './error-alert';
 
 const srvurl = getSrvUrl();
 
@@ -91,11 +92,12 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
 
             if (!resp.ok) {
                 //ErrorAlert
-                console.log("Errore")
+                //console.log("Errore")
+                <ErrorAlert error={error}/>
             }
 
         } catch (error) {
-            console.log("Errore")
+            <ErrorAlert error={error}/>
         }
     }
 

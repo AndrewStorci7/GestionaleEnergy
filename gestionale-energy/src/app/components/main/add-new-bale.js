@@ -1,4 +1,4 @@
-import ErrorAlert from '@/app/pages/daniele/error-alert';
+import ErrorAlert from './error-alert';
 import { getSrvUrl } from '@@/config';
 import React, { useState } from "react";
 
@@ -50,7 +50,6 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
 
     return(
         <div className="w-1/2 font-bold">
-            {showErrorAlert && <ErrorAlert error="Questo e' un errore" onClose={closeAlert} />}
             <div className="flex flex-row-reverse">
                 <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={gestioneErrori}>
                     Elimina
@@ -58,10 +57,7 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
                 <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[50px]" onClick={gestioneErrori}>
                     Modifica
                 </button>
-                <button 
-                    className="m-[10px] rounded-md bg-gray-300 p-[5px]"
-                    onClick={addNewBale}
-                >
+                <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={addNewBale}>
                     Aggiungi
                 </button>
             </div>
