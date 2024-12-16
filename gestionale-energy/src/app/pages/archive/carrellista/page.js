@@ -23,7 +23,7 @@ export default function Pressista() {
             }
         } catch (error) {
             //console.log(`Error: ${_err}`);
-            <ErrorAlert error={error}/>
+            <ErrorAlert msg={error}/>
         }
         // TODO set data for type user
     }, []);

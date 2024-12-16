@@ -19,7 +19,7 @@ class Warehouse extends Common {
     /**
      * Get a total of bale as the format
      */
-    async get() {
+    async get(req, res) {
         try {
             const [select] = await this.db.query(
                 "SELECT * FROM warehouse_dest"

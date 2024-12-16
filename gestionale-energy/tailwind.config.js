@@ -24,6 +24,7 @@ module.exports = {
         checked: '#7EE285',
         error: '#E74545',
         waiting: '#FF9D0B',
+        info: '#2E86AB',
       },
     },
   },

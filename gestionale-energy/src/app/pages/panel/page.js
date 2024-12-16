@@ -43,7 +43,7 @@ export default function Admin() {
                 }else(CheckCookie())
             } catch (error) {
                 //console.log(`Error: ${_err}`);
-                <ErrorAlert error={error}/>
+                <ErrorAlert msg={error}/>
             }
         }
 

@@ -27,7 +27,7 @@ const srvurl = getSrvUrl()
  * @returns
  */
 export default function TableContent({ type, add, ids, noData, primary = false }) {
-    
+
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
@@ -152,7 +152,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             {(primary) && (
                                 <>
                                     <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton /></td>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={(i <= 3) ? "working" : "completed"} /></td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={(i <= 3) ? "info" : "completed"} /></td>
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (

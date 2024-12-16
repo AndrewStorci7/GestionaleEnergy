@@ -26,7 +26,7 @@ export default function Admin() {
                     // setIdUser(cookies.id_user);
                 }
             } catch (error) {
-                <ErrorAlert error={error}/>
+                <ErrorAlert msg={error}/>
                 //console.log(`Error: ${_err}`);
             }
         }

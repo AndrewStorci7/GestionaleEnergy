@@ -22,6 +22,7 @@ import { useState } from "react";
  * @returns 
  */
 export default function Table({ type, add = false, emptyData, dataNew }) {
+    
     const [selectedType, setSelectedType] = useState("general");
 
     const handleTypeChange = (type) => {
@@ -70,7 +71,7 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                         <label htmlFor="gest-on-table"  className={`${_CMNSTYLE_LABEL} text-white bg-secondary`} >Carrellista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"} primary />
-                            <TableContent type={"wheelman"} add={add} ids={dataNew} noData={noData} primary />
+                            <TableContent type={"wheelman"} add={add} ids={dataNew} noData={emptyData} primary />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>
                             Pressista

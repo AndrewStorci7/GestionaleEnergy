@@ -93,11 +93,11 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
             if (!resp.ok) {
                 //ErrorAlert
                 //console.log("Errore")
-                <ErrorAlert error={error}/>
+                <ErrorAlert msg={error}/>
             }
 
         } catch (error) {
-            <ErrorAlert error={error}/>
+            <ErrorAlert msg={error}/>
         }
     }
 

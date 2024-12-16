@@ -33,12 +33,12 @@ export default function SelectImplants({ onChange, ref }, props) {
                 } else {
                     // TODO da cambiare con alert
                     //setError(`Errore: ${error}`)
-                    <ErrorAlert error={error}/>
+                    <ErrorAlert msg={error}/>
                 }
             } catch (error) {
                 // TODO da cambiare con alert
                 //setError(`Errore: ${error}`)
-                <ErrorAlert error={error}/>
+                <ErrorAlert msg={error}/>
             }
         }
 

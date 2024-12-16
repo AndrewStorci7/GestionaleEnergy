@@ -2,8 +2,21 @@
 
 import React, { useState } from "react";
 
-export default function ErrorAlert({error}) {
+/**
+ * 
+ * @param {string}  msg         Stringa dell'errore da stampare
+ * 
+ * @param {string}  alertFor    Il tipo di alert: [ 'error' | 'note' ]
+ * 
+ * @returns 
+ */
+export default function ErrorAlert({ msg, alertFor }) {
+
+    // TODO
+    // Controllare la prop alertFor e settare in base al suo valore le variabili globali
+
     const [showAlert, setShowAlert] = useState(true);
+    
     const handleClose = () => {
         setShowAlert(false);
     };
@@ -27,7 +40,7 @@ export default function ErrorAlert({error}) {
                             textAlign: "center",
                         }}
                     >
-                        <p>Errore: {error}</p>
+                        <p>Errore: {msg}</p>
                         <button
                             onClick={handleClose}
                             style={{
