@@ -21,12 +21,15 @@ export default function ErrorAlert({ msg, alertFor }) {
         setShowAlert(false);
     };
 
-    return (
-        <div>
-            {showAlert && (
-                <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-                    <div
-                        style={{
+    switch(alertFor) {
+        case "error": {
+            return(
+                <>
+                   <div>
+                   {showAlert && (
+                     <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+                        <div
+                          style={{
                             position: "fixed",
                             top: "50%",
                             left: "50%",
@@ -38,10 +41,10 @@ export default function ErrorAlert({ msg, alertFor }) {
                             boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
                             zIndex: 999,
                             textAlign: "center",
-                        }}
-                    >
-                        <p>Errore: {msg}</p>
-                        <button
+                          }}
+                          > 
+                            <p>Errore: {msg}</p>
+                            <button
                             onClick={handleClose}
                             style={{
                                 padding: "5px 10px",
@@ -52,12 +55,57 @@ export default function ErrorAlert({ msg, alertFor }) {
                                 cursor: "pointer",
                                 marginTop: "10px",
                             }}
-                        >
+                          >
                             Chiudi
-                        </button>
+                          </button>
+                       </div>
                     </div>
-                </div>
-            )}
-        </div>
-    );
+                  )}
+                 </div>
+     
+                </>
+            );
+        }case "note" : {
+            return(
+                <div>
+                {showAlert && (
+                   <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          padding: "20px",
+                          backgroundColor: "rgb(143, 199, 255)",
+                          color: "white",
+                          borderRadius: "5px",
+                          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                          zIndex: 999,
+                          textAlign: "center",
+                        }}
+                        > 
+                          <p>La nota e' vuota</p>
+                          <button
+                          onClick={handleClose}
+                          style={{
+                              padding: "5px 10px",
+                              backgroundColor: "darkred",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                              marginTop: "10px",
+                          }}
+                        >
+                          Chiudi
+                        </button>
+                     </div>
+                  </div>
+                )}
+               </div>
+            )
+        }
+    }
+    
 }

@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
+import ErrorAlert from '../error-alert';
 
 const srvurl = getSrvUrl()
 
@@ -29,11 +30,12 @@ const srvurl = getSrvUrl()
 export default function TableContent({ type, add, ids, noData, primary = false }) {
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
-    const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
+    const _CMNSTYLE_TD = "border border-slate-400 h-[40px] ";
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false)
+
 
     /**
      * Get Background Color
@@ -52,7 +54,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
             case 'both':
                 return "bg-secondary_2" 
             default:
-                return "bg-primary_2" //
+                return "bg-primary_2" 
         }
     }
 
@@ -145,10 +147,12 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             date = _m[key].substr(0, 10).replaceAll('-', '/');
                             hour = _m[key].substr(11, 8);
                         }
+                        if (key==="notes")
+                                console.log(_m[key])
                     })
 
                     return (
-                        <tr className={`${_CMNSTYLE_TD}`} key={_i} data-bale-id={id}>
+                        <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}>
                             {(primary) && (
                                 <>
                                     <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton /></td>
@@ -156,7 +160,13 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (
-                                (key == "id") ? (
+                                (key === "notes") ? (
+                                    (_m[key] !== "" && _m[key] !== null) ? 
+                                        <button key={key + _i + __i}>
+                                            <Icon type="info"/>
+                                        </button>
+                                    : <td></td>
+                                ) : (key == "id") ? (
                                     null
                                 ) : (key === "is_printed") ? (
                                     <td className={`${_CMNSTYLE_TD} font-bold`} key={key + _i + __i} value={_m[key]}>
@@ -169,7 +179,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             {(primary) && (
                                 <td className={`${_CMNSTYLE_TD} relative`} key={"confirm" + _i}>
                                     <button 
-                                    className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
+                                    className='w-auto bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
                                     onClick={() => console.log("TODO")}
                                     >
                                         OK

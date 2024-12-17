@@ -44,13 +44,13 @@ export default function MainContent({ type, implant, idUser, ...props}) {
                 emptyData={noData}
                 dataNew={response}
             />
-            {(!addWasClicked) ? (
+            {/* {(!addWasClicked) ? (
                 <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
                     <h1 className={`${_CMNSTYLE_EMPTY}`}>
                         {msgEmpty}
                     </h1>
                 </div>
-            ) : null }
+            ) : null } */}
             {(type === 'presser') ? (
                 <AddBale 
                     implant={implant}

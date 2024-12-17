@@ -166,7 +166,7 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
                     {(primary) ? (
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
-                            className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
+                            className='w-auto bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
                             onClick={() => handleClick(true)}
                             >
                                 OK
