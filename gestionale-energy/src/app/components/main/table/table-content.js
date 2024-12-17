@@ -22,16 +22,19 @@ const srvurl = getSrvUrl()
  * @param {function}noData  Funzione che aggiorna lo stato della variabile noData.
  *                          Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
  * 
- * @ run devparam {boolean} primary Serve per settare correttamente il colore dello sfondo   
+ * @param {boolean} primary Serve per settare correttamente il colore dello sfondo
+ * 
+ * @param {boolean} tableChanged    Serve per ricaricare la componente quando viene effettuata una modifica, eliminazione o aggiunta
  * 
  * @returns
  */
-export default function TableContent({ type, add, ids, noData, primary = false }) {
+export default function TableContent({ type, add, ids, noData, primary = false, tableChange = false }) {
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px]";
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
 
+    const [changeFromAdd, setChangeFromAdd] = useState(false) 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false)
 
@@ -52,7 +55,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
             case 'both':
                 return "bg-secondary_2" 
             default:
-                return "bg-primary_2" //
+                return "bg-primary_2"
         }
     }
 
@@ -78,6 +81,10 @@ export default function TableContent({ type, add, ids, noData, primary = false }
             default:
                 return srvurl + "/p-bale"
         }
+    } 
+
+    const handleAddChange = () => {
+        setChangeFromAdd(!changeFromAdd)
     } 
     
     useEffect(() =>  {
@@ -118,7 +125,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
         }
 
         fetchData();
-    }, [type]);
+    }, [type, changeFromAdd]);
 
     // test
     let i = 0;
@@ -126,7 +133,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
             {(add) && ( 
-                <InsertNewBale type={type} mod={primary} ids={ids} primary={primary} />
+                <InsertNewBale type={type} mod={primary} ids={ids} primary={primary} confirmHandle={handleAddChange} />
             )}
             {(!isEmpty) ? (
                 
@@ -169,7 +176,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             {(primary) && (
                                 <td className={`${_CMNSTYLE_TD} relative`} key={"confirm" + _i}>
                                     <button 
-                                    className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
+                                    className='on-btn-confirm'
                                     onClick={() => console.log("TODO")}
                                     >
                                         OK

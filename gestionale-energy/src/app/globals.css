@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .on-fix-index {
+    @apply relative z-[9998];
+  }
+
+  .on-header {
+    @apply w-full bg-white text-thirdary font-bold text-2xl rounded-[5px] mb-[5px];
+  }
+
+  .on-btn-confirm {
+    @apply w-auto bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%];
+  }
+
+  .on-btn-presser {
+    @apply m-[10px] rounded-md bg-gray-300 p-[5px];
+  }
+
+  .on-table-td {
+    @apply border border-slate-400 h-[40px];
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

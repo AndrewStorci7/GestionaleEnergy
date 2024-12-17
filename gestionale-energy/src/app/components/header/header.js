@@ -72,7 +72,7 @@ export default function Header({ implant, username, type, name, surname }) {
     });
 
     return (
-        <header className="w-full bg-white text-thirdary font-bold text-2xl rounded-[5px]">
+        <header className="on-header on-fix-index">
             <div className="grid grid-cols-7 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">

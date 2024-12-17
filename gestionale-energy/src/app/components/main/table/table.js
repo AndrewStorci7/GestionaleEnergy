@@ -6,6 +6,8 @@ import Icon from "../get-icon";
 import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
+import BtnWheelman from "../btn-wheelman";
+import AddBale from "../btn-presser";
 
 import { useState } from "react";
 
@@ -21,15 +23,31 @@ import { useState } from "react";
  *                          L'oggetto sarà diverso da null quando verrà cliccato il bottone aggiungi  
  * @returns 
  */
-export default function Table({ type, add = false, emptyData, dataNew }) {
-    
+export default function Table({ type, implant, idUser }) {
+
     const [selectedType, setSelectedType] = useState("general");
+    const [addWasClicked, setState] = useState(false)
+    const [ids, setResp] = useState([])
+    const [msgEmpty, setMsg] = useState("")
+    const [isEmpty, setEmpty] = useState(false)
+
+    const addHandle = (resp) => {
+        setState(!addWasClicked)
+        setResp(resp)
+    }
+
+    const noData = (msg) =>  {
+        setEmpty(!isEmpty)
+        setMsg(msg)
+    }
 
     const handleTypeChange = (type) => {
         setSelectedType(type);
     };
 
     /// Common style
+    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
+    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center"
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
     const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
     const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
@@ -53,14 +71,28 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary `}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} add={add} ids={dataNew} noData={emptyData} primary />
+                            <TableContent type={"presser"} add={addWasClicked} ids={ids} noData={noData} primary />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={add} />
+                            <TableContent type={"wheelman"} add={addWasClicked} />
                         </table>
                     </div>
+
+                    <AddBale 
+                        implant={implant}
+                        idUser={idUser}
+                        clickAddHandle={addHandle}
+                    />
+
+                    {(!addWasClicked) ? (
+                        <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
+                            <h1 className={`${_CMNSTYLE_EMPTY}`}>
+                                {msgEmpty}
+                            </h1>
+                        </div>
+                    ) : null }
                 </>
             );
         }
@@ -71,7 +103,7 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                         <label htmlFor="gest-on-table"  className={`${_CMNSTYLE_LABEL} text-white bg-secondary`} >Carrellista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"} primary />
-                            <TableContent type={"wheelman"} add={add} ids={dataNew} noData={emptyData} primary />
+                            <TableContent type={"wheelman"} add={addWasClicked} ids={ids} noData={noData} primary />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>
                             Pressista
@@ -79,9 +111,19 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                         </label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} />
-                            <TableContent type={"presser"} add={add} />
+                            <TableContent type={"presser"} add={addWasClicked} />
                         </table>
                     </div>
+
+                    <BtnWheelman/>
+
+                    {(!addWasClicked) ? (
+                        <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
+                            <h1 className={`${_CMNSTYLE_EMPTY}`}>
+                                {msgEmpty}
+                            </h1>
+                        </div>
+                    ) : null }
                 </>
             );
         }

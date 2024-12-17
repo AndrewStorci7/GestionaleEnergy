@@ -7,6 +7,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      componets: {
+        'on-fix-index': {
+          '@apply relative z-[9999]': {},
+        },
+        'on-header': {
+          '@apply w-full bg-white text-thirdary font-bold text-2xl rounded-[5px]': {},
+        },
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
