@@ -47,6 +47,9 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
 
     const [status, setStatus] = useState("working"); // Stato lavorazione
 
+    const refreshPage = () => {
+        location.reload();
+    }
     /**
      * 
      * 
@@ -246,7 +249,7 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
                             className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
-                            onClick={() => handleClick(false)}
+                            onClick={() => handleClick(false)} 
                             >
                                 OK
                             </button>

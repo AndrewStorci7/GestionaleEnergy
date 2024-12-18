@@ -36,7 +36,12 @@ export default function TableContent({ type, add, ids, noData, primary = false }
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false)
 
+    const [openNotes, setOpenNotes] = useState({}); // Track open notes by their ID
+    const [showNote, setShowNote] = useState(false);  // state to show the note
 
+    const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
+
+    
     /**
      * Get Background Color
      * 
@@ -57,6 +62,19 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                 return "bg-primary_2" 
         }
     }
+
+    const handleNoteClick = (id, note) => {
+        setNoteMessage(note);
+        setOpenNotes(prev => ({ ...prev, [id]: true })); 
+    };
+
+    const handleCloseNote = (id) => {
+        setOpenNotes(prev => {
+            const newState = { ...prev };
+            delete newState[id]; 
+            return newState;
+        });
+    };
 
     /**
      * Get Url of route
@@ -147,11 +165,15 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             date = _m[key].substr(0, 10).replaceAll('-', '/');
                             hour = _m[key].substr(11, 8);
                         }
-                        if (key==="notes")
-                                console.log(_m[key])
+                        {/*if (key==="notes")
+                                console.log(_m[key])*/}
                     })
 
+                    
+
                     return (
+                        <>
+                        {showNote && <ErrorAlert msg={noteMessage} alertFor="note" onClose={handleCloseNote} />}
                         <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}>
                             {(primary) && (
                                 <>
@@ -162,7 +184,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             {Object.keys(_m).map((key, __i) => (
                                 (key === "notes") ? (
                                     (_m[key] !== "" && _m[key] !== null) ? 
-                                        <button key={key + _i + __i}>
+                                        <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
                                             <Icon type="info"/>
                                         </button>
                                     : <td></td>
@@ -190,7 +212,11 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             <td className={`${_CMNSTYLE_TD}`} key={"data" + _i}>{date}</td>
                             {/* Ore */}
                             <td className={`${_CMNSTYLE_TD}`} key={"hour" + _i}>{hour}</td>
+                            {openNotes[id] && (
+                            <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
+                        )}
                         </tr>
+                        </>
                     )
                 })
             ) : null }

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 
 /**
+ * @author Daniele Zeraschi from Oppimittinetworking
  * 
  * @param {string}  msg         Stringa dell'errore da stampare
  * 
@@ -17,6 +18,7 @@ export default function ErrorAlert({ msg, alertFor }) {
 
     const [showAlert, setShowAlert] = useState(true);
     
+
     const handleClose = () => {
         setShowAlert(false);
     };
@@ -77,7 +79,7 @@ export default function ErrorAlert({ msg, alertFor }) {
                           left: "50%",
                           transform: "translate(-50%, -50%)",
                           padding: "20px",
-                          backgroundColor: "rgb(143, 199, 255)",
+                          backgroundColor: "rgb(255, 238, 84)",
                           color: "white",
                           borderRadius: "5px",
                           boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
@@ -85,12 +87,12 @@ export default function ErrorAlert({ msg, alertFor }) {
                           textAlign: "center",
                         }}
                         > 
-                          <p>La nota e' vuota</p>
+                          <p>{msg}</p>
                           <button
                           onClick={handleClose}
                           style={{
                               padding: "5px 10px",
-                              backgroundColor: "darkred",
+                              backgroundColor: "orange",
                               color: "white",
                               border: "none",
                               borderRadius: "5px",

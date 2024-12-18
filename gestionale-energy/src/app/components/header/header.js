@@ -31,7 +31,7 @@ export default function Header({ implant, username, type, name, surname }) {
             case 'wheelman':
                 return "bg-secondary"
             case 'both':
-                return "bg-secondary"
+                return "bg-thirdary_1"
             default:
                 return "bg-primary"
         }
