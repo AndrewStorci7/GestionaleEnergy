@@ -6,19 +6,8 @@ import Cookies from 'js-cookie';
 
 const srvurl = getSrvUrl();
 
-const getUrl = (type) => {
-    switch (type) {
-        case 'admin':
-            return srvurl + "/admin";
-        case 'presser':
-            return srvurl + "/p-bale";
-        case 'wheelman':
-            return srvurl + "/w-bale";
-        case 'both':
-            return srvurl + "/both"; 
-        default:
-            return srvurl + "/p-bale";
-    }
+const getUrl = () => {
+    return srvurl + '/bale'
 };
 
 const ExportExcel = ({ userData }) => {
@@ -29,14 +18,17 @@ const ExportExcel = ({ userData }) => {
 
     // 2. Add columns based on the user data fields (you can adjust this based on the actual fields)
     worksheet.columns = [
-      { header: "ID", key: "id", width: 10 },
-      { header: "Name", key: "name", width: 30 },
-      { header: "Age", key: "age", width: 10 },
+        { header: "ID", key: "id", width: 10 },
+        { header: "Plastica", key: "plastic", width: 30 },
+        { header: "REI", key: "rei", width: 10 },
+        { header: "Condizione", key: "condition", width: 10 },
+        { header: "Data Inserimento", key: "data_ins", width: 10 },
+        { header: "Codice", key: "code", width: 10 },
     ];
 
     // 3. Add rows from the user data
     userData.forEach((user) => {
-      worksheet.addRow({ id: user.id, name: user.name, age: user.age });
+      worksheet.addRow({ id: user.id, plastic: user.plastic, codice: user.codice, rei: user.rei, condition: user.condition, data_ins: user.data_ins, code: user.code });
     });
 
     // 4. Add styling (optional)
@@ -55,7 +47,7 @@ const ExportExcel = ({ userData }) => {
   );
 };
 
-const UserComponent = ({ type }) => {
+const UserComponent = ({ type = "presser" }) => {
   const [userData, setUserData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
 
@@ -64,7 +56,7 @@ const UserComponent = ({ type }) => {
       try {
         const cookies = await JSON.parse(Cookies.get('user-info'));
         const id_implant = cookies.id_implant;
-        const url = getUrl(type);
+        const url = getUrl();
         
         const resp = await fetch(url, {
           method: 'POST',
