@@ -6,7 +6,6 @@ import Icon from "../get-icon";
 import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
-
 import { useState } from "react";
 
 /**
@@ -24,6 +23,7 @@ import { useState } from "react";
 export default function Table({ type, add = false, emptyData, dataNew }) {
     
     const [selectedType, setSelectedType] = useState("general");
+    const [userType, setUserType] = useState("presser");
 
     const handleTypeChange = (type) => {
         setSelectedType(type);
@@ -127,7 +127,7 @@ export default function Table({ type, add = false, emptyData, dataNew }) {
                             </table>
                         </div>
                     )}
-
+                    
                     {selectedType === "general" && (
                         <div className={`grid grid-cols-2 gap-2 relative  h-[60vh]`}>
                         <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
