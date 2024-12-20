@@ -1,6 +1,16 @@
 'use client';
 import React from 'react';
 
+/**
+ * @author Daniele Zeraschi from Oppimittinetworking
+ * 
+ * @param {}  downloadFor      
+ * 
+ * @param {}  children    
+ * 
+ * @returns 
+ */
+
 const DownloadReport = ({ downloadFor, children }) => {
   const handleDownload = () => {
     console.log(downloadFor);

@@ -3,6 +3,13 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+/**
+ * @author Daniele Zeraschi from Oppimittinetworking
+ * 
+ * 
+ * @returns 
+ */
+
 const CheckCookie = () => {
   const router = useRouter();
 
