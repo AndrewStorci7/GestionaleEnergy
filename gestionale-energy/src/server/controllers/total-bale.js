@@ -222,6 +222,69 @@ AND TIME(wheelman_bale.data_ins) ${turn} LIMIT 100;`
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }
+
+    // Prende bale dal ID Impianto
+    
+    async getByImplantId(req, res) {
+        try {
+            const { id_implant } = req.body;
+        
+            console.info(`Filtrato dal ID Impianto: ${id_implant}`);
+        
+            const [select] = await this.db.query(
+                `SELECT
+                    pb_wb.id_pb, pb_wb.id_wb, 
+                    presser_bale.data_ins AS presser_data, 
+                    wheelman_bale.data_ins AS wheelman_data
+                FROM pb_wb 
+                JOIN presser_bale 
+                JOIN wheelman_bale 
+                JOIN implants 
+                ON pb_wb.id_pb = presser_bale.id 
+                AND pb_wb.id_wb = wheelman_bale.id 
+                AND pb_wb.id_implant = implants.id
+                WHERE pb_wb.id_implant = ?
+                ORDER BY presser_bale.data_ins DESC
+                LIMIT 100`,
+                [id_implant]
+            );
+        
+            if (select && select.length > 0) {
+                
+                const presserResult = [];
+                const wheelmanResult = [];
+        
+                for (const e of select) {
+                    var id_presser = e.id_pb;
+                    var id_wheelman = e.id_wb;
+        
+                    
+                    const [res_presser] = await fetch(this.internalUrl + '/presser', { 
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ id: id_presser })
+                    }).then(res => res.json());
+        
+                    const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ id: id_wheelman })
+                    }).then(res => res.json());
+        
+                    presserResult.push(res_presser);
+                    wheelmanResult.push(res_wheelman);
+                }
+        
+                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
+            } else {
+                res.json({ code: 1, message: "Nessuna Balla Trovata." });
+            }
+        
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
+        }
+    }
 }
 
 module.exports = TotalBale

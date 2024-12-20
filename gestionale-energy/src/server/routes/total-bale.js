@@ -13,7 +13,9 @@ module.exports = (db) => {
     router.post('/w-bale', (req, res) => totalBaleController.getAllWheelmanBale(req, res));
     // Get all bale from a search or a filter
     // router.post('/s-bale', (req, res) => totalBaleController.get(req, res));
-
+    
+    // Prendi Balla dal ID Impianto
+    router.post('/id-bale', (req,res) => totalBaleController.getByImplantId(req, res));
     // TEST converisone stringhe
     router.post('/injection', (req, res) => totalBaleController.prova(req, res)) 
 
