@@ -4,9 +4,9 @@ import React from 'react';
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
- * @param {}  downloadFor      
+ * @param {string}  downloadFor      
  * 
- * @param {}  children    
+ * @param {any}     children    
  * 
  * @returns 
  */

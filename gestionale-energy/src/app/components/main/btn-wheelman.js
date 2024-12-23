@@ -1,20 +1,9 @@
 /**
-<<<<<<< HEAD
+ * 
  * @author Daniele Zeraschi from Oppimittinetworking
- *    
- * 
- * @returns 
  */
 
-
-export default function BtnWheelman (){
-=======
- * 
- * 
- * @author Daniele Zeraschi 
- */
 export default function BtnWheelman() {
->>>>>>> dev/presserBtn
 
     return(
         <div className="w-1/2 font-bold">

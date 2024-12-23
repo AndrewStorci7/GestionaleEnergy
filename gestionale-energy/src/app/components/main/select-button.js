@@ -11,6 +11,7 @@ export default function CheckButton({ handleClick }) {
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
+        // handleClick(isChecked)
     };
 
     useEffect(() => {

@@ -29,7 +29,15 @@ const srvurl = getSrvUrl()
  * 
  * @returns
  */
-export default function TableContent({ type, add, ids, noData, primary = false, tableChange = false }) {
+export default function TableContent({ 
+    type, 
+    add, 
+    ids, 
+    noData, 
+    handleSelect,
+    primary = false, 
+    tableChange = false
+}) {
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px] ";
@@ -152,9 +160,12 @@ export default function TableContent({ type, add, ids, noData, primary = false, 
     // test
     let i = 0;
 
-    const handleRowClick = (state) => {
-        if (state)
-            console.log("selzioanto")
+    const handleRowClick = (state, id) => {
+        if (state) {
+            handleSelect({ status: state, id: id })
+        } else {
+            handleSelect({ status: state, id: null })
+        }
     };
 
     return (
@@ -191,7 +202,7 @@ export default function TableContent({ type, add, ids, noData, primary = false, 
                         <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}> 
                             {(primary) && (
                                 <>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton handleClick={(e) => handleRowClick(e)}/></td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton handleClick={(e) => handleRowClick(e, id)}/></td>
                                     <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={(i <= 3) ? "info" : "completed"} /></td>
                                 </>
                             )}

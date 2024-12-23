@@ -16,7 +16,12 @@ const srvurl = getSrvUrl()
  * @prop {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
  *                                  passa i dati ricevuti
  */
-export default function AddBale({ implant, idUser, clickAddHandle }) {
+export default function AddBale({ 
+    select,
+    implant, 
+    idUser, 
+    clickAddHandle 
+}) {
 
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
@@ -56,16 +61,30 @@ export default function AddBale({ implant, idUser, clickAddHandle }) {
         setShowErrorAlert(false);
     };
 
+    const handleClick = () => {
+        if (select.status) {
+            console.log("Posso modificare")
+        } else {
+            console.log("NON Posso modificare")
+        }
+    }
+
     return(
         <div className="w-1/2 font-bold on-fix-index">
             <div className="flex flex-row-reverse">
-                <button className="on-btn-presser" onClick={gestioneErrori}>
+                <button 
+                className="on-btn-presser" 
+                onClick={gestioneErrori}>
                     Elimina
                 </button>
-                <button className="on-btn-presser mr-[50px]" onClick={gestioneErrori}>
+                <button 
+                className="on-btn-presser mr-[50px]" 
+                onClick={handleClick}>
                     Modifica
                 </button>
-                <button className="on-btn-presser" onClick={addNewBale}>
+                <button 
+                className="on-btn-presser" 
+                onClick={addNewBale}>
                     Aggiungi
                 </button>
             </div>

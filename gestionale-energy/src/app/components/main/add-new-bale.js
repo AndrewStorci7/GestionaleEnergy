@@ -1,6 +1,6 @@
 import ErrorAlert from './error-alert';
 import { getSrvUrl } from '@@/config';
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 
 const srvurl = getSrvUrl()
 
@@ -13,7 +13,12 @@ const srvurl = getSrvUrl()
  * 
  * @returns 
  */
-export default function AddBale({ implant, idUser, clickAddHandle, selectedBaleIdRef }) {
+export default function AddBale({ 
+    select, 
+    implant, 
+    idUser, 
+    clickAddHandle 
+}) {
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const addNewBale = async () => {
@@ -37,36 +42,45 @@ export default function AddBale({ implant, idUser, clickAddHandle, selectedBaleI
         }
     };
 
-    const gestioneErrori = (action) => {
-        console.log(selectedBaleIdRef);
-        if (!selectedBaleIdRef.target) { 
-            setShowErrorAlert(true);
-        } else {
+    // const gestioneErrori = (action) => {
+    //     console.log(selectedBaleIdRef);
+    //     if (!selectedBaleIdRef.target) { 
+    //         setShowErrorAlert(true);
+    //     } else {
             
-            console.log(`${action} balla con ID: ${selectedBaleIdRef.current}`);
-        }
-    };
+    //         console.log(`${action} balla con ID: ${selectedBaleIdRef.current}`);
+    //     }
+    // };
 
     const closeAlert = () => {
         setShowErrorAlert(false);
     };
+
+    const handleClick = () => {
+        console.log("Modifica/Elimina cliccato")
+        console.log(select.status)
+    }
+
+    console.log(select)
 
     return (
         <div className="w-1/2 font-bold">
             <div className="flex flex-row-reverse">
                 <button
                     className="m-[10px] rounded-md bg-gray-300 p-[5px]"
-                    onClick={() => gestioneErrori("Elimina")}
+                    // onClick={() => gestioneErrori("Elimina")}
                 >
                     Elimina
                 </button>
                 <button
                     className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[50px]"
-                    onClick={() => gestioneErrori("Modifica")}
+                    onClick={handleClick}
                 >
                     Modifica
                 </button>
-                <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={addNewBale}>
+                <button 
+                className="m-[10px] rounded-md bg-gray-300 p-[5px]" 
+                onClick={addNewBale}>
                     Aggiungi
                 </button>
             </div>

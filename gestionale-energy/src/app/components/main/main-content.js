@@ -42,26 +42,7 @@ export default function MainContent({ type, implant, idUser, ...props}) {
                 type={type}
                 implant={implant}
                 idUser={idUser}
-                // add={addWasClicked}
-                // emptyData={noData}
-                // dataNew={response}
             />
-            {/* {(!addWasClicked) ? (
-                <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
-                    <h1 className={`${_CMNSTYLE_EMPTY}`}>
-                        {msgEmpty}
-                    </h1>
-                </div>
-            ) : null } */}
-            {/* {(type === 'presser') ? (
-                <AddBale 
-                    implant={implant}
-                    idUser={idUser}
-                    clickAddHandle={addHandle}
-                />
-            ) : (type === 'wheelman') ? (
-                <BtnWheelman/>
-            ) : null } */}
         </div>
     );
 }

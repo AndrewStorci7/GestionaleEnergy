@@ -6,12 +6,9 @@ import Icon from "../get-icon";
 import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
-<<<<<<< HEAD
-=======
 import BtnWheelman from "../btn-wheelman";
 import AddBale from "../btn-presser";
 
->>>>>>> dev/presserBtn
 import { useState } from "react";
 
 /**
@@ -29,13 +26,11 @@ import { useState } from "react";
 export default function Table({ type, implant, idUser }) {
 
     const [selectedType, setSelectedType] = useState("general");
-<<<<<<< HEAD
-    const [userType, setUserType] = useState("presser");
-=======
     const [addWasClicked, setState] = useState(false)
     const [ids, setResp] = useState([])
     const [msgEmpty, setMsg] = useState("")
     const [isEmpty, setEmpty] = useState(false)
+    const [isSelected, setSelected] = useState({ status: false, id: null })
 
     const addHandle = (resp) => {
         setState(!addWasClicked)
@@ -46,7 +41,6 @@ export default function Table({ type, implant, idUser }) {
         setEmpty(!isEmpty)
         setMsg(msg)
     }
->>>>>>> dev/presserBtn
 
     const handleTypeChange = (type) => {
         setSelectedType(type);
@@ -78,7 +72,7 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary `}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} add={addWasClicked} ids={ids} noData={noData} primary />
+                            <TableContent type={"presser"} handleSelect={setSelected} add={addWasClicked} ids={ids} noData={noData} primary />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
@@ -91,6 +85,7 @@ export default function Table({ type, implant, idUser }) {
                         implant={implant}
                         idUser={idUser}
                         clickAddHandle={addHandle}
+                        select={isSelected}
                     />
 
                     {(!addWasClicked) ? (
