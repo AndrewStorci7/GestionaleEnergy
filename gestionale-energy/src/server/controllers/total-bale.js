@@ -34,6 +34,9 @@ class TotalBale extends Common {
     async add(req, res) {
         try {
             const { data } = req.body;
+
+            console.info(data)
+
             const id_implant = data.id_implant;
             const id_presser = data.id_presser;
             
