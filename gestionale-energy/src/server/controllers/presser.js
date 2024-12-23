@@ -94,7 +94,7 @@ class PresserBale extends Bale {
         try {
             const {body} = req.body;
             
-            console.info(body)
+            console.info("[Update]: ", body)
     
             const [check] = await this.db.query(
                 "UPDATE presser_bale SET id_presser=? , id_plastic=?, id_rei=?, id_cpb=?, id_sb=?, note=?, data_ins=NOW()" +

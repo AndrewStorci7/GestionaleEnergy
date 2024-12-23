@@ -13,6 +13,8 @@ const srvurl = getSrvUrl();
 /**
  * Compoent used only by type 'presser' and 'wheelman'
  * 
+ * @author Andrea Storci from Oppimittinetworking
+ * 
  * @param {string}  type    [ 'presser' | 'wheelman' ]
  * 
  * @param {boolean} mod     [ true | false]
@@ -24,11 +26,11 @@ const srvurl = getSrvUrl();
  * @param {boolean} primary [ true | false ]
  *                          True se è primario (mostrerà alcune opzioni aggiuntive) 
  * 
- * @returns 
+ * @prop {function} confirmHandle Funzione che gestisce la conferma dell'aggiunta
  */
-export default function InsertNewBale({ type, mod, ids, primary }) {
+export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }) {
 
-    const _CMNSTYLE_TD = "border border-slate-400 h-[45px]";
+    const _CMNSTYLE_TD = "on-table-td";
 
     // Dati Pressista
     const [plastic, setPlastic] = useState(""); // Id plastica
@@ -57,8 +59,6 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
      */
     const handleClick = (f) => {
         try {
-            // console.log("Id pressista: " + ids.id_presser_bale + ", Id carrellista: " + ids.id_wheelman_bale)
-
             const cookie = JSON.parse(Cookies.get('user-info'));
             let url = "";
             let body = {};
@@ -94,13 +94,13 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
             })
 
             if (!resp.ok) {
-                //ErrorAlert
-                //console.log("Errore")
-                <ErrorAlert msg={error}/>
+                <ErrorAlert msg={error} />
+            } else {
+
             }
 
         } catch (error) {
-            <ErrorAlert msg={error}/>
+            <ErrorAlert msg={error} />
         }
     }
 
@@ -169,8 +169,13 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
                     {(primary) ? (
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
+<<<<<<< HEAD
                             className='w-auto bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
                             onClick={() => handleClick(true)}
+=======
+                            className='on-btn-confirm'
+                            onClick={confirmHandle}
+>>>>>>> dev/presserBtn
                             >
                                 OK
                             </button>
@@ -248,8 +253,13 @@ export default function InsertNewBale({ type, mod, ids, primary }) {
                     {(primary) ? (
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
+<<<<<<< HEAD
                             className='w-full bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%]'
                             onClick={() => handleClick(false)} 
+=======
+                            className='on-btn-confirm'
+                            onClick={confirmHandle}
+>>>>>>> dev/presserBtn
                             >
                                 OK
                             </button>

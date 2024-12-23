@@ -90,7 +90,7 @@ class WheelmanBale extends Bale {
         try {
             const { body } = req.body;
     
-            console.info(body)
+            console.info("[Update]: ", body)
 
             const [check] = await this.db.query(
                 "UPDATE wheelman_bale SET id_wheelman=?, id_cwb=?, id_rnt=?, id_wd=?, note=?, printed=?, data_ins=NOW(), weigth=?" + 

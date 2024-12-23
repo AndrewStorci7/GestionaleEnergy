@@ -10,6 +10,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./inc/db');
+const WebSocket = require('ws')
 
 const presserRoute = require('./routes/presser');
 const wheelmanRoute = require('./routes/wheelman');
@@ -27,6 +28,13 @@ const loginRouter = require('./routes/loginroutes');
 const app = express();
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
+const server = require('http').createServer(app)
+
+const wss = new WebSocket.Server({ server })
+
+wss.on('connection', function connection() {
+
+})
 
 // Middleware to parse in JSON
 app.use(express.json());
@@ -47,6 +55,6 @@ app.use(selectedBaleRoute(db));
 app.use(reasonRouter(db));
 app.use(implantRouter(db));
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running on ${URL}:${PORT}`);
 });

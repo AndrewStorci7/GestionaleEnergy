@@ -2,7 +2,7 @@
 
 // import { useState } from "react";
 import SearchInput from "./search/search";
-import AddBale from "./add-new-bale";
+import AddBale from "./btn-presser";
 import Table from "./table/table";
 import BtnWheelman from "./btn-wheelman";
 import { useState } from "react";
@@ -20,13 +20,13 @@ export default function MainContent({ type, implant, idUser, ...props}) {
 
     const [isEmpty, setEmpty] = useState(false)
     const [msgEmpty, setMsg] = useState("")
-    const [addWasClicked, setState] = useState(false)
-    const [response, setResp] = useState([])
+    // const [addWasClicked, setState] = useState(false)
+    // const [response, setResp] = useState([])
     
-    const addHandle = (resp) => {
-        setState(true)
-        setResp(resp)
-    }
+    // const addHandle = (resp) => {
+    //     setState(true)
+    //     setResp(resp)
+    // }
 
     const noData = (msg) =>  {
         setEmpty(!isEmpty)
@@ -38,11 +38,13 @@ export default function MainContent({ type, implant, idUser, ...props}) {
             {...props}
         >
             <SearchInput type={type} />
-            <Table 
+            <Table
                 type={type}
-                add={addWasClicked}
-                emptyData={noData}
-                dataNew={response}
+                implant={implant}
+                idUser={idUser}
+                // add={addWasClicked}
+                // emptyData={noData}
+                // dataNew={response}
             />
             {/* {(!addWasClicked) ? (
                 <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
@@ -51,7 +53,7 @@ export default function MainContent({ type, implant, idUser, ...props}) {
                     </h1>
                 </div>
             ) : null } */}
-            {(type === 'presser') ? (
+            {/* {(type === 'presser') ? (
                 <AddBale 
                     implant={implant}
                     idUser={idUser}
@@ -59,8 +61,7 @@ export default function MainContent({ type, implant, idUser, ...props}) {
                 />
             ) : (type === 'wheelman') ? (
                 <BtnWheelman/>
-            ) : null
-            }
+            ) : null } */}
         </div>
     );
 }
