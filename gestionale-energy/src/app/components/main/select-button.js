@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCheck, FaRegSquare } from 'react-icons/fa'; // FontAwesome icons
 
-export default function CheckButton() {
+/**
+ * Check button per modifica ed elimina balla pressista
+ * 
+ * @prop {function} handleClick Funzione che gestisce lo stato del click 
+ */
+export default function CheckButton({ handleClick }) {
     const [isChecked, setIsChecked] = useState(false);
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
     };
+
+    useEffect(() => {
+        handleClick(isChecked)
+    }, [isChecked])
 
     return (
         <div className="flex justify-center">

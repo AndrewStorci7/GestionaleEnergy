@@ -1,5 +1,5 @@
 import { getSrvUrl } from '@@/config';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
@@ -40,7 +40,9 @@ export default function TableContent({ type, add, ids, noData, primary = false }
     const [showNote, setShowNote] = useState(false);  // state to show the note
 
     const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
+    const selectedBaleIdRef = useRef(null); // Mantiene l'id selezionato
 
+    
     
     /**
      * Get Background Color
@@ -99,7 +101,7 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                 return srvurl + "/p-bale"
         }
     } 
-    
+
     useEffect(() =>  {
         const fetchData = async () => {
             try {
@@ -143,6 +145,11 @@ export default function TableContent({ type, add, ids, noData, primary = false }
     // test
     let i = 0;
 
+    const handleRowClick = (state) => {
+        if (state)
+            console.log("selzioanto")
+    };
+
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
             {(add) && ( 
@@ -174,10 +181,10 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                     return (
                         <>
                         {showNote && <ErrorAlert msg={noteMessage} alertFor="note" onClose={handleCloseNote} />}
-                        <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}>
+                        <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}> 
                             {(primary) && (
                                 <>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton /></td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton handleClick={(e) => handleRowClick(e)}/></td>
                                     <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={(i <= 3) ? "info" : "completed"} /></td>
                                 </>
                             )}
@@ -212,10 +219,10 @@ export default function TableContent({ type, add, ids, noData, primary = false }
                             <td className={`${_CMNSTYLE_TD}`} key={"data" + _i}>{date}</td>
                             {/* Ore */}
                             <td className={`${_CMNSTYLE_TD}`} key={"hour" + _i}>{hour}</td>
-                            {openNotes[id] && (
-                            <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
-                        )}
                         </tr>
+                        {openNotes[id] && (
+                        <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
+                        )}
                         </>
                     )
                 })
