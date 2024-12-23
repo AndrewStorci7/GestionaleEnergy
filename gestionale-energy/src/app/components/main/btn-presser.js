@@ -61,33 +61,50 @@ export default function AddBale({
         setShowErrorAlert(false);
     };
 
-    const handleClick = () => {
+    const handleDelete = () => {
+        console.log("Elimina")
+    }
+
+    const handleUpdate = () => {
+        console.log("Modifica")
+    }
+
+    const handleClick = (f) => {
         if (select.status) {
-            console.log("Posso modificare")
+            if (f)
+                handleUpdate(select.id)
+            else handleDelete(select.id)
         } else {
-            console.log("NON Posso modificare")
+            setShowErrorAlert(!showErrorAlert)
         }
     }
 
-    return(
-        <div className="w-1/2 font-bold on-fix-index">
-            <div className="flex flex-row-reverse">
-                <button 
-                className="on-btn-presser" 
-                onClick={gestioneErrori}>
-                    Elimina
-                </button>
-                <button 
-                className="on-btn-presser mr-[50px]" 
-                onClick={handleClick}>
-                    Modifica
-                </button>
-                <button 
-                className="on-btn-presser" 
-                onClick={addNewBale}>
-                    Aggiungi
-                </button>
+    return (
+        <>
+        
+            <div className="w-1/2 font-bold on-fix-index">
+                <div className="flex flex-row-reverse">
+                    <button 
+                    className="on-btn-presser" 
+                    onClick={() => handleClick(false)}>
+                        Elimina
+                    </button>
+                    <button 
+                    className="on-btn-presser mr-[50px]" 
+                    onClick={() => handleClick(true)}>
+                        Modifica
+                    </button>
+                    <button 
+                    className="on-btn-presser" 
+                    onClick={() => addNewBale}>
+                        Aggiungi
+                    </button>
+                </div>
             </div>
-        </div>
+            {showErrorAlert ? 
+                <ErrorAlert handleClose={setShowErrorAlert(!showErrorAlert)} alertFor="error" msg="Per modificare o eliminare bisogna prima selezionare una balla!" />
+                : null
+            }
+        </>
     );
 }

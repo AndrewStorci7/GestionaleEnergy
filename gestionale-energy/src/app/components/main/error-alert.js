@@ -9,15 +9,20 @@ import React, { useState } from "react";
  * 
  * @param {string}  alertFor    Il tipo di alert: [ 'error' | 'note' ]
  * 
+ * @param {function}  handleFor Funzioen che gestisce la chiusura dell'alert
+ * 
  * @returns 
  */
-export default function ErrorAlert({ msg, alertFor }) {
+export default function ErrorAlert({
+  msg, 
+  alertFor,
+  handleClose
+}) {
 
     // TODO
     // Controllare la prop alertFor e settare in base al suo valore le variabili globali
 
     const [showAlert, setShowAlert] = useState(true);
-    
 
     const handleClose = () => {
         setShowAlert(false);
