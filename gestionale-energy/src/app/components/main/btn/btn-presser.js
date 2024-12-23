@@ -1,4 +1,4 @@
-import ErrorAlert from './error-alert';
+import ErrorAlert from '../error-alert';
 import { getSrvUrl } from '@@/config';
 import React, { useState } from "react";
 

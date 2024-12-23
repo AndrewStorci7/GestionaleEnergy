@@ -2,9 +2,9 @@
 
 // import { useState } from "react";
 import SearchInput from "./search/search";
-import AddBale from "./btn-presser";
+import AddBale from "./btn/btn-presser";
 import Table from "./table/table";
-import BtnWheelman from "./btn-wheelman";
+import BtnWheelman from "./btn/btn-wheelman";
 import { useState } from "react";
 
 /**

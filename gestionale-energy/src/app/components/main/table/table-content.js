@@ -66,21 +66,7 @@ export default function TableContent({ type, add, ids, noData, primary = false, 
      * @returns 
      */
     const getUrl = () => {
-
         return srvurl + '/bale';
-
-        switch (type) {
-            case 'admin':
-                return srvurl + "/admin"
-            case 'presser':
-                return srvurl + "/p-bale"
-            case 'wheelman':
-                return srvurl + "/w-bale"
-            case 'both':
-                return srvurl + "/both" 
-            default:
-                return srvurl + "/p-bale"
-        }
     } 
 
     const handleAddChange = () => {

@@ -1,7 +1,7 @@
 'use-client';
 
 import { getSrvUrl } from '@/app/config'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CheckButton from "./select-button"
 import Icon from './get-icon';
 import SelectInput from './search/select'
@@ -92,8 +92,6 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
 
             if (!resp.ok) {
                 <ErrorAlert msg={error} />
-            } else {
-
             }
 
         } catch (error) {
@@ -167,7 +165,10 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
                             className='on-btn-confirm'
-                            onClick={confirmHandle}
+                            onClick={() => { 
+                                confirmHandle
+                                handleClick(true)
+                            }}
                             >
                                 OK
                             </button>
@@ -246,7 +247,10 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
                             className='on-btn-confirm'
-                            onClick={confirmHandle}
+                            onClick={() => { 
+                                confirmHandle
+                                handleClick(false)
+                            }}
                             >
                                 OK
                             </button>

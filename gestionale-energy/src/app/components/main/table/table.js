@@ -6,13 +6,15 @@ import Icon from "../get-icon";
 import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
-import BtnWheelman from "../btn-wheelman";
-import AddBale from "../btn-presser";
+import BtnWheelman from "../btn/btn-wheelman";
+import AddBale from "../btn/btn-presser";
+
 
 import { useState } from "react";
 
 /**
  * Table
+ * @author Andrea Storci from Oppimittinetworking
  * 
  * @param {string}  type    [ 'presser' | 'wheelman' | 'both' | 'admin' ] 
  * 
@@ -21,7 +23,6 @@ import { useState } from "react";
  * 
  * @param {object}  dataNew Oggetto contenente gli ID delle due nuove balle aggiunte.
  *                          L'oggetto sarà diverso da null quando verrà cliccato il bottone aggiungi  
- * @returns 
  */
 export default function Table({ type, implant, idUser }) {
 
