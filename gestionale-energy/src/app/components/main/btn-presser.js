@@ -9,7 +9,7 @@ const srvurl = getSrvUrl()
  * 
  * @author Andrea Storci from Oppimittinetworking
  * 
- * @param {object}   select          {
+ * @param {object}   idSelect        {
  *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
  *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
  * }
@@ -22,12 +22,12 @@ const srvurl = getSrvUrl()
  *                                   passa i dati ricevuti
  */
 export default function AddBale({ 
-    select,
+    idSelect,
     implant, 
     idUser, 
     clickAddHandle 
 }) {
-
+    console.log(idSelect)
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const addNewBale = async () =>  {
@@ -66,19 +66,20 @@ export default function AddBale({
         setShowErrorAlert(!showErrorAlert);
     };
 
-    const handleDelete = () => {
-        console.log("Elimina")
+    const handleDelete = (id) => {
+        console.log("Elimina" + id)
     }
 
-    const handleUpdate = () => {
-        console.log("Modifica")
+    const handleUpdate = (id) => {
+        console.log("Modifica" + id)
     }
 
     const handleClick = (f) => {
-        if (select.status) {
+        console.log(idSelect)
+        if (idSelect !== null) {
             if (f)
-                handleUpdate(select.id)
-            else handleDelete(select.id)
+                handleUpdate(idSelect)
+            else handleDelete(idSelect)
         } else {
             setShowErrorAlert(!showErrorAlert)
         }

@@ -36,7 +36,8 @@ export default function TableContent({
     noData, 
     handleSelect,
     primary = false, 
-    tableChange = false
+    tableChange = false,
+    selectedBaleId
 }) {
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
@@ -51,10 +52,7 @@ export default function TableContent({
     const [showNote, setShowNote] = useState(false);  // state to show the note
 
     const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
-    const selectedBaleIdRef = useRef(null); // Mantiene l'id selezionato
 
-    
-    
     /**
      * Get Background Color
      * 
@@ -96,21 +94,7 @@ export default function TableContent({
      * @returns 
      */
     const getUrl = () => {
-
         return srvurl + '/bale';
-
-        switch (type) {
-            case 'admin':
-                return srvurl + "/admin"
-            case 'presser':
-                return srvurl + "/p-bale"
-            case 'wheelman':
-                return srvurl + "/w-bale"
-            case 'both':
-                return srvurl + "/both" 
-            default:
-                return srvurl + "/p-bale"
-        }
     } 
 
     const handleAddChange = () => {
@@ -160,12 +144,15 @@ export default function TableContent({
     // test
     let i = 0;
 
-    const handleRowClick = (state, id) => {
-        if (state) {
-            handleSelect({ status: state, id: id })
-        } else {
-            handleSelect({ status: state, id: null })
-        }
+    // const [selectedBale, setSelectedBale] = useState(null)
+
+    const handleRowClick = (id) => {
+        console.log("table-content: " + id + ", current bale selected: " + selectedBaleId)
+        const newSelectedBaleId = (selectedBaleId === id ? null : id)
+        // setSelectedBale(newSelectedBaleId)
+        handleSelect(newSelectedBaleId)
+
+        console.log("table-content after: " + newSelectedBaleId)
     };
 
     return (
@@ -199,8 +186,14 @@ export default function TableContent({
                         <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}> 
                             {(primary) && (
                                 <>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}><CheckButton handleClick={(e) => handleRowClick(e, id)}/></td>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}><Icon type={(i <= 3) ? "info" : "completed"} /></td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}>
+                                        <CheckButton 
+                                        isSelected={(selectedBaleId === id)}
+                                        handleClick={() => handleRowClick(id)} />
+                                    </td>
+                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}>
+                                        <Icon type={(i <= 3) ? "info" : "completed"} />
+                                    </td>
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (

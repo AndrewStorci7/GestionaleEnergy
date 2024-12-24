@@ -6,17 +6,13 @@ import { FaCheck, FaRegSquare } from 'react-icons/fa'; // FontAwesome icons
  * 
  * @prop {function} handleClick Funzione che gestisce lo stato del click 
  */
-export default function CheckButton({ handleClick }) {
+export default function CheckButton({ isSelected = false, handleClick }) {
     const [isChecked, setIsChecked] = useState(false);
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
         handleClick(isChecked)
     };
-
-    // useEffect(() => {
-    //     handleClick(isChecked)
-    // }, [isChecked])
 
     return (
         <div className="flex justify-center">
@@ -28,7 +24,7 @@ export default function CheckButton({ handleClick }) {
                     cursor: 'pointer',
                 }}
             >
-            {isChecked ? <FaCheck className="bg-green-300" /> : <FaRegSquare />} {/* Icon changes based on state */}
+            {(isChecked) ? <FaCheck className="bg-green-300" /> : <FaRegSquare />} {/* Icon changes based on state */}
             </button>
         </div>
     );
