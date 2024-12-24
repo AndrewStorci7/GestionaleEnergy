@@ -44,3 +44,7 @@
 ### Database 
 
 - [x] Inserire dati per test
+
+### Errori:
+
+- `Cannot update a component ('HotReload') while rendering a different component ('TableContent'). To locate the bad setState() call inside 'TableContent', follow the stack trace as described in https://react.dev/link/setstate-in-render`

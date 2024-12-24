@@ -174,7 +174,6 @@ export default function TableContent({
                 <InsertNewBale type={type} mod={primary} ids={ids} primary={primary} confirmHandle={handleAddChange} />
             )}
             {(!isEmpty) ? (
-                
                 content.map((_m, _i) => {
 
                     // Variabili locali
@@ -193,8 +192,6 @@ export default function TableContent({
                         {/*if (key==="notes")
                                 console.log(_m[key])*/}
                     })
-
-                    
 
                     return (
                         <>

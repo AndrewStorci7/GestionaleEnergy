@@ -9,12 +9,17 @@ const srvurl = getSrvUrl()
  * 
  * @author Andrea Storci from Oppimittinetworking
  * 
- * @prop {int}      implant         Id dell'impianto che serve per aggiungere una nuova balla
+ * @param {object}   select          {
+ *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
+ *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
+ * }
  * 
- * @prop {int}      idUser          Id dell'utente che serve per aggiungere una nuova balla
+ * @param {int}      implant         Id dell'impianto che serve per aggiungere una nuova balla
+ * 
+ * @param {int}      idUser          Id dell'utente che serve per aggiungere una nuova balla
  *  
- * @prop {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
- *                                  passa i dati ricevuti
+ * @param {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
+ *                                   passa i dati ricevuti
  */
 export default function AddBale({ 
     select,
