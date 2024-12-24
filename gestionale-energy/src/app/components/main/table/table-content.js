@@ -161,9 +161,13 @@ export default function TableContent({
     let i = 0;
 
     const handleRowClick = (state, id) => {
+        
+        console.log("Funzione HandleRowClick")
         if (state) {
+            console.log("Funzione HandleRowClick ID non NULL")
             handleSelect({ status: state, id: id })
         } else {
+            console.log("Funzione HandleRowClick ID NULL")
             handleSelect({ status: state, id: null })
         }
     };
