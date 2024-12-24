@@ -24,8 +24,9 @@ export default function ErrorAlert({
 
     const [showAlert, setShowAlert] = useState(true);
 
-    const handleClose = () => {
+    const closeAlert = () => {
         setShowAlert(false);
+        handleClose
     };
 
     switch(alertFor) {
@@ -52,7 +53,7 @@ export default function ErrorAlert({
                           > 
                             <p>Errore: {msg}</p>
                             <button
-                            onClick={handleClose}
+                            onClick={closeAlert}
                             style={{
                                 padding: "5px 10px",
                                 backgroundColor: "darkred",
@@ -94,7 +95,7 @@ export default function ErrorAlert({
                         > 
                           <p>{msg}</p>
                           <button
-                          onClick={handleClose}
+                          onClick={closeAlert}
                           style={{
                               padding: "5px 10px",
                               backgroundColor: "orange",

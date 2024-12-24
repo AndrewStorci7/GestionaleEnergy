@@ -46,6 +46,10 @@ export default function Table({ type, implant, idUser }) {
         setSelectedType(type);
     };
 
+    const handleSelect = (select) => {
+        setSelected(select)
+    }
+
     /// Common style
     const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
     const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center"
@@ -72,7 +76,7 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary `}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
-                            <TableContent type={"presser"} handleSelect={setSelected} add={addWasClicked} ids={ids} noData={noData} primary />
+                            <TableContent type={"presser"} handleSelect={handleSelect} add={addWasClicked} ids={ids} noData={noData} primary />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>

@@ -58,7 +58,7 @@ export default function AddBale({
     };
 
     const closeAlert = () => {
-        setShowErrorAlert(false);
+        setShowErrorAlert(!showErrorAlert);
     };
 
     const handleDelete = () => {
@@ -96,13 +96,13 @@ export default function AddBale({
                     </button>
                     <button 
                     className="on-btn-presser" 
-                    onClick={() => addNewBale}>
+                    onClick={addNewBale}>
                         Aggiungi
                     </button>
                 </div>
             </div>
             {showErrorAlert ? 
-                <ErrorAlert handleClose={setShowErrorAlert(!showErrorAlert)} alertFor="error" msg="Per modificare o eliminare bisogna prima selezionare una balla!" />
+                <ErrorAlert handleClose={closeAlert} alertFor="error" msg="Per modificare o eliminare bisogna prima selezionare una balla!" />
                 : null
             }
         </>
