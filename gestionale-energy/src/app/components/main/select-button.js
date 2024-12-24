@@ -11,12 +11,12 @@ export default function CheckButton({ handleClick }) {
 
     const handleToggle = () => {
         setIsChecked(!isChecked);
-        // handleClick(isChecked)
+        handleClick(isChecked)
     };
 
-    useEffect(() => {
-        handleClick(isChecked)
-    }, [isChecked])
+    // useEffect(() => {
+    //     handleClick(isChecked)
+    // }, [isChecked])
 
     return (
         <div className="flex justify-center">
