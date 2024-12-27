@@ -49,9 +49,6 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
 
     const [status, setStatus] = useState("working"); // Stato lavorazione
 
-    const refreshPage = () => {
-        location.reload();
-    }
     /**
      * 
      * 
@@ -96,7 +93,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
             if (!resp.ok) {
                 <ErrorAlert msg={error} />
             } else {
-
+                confirmHandle
             }
 
         } catch (error) {
@@ -170,7 +167,9 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
                             className='on-btn-confirm'
-                            onClick={confirmHandle}
+                            onClick={() => {
+                                handleClick(true)
+                            }}
                             >
                                 OK
                             </button>
@@ -249,7 +248,9 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
                             className='on-btn-confirm'
-                            onClick={confirmHandle}
+                            onClick={() => {
+                                handleClick(false)
+                            }}
                             >
                                 OK
                             </button>

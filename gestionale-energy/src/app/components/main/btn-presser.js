@@ -31,7 +31,6 @@ export default function AddBale({
     const [showErrorAlert, setShowErrorAlert] = useState(false);
 
     const addNewBale = async () =>  {
-
         try {
             const data = {
                 id_presser: idUser,

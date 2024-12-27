@@ -7,7 +7,7 @@ import React, { useState } from "react";
  * 
  * @param {string}  msg         Stringa dell'errore da stampare
  * 
- * @param {string}  alertFor    Il tipo di alert: [ 'error' | 'note' ]
+ * @param {string}  alertFor    Il tipo di alert: [ 'error' | 'note' | 'confirm' ]
  * 
  * @param {function}  handleFor Funzioen che gestisce la chiusura dell'alert
  * 
