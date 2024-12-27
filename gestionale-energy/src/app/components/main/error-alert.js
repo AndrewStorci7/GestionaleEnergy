@@ -29,6 +29,11 @@ export default function ErrorAlert({
         handleClose
     };
 
+    const handleConfirmedClose = () => {
+      closeAlert();
+      window.location.reload(); 
+  };
+
     switch(alertFor) {
         case "error": {
             return(
