@@ -7,7 +7,7 @@ import React, { useState } from "react";
  * 
  * @param {string}  msg         Stringa dell'errore da stampare
  * 
- * @param {string}  alertFor    Il tipo di alert: [ 'error' | 'note' ]
+ * @param {string}  alertFor    Il tipo di alert: [ 'error' | 'note' | 'confirmed']
  * 
  * @param {function}  handleFor Funzioen che gestisce la chiusura dell'alert
  * 
@@ -113,7 +113,47 @@ export default function ErrorAlert({
                 )}
                </div>
             )
-        }
+        }case "confirmed" : {
+          return(
+              <div>
+              {showAlert && (
+                 <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        padding: "20px",
+                        backgroundColor: "rgb(5, 181, 61)",
+                        color: "white",
+                        borderRadius: "5px",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                        zIndex: 999,
+                        textAlign: "center",
+                      }}
+                      > 
+                        <p>I dati sono stati salvati correttamente</p>
+                        <button
+                        onClick={closeAlert}
+                        style={{
+                            padding: "5px 10px",
+                            backgroundColor: "seagreen",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                        }}
+                      >
+                        OK
+                      </button>
+                   </div>
+                </div>
+              )}
+             </div>
+          )
+      }
     }
     
 }
