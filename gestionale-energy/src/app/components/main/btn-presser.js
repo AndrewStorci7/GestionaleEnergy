@@ -27,9 +27,9 @@ export default function AddBale({
     idUser, 
     clickAddHandle 
 }) {
-    console.log(idSelect)
+    //console.log(idSelect)
     const [showErrorAlert, setShowErrorAlert] = useState(false);
-
+   
     const addNewBale = async () =>  {
         try {
             const data = {
