@@ -49,6 +49,8 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
 
     const [status, setStatus] = useState("working"); // Stato lavorazione
 
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const refreshPage = () => {
         location.reload();
     }
@@ -96,12 +98,16 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
             if (!resp.ok) {
                 <ErrorAlert msg={error} />
             } else {
-
+                confirmHandle
             }
 
         } catch (error) {
             <ErrorAlert msg={error} />
         }
+    }
+
+    const handleConfirmed = () =>{
+        setShowConfirm(true);
     }
 
     switch (type) {
@@ -170,10 +176,14 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
                             className='on-btn-confirm'
-                            onClick={confirmHandle}
+                            onClick={() => { 
+                                handleClick(true);
+                                handleConfirmed();
+                            }}
                             >
                                 OK
                             </button>
+                            {showConfirm && <ErrorAlert alertFor="confirmed"  />}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>
@@ -249,10 +259,13 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         <td className={`${_CMNSTYLE_TD}`} >
                             <button 
                             className='on-btn-confirm'
-                            onClick={confirmHandle}
+                            onClick={() => { 
+                                handleClick(false);
+                            }}
                             >
                                 OK
                             </button>
+                            {showConfirm && <ErrorAlert alertFor="confirmed"  />}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>

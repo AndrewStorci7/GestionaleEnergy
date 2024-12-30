@@ -29,6 +29,10 @@ export default function ErrorAlert({
         handleClose
     };
 
+    const refreshPage = () => {
+      location.reload();
+    };
+
     switch(alertFor) {
         case "error": {
             return(
@@ -135,7 +139,10 @@ export default function ErrorAlert({
                       > 
                         <p>I dati sono stati salvati correttamente</p>
                         <button
-                        onClick={closeAlert}
+                        onClick={() => {
+                          closeAlert();
+                          refreshPage();
+                        }}
                         style={{
                             padding: "5px 10px",
                             backgroundColor: "seagreen",

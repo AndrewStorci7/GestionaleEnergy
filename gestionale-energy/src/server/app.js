@@ -10,7 +10,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./inc/db');
-const WebSocket = require('ws')
+// const WebSocket = require('ws')
 
 const presserRoute = require('./routes/presser');
 const wheelmanRoute = require('./routes/wheelman');
@@ -30,11 +30,11 @@ const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
 const server = require('http').createServer(app)
 
-const wss = new WebSocket.Server({ server })
+// const wss = new WebSocket.Server({ server })
 
-wss.on('connection', function connection() {
+/*wss.on('connection', function connection() {
 
-})
+})*/
 
 // Middleware to parse in JSON
 app.use(express.json());
