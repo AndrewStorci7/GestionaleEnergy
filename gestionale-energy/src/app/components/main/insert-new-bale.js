@@ -62,25 +62,25 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
             if (f) {
                 url = srvurl + "/upresserbale";
                 body = {
-                    id_user: cookie.id_user,
+                    id_presser: cookie.id_user,
                     id_plastic: plastic,
                     id_rei: rei,
                     id_cpb: cdbp,
                     id_sb: selected_b,
                     note: note,
-                    where: ids.id_presser_bale || 0,
+                    where: ids.id_presser_bale,
                 }
             } else { 
                 url = srvurl + "/uwheelmanbale";
                 body = {
-                    id_user: cookie.id_user,
+                    id_wheelman: cookie.id_user,
                     id_cwb: cdbc,
                     id_rnt: reason,
                     id_wd: dest_wh,
-                    isPrinted: false, // Da modificare
                     note: note,
+                    printed: false, // Da modificare
                     weight: weight,
-                    where: ids.id_wheelman_bale || 0,
+                    where: ids.id_wheelman_bale,
                 }
             }
 

@@ -46,14 +46,12 @@ export default function AddBale({
             const resp = await check.json()
     
             if (!check.ok) {
-                // TODO insierire componente ErrorAlert
-                // console.log("Errore")
-                <ErrorAlert alertFor="error" />
+                handleError("Errore nel SERVER durante la modifica!")
             } else {
                 clickAddHandle(resp.data)
             }
         } catch (error) {
-            <ErrorAlert alertFor="error" />
+            handleError(error)
         }
     }
 
@@ -65,8 +63,27 @@ export default function AddBale({
         setShowErrorAlert(!showErrorAlert);
     };
 
-    const handleDelete = (id) => {
-        console.log("Elimina" + id)
+    const handleDelete = async (id) => {
+        try {
+            // const data = {
+            //     id_presser: idUser,
+            //     id_implant: implant
+            // }
+    
+            const check = await fetch(srvurl + '/delete-bale', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_bale: id }),
+            })
+    
+            const resp = await check.json()
+    
+            if (resp.code < 0) {
+                handleError(resp.message)
+            }
+        } catch (error) {
+            handleError(error)
+        }
     }
 
     const handleUpdate = (id) => {
@@ -74,19 +91,33 @@ export default function AddBale({
     }
 
     const handleClick = (f) => {
-        console.log(idSelect)
+        // console.log(idSelect)
         if (idSelect !== null) {
             if (f)
                 handleUpdate(idSelect)
             else handleDelete(idSelect)
         } else {
-            setShowErrorAlert(!showErrorAlert)
+            handleError("Nessuna balla selezionata!")
         }
+    }
+
+    /**
+     * Handle the error when no bale is selcted
+     * 
+     * @param {string} msg Message to display
+     */
+    const handleError = (msg, scope = "error") => {
+        return (
+            <ErrorAlert 
+                handleClose={closeAlert} 
+                alertFor={scope} 
+                msg={msg}
+            />
+        )
     }
 
     return (
         <>
-        
             <div className="w-1/2 font-bold on-fix-index">
                 <div className="flex flex-row-reverse">
                     <button 
@@ -106,10 +137,6 @@ export default function AddBale({
                     </button>
                 </div>
             </div>
-            {showErrorAlert ? 
-                <ErrorAlert handleClose={closeAlert} alertFor="error" msg="Per modificare o eliminare bisogna prima selezionare una balla!" />
-                : null
-            }
         </>
     );
 }

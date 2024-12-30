@@ -1,11 +1,11 @@
 const express = require('express');
-const SelectedBaleController = require('../controllers/selected-bale');
+const Controller = require('../controllers/selected-bale');
 
-module.exports = (db) => {
+module.exports = (db, table) => {
     const router = express.Router();
-    const selectedBaleCtrl = new SelectedBaleController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/selected-b', (req, res) => selectedBaleCtrl.get(req, res));
+    router.get('/selected-b', (req, res) => controller.get(req, res));
 
     return router;
 }

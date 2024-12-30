@@ -52,7 +52,7 @@ export default function Table({ type, implant, idUser }) {
 
     useEffect(() => {
         handleSelect(isSelected)
-        console.log("Oggetto finale: " + isSelected)
+        // console.log("Oggetto finale: " + isSelected)
     }, [isSelected])
 
     /// Common style
