@@ -227,7 +227,7 @@ class TotalBale extends Common {
             
             console.info("ID ELIMINA ricevuti: " + id_bale)
 
-            if (id_bale !== null || id_bale !== undefined || id_bale !== 'undefined') {
+            if (id_bale !== null && id_bale !== undefined) {
 
                 var query = `DELETE FROM ${this.table} WHERE `;
 

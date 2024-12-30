@@ -181,8 +181,6 @@ export default function TableContent({
                     })
 
                     return (
-                        <>
-                        {showNote && <ErrorAlert msg={noteMessage} alertFor="note" onClose={handleCloseNote} />}
                         <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}> 
                             {(primary) && (
                                 <>
@@ -228,10 +226,6 @@ export default function TableContent({
                             {/* Ore */}
                             <td className={`${_CMNSTYLE_TD}`} key={"hour" + _i}>{hour}</td>
                         </tr>
-                        {openNotes[id] && (
-                        <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
-                        )}
-                        </>
                     )
                 })
             ) : null }

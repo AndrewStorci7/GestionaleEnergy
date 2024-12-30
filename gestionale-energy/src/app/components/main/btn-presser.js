@@ -27,8 +27,6 @@ export default function AddBale({
     idUser, 
     clickAddHandle 
 }) {
-    //console.log(idSelect)
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
    
     const addNewBale = async () =>  {
         try {
@@ -54,14 +52,6 @@ export default function AddBale({
             handleError(error)
         }
     }
-
-    const gestioneErrori = () => {
-        setShowErrorAlert(true);
-    };
-
-    const closeAlert = () => {
-        setShowErrorAlert(!showErrorAlert);
-    };
 
     const handleDelete = async (id) => {
         try {
@@ -101,20 +91,25 @@ export default function AddBale({
         }
     }
 
+    const [showAlert, setShowAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
     /**
-     * Handle the error when no bale is selcted
+     * Handle the error when no bale is selected
      * 
      * @param {string} msg Message to display
      */
     const handleError = (msg, scope = "error") => {
-        return (
-            <ErrorAlert 
-                handleClose={closeAlert} 
-                alertFor={scope} 
-                msg={msg}
-            />
-        )
-    }
+        console.log(showAlert)
+        // Imposta l'errore e mostra l'alert
+        setErrorMessage(msg);
+        setShowAlert(!showAlert);
+    };
+
+    // Funzione per chiudere l'alert
+    const closeAlert = () => {
+        setShowAlert(false);
+    };
 
     return (
         <>
@@ -137,6 +132,14 @@ export default function AddBale({
                     </button>
                 </div>
             </div>
+
+            {showAlert && 
+                <ErrorAlert 
+                    handleClose={closeAlert} 
+                    alertFor="error" 
+                    msg={errorMessage}
+                />
+            }
         </>
     );
 }
