@@ -5,6 +5,7 @@ import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
 import ErrorAlert from '../error-alert';
+import { FaLess } from 'react-icons/fa';
 
 const srvurl = getSrvUrl()
 
@@ -49,7 +50,7 @@ export default function TableContent({
     const [isEmpty, setEmpty] = useState(false)
 
     const [openNotes, setOpenNotes] = useState({}); // Track open notes by their ID
-    const [showNote, setShowNote] = useState(false);  // state to show the note
+    //const [showNote, setShowNote] = useState(false);  // state to show the note
 
     const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
 
@@ -75,16 +76,13 @@ export default function TableContent({
     }
 
     const handleNoteClick = (id, note) => {
+        console.log(openNotes);
         setNoteMessage(note);
-        setOpenNotes(prev => ({ ...prev, [id]: true })); 
+        setOpenNotes(prev => ({ ...prev, [id]: !prev[id] })); // Inverti lo stato per aprire o chiudere
     };
-
+    
     const handleCloseNote = (id) => {
-        setOpenNotes(prev => {
-            const newState = { ...prev };
-            delete newState[id]; 
-            return newState;
-        });
+        setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
     };
 
     /**
@@ -181,8 +179,6 @@ export default function TableContent({
                     })
 
                     return (
-                        <>
-                        {showNote && <ErrorAlert msg={noteMessage} alertFor="note" onClose={handleCloseNote} />}
                         <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}> 
                             {(primary) && (
                                 <>
@@ -201,6 +197,7 @@ export default function TableContent({
                                     (_m[key] !== "" && _m[key] !== null) ? 
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
                                             <Icon type="info"/>
+                                            
                                         </button>
                                     : <td></td>
                                 ) : (key == "id") ? (
@@ -221,6 +218,9 @@ export default function TableContent({
                                     >
                                         OK
                                     </button>
+                                    {openNotes[id] && (
+                                    <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
+                                )}
                                 </td>
                             )}
                             {/* Data */}
@@ -228,10 +228,6 @@ export default function TableContent({
                             {/* Ore */}
                             <td className={`${_CMNSTYLE_TD}`} key={"hour" + _i}>{hour}</td>
                         </tr>
-                        {openNotes[id] && (
-                        <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
-                        )}
-                        </>
                     )
                 })
             ) : null }
