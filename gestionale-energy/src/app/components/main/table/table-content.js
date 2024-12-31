@@ -222,9 +222,9 @@ export default function TableContent({
                                     >
                                         OK
                                     </button>
-                                    
+                                    {openNotes[id] && (
                                     <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
-                                
+                                )}
                                 </td>
                             )}
                             {/* Data */}
