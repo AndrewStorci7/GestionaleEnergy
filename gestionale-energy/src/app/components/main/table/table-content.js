@@ -74,17 +74,21 @@ export default function TableContent({
                 return "bg-primary_2"
         }
     }
-
+    
     const handleNoteClick = (id, note) => {
+        console.log("Before update:", openNotes); // Mostra lo stato precedente
         setNoteMessage(note);
-        setOpenNotes(prev => ({ ...prev, [id]: !prev[id] }));
-        console.log("Rendering rows for content", content);
-        console.log("Fetching data...");
-        console.log("Toggling note for ID", id, "Current state:", openNotes);
+        setOpenNotes(prev => {
+            const newState = { ...prev, [id]: !prev[id] };
+            console.log("After update:", newState); // Mostra lo stato aggiornato
+            return newState;
+        });
     };
     
+    
+    
     const handleCloseNote = (id) => {
-        setOpenNotes(prev => ({ ...prev, [id]: undefined })); // Imposta su false per chiudere
+        setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
     };
 
     /**
@@ -199,8 +203,7 @@ export default function TableContent({
                                     (_m[key] !== "" && _m[key] !== null) ?
                                     <td>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
-                                            <Icon type="info"/>
-                                            
+                                            <Icon type="info"/> 
                                         </button>
                                     </td> 
                                     : <td></td>

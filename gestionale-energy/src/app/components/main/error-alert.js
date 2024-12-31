@@ -23,6 +23,12 @@ export default function ErrorAlert({
     // Controllare la prop alertFor e settare in base al suo valore le variabili globali
 
     const [showAlert, setShowAlert] = useState(true);
+    const [openNotes, setOpenNotes] = useState({});
+
+    const handleCloseNote = (id) => {
+      setOpenNotes(prev => ({ ...prev, [id]: false }));  // Imposta su false per chiudere
+      console.log("Codes Running")
+  };
 
     const closeAlert = () => {
         setShowAlert(false);
@@ -96,7 +102,11 @@ export default function ErrorAlert({
                         > 
                           <p>{msg}</p>
                           <button
-                          onClick={closeAlert}
+                          onClick={() => {
+                            handleCloseNote();
+                            closeAlert();
+                           
+                          }}
                           style={{
                               padding: "5px 10px",
                               backgroundColor: "orange",
