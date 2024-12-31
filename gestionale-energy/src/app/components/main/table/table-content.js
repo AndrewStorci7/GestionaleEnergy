@@ -76,13 +76,15 @@ export default function TableContent({
     }
 
     const handleNoteClick = (id, note) => {
-        console.log(openNotes);
         setNoteMessage(note);
-        setOpenNotes(prev => ({ ...prev, [id]: !prev[id] })); // Inverti lo stato per aprire o chiudere
+        setOpenNotes(prev => ({ ...prev, [id]: !prev[id] }));
+        console.log("Rendering rows for content", content);
+        console.log("Fetching data...");
+        console.log("Toggling note for ID", id, "Current state:", openNotes);
     };
     
     const handleCloseNote = (id) => {
-        setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
+        setOpenNotes(prev => ({ ...prev, [id]: undefined })); // Imposta su false per chiudere
     };
 
     /**
@@ -194,11 +196,13 @@ export default function TableContent({
                             )}
                             {Object.keys(_m).map((key, __i) => (
                                 (key === "notes") ? (
-                                    (_m[key] !== "" && _m[key] !== null) ? 
+                                    (_m[key] !== "" && _m[key] !== null) ?
+                                    <td>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
                                             <Icon type="info"/>
                                             
                                         </button>
+                                    </td> 
                                     : <td></td>
                                 ) : (key == "id") ? (
                                     null
@@ -218,9 +222,9 @@ export default function TableContent({
                                     >
                                         OK
                                     </button>
-                                    {openNotes[id] && (
+                                    
                                     <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
-                                )}
+                                
                                 </td>
                             )}
                             {/* Data */}
