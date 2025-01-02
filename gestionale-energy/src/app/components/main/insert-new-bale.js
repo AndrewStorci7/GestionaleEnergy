@@ -261,11 +261,11 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                             className='on-btn-confirm'
                             onClick={() => { 
                                 handleClick(false);
+                                handleConfirmed();
                             }}
                             >
                                 OK
                             </button>
-                            {showConfirm && <ErrorAlert alertFor="confirmed"  />}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>

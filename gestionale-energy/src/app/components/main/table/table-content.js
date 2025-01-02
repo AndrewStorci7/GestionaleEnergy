@@ -74,22 +74,32 @@ export default function TableContent({
                 return "bg-primary_2"
         }
     }
-    
+
     const handleNoteClick = (id, note) => {
-        console.log("Before update:", openNotes); // Mostra lo stato precedente
+ // Impostare il messaggio della nota
         setNoteMessage(note);
+    
+        // Aggiornare lo stato di openNotes in modo idempotente
         setOpenNotes(prev => {
+            // Non modificare se lo stato è già aggiornato come previsto
             const newState = { ...prev, [id]: !prev[id] };
-            console.log("After update:", newState); // Mostra lo stato aggiornato
+    
+            // Stampa per il debugging
+            console.log("Toggling note for ID", id, "New state:", newState);
+    
             return newState;
         });
+    
+        // Log per il contenuto e la richiesta dei dati
+        console.log("Rendering rows for content", content);
+        console.log("Fetching data...");
     };
     
     
-    
+
     const handleCloseNote = (id) => {
         setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
-    };
+     };
 
     /**
      * Get Url of route
@@ -226,7 +236,7 @@ export default function TableContent({
                                         OK
                                     </button>
                                     {openNotes[id] && (
-                                    <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
+                                    <ErrorAlert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />
                                 )}
                                 </td>
                             )}
