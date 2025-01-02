@@ -138,13 +138,13 @@ export default function TableContent({
 
                 if (data.code === 0) {
                     if (type === "presser")
-                        setContent(data.presser)
+                        setContent(data.presser) //HotContent Error
                     else if (type === "wheelman")
-                        setContent(data.wheelman)
+                        setContent(data.wheelman) //HotContent Error
                     else
-                        setContent([])
+                        setContent([]) //HotContent Error
                 } else {
-                    setEmpty(!isEmpty);
+                    setEmpty(!isEmpty); //HotContent Error
                     noData(data.message);
                 }
             } catch (error) {
