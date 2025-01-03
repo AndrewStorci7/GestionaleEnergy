@@ -94,7 +94,7 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={addWasClicked} />
+                            <TableContent type={"wheelman"} add={addWasClicked} /> 
                         </table>
                     </div>
 
