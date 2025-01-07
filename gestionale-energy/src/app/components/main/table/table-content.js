@@ -115,12 +115,12 @@ export default function TableContent({
         setChangeFromAdd(!changeFromAdd)
     } 
     
-    useEffect(() => {
+    useEffect(() =>  {
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 const id_implant = cookies.id_implant;
-                const url = getUrl();
+                const url = getUrl()
                 
                 const resp = await fetch(url, {
                     method: 'POST',
@@ -134,29 +134,26 @@ export default function TableContent({
 
                 const data = await resp.json();
 
-                console.log(data);
+                console.log(data)
 
                 if (data.code === 0) {
-                    // Use state update only after data is fetched
-                    if (type === "presser") {
-                        setContent(data.presser);
-                    } else if (type === "wheelman") {
-                        setContent(data.wheelman);
-                    } else {
-                        setContent([]);
-                    }
+                    if (type === "presser")
+                        setContent(data.presser) //HotContent Error
+                    else if (type === "wheelman")
+                        setContent(data.wheelman) //HotContent Error
+                    else
+                        setContent([]) //HotContent Error
                 } else {
-                    setEmpty(!isEmpty);
-                    setNoData(data.message);
+                    setEmpty(!isEmpty); //HotContent Error
+                    noData(data.message);
                 }
             } catch (error) {
-                console.log(error);
+                console.log(error)
             }
-        };
+        }
 
         fetchData();
-    }, [type, changeFromAdd]); // Only trigger on these dependencies
-
+    }, [type, changeFromAdd]);
 
     // test
     let i = 0;
