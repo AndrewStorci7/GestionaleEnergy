@@ -5,6 +5,7 @@ import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
 import ErrorAlert from '../error-alert';
+import { FaLess } from 'react-icons/fa';
 
 const srvurl = getSrvUrl()
 
@@ -49,7 +50,7 @@ export default function TableContent({
     const [isEmpty, setEmpty] = useState(false)
 
     const [openNotes, setOpenNotes] = useState({}); // Track open notes by their ID
-    const [showNote, setShowNote] = useState(false);  // state to show the note
+    //const [showNote, setShowNote] = useState(false);  // state to show the note
 
     const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
 
@@ -75,17 +76,31 @@ export default function TableContent({
     }
 
     const handleNoteClick = (id, note) => {
+ // Impostare il messaggio della nota
         setNoteMessage(note);
-        setOpenNotes(prev => ({ ...prev, [id]: true })); 
-    };
-
-    const handleCloseNote = (id) => {
+    
+        // Aggiornare lo stato di openNotes in modo idempotente
         setOpenNotes(prev => {
-            const newState = { ...prev };
-            delete newState[id]; 
+            // Non modificare se lo stato è già aggiornato come previsto
+            const newState = { ...prev, [id]: !prev[id] };
+    
+            // Stampa per il debugging
+            console.log("Toggling note for ID", id, "New state:", newState);
+    
             return newState;
         });
+    
+        // Log per il contenuto e la richiesta dei dati
+        console.log("Rendering rows for content", content);
+        
+        console.log("Fetching data...");
     };
+    
+    
+
+    const handleCloseNote = (id) => {
+        setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
+     };
 
     /**
      * Get Url of route
@@ -124,13 +139,13 @@ export default function TableContent({
 
                 if (data.code === 0) {
                     if (type === "presser")
-                        setContent(data.presser)
+                        setContent(data.presser) //HotContent Error
                     else if (type === "wheelman")
-                        setContent(data.wheelman)
+                        setContent(data.wheelman) //HotContent Error
                     else
-                        setContent([])
+                        setContent([]) //HotContent Error
                 } else {
-                    setEmpty(!isEmpty);
+                    setEmpty(!isEmpty); //HotContent Error
                     noData(data.message);
                 }
             } catch (error) {
@@ -146,14 +161,30 @@ export default function TableContent({
 
     // const [selectedBale, setSelectedBale] = useState(null)
 
-    const handleRowClick = (id) => {
-        console.log("table-content: " + id + ", current bale selected: " + selectedBaleId)
-        const newSelectedBaleId = (selectedBaleId === id ? null : id)
-        // setSelectedBale(newSelectedBaleId)
-        handleSelect(newSelectedBaleId)
+    const selectedBaleIdRef = useRef(null);
 
-        console.log("table-content after: " + newSelectedBaleId)
+    const handleRowClick = (id) => {
+        console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);
+    
+        // Ensure selectedBaleIdRef.current is initialized as an array
+        if (!Array.isArray(selectedBaleIdRef.current)) {
+            selectedBaleIdRef.current = [];
+        }
+    
+        // Check if the id is already in the selectedBaleIdRef array
+        const newSelectedBaleId = selectedBaleIdRef.current.includes(id)
+            ? selectedBaleIdRef.current.filter(baleId => baleId !== id)  // Remove the id if it's already selected
+            : [...selectedBaleIdRef.current, id];  // Add the id to the array if it's not selected
+    
+        // Update the ref with the new array of selected bale IDs
+        selectedBaleIdRef.current = newSelectedBaleId;
+    
+        handleSelect(newSelectedBaleId);
+    
+        console.log("table-content after: " + JSON.stringify(newSelectedBaleId));
     };
+    
+    
 
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
@@ -181,8 +212,6 @@ export default function TableContent({
                     })
 
                     return (
-                        <>
-                        {showNote && <ErrorAlert msg={noteMessage} alertFor="note" onClose={handleCloseNote} />}
                         <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}> 
                             {(primary) && (
                                 <>
@@ -198,10 +227,12 @@ export default function TableContent({
                             )}
                             {Object.keys(_m).map((key, __i) => (
                                 (key === "notes") ? (
-                                    (_m[key] !== "" && _m[key] !== null) ? 
+                                    (_m[key] !== "" && _m[key] !== null) ?
+                                    <td>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
-                                            <Icon type="info"/>
+                                            <Icon type="info"/> 
                                         </button>
+                                    </td> 
                                     : <td></td>
                                 ) : (key == "id") ? (
                                     null
@@ -221,6 +252,9 @@ export default function TableContent({
                                     >
                                         OK
                                     </button>
+                                    {openNotes[id] && (
+                                    <ErrorAlert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />
+                                )}
                                 </td>
                             )}
                             {/* Data */}
@@ -228,10 +262,6 @@ export default function TableContent({
                             {/* Ore */}
                             <td className={`${_CMNSTYLE_TD}`} key={"hour" + _i}>{hour}</td>
                         </tr>
-                        {openNotes[id] && (
-                        <ErrorAlert msg={noteMessage} alertFor="note" onClose={() => handleCloseNote(id)} />
-                        )}
-                        </>
                     )
                 })
             ) : null }

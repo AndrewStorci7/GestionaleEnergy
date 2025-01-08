@@ -25,11 +25,12 @@ export default function AddBale({
     idSelect,
     implant, 
     idUser, 
-    clickAddHandle 
+    clickAddHandle,
+    selectedBaleIdRef
 }) {
-    console.log(idSelect)
+    //console.log(idSelect)
     const [showErrorAlert, setShowErrorAlert] = useState(false);
-
+   
     const addNewBale = async () =>  {
 
         try {
