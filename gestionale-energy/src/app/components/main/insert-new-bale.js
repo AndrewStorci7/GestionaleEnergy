@@ -263,7 +263,6 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                             >
                                 OK
                             </button>
-                            {showConfirm && <ErrorAlert alertFor="confirmed"  />}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>

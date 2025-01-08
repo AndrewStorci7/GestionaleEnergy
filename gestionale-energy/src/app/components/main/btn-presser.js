@@ -25,7 +25,8 @@ export default function AddBale({
     idSelect,
     implant, 
     idUser, 
-    clickAddHandle 
+    clickAddHandle,
+    selectedBaleIdRef
 }) {
    
     const addNewBale = async () =>  {

@@ -17,18 +17,35 @@ const ExportExcel = ({ userData }) => {
     const worksheet = workbook.addWorksheet("User Data");
 
     // 2. Add columns based on the user data fields (you can adjust this based on the actual fields)
-    worksheet.columns = [
+   /* worksheet.columns = [
         { header: "ID", key: "id", width: 10 },
         { header: "Plastica", key: "plastic", width: 30 },
         { header: "REI", key: "rei", width: 10 },
         { header: "Condizione", key: "condition", width: 10 },
         { header: "Data Inserimento", key: "data_ins", width: 10 },
         { header: "Codice", key: "code", width: 10 },
-    ];
+    ]; */
 
+    worksheet.columns = [
+      { header: "Impianto", key: "implant", width: 15 },
+      
+      { key: "code", width: 15},
+      { key: "plastic", width: 15},
+      { key: "kg", width: 15},
+      { key: "id", width: 15},
+  ];
+
+    worksheet.getCell('B1').value = new Date();
+    worksheet.getCell('A4').value = 'IMPIANTO';
+    worksheet.getCell('B4').value = 'CODICE';
+    worksheet.getCell('C4').value = 'PRODOTTO';
+    worksheet.getCell('D4').value = 'KG';
+    worksheet.getCell('E4').value = 'ID';
+
+  
     // 3. Add rows from the user data
     userData.forEach((user) => {
-      worksheet.addRow({ id: user.id, plastic: user.plastic, codice: user.codice, rei: user.rei, condition: user.condition, data_ins: user.data_ins, code: user.code });
+      worksheet.addRow({implant: user.implant, code: user.code, plastic: user.plastic, kg: user.kg, id: user.id});
     });
 
     // 4. Add styling (optional)
