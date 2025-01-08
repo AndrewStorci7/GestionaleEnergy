@@ -27,7 +27,7 @@ const ExportExcel = ({ userData }) => {
     ]; */
 
     worksheet.columns = [
-      { header: "Impianto A", key: "implant", width: 15 },
+      { header: "Impianto", key: "implant", width: 15 },
       
       { key: "code", width: 15},
       { key: "plastic", width: 15},
@@ -45,7 +45,7 @@ const ExportExcel = ({ userData }) => {
   
     // 3. Add rows from the user data
     userData.forEach((user) => {
-      worksheet.addRow({implant: "A", code: user.code, plastic: user.plastic, kg: user.kg, id: user.id});
+      worksheet.addRow({implant: user.implant, code: user.code, plastic: user.plastic, kg: user.kg, id: user.id});
     });
 
     // 4. Add styling (optional)

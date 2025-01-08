@@ -92,6 +92,7 @@ export default function TableContent({
     
         // Log per il contenuto e la richiesta dei dati
         console.log("Rendering rows for content", content);
+        
         console.log("Fetching data...");
     };
     
@@ -160,14 +161,30 @@ export default function TableContent({
 
     // const [selectedBale, setSelectedBale] = useState(null)
 
-    const handleRowClick = (id) => {
-        console.log("table-content: " + id + ", current bale selected: " + selectedBaleId)
-        const newSelectedBaleId = (selectedBaleId === id ? null : id)
-        // setSelectedBale(newSelectedBaleId)
-        handleSelect(newSelectedBaleId)
+    const selectedBaleIdRef = useRef(null);
 
-        console.log("table-content after: " + newSelectedBaleId)
+    const handleRowClick = (id) => {
+        console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);
+    
+        // Ensure selectedBaleIdRef.current is initialized as an array
+        if (!Array.isArray(selectedBaleIdRef.current)) {
+            selectedBaleIdRef.current = [];
+        }
+    
+        // Check if the id is already in the selectedBaleIdRef array
+        const newSelectedBaleId = selectedBaleIdRef.current.includes(id)
+            ? selectedBaleIdRef.current.filter(baleId => baleId !== id)  // Remove the id if it's already selected
+            : [...selectedBaleIdRef.current, id];  // Add the id to the array if it's not selected
+    
+        // Update the ref with the new array of selected bale IDs
+        selectedBaleIdRef.current = newSelectedBaleId;
+    
+        handleSelect(newSelectedBaleId);
+    
+        console.log("table-content after: " + JSON.stringify(newSelectedBaleId));
     };
+    
+    
 
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
