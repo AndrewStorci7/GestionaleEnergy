@@ -1,6 +1,8 @@
+'use client'
+
 import ErrorAlert from './error-alert';
 import { getSrvUrl } from '@@/config';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const srvurl = getSrvUrl()
 
@@ -21,14 +23,17 @@ const srvurl = getSrvUrl()
  * @param {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
  *                                   passa i dati ricevuti
  */
-export default function AddBale({ 
+export default function BtnPresser({ 
     idSelect,
     implant, 
     idUser, 
-    clickAddHandle,
-    selectedBaleIdRef
+    clickAddHandle
 }) {
-   
+
+    useEffect(() => {
+        console.log("useEffect" + idSelect)
+    }, [idSelect])
+
     const addNewBale = async () =>  {
         try {
             const data = {
@@ -77,8 +82,27 @@ export default function AddBale({
         }
     }
 
-    const handleUpdate = (id) => {
-        console.log("Modifica" + id)
+    const handleUpdate = async (id) => {
+        try {
+            // const data = {
+            //     id_presser: idUser,
+            //     id_implant: implant
+            // }
+    
+            const check = await fetch(srvurl + '/delete-bale', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_bale: id }),
+            })
+    
+            const resp = await check.json()
+    
+            if (resp.code < 0) {
+                handleError(resp.message)
+            }
+        } catch (error) {
+            handleError(error)
+        }
     }
 
     const handleClick = (f) => {
@@ -104,12 +128,12 @@ export default function AddBale({
         console.log(showAlert)
         // Imposta l'errore e mostra l'alert
         setErrorMessage(msg);
-        setShowAlert(!showAlert);
+        setShowAlert(prev => !prev);
     };
 
     // Funzione per chiudere l'alert
     const closeAlert = () => {
-        setShowAlert(false);
+        setShowAlert(prev => !prev);
     };
 
     return (

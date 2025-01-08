@@ -7,7 +7,7 @@ import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
-import AddBale from "../btn-presser";
+import BtnPresser from "../btn-presser";
 
 import { useEffect, useState } from "react";
 
@@ -33,12 +33,12 @@ export default function Table({ type, implant, idUser }) {
     const [isSelected, setSelected] = useState(null)
 
     const addHandle = (resp) => {
-        setState(!addWasClicked)
+        setState(prev => !prev)
         setResp(resp)
     }
 
     const noData = (msg) =>  {
-        setEmpty(!isEmpty)
+        setEmpty(prev => !prev)
         setMsg(msg)
     }
 
@@ -48,12 +48,8 @@ export default function Table({ type, implant, idUser }) {
 
     const handleSelect = (select) => {
         setSelected(select)
+        console.log("IS SELECTED: " + isSelected)
     }
-
-    useEffect(() => {
-        handleSelect(isSelected)
-        // console.log("Oggetto finale: " + isSelected)
-    }, [isSelected])
 
     /// Common style
     const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
@@ -82,14 +78,14 @@ export default function Table({ type, implant, idUser }) {
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
                             <TableContent 
-                            type={"presser"} 
-                            handleSelect={handleSelect}
-                            selectedBaleId={isSelected}
-                            add={addWasClicked} 
-                            ids={ids} 
-                            noData={noData} 
-                            primary 
-                             />
+                                type={"presser"} 
+                                handleSelect={(e) => handleSelect(e)}
+                                selectedBaleId={isSelected}
+                                add={addWasClicked} 
+                                ids={ids} 
+                                noData={noData} 
+                                primary 
+                            />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
@@ -98,7 +94,7 @@ export default function Table({ type, implant, idUser }) {
                         </table>
                     </div>
 
-                    <AddBale 
+                    <BtnPresser 
                         implant={implant}
                         idUser={idUser}
                         clickAddHandle={addHandle}

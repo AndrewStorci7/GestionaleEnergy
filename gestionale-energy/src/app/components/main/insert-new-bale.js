@@ -104,7 +104,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
     }
 
     const handleConfirmed = () =>{
-        setShowConfirm(true);
+        setShowConfirm(prev => !prev);
     }
 
     switch (type) {
@@ -180,7 +180,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                             >
                                 OK
                             </button>
-                            {showConfirm && <ErrorAlert alertFor="confirmed"  />}
+                            {showConfirm && <ErrorAlert alertFor="confirmed" handleClose={handleConfirmed} />}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>

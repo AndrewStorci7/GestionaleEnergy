@@ -10,7 +10,7 @@ export default function CheckButton({ isSelected = false, handleClick }) {
     const [isChecked, setIsChecked] = useState(false);
 
     const handleToggle = () => {
-        setIsChecked(!isChecked);
+        setIsChecked(prev => !prev);
         handleClick(isChecked)
     };
 

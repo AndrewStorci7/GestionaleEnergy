@@ -9,7 +9,7 @@ import React, { useState } from "react";
  * 
  * @param {string}  alertFor    Il tipo di alert: [ 'error' | 'note' | 'confirmed']
  * 
- * @param {function}  handleFor Funzioen che gestisce la chiusura dell'alert
+ * @param {function}  handleClose Funzioen che gestisce la chiusura dell'alert
  * 
  * @returns 
  */
@@ -24,29 +24,25 @@ export default function ErrorAlert({
 
     const [showAlert, setShowAlert] = useState(true);
 
-    const closeAlertNote = () => {
-        setShowAlert(false);
-        handleClose();
-    };
-
     const closeAlert = () => {
       setShowAlert(false);
-      
-  };
+      handleClose();
+    };
+    
     const refreshPage = () => {
       location.reload();
     };
 
     const handleConfirmedClose = () => {
       closeAlert();
-      window.location.reload(); 
-  };
+      window.location.reload();
+    };
 
     switch(alertFor) {
         case "error": {
             return(
                 <>
-                  {showAlert && (
+                  {/*{showAlert && ( */}
                     <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-3">
                       <div
                         style={{
@@ -80,13 +76,13 @@ export default function ErrorAlert({
                         </button>
                       </div>
                   </div>
-                )}
+                {/* )} */}
               </>
             );
         }        case "note" : {
           return (
               <div>
-                  {showAlert && (
+                  {/* {showAlert && ( */}
                       <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
                           <div
                               style={{
@@ -120,7 +116,7 @@ export default function ErrorAlert({
                               </button>
                           </div>
                       </div>
-                  )}
+                  {/* )} */}
               </div>
           );
       }
@@ -128,7 +124,7 @@ export default function ErrorAlert({
         case "confirmed" : {
           return(
               <div>
-              {showAlert && (
+              {/* {showAlert && ( */}
                  <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
                     <div
                       style={{
@@ -165,7 +161,7 @@ export default function ErrorAlert({
                       </button>
                    </div>
                 </div>
-              )}
+              {/* )} */}
              </div>
           )
       }

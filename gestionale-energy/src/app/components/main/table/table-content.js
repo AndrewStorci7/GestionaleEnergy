@@ -100,7 +100,7 @@ export default function TableContent({
 
     const handleCloseNote = (id) => {
         setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
-     };
+    };
 
     /**
      * Get Url of route
