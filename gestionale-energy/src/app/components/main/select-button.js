@@ -4,7 +4,7 @@ import { FaCheck, FaRegSquare } from 'react-icons/fa'; // FontAwesome icons
 /**
  * Check button per modifica ed elimina balla pressista
  * 
- * @prop {function} handleClick Funzione che gestisce lo stato del click 
+ * @param {function} handleClick Funzione che gestisce lo stato del click 
  */
 export default function CheckButton({ isSelected = false, handleClick }) {
     const [isChecked, setIsChecked] = useState(false);
