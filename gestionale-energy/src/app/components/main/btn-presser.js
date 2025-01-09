@@ -20,6 +20,8 @@ const srvurl = getSrvUrl()
  *  
  * @param {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
  *                                   passa i dati ricevuti
+ * 
+ * @param {int} newSelectedBaleId
  */
 export default function AddBale({ 
     idSelect,
