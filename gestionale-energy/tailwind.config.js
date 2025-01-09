@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       componets: {
         'on-fix-index': {
-          '@apply relative z-[2]': {},
+          '@apply relative': {},
         },
         'on-header': {
           '@apply w-full bg-white text-thirdary font-bold text-2xl rounded-[5px]': {},

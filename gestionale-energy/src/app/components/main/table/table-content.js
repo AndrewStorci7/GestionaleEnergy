@@ -161,7 +161,7 @@ export default function TableContent({
 
     // const [selectedBale, setSelectedBale] = useState(null)
 
-    const selectedBaleIdRef = useRef(null);
+    const selectedBaleIdRef = useRef([]);
 
     const handleRowClick = (id) => {
         console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);

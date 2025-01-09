@@ -4,7 +4,7 @@
 
 @layer components {
   .on-fix-index {
-    @apply relative z-[9998];
+    @apply relative z-[2];
   }
 
   .on-header {

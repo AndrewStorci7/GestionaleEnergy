@@ -1,6 +1,6 @@
 import ErrorAlert from './error-alert';
 import { getSrvUrl } from '@@/config';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const srvurl = getSrvUrl()
 
@@ -25,12 +25,11 @@ export default function AddBale({
     idSelect,
     implant, 
     idUser, 
-    clickAddHandle,
-    selectedBaleIdRef
+    clickAddHandle 
 }) {
-    //console.log(idSelect)
+    
     const [showErrorAlert, setShowErrorAlert] = useState(false);
-   
+
     const addNewBale = async () =>  {
 
         try {
@@ -75,7 +74,7 @@ export default function AddBale({
         console.log("Modifica" + id)
     }
 
-    const handleClick = (f) => {
+     useEffect((f) => { 
         console.log(idSelect)
         if (idSelect !== null) {
             if (f)
@@ -84,7 +83,7 @@ export default function AddBale({
         } else {
             setShowErrorAlert(!showErrorAlert)
         }
-    }
+     })
 
     return (
         <>
