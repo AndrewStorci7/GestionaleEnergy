@@ -6,7 +6,7 @@ import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
-import ErrorAlert from "../../components/main/error-alert";
+import Alert from "../../components/main/alert";
 
 export default function Admin() {
 
@@ -26,7 +26,7 @@ export default function Admin() {
                     // setIdUser(cookies.id_user);
                 }
             } catch (error) {
-                <ErrorAlert msg={error}/>
+                <Alert msg={error}/>
                 //console.log(`Error: ${_err}`);
             }
         }

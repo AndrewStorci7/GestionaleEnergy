@@ -27,7 +27,7 @@ const srvurl = getSrvUrl()
 export default function SelectInput({ searchFor, id, fixedW, value, onChange, type }, props) {
 
     const fixed_width = (fixedW) && "w-full" 
-    const _CMNSTYLE_SELECT = `rounded-md ${fixed_width}`
+    const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black`
 
     // Rotta per server
     const [error, setError] = useState("")

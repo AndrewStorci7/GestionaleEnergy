@@ -6,8 +6,6 @@ import { useEffect } from 'react';
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
- * 
- * @returns 
  */
 
 const CheckCookie = () => {
@@ -25,7 +23,8 @@ const CheckCookie = () => {
 
   return null;
 };
- export default CheckCookie
+
+export default CheckCookie
 
 
 

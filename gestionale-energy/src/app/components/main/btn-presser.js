@@ -1,6 +1,6 @@
 'use client'
 
-import ErrorAlert from './error-alert';
+import Alert from './alert';
 import { getSrvUrl } from '@@/config';
 import React, { useEffect, useState } from "react";
 
@@ -30,8 +30,10 @@ export default function BtnPresser({
     clickAddHandle
 }) {
 
+    const [idBale, setIdBale] = useState(0)
+
     useEffect(() => {
-        console.log("useEffect" + idSelect)
+        setIdBale(idSelect)
     }, [idSelect])
 
     const addNewBale = async () =>  {
@@ -50,59 +52,59 @@ export default function BtnPresser({
             const resp = await check.json()
     
             if (!check.ok) {
-                handleError("Errore nel SERVER durante la modifica!")
+                handleAlert("Errore nel SERVER durante la modifica!")
             } else {
                 clickAddHandle(resp.data)
             }
         } catch (error) {
-            handleError(error)
+            handleAlert(error)
         }
     }
 
     const handleDelete = async (id) => {
         try {
-            // const data = {
-            //     id_presser: idUser,
-            //     id_implant: implant
-            // }
-    
+            const f_id = (typeof id === 'object') ? id[0] : id;
+
             const check = await fetch(srvurl + '/delete-bale', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_bale: id }),
+                body: JSON.stringify({ id_bale: f_id }),
             })
     
             const resp = await check.json()
     
             if (resp.code < 0) {
-                handleError(resp.message)
-            }
+                handleAlert(resp.message)
+            } else {
+                handleAlert(resp.message, 'confirmed')
+            } 
         } catch (error) {
-            handleError(error)
+            handleAlert(error)
         }
     }
 
     const handleUpdate = async (id) => {
-        try {
-            // const data = {
-            //     id_presser: idUser,
-            //     id_implant: implant
-            // }
+        const f_id = (typeof id === 'object') ? id[0] : id;
+        setIdBale(f_id)
+        handleAlert("", 'update-p')
+        // try {
     
-            const check = await fetch(srvurl + '/delete-bale', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_bale: id }),
-            })
+        //     const f_id = (typeof id === 'object') ? id[0] : id;
+
+        //     const check = await fetch(srvurl + '/delete-bale', {
+        //         method: 'POST',
+        //         headers: {'Content-Type': 'application/json' },
+        //         body: JSON.stringify({ id_bale: f_id }),
+        //     })
     
-            const resp = await check.json()
+        //     const resp = await check.json()
     
-            if (resp.code < 0) {
-                handleError(resp.message)
-            }
-        } catch (error) {
-            handleError(error)
-        }
+        //     if (resp.code < 0) {
+        //         handleAlert(resp.message)
+        //     }
+        // } catch (error) {
+        //     handleAlert(error)
+        // }
     }
 
     const handleClick = (f) => {
@@ -112,21 +114,21 @@ export default function BtnPresser({
                 handleUpdate(idSelect)
             else handleDelete(idSelect)
         } else {
-            handleError("Nessuna balla selezionata!")
+            handleAlert("Nessuna balla selezionata!")
         }
     }
 
     const [showAlert, setShowAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [scope, setScope] = useState('')
 
     /**
      * Handle the error when no bale is selected
      * 
      * @param {string} msg Message to display
      */
-    const handleError = (msg, scope = "error") => {
-        console.log(showAlert)
-        // Imposta l'errore e mostra l'alert
+    const handleAlert = (msg, scope = "error") => {
+        setScope(scope)
         setErrorMessage(msg);
         setShowAlert(prev => !prev);
     };
@@ -159,10 +161,11 @@ export default function BtnPresser({
             </div>
 
             {showAlert && 
-                <ErrorAlert 
+                <Alert 
                     handleClose={closeAlert} 
-                    alertFor="error" 
+                    alertFor={scope} 
                     msg={errorMessage}
+                    idBale={idBale}
                 />
             }
         </>

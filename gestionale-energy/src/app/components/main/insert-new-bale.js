@@ -6,7 +6,7 @@ import CheckButton from "./select-button"
 import Icon from './get-icon';
 import SelectInput from './search/select'
 import Cookies from 'js-cookie';
-import ErrorAlert from './error-alert';
+import Alert from './alert';
 
 const srvurl = getSrvUrl();
 
@@ -93,13 +93,13 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
             })
 
             if (!resp.ok) {
-                <ErrorAlert msg={error} />
+                <Alert msg={error} />
             } else {
                 confirmHandle
             }
 
         } catch (error) {
-            <ErrorAlert msg={error} />
+            <Alert msg={error} />
         }
     }
 
@@ -180,7 +180,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                             >
                                 OK
                             </button>
-                            {showConfirm && <ErrorAlert alertFor="confirmed" handleClose={handleConfirmed} />}
+                            {showConfirm && <Alert alertFor="confirmed" handleClose={handleConfirmed} />}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>
@@ -229,7 +229,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         id="peso-pressista"
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
-                        placeholder="Inserisci note"
+                        placeholder="Inserisci peso"
                         />}
                     </td>
                     <td className={`${_CMNSTYLE_TD}`}>

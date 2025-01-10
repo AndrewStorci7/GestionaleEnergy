@@ -11,7 +11,6 @@ import Cookies from 'js-cookie';
  * 
  * @param {string}  btnPressed    tipi di bottoni: [ 'impA' | 'impB' | 'impAB']
  * 
- * @returns 
  */
 const srvurl = getSrvUrl();
 

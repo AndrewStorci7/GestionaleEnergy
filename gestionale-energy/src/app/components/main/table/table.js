@@ -98,7 +98,7 @@ export default function Table({ type, implant, idUser }) {
                         implant={implant}
                         idUser={idUser}
                         clickAddHandle={addHandle}
-                        select={isSelected}
+                        idSelect={isSelected}
                     />
 
                     {(!addWasClicked) ? (
