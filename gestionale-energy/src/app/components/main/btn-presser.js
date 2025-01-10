@@ -20,14 +20,14 @@ const srvurl = getSrvUrl()
  *  
  * @param {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
  *                                   passa i dati ricevuti
- * 
- * @param {int} newSelectedBaleId
+ * @param {function} handleSelect
  */
 export default function AddBale({ 
     idSelect,
     implant, 
     idUser, 
-    clickAddHandle 
+    clickAddHandle,
+    handleSelect
 }) {
     
     const [showErrorAlert, setShowErrorAlert] = useState(false);
@@ -69,14 +69,14 @@ export default function AddBale({
     };
 
     const handleDelete = (id) => {
-        console.log("Elimina" + id)
+        console.log("Elimina" + id);
     }
 
     const handleUpdate = (id) => {
         console.log("Modifica" + id)
     }
 
-     useEffect((f) => { 
+    const handleClick = (f) => {
         console.log(idSelect)
         if (idSelect !== null) {
             if (f)
@@ -85,7 +85,7 @@ export default function AddBale({
         } else {
             setShowErrorAlert(!showErrorAlert)
         }
-     })
+    }
 
     return (
         <>
@@ -94,12 +94,12 @@ export default function AddBale({
                 <div className="flex flex-row-reverse">
                     <button 
                     className="on-btn-presser" 
-                    onClick={() => handleClick(false)}>
+                    onClick={() => handleClick()}>
                         Elimina
                     </button>
                     <button 
                     className="on-btn-presser mr-[50px]" 
-                    onClick={() => handleClick(true)}>
+                    onClick={() => handleClick()}>
                         Modifica
                     </button>
                     <button 

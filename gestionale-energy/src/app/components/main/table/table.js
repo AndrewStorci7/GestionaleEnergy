@@ -8,6 +8,7 @@ import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
 import AddBale from "../btn-presser";
+import AdminPanel from "../admin-options";
 
 import { useEffect, useState } from "react";
 
@@ -31,6 +32,7 @@ export default function Table({ type, implant, idUser }) {
     const [msgEmpty, setMsg] = useState("")
     const [isEmpty, setEmpty] = useState(false)
     const [isSelected, setSelected] = useState(null)
+    const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
 
     const addHandle = (resp) => {
         setState(!addWasClicked)
@@ -54,6 +56,10 @@ export default function Table({ type, implant, idUser }) {
         handleSelect(isSelected)
         console.log("Oggetto finale: " + isSelected)
     }, [isSelected])
+
+    const handleDownloadClick = (fileType) => {
+        setBtnPressed(fileType); // Trigger download for the clicked report type
+      };
 
     /// Common style
     const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
@@ -194,13 +200,14 @@ export default function Table({ type, implant, idUser }) {
                         <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
                         <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
                         <div className="grid grid-cols-2 gap-1 mt-20">
-                            <DownloadReport downloadFor={"file1"}>GIOR. IMPIANTO A</DownloadReport>
-                            <DownloadReport downloadFor={"file2"}>GIOR. TEMPI IMP A</DownloadReport>
-                            <DownloadReport downloadFor={"file3"}>GIOR. IMPIANTO B</DownloadReport>
-                            <DownloadReport downloadFor={"file4"}>GIOR. TEMPI IMP B</DownloadReport>
-                            <DownloadReport downloadFor={"file5"}>GIOR. IMPIANTO A e B</DownloadReport>
-                            <DownloadReport downloadFor={"file6"}>GIOR. TEMPI IMP A e B</DownloadReport>
+                            <button onClick={() => handleDownloadClick('file1')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A</button>
+                            <button onClick={() => handleDownloadClick('file2')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A</button>
+                            <button onClick={() => handleDownloadClick('file3')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO B</button>
+                            <button onClick={() => handleDownloadClick('file4')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP B</button>
+                            <button onClick={() => handleDownloadClick('file5')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A e B</button>
+                            <button onClick={() => handleDownloadClick('file6')} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A e B</button>
                         </div>
+                        <AdminPanel btnPressed={btnPressed} />
                         </div>
                         <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
                         <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
@@ -229,6 +236,7 @@ export default function Table({ type, implant, idUser }) {
                         <DownloadReport  downloadFor={"File_Scaricato"} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</DownloadReport>
                         </div>
                         </div>
+                        
                     </div>
                     )}
                 </>
