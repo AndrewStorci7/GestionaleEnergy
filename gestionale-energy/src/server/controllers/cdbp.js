@@ -25,7 +25,7 @@ class Cdbp extends Common {
     async get(req, res) {
         try {
             const [select] = await this.db.query(
-                "SELECT * FROM cond_wheelman_bale"
+                "SELECT * FROM cond_presser_bale"
             );
     
             if (select && select.length > 0) {

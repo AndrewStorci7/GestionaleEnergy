@@ -108,7 +108,7 @@ class Console {
     delete(str) {
         var date = new Date()
         var callerInfo = this.getCallerInfo();
-        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'Success'.padEnd(3)} ${_reset}][${callerInfo}]: `;
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'Delete'.padEnd(3)} ${_reset}][${callerInfo}]: `;
         let msg = `${_blue}Delete Info${_reset}: `
         if (str != "undefined" || str != null || str != "") {
             if (typeof str === "object")

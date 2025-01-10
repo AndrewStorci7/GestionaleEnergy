@@ -45,8 +45,11 @@ class PresserBale extends Bale {
             `SELECT ${this.table}.id AS 'id', code_plastic.code AS 'plastic',
             code_plastic.desc AS 'code',
             rei.name AS 'rei',
+            ${this.table}.id_rei AS '_idRei',
             cond_${this.table}.type AS 'condition',
+            ${this.table}.id_cpb AS '_idCpb',
             selected_bale.name AS 'selected_bale',
+            ${this.table}.id_sb AS '_idSb',
             ${this.table}.note AS 'notes',
             ${this.table}.data_ins AS 'data_ins'
             FROM ${this.table} JOIN code_plastic JOIN cond_${this.table} JOIN rei JOIN selected_bale

@@ -231,17 +231,26 @@ class TotalBale extends Common {
 
                 var query = `DELETE FROM ${this.table} WHERE `;
 
-                if (id_bale.length > 1) {
-                    for (const id of id_bale) {
-                        console.info(id)
-                    }
-                } else {
-                    console.info(id_bale)
-                }
+                // if (id_bale.length > 1) {
+                //     for (const id of id_bale) {
+                //         console.info(id)
+                //     }
+                // } else {
+                //     console.info(id_bale)
+                // }
 
-                // const [check] = await this.db.query(
-                //     "DELETE FROM `pb_wb` WHERE (`id_pb`=27 AND `id_wb`=22) OR(`id_pb`=59 AND `id_wb`=49)"
-                // )
+                const [check] = await this.db.query(
+                    `DELETE FROM ${this.table} WHERE ${this.table}.id_pb=?`,
+                    [id_bale]
+                )
+
+                console.delete(check)
+
+                if (check) {
+                    res.json({ cod: 0, message: `Balla numero ${id_bale} eliminata con successo!` })
+                } else {
+                    res.json({ cod: -1, message: `Errore nell'eliminazione Balla numero ${id_bale}` })
+                }
             } else {
                 res.json({ code: -1, message: "Nessuna balla specificata" })
             }
