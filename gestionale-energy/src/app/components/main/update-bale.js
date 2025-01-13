@@ -9,6 +9,7 @@ const srvurl = getSrvUrl()
  * 
  * @param {string}  type    Tipo della balla da modificare: [ 'presser' | 'wheelman' ]
  * @param {int}     idBale  Id numerico della balla da modificare 
+ * @param {Function} handlerConfirm Funzione che gestisce il flusso dopo aver cliccato il bottone di Annulla o Conferma 
  */
 export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
 
@@ -168,15 +169,18 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                     // defaultValue={note}
                 />
             </div>
-            <div className=''>
-                <button >
+            <div className='grid grid-cols-4'>
+                <button 
+                className='col-span-2'
+                onClick={handlerConfirm}
+                >
                     Annulla
                 </button>
                 <button 
-                className='on-btn-confirm'
+                className='on-btn-confirm col-span-2'
                 onClick={() => { 
                     handleClick(type === 'presser');
-                    handleConfirmed();
+                    handlerConfirm
                 }}
                 >
                     OK
