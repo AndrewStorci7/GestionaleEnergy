@@ -107,7 +107,7 @@ class TotalBale extends Common {
                 [id_implant, turn[0], turn[1], turn[0], turn[1]]
             );
 
-            console.info(select)
+            // console.info(select)
 
             if (select !== 'undefined' || select !== null) {
 
