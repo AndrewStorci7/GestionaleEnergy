@@ -29,7 +29,7 @@ class Reason extends Common {
             );
     
             if (select && select.length > 0) {
-                console.info(select)
+                // console.info(select)
                 res.json({ code: 0, data: select })
             } else {
                 res.json({ code: 1, message: "No data fetched" })

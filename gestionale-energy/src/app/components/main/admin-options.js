@@ -11,7 +11,6 @@ import Cookies from 'js-cookie';
  * 
  * @param {string}  reportType    Il tipo di report/esportazione ['file1','file2','file3','file4','file5','file6']
  * 
- * @returns 
  */
 
 const srvurl = getSrvUrl();

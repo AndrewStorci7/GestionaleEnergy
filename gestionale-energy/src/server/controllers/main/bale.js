@@ -12,8 +12,8 @@ const console = new Console("Bale");
  */
 class Bale extends Common {
 
-    constructor(db, datetime, idUser) {
-        super(db, idUser);
+    constructor(db, table, idUser, datetime) {
+        super(db, table, idUser);
         // this.db = db;
         // this.idUser = idUser;
         this.datetime = datetime;
@@ -35,6 +35,60 @@ class Bale extends Common {
             return "BETWEEN '22:00:00' AND '05:59:59'";
         else
             return "";
+    }
+
+    checkParams(obj, options) {
+        if (options === null)
+            throw new Error("No Table was defined")
+
+        if (obj !== null && obj !== undefined) {
+            if (typeof obj === 'object') {
+                // console.info("Object detected")
+
+                var query = this.selectQuery(options)
+                var columns = []
+                var params = []
+                
+                // Creo un array con solo i valori diversi da "" (vuoto o null)
+                // Differenzio per evitare casini nella creazione della stringa per la query
+                for (const [key, value] of Object.entries(obj)) {
+                    if (value !== '' && value !== 0 && (value !== 'undefined' || value !== undefined)) {
+                        columns.push(key)
+                        params.push(value)
+                    }
+                }
+
+                // Creo correttamente la query
+                for (const [index, val] of Object.entries(columns)) {
+                    if (index < columns.length - 2)
+                        query += `${val}=?, `
+                    else 
+                        query += (val !== 'where') ? `${val}=? ` : "WHERE id=?"
+                }
+
+                return { query, params }
+            } else {
+                return obj
+            }
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * Select query only for UPDATE and DELETE 
+     * 
+     * @param {object} options  
+     */
+    selectQuery(options) {
+        switch (options.scope) {
+            case "delete": {
+                return `DELETE FROM ${options.table} WHERE `
+            }
+            case "update": {
+                return `UPDATE ${options.table} SET ` 
+            }
+        }
     }
 }
 

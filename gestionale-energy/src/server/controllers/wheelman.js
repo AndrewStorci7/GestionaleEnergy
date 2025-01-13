@@ -12,28 +12,28 @@ const console = new Console("Wheelman");
  */
 class WheelmanBale extends Bale {
 
-    constructor(db, id, idUser, plastic, rei, cpb, sb, note, datetime) {
-        super(db, id, datetime)
-        this.idUser = idUser;
-        this.plastic = plastic;
-        this.rei = rei;
-        this.cpb = cpb;
-        this.sb = sb;
-        this.note = note;
+    constructor(db, table, id) {
+        super(db, table, id)
+        // this.idUser = idUser;
+        // this.plastic = plastic;
+        // this.rei = rei;
+        // this.cpb = cpb;
+        // this.sb = sb;
+        // this.note = note;
     }
 
-    get info() {
-        return { 
-            id: this.id, 
-            idUser: this.idUser, 
-            plastic: this.plastic, 
-            rei: this.rei, 
-            cpb: this.cpb, 
-            sb: this.sb,
-            note: this.note,
-            datetime: this.datetime
-        }
-    }
+    // get info() {
+    //     return { 
+    //         id: this.id, 
+    //         idUser: this.idUser, 
+    //         plastic: this.plastic, 
+    //         rei: this.rei, 
+    //         cpb: this.cpb, 
+    //         sb: this.sb,
+    //         note: this.note,
+    //         datetime: this.datetime
+    //     }
+    // }
 
     handleWheelmanData = async (req) => {
         const {id} = req.body;
@@ -41,18 +41,18 @@ class WheelmanBale extends Bale {
         console.info(`Id Presser received: ${id}`);
         
         const [rows] = await this.db.query(
-            "SELECT wheelman_bale.id AS 'id', cond_wheelman_bale.type AS 'condition', " + 
-            "reas_not_tying.name AS 'reason', " +
-            "wheelman_bale.weight AS 'weight', " +
-            "warehouse_dest.name AS 'warehouse', " +
-            "wheelman_bale.note AS 'notes', " +
-            "wheelman_bale.printed AS 'is_printed', " +
-            "wheelman_bale.data_ins AS 'data_ins' " +
-            "FROM wheelman_bale JOIN reas_not_tying JOIN cond_wheelman_bale JOIN warehouse_dest " +
-            "ON wheelman_bale.id_cwb = cond_wheelman_bale.id AND " +
-            "wheelman_bale.id_rnt = reas_not_tying.id AND " +
-            "wheelman_bale.id_wd = warehouse_dest.id " +
-            "WHERE wheelman_bale.id = ? LIMIT 1",
+            `SELECT ${this.table}.id AS 'id', cond_${this.table}.type AS 'condition', 
+            reas_not_tying.name AS 'reason',
+            ${this.table}.weight AS 'weight',
+            warehouse_dest.name AS 'warehouse',
+            ${this.table}.note AS 'notes',
+            ${this.table}.printed AS 'is_printed',
+            ${this.table}.data_ins AS 'data_ins'
+            FROM ${this.table} JOIN reas_not_tying JOIN cond_${this.table} JOIN warehouse_dest
+            ON ${this.table}.id_cwb = cond_${this.table}.id AND
+            ${this.table}.id_rnt = reas_not_tying.id AND
+            ${this.table}.id_wd = warehouse_dest.id
+            WHERE ${this.table}.id = ? LIMIT 1`,
             [id]
         );
     
@@ -92,11 +92,11 @@ class WheelmanBale extends Bale {
     
             console.info("[Update]: ", body)
 
-            const [check] = await this.db.query(
-                "UPDATE wheelman_bale SET id_wheelman=?, id_cwb=?, id_rnt=?, id_wd=?, note=?, printed=?, data_ins=NOW(), weigth=?" + 
-                "WHERE id=?",
-                [body.id_user, body.id_cwb, body.id_rnt, body.id_wd, body.note, body.isPrinted, body.weight, body.where]
-            );
+            const san = this.checkParams(body, {scope: "update", table: this.table})
+            // console.info("QUERY DETECTED: " + prova.query)
+            // console.info("PARAMS DETECTED: " + prova.params)
+            
+            const [check] = await this.db.query(san.query, san.params);
     
             if (check) {
                 res.json({ code: 0 });

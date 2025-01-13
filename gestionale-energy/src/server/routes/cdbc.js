@@ -1,11 +1,11 @@
 const express = require('express');
-const ConditionWheelmanBaleController = require('../controllers/cdbc');
+const Controller = require('../controllers/cdbc');
 
-module.exports = (db) => {
+module.exports = (db, table) => {
     const router = express.Router();
-    const cdbcCtrl = new ConditionWheelmanBaleController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/cdbp', (req, res) => cdbcCtrl.get(req, res));
+    router.get('/cdbp', (req, res) => controller.get(req, res));
 
     return router;
 }

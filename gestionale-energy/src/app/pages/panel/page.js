@@ -6,7 +6,7 @@ import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
-import ErrorAlert from "@/app/components/main/error-alert";
+import Alert from "@/app/components/main/alert";
 import CheckCookie from "@/app/components/main/check-cookie";
 
 export default function Admin() {
@@ -43,7 +43,7 @@ export default function Admin() {
                 }else(CheckCookie())
             } catch (error) {
                 //console.log(`Error: ${_err}`);
-                <ErrorAlert msg={error}/>
+                <Alert msg={error}/>
             }
         }
 

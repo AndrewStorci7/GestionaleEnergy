@@ -1,11 +1,11 @@
 const express = require('express');
-const WarehouseController = require('../controllers/warehouse');
+const Controller = require('../controllers/warehouse');
 
-module.exports = (db) => {
+module.exports = (db, table) => {
     const router = express.Router();
-    const warehouseCtrl = new WarehouseController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/dest-wh', (req, res) => warehouseCtrl.get(req, res));
+    router.get('/dest-wh', (req, res) => controller.get(req, res));
 
     return router;
 }

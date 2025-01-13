@@ -43,18 +43,18 @@ app.use(cors());
 
 app.use(loginRouter(db));
 
-app.use(presserRoute(db));
-app.use(wheelmanRoute(db));
-app.use(totalBaleRoute(db));
-app.use(plasticRoute(db));
-app.use(cdbpRoute(db));
-app.use(cdbcRoute(db));
-app.use(warehouseRoute(db));
-app.use(reiRoute(db));
-app.use(selectedBaleRoute(db));
-app.use(reasonRouter(db));
-app.use(implantRouter(db));
+app.use(presserRoute(db, "presser_bale"));
+app.use(wheelmanRoute(db, "wheelman_bale"));
+app.use(totalBaleRoute(db, "pb_wb"));
+app.use(plasticRoute(db, "code_plastic"));
+app.use(cdbpRoute(db, "cond_presser_bale"));
+app.use(cdbcRoute(db, "cond_wheelman_bale"));
+app.use(warehouseRoute(db, "warehouse_dest"));
+app.use(reiRoute(db, "rei"));
+app.use(selectedBaleRoute(db, "selected_bale"));
+app.use(reasonRouter(db, "reas_not_tying"));
+app.use(implantRouter(db, "implants"));
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on ${URL}:${PORT}`);
 });

@@ -1,6 +1,8 @@
-import ErrorAlert from './error-alert';
+'use client'
+
+import Alert from './alert';
 import { getSrvUrl } from '@@/config';
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const srvurl = getSrvUrl()
 
@@ -22,18 +24,20 @@ const srvurl = getSrvUrl()
  *                                   passa i dati ricevuti
  * @param {function} handleSelect
  */
-export default function AddBale({ 
+export default function BtnPresser({ 
     idSelect,
     implant, 
     idUser, 
-    clickAddHandle,
-    handleSelect
+    clickAddHandle
 }) {
-    
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
+
+    const [idBale, setIdBale] = useState(0)
+
+    useEffect(() => {
+        setIdBale(idSelect)
+    }, [idSelect])
 
     const addNewBale = async () =>  {
-
         try {
             const data = {
                 id_presser: idUser,
@@ -49,47 +53,94 @@ export default function AddBale({
             const resp = await check.json()
     
             if (!check.ok) {
-                // TODO insierire componente ErrorAlert
-                // console.log("Errore")
-                <ErrorAlert alertFor="error" />
+                handleAlert("Errore nel SERVER durante la modifica!")
             } else {
                 clickAddHandle(resp.data)
             }
         } catch (error) {
-            <ErrorAlert alertFor="error" />
+            handleAlert(error)
         }
     }
 
-    const gestioneErrori = () => {
-        setShowErrorAlert(true);
-    };
+    const handleDelete = async (id) => {
+        try {
+            const f_id = (typeof id === 'object') ? id[0] : id;
 
-    const closeAlert = () => {
-        setShowErrorAlert(!showErrorAlert);
-    };
-
-    const handleDelete = (id) => {
-        console.log("Elimina" + id);
+            const check = await fetch(srvurl + '/delete-bale', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_bale: f_id }),
+            })
+    
+            const resp = await check.json()
+    
+            if (resp.code < 0) {
+                handleAlert(resp.message)
+            } else {
+                handleAlert(resp.message, 'confirmed')
+            } 
+        } catch (error) {
+            handleAlert(error)
+        }
     }
 
-    const handleUpdate = (id) => {
-        console.log("Modifica" + id)
+    const handleUpdate = async (id) => {
+        const f_id = (typeof id === 'object') ? id[0] : id;
+        setIdBale(f_id)
+        handleAlert("", 'update-p')
+        // try {
+    
+        //     const f_id = (typeof id === 'object') ? id[0] : id;
+
+        //     const check = await fetch(srvurl + '/delete-bale', {
+        //         method: 'POST',
+        //         headers: {'Content-Type': 'application/json' },
+        //         body: JSON.stringify({ id_bale: f_id }),
+        //     })
+    
+        //     const resp = await check.json()
+    
+        //     if (resp.code < 0) {
+        //         handleAlert(resp.message)
+        //     }
+        // } catch (error) {
+        //     handleAlert(error)
+        // }
     }
 
     const handleClick = (f) => {
-        console.log(idSelect)
+        // console.log(idSelect)
         if (idSelect !== null) {
             if (f)
                 handleUpdate(idSelect)
             else handleDelete(idSelect)
         } else {
-            setShowErrorAlert(!showErrorAlert)
+            handleAlert("Nessuna balla selezionata!")
         }
     }
 
+    const [showAlert, setShowAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [scope, setScope] = useState('')
+
+    /**
+     * Handle the error when no bale is selected
+     * 
+     * @param {string} msg Message to display
+     */
+    const handleAlert = (msg, scope = "error") => {
+        setScope(scope)
+        setErrorMessage(msg);
+        setShowAlert(prev => !prev);
+    };
+
+    // Funzione per chiudere l'alert
+    const closeAlert = () => {
+        setShowAlert(prev => !prev);
+    };
+
     return (
         <>
-        
             <div className="w-1/2 font-bold on-fix-index">
                 <div className="flex flex-row-reverse">
                     <button 
@@ -109,9 +160,14 @@ export default function AddBale({
                     </button>
                 </div>
             </div>
-            {showErrorAlert ? 
-                <ErrorAlert handleClose={closeAlert} alertFor="error" msg="Per modificare o eliminare bisogna prima selezionare una balla!" />
-                : null
+
+            {showAlert && 
+                <Alert 
+                    handleClose={closeAlert} 
+                    alertFor={scope} 
+                    msg={errorMessage}
+                    idBale={idBale}
+                />
             }
         </>
     );

@@ -1,11 +1,11 @@
 const express = require('express');
-const ConditionPresserBaleController = require('../controllers/cdbp');
+const Controller = require('../controllers/cdbp');
 
-module.exports = (db) => {
+module.exports = (db, table) => {
     const router = express.Router();
-    const cdbpCtrl = new ConditionPresserBaleController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/cdbp', (req, res) => cdbpCtrl.get(req, res));
+    router.get('/cdbp', (req, res) => controller.get(req, res));
 
     return router;
 }

@@ -6,7 +6,7 @@ import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
-import ErrorAlert from "../../../components/main/error-alert";
+import Alert from "../../../components/main/alert";
 
 export default function Pressista() {
 
@@ -23,7 +23,7 @@ export default function Pressista() {
             }
         } catch (error) {
             //console.log(`Error: ${_err}`);
-            <ErrorAlert msg={error}/>
+            <Alert msg={error}/>
         }
         // TODO set data for type user
     }, []);

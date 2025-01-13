@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
-import ErrorAlert from '../error-alert';
+import Alert from '../alert';
 import { FaLess } from 'react-icons/fa';
 
 const srvurl = getSrvUrl()
@@ -76,7 +76,7 @@ export default function TableContent({
     }
 
     const handleNoteClick = (id, note) => {
- // Impostare il messaggio della nota
+        // Impostare il messaggio della nota
         setNoteMessage(note);
     
         // Aggiornare lo stato di openNotes in modo idempotente
@@ -100,7 +100,7 @@ export default function TableContent({
 
     const handleCloseNote = (id) => {
         setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
-     };
+    };
 
     /**
      * Get Url of route
@@ -207,8 +207,6 @@ export default function TableContent({
                             date = _m[key].substr(0, 10).replaceAll('-', '/');
                             hour = _m[key].substr(11, 8);
                         }
-                        {/*if (key==="notes")
-                                console.log(_m[key])*/}
                     })
 
                     return (
@@ -226,7 +224,9 @@ export default function TableContent({
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (
-                                (key === "notes") ? (
+                                (key.startsWith("_")) ? (
+                                    null
+                                ) : (key === "notes") ? (
                                     (_m[key] !== "" && _m[key] !== null) ?
                                     <td>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
@@ -253,7 +253,7 @@ export default function TableContent({
                                         OK
                                     </button>
                                     {openNotes[id] && (
-                                    <ErrorAlert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />
+                                    <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />
                                 )}
                                 </td>
                             )}

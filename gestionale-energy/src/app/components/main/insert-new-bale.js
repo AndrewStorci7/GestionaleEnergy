@@ -6,7 +6,7 @@ import CheckButton from "./select-button"
 import Icon from './get-icon';
 import SelectInput from './search/select'
 import Cookies from 'js-cookie';
-import ErrorAlert from './error-alert';
+import Alert from './alert';
 
 const srvurl = getSrvUrl();
 
@@ -49,15 +49,12 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
 
     const [status, setStatus] = useState("working"); // Stato lavorazione
 
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
-    const refreshPage = () => {
-        location.reload();
-    }
+
     /**
+     * Handle Click function
      * 
-     * 
-     * @param {int} f 
+     * @param {boolean} f 
      */
     const handleClick = (f) => {
         try {
@@ -67,25 +64,25 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
             if (f) {
                 url = srvurl + "/upresserbale";
                 body = {
-                    id_user: cookie.id_user,
+                    id_presser: cookie.id_user,
                     id_plastic: plastic,
                     id_rei: rei,
                     id_cpb: cdbp,
                     id_sb: selected_b,
                     note: note,
-                    where: ids.id_presser_bale || 0,
+                    where: ids.id_presser_bale,
                 }
             } else { 
                 url = srvurl + "/uwheelmanbale";
                 body = {
-                    id_user: cookie.id_user,
+                    id_wheelman: cookie.id_user,
                     id_cwb: cdbc,
                     id_rnt: reason,
                     id_wd: dest_wh,
-                    isPrinted: false, // Da modificare
                     note: note,
+                    printed: false, // Da modificare
                     weight: weight,
-                    where: ids.id_wheelman_bale || 0,
+                    where: ids.id_wheelman_bale,
                 }
             }
 
@@ -96,18 +93,18 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
             })
 
             if (!resp.ok) {
-                <ErrorAlert msg={error} />
+                <Alert msg={error} />
             } else {
                 confirmHandle
             }
 
         } catch (error) {
-            <ErrorAlert msg={error} />
+            <Alert msg={error} />
         }
     }
 
     const handleConfirmed = () =>{
-        setShowConfirm(true);
+        setShowConfirm(prev => !prev);
     }
 
     switch (type) {
@@ -183,7 +180,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                             >
                                 OK
                             </button>
-                            {showConfirm && <ErrorAlert alertFor="confirmed"  />}
+                            {showConfirm && <Alert alertFor="confirmed" handleClose={handleConfirmed} />}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>
@@ -232,7 +229,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                         id="peso-pressista"
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
-                        placeholder="Inserisci note"
+                        placeholder="Inserisci peso"
                         />}
                     </td>
                     <td className={`${_CMNSTYLE_TD}`}>
