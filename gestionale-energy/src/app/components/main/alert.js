@@ -195,7 +195,7 @@ export default function Alert({
               > 
 
                 <UpdateValuesBale 
-                  type={(alertFor === "update-p") ? "presser" : "wheelman"} 
+                  type={(alertFor === "update-p") ? "presser" : "wheelman"}
                   idBale={idBale}
                   handlerConfirm={() => closeAlert()}
                 />

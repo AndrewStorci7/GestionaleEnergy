@@ -140,7 +140,12 @@ export default function Table({ type, implant, idUser }) {
                         </table>
                     </div>
 
-                    <BtnWheelman />
+                    <BtnWheelman 
+                        implant={implant}
+                        idUser={idUser}
+                        // clickAddHandle={addHandle}
+                        idSelect={isSelected}
+                    />
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
