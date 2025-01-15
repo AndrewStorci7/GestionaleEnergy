@@ -120,7 +120,15 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table"  className={`${_CMNSTYLE_LABEL} text-white bg-secondary`} >Carrellista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"} primary />
-                            <TableContent type={"wheelman"} add={addWasClicked} ids={ids} noData={noData} primary />
+                            <TableContent 
+                                type={"wheelman"} 
+                                add={addWasClicked} 
+                                ids={ids} 
+                                noData={noData} 
+                                handleSelect={(e) => handleSelect(e)}
+                                selectedBaleId={isSelected}
+                                primary 
+                            />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>
                             Pressista
@@ -132,7 +140,7 @@ export default function Table({ type, implant, idUser }) {
                         </table>
                     </div>
 
-                    <BtnWheelman/>
+                    <BtnWheelman />
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>

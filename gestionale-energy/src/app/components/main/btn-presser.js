@@ -1,6 +1,6 @@
 'use client'
 
-import Alert from './alert';
+import Alert from '@@/components/main/alert';
 import { getSrvUrl } from '@@/config';
 import React, { useEffect, useState } from "react";
 
@@ -145,12 +145,12 @@ export default function BtnPresser({
                 <div className="flex flex-row-reverse">
                     <button 
                     className="on-btn-presser" 
-                    onClick={() => handleClick()}>
+                    onClick={() => handleClick(false)}>
                         Elimina
                     </button>
                     <button 
                     className="on-btn-presser mr-[50px]" 
-                    onClick={() => handleClick()}>
+                    onClick={() => handleClick(true)}>
                         Modifica
                     </button>
                     <button 

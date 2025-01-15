@@ -26,9 +26,7 @@ export default function Alert({
   handleClose,
   idBale
 }) {
-
-
-    console.log("Id balla all'interno di Alert:" + idBale)
+    // console.log("Id balla all'interno di Alert:" + idBale)
 
     // TODO
     // Controllare la prop alertFor e settare in base al suo valore le variabili globali

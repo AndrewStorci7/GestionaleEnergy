@@ -18,11 +18,13 @@ const srvurl = getSrvUrl()
  * @param {boolean} add     [ true | false ]
  *                          True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
- * @param {object}  ids     Oggetto contenente gli ID delle balle create
+ * @param {Object}  ids     Oggetto contenente gli ID delle balle create
  *                          L'oggeto sarà null se il bottone aggiungi non è stato cliccato
  * 
- * @param {function}noData  Funzione che aggiorna lo stato della variabile noData.
+ * @param {Function}noData  Funzione che aggiorna lo stato della variabile noData.
  *                          Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
+ * 
+ * @param {Function}    handleSelect    Accetta una funzione che gestisce la selezione di una balla    
  * 
  * @param {boolean} primary Serve per settare correttamente il colore dello sfondo
  * 
