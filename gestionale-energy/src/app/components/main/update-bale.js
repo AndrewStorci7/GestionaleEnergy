@@ -70,6 +70,7 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                     setReason(data[0]._idRnt)
                     setWeight(data[0].weight)
                     setDestWh(data[0]._idWd)
+                    setNote(data[0].notes)
                 }
             } catch (error) {
                 console.log(error)

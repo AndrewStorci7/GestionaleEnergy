@@ -63,17 +63,18 @@ export default function BtnWheelman({
     }
 
     const handleClick = (f) => {
-        // console.log(idSelect)
-        if (idSelect !== null) {
+        // Check if idSelect is not null and has a length property
+        if (idSelect !== null && idSelect.length > 0) {
             handleUpdate(idSelect)
         } else {
             handleAlert("Nessuna balla selezionata!")
         }
     }
+    
 
     const [showAlert, setShowAlert] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [scope, setScope] = useState('')
+    const [errorMessage, setErrorMessage] = useState("");
+    const [scope, setScope] = useState("")
 
     /**
      * Handle the error when no bale is selected
@@ -90,6 +91,39 @@ export default function BtnWheelman({
     const closeAlert = () => {
         setShowAlert(prev => !prev);
     };
+
+    const handleStampa = async (msg="I dati sono stati stampati correttamente", scope = "confirmed") => {
+        if (idSelect !== null && idSelect.length > 0) {
+            try {
+
+                const body = {printed: true, where: idSelect};
+                // Invia la richiesta per aggiornare lo stato della balla
+                const response = await fetch(srvurl + '/uwheelmanbale', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({body}),
+                });
+    
+                const result = await response.json();
+    
+                if (result.code === 0) {
+                    // Se la risposta è positiva, mostra un messaggio di conferma
+                    setScope(scope);
+                    setErrorMessage(msg);
+                } else {
+                    // Se c'è un errore, mostra un messaggio di errore
+                    setScope("error");
+                    setErrorMessage(result.message);
+                }
+            } catch (error) {
+                setScope("error");
+                setErrorMessage("Si è verificato un errore durante l'aggiornamento.");
+            }
+            setShowAlert(prev => !prev);
+        } else {
+            handleAlert("Nessuna balla selezionata!");
+        }
+    }
     return(
         <>
         <div className="w-1/2 font-bold">
@@ -97,7 +131,7 @@ export default function BtnWheelman({
                 <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={() => handleClick()}>
                     Modifica
                 </button>
-                <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[30px]">
+                <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[30px]" onClick = {() => handleStampa()}>
                     Stampa Etich.
                 </button>
             </div>

@@ -7,6 +7,6 @@ module.exports = (db, table) => {
 
     router.post('/wheelman', (req, res) => controller.get(req, res));
     router.post('/uwheelmanbale', (req, res) => controller.update(req, res));
-
+    
     return router;
 }

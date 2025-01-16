@@ -240,7 +240,7 @@ export default function TableContent({
                                     null
                                 ) : (key === "is_printed") ? (
                                     <td className={`${_CMNSTYLE_TD} font-bold`} key={key + _i + __i} value={_m[key]}>
-                                        {(_m[key] == 0) ? "Stampato" : "Da stamp."}
+                                        {(_m[key] == 0) ? "Da stamp." : "Stampato"}
                                     </td>
                                 ) : (key !== "data_ins") ? (
                                     <td className={`${_CMNSTYLE_TD}`} key={key + _i + __i} value={_m[key]}>{_m[key]}</td>
