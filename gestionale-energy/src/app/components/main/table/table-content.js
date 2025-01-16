@@ -200,6 +200,7 @@ export default function TableContent({
                     let date = "";
                     let hour = "";
                     let id = 0;
+                    var status = "";
                     ++i;
 
                     Object.keys(_m).map((key, __i) => {
@@ -210,6 +211,9 @@ export default function TableContent({
                             hour = _m[key].substr(11, 8);
                         } else if (key === "status") {
                             //Se il valore è 0, Lavorazione(working), Se il valore è 1, Stampato(completed), Se il valore è -1 (warning)
+                            if (_m[key] === 0) status = "working"
+                            else if (_m[key] === 1) status = "completed"
+                            else status = "warning"
                         }
                     })
 
@@ -223,12 +227,12 @@ export default function TableContent({
                                         handleClick={() => handleRowClick(id)} />
                                     </td>
                                     <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}>
-                                        <Icon type={(i <= 3) ? "info" : "completed"} />
+                                        <Icon type={status} />
                                     </td>
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (
-                                (key.startsWith("_")) ? (
+                                (key.startsWith("_") || key == "id" || key == "status" ) ? (
                                     null
                                 ) : (key === "notes") ? (
                                     (_m[key] !== "" && _m[key] !== null) ?
@@ -238,8 +242,6 @@ export default function TableContent({
                                         </button>
                                     </td> 
                                     : <td></td>
-                                ) : (key == "id") ? (
-                                    null
                                 ) : (key === "is_printed") ? (
                                     <td className={`${_CMNSTYLE_TD} font-bold`} key={key + _i + __i} value={_m[key]}>
                                         {(_m[key] == 0) ? "Da stamp." : "Stampato"}
