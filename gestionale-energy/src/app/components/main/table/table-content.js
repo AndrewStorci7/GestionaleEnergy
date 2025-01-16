@@ -208,6 +208,8 @@ export default function TableContent({
                         } else if (key === "data_ins") {
                             date = _m[key].substr(0, 10).replaceAll('-', '/');
                             hour = _m[key].substr(11, 8);
+                        } else if (key === "status") {
+                            //Se il valore è 0, Lavorazione(working), Se il valore è 1, Stampato(completed), Se il valore è -1 (warning)
                         }
                     })
 
