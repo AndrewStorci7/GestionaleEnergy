@@ -37,6 +37,13 @@ class Bale extends Common {
             return "";
     }
 
+    /**
+     * 
+     * @param {Object} obj      Oggetto ricevuto tramite richiesta 
+     * @param {Object} options  Opzioni facoltative per la gestione dell'update
+     * 
+     * @returns {Object} 
+     */
     checkParams(obj, options) {
         if (options === null)
             throw new Error("No Table was defined")

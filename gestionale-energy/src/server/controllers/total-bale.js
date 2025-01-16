@@ -107,8 +107,6 @@ class TotalBale extends Common {
                 [id_implant, turn[0], turn[1], turn[0], turn[1]]
             );
 
-            // console.info(select)
-
             if (select !== 'undefined' || select !== null) {
 
                 for (const e of select) {
@@ -120,26 +118,17 @@ class TotalBale extends Common {
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
                     }).then(res => res.json())
-                    // res_presser = await res_presser.json();
+
                     const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
                     }).then(res => res.json())
-                    // res_wheelman = await res_wheelman.json();
 
-                    // console.info("Content presser: ")
-                    // console.info(res_presser)
-                    // console.info("Content wheelman: ")
-                    // console.info(res_wheelman)
                     presserResult.push(res_presser)
                     wheelmanResult.push(res_wheelman)
                 };
             }
-            
-            // console.info("prova")
-            // console.info(presserResult)
-            // console.info(wheelmanResult)
 
             if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
                 res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult })
@@ -215,6 +204,19 @@ class TotalBale extends Common {
         }
     }
 
+    getIdsBale = async (id) => {
+        const [select] = await this.db.query(
+            `SELECT * FROM ${this.table} WHERE id_pb=?`,
+            [id]
+        )
+
+        if (select) {
+            return select
+        } else {
+            throw new Error("Errore durante la selezione della balla")
+        }
+    }
+
     /**
      * Delete a multiple bales from ids
      * 
@@ -239,15 +241,39 @@ class TotalBale extends Common {
                 //     console.info(id_bale)
                 // }
 
+                const allId = await this.getIdsBale(id_bale)
+                const id_pb = allId[0].id_pb
+                const id_wb = allId[0].id_wb
+
+                console.info(allId)
+
                 const [check] = await this.db.query(
                     `DELETE FROM ${this.table} WHERE ${this.table}.id_pb=?`,
                     [id_bale]
                 )
-
                 console.delete(check)
+                
+                if (check && check.affectedRows > 0) {
+                    // Check deletion of presser bale
+                    const [check_dp] = await this.db.query(
+                        "DELETE FROM presser_bale WHERE presser_bale.id=?",
+                        [id_pb]
+                    )
+                    console.delete(check_dp)
+    
+                    // Check deletion of wheelman bale
+                    const [check_dw] = await this.db.query(
+                        "DELETE FROM wheelman_bale WHERE wheelman_bale.id=?",
+                        [id_wb]
+                    )
+                    console.delete(check_dw)
 
-                if (check) {
-                    res.json({ cod: 0, message: `Balla numero ${id_bale} eliminata con successo!` })
+                    var message = `Balla numero ${id_bale} eliminata con successo!`
+                    
+                    if (check_dp.affectedRows === 0 || check_dw.affectedRows === 0)
+                        message += `\nBalla numero ${id_bale}`
+                    
+                    res.json({ cod: 0, message })
                 } else {
                     res.json({ cod: -1, message: `Errore nell'eliminazione Balla numero ${id_bale}` })
                 }

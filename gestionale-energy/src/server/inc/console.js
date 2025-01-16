@@ -119,6 +119,12 @@ class Console {
         console.log(ret + msg);
     }
 
+    /// TODO
+    /// Create a funztion that colorize string [QUERY] and [PARAMS]
+    // databaseQuery(str) {
+
+    // }
+
 }
 
 module.exports = Console

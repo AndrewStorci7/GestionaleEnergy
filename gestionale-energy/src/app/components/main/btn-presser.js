@@ -1,6 +1,6 @@
 'use client'
 
-import Alert from './alert';
+import Alert from '@@/components/main/alert';
 import { getSrvUrl } from '@@/config';
 import React, { useEffect, useState } from "react";
 
@@ -36,7 +36,7 @@ export default function BtnPresser({
         setIdBale(idSelect)
     }, [idSelect])
 
-    const addNewBale = async () =>  {
+    const addNewBale = async () => {
         try {
             const data = {
                 id_presser: idUser,

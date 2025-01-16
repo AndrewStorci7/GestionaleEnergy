@@ -27,9 +27,6 @@ export default function Alert({
   idBale
 }) {
 
-
-    console.log("Id balla all'interno di Alert:" + idBale)
-
     // TODO
     // Controllare la prop alertFor e settare in base al suo valore le variabili globali
     const _CMNSTYLE_TD = "on-table-td";

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import SelectInput from './search/select';
 import { getSrvUrl } from '@@/config';
+import Alert from '@@/components/main/alert'
+import Cookies from 'js-cookie';
 
 const srvurl = getSrvUrl()
 
@@ -38,8 +40,6 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                 })
 
                 const data = await resp.json()
-
-                console.log(data[0])
 
                 setPlastic(data[0].plastic)
                 setRei(data[0]._idRei)
@@ -94,15 +94,12 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ body })
             })
-
-            if (!resp.ok) {
-                <Alert msg={error} />
-            } else {
-                handlerConfirm
-            }
+            
+            handlerConfirm
 
         } catch (error) {
-            <Alert msg={error} />
+            // <Alert msg={error} />
+            console.log("Errore")
         }
     }
 
@@ -179,7 +176,8 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                 <button 
                 className='on-btn-confirm col-span-2'
                 onClick={() => { 
-                    handleClick(type === 'presser');
+                    const check = type === 'presser'
+                    handleClick(check);
                     handlerConfirm
                 }}
                 >

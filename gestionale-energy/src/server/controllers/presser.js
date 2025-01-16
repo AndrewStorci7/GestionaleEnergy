@@ -112,8 +112,6 @@ class PresserBale extends Bale {
             console.info("[Update]: ", body)
 
             const san = this.checkParams(body, {scope: "update", table: this.table})
-            // console.info("QUERY DETECTED: " + prova.query)
-            // console.info("PARAMS DETECTED: " + prova.params)
             
             const [check] = await this.db.query(san.query, san.params);
     
