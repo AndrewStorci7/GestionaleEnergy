@@ -18,11 +18,13 @@ const srvurl = getSrvUrl()
  * @param {boolean} add     [ true | false ]
  *                          True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
- * @param {object}  ids     Oggetto contenente gli ID delle balle create
+ * @param {Object}  ids     Oggetto contenente gli ID delle balle create
  *                          L'oggeto sarà null se il bottone aggiungi non è stato cliccato
  * 
- * @param {function}noData  Funzione che aggiorna lo stato della variabile noData.
+ * @param {Function}noData  Funzione che aggiorna lo stato della variabile noData.
  *                          Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
+ * 
+ * @param {Function}    handleSelect    Accetta una funzione che gestisce la selezione di una balla    
  * 
  * @param {boolean} primary Serve per settare correttamente il colore dello sfondo
  * 
@@ -161,7 +163,7 @@ export default function TableContent({
 
     // const [selectedBale, setSelectedBale] = useState(null)
 
-    const selectedBaleIdRef = useRef(null);
+    const selectedBaleIdRef = useRef([]);
 
     const handleRowClick = (id) => {
         console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);
@@ -198,6 +200,7 @@ export default function TableContent({
                     let date = "";
                     let hour = "";
                     let id = 0;
+                    var status = "";
                     ++i;
 
                     Object.keys(_m).map((key, __i) => {
@@ -206,6 +209,11 @@ export default function TableContent({
                         } else if (key === "data_ins") {
                             date = _m[key].substr(0, 10).replaceAll('-', '/');
                             hour = _m[key].substr(11, 8);
+                        } else if (key === "status") {
+                            //Se il valore è 0, Lavorazione(working), Se il valore è 1, Stampato(completed), Se il valore è -1 (warning)
+                            if (_m[key] === 0) status = "working"
+                            else if (_m[key] === 1) status = "completed"
+                            else status = "warning"
                         }
                     })
 
@@ -219,12 +227,12 @@ export default function TableContent({
                                         handleClick={() => handleRowClick(id)} />
                                     </td>
                                     <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}>
-                                        <Icon type={(i <= 3) ? "info" : "completed"} />
+                                        <Icon type={status} />
                                     </td>
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (
-                                (key.startsWith("_")) ? (
+                                (key.startsWith("_") || key == "id" || key == "status" ) ? (
                                     null
                                 ) : (key === "notes") ? (
                                     (_m[key] !== "" && _m[key] !== null) ?
@@ -234,11 +242,9 @@ export default function TableContent({
                                         </button>
                                     </td> 
                                     : <td></td>
-                                ) : (key == "id") ? (
-                                    null
                                 ) : (key === "is_printed") ? (
                                     <td className={`${_CMNSTYLE_TD} font-bold`} key={key + _i + __i} value={_m[key]}>
-                                        {(_m[key] == 0) ? "Stampato" : "Da stamp."}
+                                        {(_m[key] == 0) ? "Da stamp." : "Stampato"}
                                     </td>
                                 ) : (key !== "data_ins") ? (
                                     <td className={`${_CMNSTYLE_TD}`} key={key + _i + __i} value={_m[key]}>{_m[key]}</td>

@@ -41,10 +41,14 @@ class WheelmanBale extends Bale {
         console.info(`Id Presser received: ${id}`);
         
         const [rows] = await this.db.query(
-            `SELECT ${this.table}.id AS 'id', cond_${this.table}.type AS 'condition', 
+            `SELECT ${this.table}.id AS 'id', 
+            cond_${this.table}.type AS 'condition',
+            ${this.table}.id_cwb AS '_idCwb',
             reas_not_tying.name AS 'reason',
+            ${this.table}.id_rnt AS '_idRnt',
             ${this.table}.weight AS 'weight',
             warehouse_dest.name AS 'warehouse',
+            ${this.table}.id_wd AS '_idWd',
             ${this.table}.note AS 'notes',
             ${this.table}.printed AS 'is_printed',
             ${this.table}.data_ins AS 'data_ins'

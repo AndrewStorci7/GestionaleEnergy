@@ -7,6 +7,7 @@ import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
+import AdminPanel from "../admin-options";
 import BtnPresser from "../btn-presser";
 
 import { useEffect, useState } from "react";
@@ -31,6 +32,7 @@ export default function Table({ type, implant, idUser }) {
     const [msgEmpty, setMsg] = useState("")
     const [isEmpty, setEmpty] = useState(false)
     const [isSelected, setSelected] = useState(null)
+    const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
 
     const addHandle = (resp) => {
         setState(prev => !prev)
@@ -118,7 +120,15 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table"  className={`${_CMNSTYLE_LABEL} text-white bg-secondary`} >Carrellista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"} primary />
-                            <TableContent type={"wheelman"} add={addWasClicked} ids={ids} noData={noData} primary />
+                            <TableContent 
+                                type={"wheelman"} 
+                                add={addWasClicked} 
+                                ids={ids} 
+                                noData={noData} 
+                                handleSelect={(e) => handleSelect(e)}
+                                selectedBaleId={isSelected}
+                                primary 
+                            />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>
                             Pressista
@@ -130,7 +140,12 @@ export default function Table({ type, implant, idUser }) {
                         </table>
                     </div>
 
-                    <BtnWheelman/>
+                    <BtnWheelman 
+                        implant={implant}
+                        idUser={idUser}
+                        // clickAddHandle={addHandle}
+                        idSelect={isSelected}
+                    />
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
@@ -190,13 +205,14 @@ export default function Table({ type, implant, idUser }) {
                         <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
                         <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
                         <div className="grid grid-cols-2 gap-1 mt-20">
-                            <DownloadReport downloadFor={"file1"}>GIOR. IMPIANTO A</DownloadReport>
-                            <DownloadReport downloadFor={"file2"}>GIOR. TEMPI IMP A</DownloadReport>
-                            <DownloadReport downloadFor={"file3"}>GIOR. IMPIANTO B</DownloadReport>
-                            <DownloadReport downloadFor={"file4"}>GIOR. TEMPI IMP B</DownloadReport>
-                            <DownloadReport downloadFor={"file5"}>GIOR. IMPIANTO A e B</DownloadReport>
-                            <DownloadReport downloadFor={"file6"}>GIOR. TEMPI IMP A e B</DownloadReport>
+                            <button onClick={() => handleDownloadClick('file1')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A</button>
+                            <button onClick={() => handleDownloadClick('file2')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A</button>
+                            <button onClick={() => handleDownloadClick('file3')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO B</button>
+                            <button onClick={() => handleDownloadClick('file4')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP B</button>
+                            <button onClick={() => handleDownloadClick('file5')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A e B</button>
+                            <button onClick={() => handleDownloadClick('file6')} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A e B</button>
                         </div>
+                        <AdminPanel btnPressed={btnPressed} />
                         </div>
                         <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
                         <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
@@ -225,6 +241,7 @@ export default function Table({ type, implant, idUser }) {
                         <DownloadReport  downloadFor={"File_Scaricato"} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</DownloadReport>
                         </div>
                         </div>
+                        
                     </div>
                     )}
                 </>

@@ -57,8 +57,8 @@ class TotalBale extends Common {
                 const [rows_wb] = await this.db.query("SELECT id FROM wheelman_bale ORDER BY id DESC LIMIT 1");
     
                 const check_ins_pbwb = await this.db.query(
-                    `INSERT INTO ${this.table} VALUES(?, ?, ?)`,
-                    [rows_pb[0].id, rows_wb[0].id, id_implant]
+                    `INSERT INTO ${this.table} VALUES(?, ?, ?, ?)`,
+                    [rows_pb[0].id, rows_wb[0].id, id_implant, 0]
                 );
     
                 if (check_ins_pbwb) {
@@ -95,7 +95,7 @@ class TotalBale extends Common {
             const turn = super.checkTurn();
 
             const [select] = await this.db.query(
-                `SELECT ${this.table}.id_pb, ${this.table}.id_wb FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants 
+                `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants 
                 ON ${this.table}.id_pb = presser_bale.id AND
                 ${this.table}.id_wb = wheelman_bale.id AND
                 ${this.table}.id_implant = implants.id
@@ -113,17 +113,30 @@ class TotalBale extends Common {
 
                     var id_presser = e.id_pb
                     var id_wheelman = e.id_wb
+                    var status = e.status
                     const [res_presser] = await fetch(this.internalUrl + '/presser', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
                     }).then(res => res.json())
+<<<<<<< HEAD
 
+=======
+                    // console.info(typeof res_presser)
+                    res_presser.status = status;
+                    // res_presser.push(status)
+                    // res_presser = await res_presser.json();
+>>>>>>> dev/selezione-balla
                     const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
                     }).then(res => res.json())
+<<<<<<< HEAD
+=======
+                    res_wheelman.status = status;
+                    // res_wheelman = await res_wheelman.json();
+>>>>>>> dev/selezione-balla
 
                     presserResult.push(res_presser)
                     wheelmanResult.push(res_wheelman)

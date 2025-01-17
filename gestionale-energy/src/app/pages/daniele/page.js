@@ -11,12 +11,6 @@ export default function Home() {
       <h1>Test Page</h1>
 
       {/* Dropdown to select user type */}
-      <select onChange={(e) => setUserType(e.target.value)} value={userType}>
-        <option value="presser">Presser</option>
-        <option value="wheelman">Wheelman</option>
-        <option value="admin">Admin</option>
-        <option value="both">Both</option>
-      </select>
 
       <UserComponent type={userType} />
     </div>

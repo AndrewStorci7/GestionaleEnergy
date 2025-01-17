@@ -17,7 +17,7 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
 
     // Dati Pressista
     const [plastic, setPlastic] = useState(""); // Id plastica
-    const [plastic2, setPlastic2] = useState(""); // Codice plastica   
+    // const [plastic2, setPlastic2] = useState(""); // Codice plastica   
     const [rei, setRei] = useState(""); // Stato se balla reimballata
     const [cdbp, setCdbp] = useState(""); // Condizione balla pressista
     const [selected_b, setSelectedBale] = useState(""); // Balla selezionata
@@ -30,22 +30,49 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
 
     const [note, setNote] = useState(""); // Note (sia carrellista che pressista)
 
+    /*
+    Dati da prelevare lato carrellista:
+    _idCwb --> Condizione balla carrellista
+    _idRnt --> Motivazione
+    weight --> Peso
+    _idWd  --> magazzino destinazione
+    */
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resp = await fetch(srvurl + "/presser", {
-                    method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: idBale })
-                })
-
-                const data = await resp.json()
-
-                setPlastic(data[0].plastic)
-                setRei(data[0]._idRei)
-                setCdbp(data[0]._idCpb)
-                setSelectedBale(data[0]._idSb)
-                setNote(data[0].notes)
+                if (type === 'presser') {
+                    const resp = await fetch(srvurl + "/presser", {
+                        method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ id: idBale })
+                    })
+    
+                    const data = await resp.json()
+    
+                    console.log(data[0])
+    
+                    setPlastic(data[0].plastic)
+                    setRei(data[0]._idRei)
+                    setCdbp(data[0]._idCpb)
+                    setSelectedBale(data[0]._idSb)
+                    setNote(data[0].notes)
+                } else {
+                    const resp = await fetch(srvurl + "/wheelman", {
+                        method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ id: idBale })
+                    })
+    
+                    const data = await resp.json()
+    
+                    console.log(data[0])
+    
+                    setCdbc(data[0]._idCwb)
+                    setReason(data[0]._idRnt)
+                    setWeight(data[0].weight)
+                    setDestWh(data[0]._idWd)
+                    setNote(data[0].notes)
+                }
             } catch (error) {
                 console.log(error)
             }

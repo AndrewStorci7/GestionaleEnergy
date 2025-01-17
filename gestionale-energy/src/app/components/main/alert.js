@@ -26,6 +26,7 @@ export default function Alert({
   handleClose,
   idBale
 }) {
+    // console.log("Id balla all'interno di Alert:" + idBale)
 
     // TODO
     // Controllare la prop alertFor e settare in base al suo valore le variabili globali
@@ -194,7 +195,7 @@ export default function Alert({
               > 
 
                 <UpdateValuesBale 
-                  type={(alertFor === "update-p") ? "presser" : "wheelman"} 
+                  type={(alertFor === "update-p") ? "presser" : "wheelman"}
                   idBale={idBale}
                   handlerConfirm={() => closeAlert()}
                 />
