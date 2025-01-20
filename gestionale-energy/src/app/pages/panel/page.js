@@ -8,6 +8,10 @@ import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
 import Alert from "@/app/components/main/alert";
 import CheckCookie from "@/app/components/main/check-cookie";
+import { getWsUrl } from "@/app/config";
+import { WebSocketProvider } from '@@/components/main/ws/use-web-socket';
+
+const wsurl = getWsUrl();
 
 export default function Admin() {
 
@@ -25,8 +29,24 @@ export default function Admin() {
     const [surname, setSurname] = useState("");
     // Tipo utente [ 'admin' | 'presser' | 'wheelman' | 'both' ]
     const [type, setType] = useState("");
+
+    // istanza del Web Socket
+    const [ws, setWs] = useState(null);
     
     useEffect(() => {
+
+        const _ws = new WebSocket(wsurl);
+
+        _ws.onopen = () => {
+            console.log('Connected to the WebSocket server');
+        };
+
+        _ws.onmessage = (event) => {
+            console.log('Message from server:', event.data);
+        };
+
+        setWs(_ws);
+
         async function fetchData() {
             try {
 
@@ -48,26 +68,33 @@ export default function Admin() {
         }
 
         fetchData();
+
+        if (_ws && _ws.readyState === WebSocket.OPEN) {
+            _ws.send(`User ${user} (${name} ${surname}) connected to the server`);
+        }
+
+        return () => _ws.close();
     }, []);
 
     return(
-        
-        
-        <div className="w-[98%] m-[1%] overflow-hidden">
-            <CheckCookie/>
-            <Header 
-                implant={implant}
-                username={user}
-                type={type}
-                name={name}
-                surname={surname}
-            />
-            <MainContent 
-                type={type}
-                implant={idImplant}
-                idUser={idUser}
-            />
-            <Footer />
-        </div>
+        <WebSocketProvider>
+            <div className="w-[98%] m-[1%] overflow-hidden">
+                <CheckCookie/>
+                <Header 
+                    implant={implant}
+                    username={user}
+                    type={type}
+                    name={name}
+                    surname={surname}
+                />
+                <MainContent 
+                    type={type}
+                    implant={idImplant}
+                    idUser={idUser}
+
+                />
+                <Footer />
+            </div>
+        </WebSocketProvider>
     );
 }

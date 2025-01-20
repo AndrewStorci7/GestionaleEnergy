@@ -1,8 +1,6 @@
 'use client'
 
 import TableHeader from "./table-header";
-import CheckButton from "../select-button";
-import Icon from "../get-icon";
 import TableContent from "./table-content";
 import DownloadReport from "../download-btn"
 import SelectInput from "../search/select";
@@ -25,6 +23,11 @@ import { useEffect, useState } from "react";
  * @returns 
  */
 export default function Table({ type, implant, idUser }) {
+
+    // const {ws, message} = useWebSocket();
+
+    // global message from the socket
+    const [_message, setMessage] = useState("");
 
     const [selectedType, setSelectedType] = useState("general");
     const [addWasClicked, setState] = useState(false)
@@ -62,6 +65,10 @@ export default function Table({ type, implant, idUser }) {
     const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
     const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
     const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>
+
+    // useEffect(() => {
+    //     setMessage(message)
+    // }, [ws, message])
 
     switch (type) {
         case "admin": {

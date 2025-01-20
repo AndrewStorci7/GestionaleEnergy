@@ -9,10 +9,6 @@
 
 const getEnv = (key, defaultKey = "") => {
 
-    // if (defaultKey !== "") {
-    //     return defaultKey;
-    // }
-
     switch (key) {
         case 'srvurl' || 'SRVURL': {
             return process.env.NEXT_PUBLIC_SERVER_URL;
@@ -21,7 +17,10 @@ const getEnv = (key, defaultKey = "") => {
             return process.env.NEXT_PUBLIC_SERVER_PORT;
         }
         case 'domain' || 'DOMAIN': {
-            return process.env.NEXT_PUBLIC_APP_DOMAIN
+            return process.env.NEXT_PUBLIC_APP_DOMAIN;
+        }
+        case 'wsurl' || 'WSURL': {
+            return process.env.NEXT_PUBLIC_WS_URL;
         }
         default: {
             return defaultKey;
@@ -43,4 +42,18 @@ const getSrvUrl = () =>  {
     return srvurl
 }
 
-export { getEnv, getSrvUrl };
+/**
+ * Getter of the WebSocket url 
+ * 
+ * @returns 
+ */
+const getWsUrl = () => {
+    
+    const URL = getEnv('wsurl');
+    const PORT = getEnv('srvport');
+    const wsurl = `${URL}:${PORT}`;
+
+    return wsurl
+}
+
+export { getEnv, getSrvUrl, getWsUrl };

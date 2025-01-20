@@ -5,7 +5,8 @@ import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
 import Alert from '../alert';
-import { FaLess } from 'react-icons/fa';
+
+import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 
 const srvurl = getSrvUrl()
 
@@ -42,6 +43,8 @@ export default function TableContent({
     tableChange = false,
     selectedBaleId
 }) {
+
+    const { message } = useWebSocket();
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px] ";
@@ -156,7 +159,7 @@ export default function TableContent({
         }
 
         fetchData();
-    }, [type, changeFromAdd]);
+    }, [type, changeFromAdd, message]);
 
     // test
     let i = 0;
