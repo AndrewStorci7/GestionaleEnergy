@@ -1,7 +1,7 @@
 const Console = require('../inc/console')
 const Common = require('./main/common')
-const PresserBale = require('./presser')
-const WheelmanBale = require('./wheelman')
+// const PresserBale = require('./presser')
+// const WheelmanBale = require('./wheelman')
 
 const axios = require('axios')
 
@@ -35,12 +35,12 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
-            console.info(data)
+            // console.info(data)
 
             const id_implant = data.id_implant;
             const id_presser = data.id_presser;
             
-            console.info(`Data (Presser Bale) received: ${id_presser}, ${id_implant}`);
+            // console.info(`Data (Presser Bale) received: ${id_presser}, ${id_implant}`);
             
             const check_ins_pb = await this.db.query(
                 "INSERT INTO presser_bale(id_presser) VALUES (?)",
@@ -88,7 +88,7 @@ class TotalBale extends Common {
         try {
             const { id_implant } = req.body;
     
-            console.info(`body received: ${id_implant}`)
+            // console.info(`body received: ${id_implant}`)
 
             const presserResult = [];
             const wheelmanResult = [];
@@ -119,24 +119,17 @@ class TotalBale extends Common {
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
                     }).then(res => res.json())
-<<<<<<< HEAD
-
-=======
                     // console.info(typeof res_presser)
                     res_presser.status = status;
                     // res_presser.push(status)
                     // res_presser = await res_presser.json();
->>>>>>> dev/selezione-balla
                     const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
                     }).then(res => res.json())
-<<<<<<< HEAD
-=======
                     res_wheelman.status = status;
                     // res_wheelman = await res_wheelman.json();
->>>>>>> dev/selezione-balla
 
                     presserResult.push(res_presser)
                     wheelmanResult.push(res_wheelman)
@@ -165,7 +158,7 @@ class TotalBale extends Common {
         try {
             const { id_implant } = req.body;
         
-            console.info(`Filtrato dal ID Impianto: ${id_implant}`);
+            // console.info(`Filtrato dal ID Impianto: ${id_implant}`);
         
             const [select] = await this.db.query(
                 `SELECT
@@ -240,7 +233,7 @@ class TotalBale extends Common {
         try {
             const {id_bale} = req.body;
             
-            console.info("ID ELIMINA ricevuti: " + id_bale)
+            // console.info("ID ELIMINA ricevuti: " + id_bale)
 
             if (id_bale !== null && id_bale !== undefined) {
 
@@ -258,13 +251,13 @@ class TotalBale extends Common {
                 const id_pb = allId[0].id_pb
                 const id_wb = allId[0].id_wb
 
-                console.info(allId)
+                // console.info(allId)
 
                 const [check] = await this.db.query(
                     `DELETE FROM ${this.table} WHERE ${this.table}.id_pb=?`,
                     [id_bale]
                 )
-                console.delete(check)
+                // console.delete(check)
                 
                 if (check && check.affectedRows > 0) {
                     // Check deletion of presser bale
@@ -272,14 +265,14 @@ class TotalBale extends Common {
                         "DELETE FROM presser_bale WHERE presser_bale.id=?",
                         [id_pb]
                     )
-                    console.delete(check_dp)
+                    // console.delete(check_dp)
     
                     // Check deletion of wheelman bale
                     const [check_dw] = await this.db.query(
                         "DELETE FROM wheelman_bale WHERE wheelman_bale.id=?",
                         [id_wb]
                     )
-                    console.delete(check_dw)
+                    // console.delete(check_dw)
 
                     var message = `Balla numero ${id_bale} eliminata con successo!`
                     

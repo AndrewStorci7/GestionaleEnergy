@@ -50,6 +50,36 @@ class Console {
     }
 
     /**
+     * 
+     * @param {string} str 
+     */
+    ws(str) {
+        var date = new Date()
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_green} ${'Connection'.padEnd(3)} ${_reset}]: `;
+        let msg = "new user connected to the server"
+        if (str != "undefined" || str != null || str != "") {
+            msg = `${_green}${str}${_reset}`;
+        }
+
+        console.log(ret + msg);
+    } 
+
+    /**
+     * 
+     * @param {string} str 
+     */
+    wsMessage(str) {
+        var date = new Date()
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'WS Message'.padEnd(3)} ${_reset}]: `;
+        let msg = "new user connected to the server"
+        if (str != "undefined" || str != null || str != "") {
+            msg = `${_blue}${str}${_reset}`;
+        }
+
+        console.log(ret + msg);
+    }
+
+    /**
      * Display Error
      * @param {any} str 
      */

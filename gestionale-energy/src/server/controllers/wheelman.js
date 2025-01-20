@@ -38,7 +38,7 @@ class WheelmanBale extends Bale {
     handleWheelmanData = async (req) => {
         const {id} = req.body;
         
-        console.info(`Id Presser received: ${id}`);
+        // console.info(`Id Presser received: ${id}`);
         
         const [rows] = await this.db.query(
             `SELECT ${this.table}.id AS 'id', 
@@ -94,7 +94,7 @@ class WheelmanBale extends Bale {
         try {
             const { body } = req.body;
     
-            console.info("[Update]: ", body)
+            // console.info("[Update]: ", body)
 
             const san = this.checkParams(body, {scope: "update", table: this.table})
             // console.info("QUERY DETECTED: " + prova.query)

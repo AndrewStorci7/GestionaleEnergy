@@ -39,7 +39,7 @@ class PresserBale extends Bale {
         
         const {id} = req;
         
-        console.info(`Data received: ${id}`)
+        // console.info(`Data received: ${id}`)
 
         const [rows] = await this.db.query(
             `SELECT ${this.table}.id AS 'id', code_plastic.code AS 'plastic',
