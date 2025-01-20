@@ -4,10 +4,10 @@ import TableHeader from "./table-header";
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import TableContent from "./table-content";
-import DownloadReport from "../download-btn"
+import DownloadReport from "../admin/btn-report"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
-import AdminPanel from "../admin-options";
+import ExportReport from "../admin/export-report";
 import BtnPresser from "../btn-presser";
 
 import { useEffect, useState } from "react";
@@ -51,6 +51,10 @@ export default function Table({ type, implant, idUser }) {
     const handleSelect = (select) => {
         setSelected(select)
         console.log("IS SELECTED: " + isSelected)
+    }
+
+    const handleDownloadClick = (reportType) => {
+        setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
     }
 
     /// Common style
@@ -205,14 +209,15 @@ export default function Table({ type, implant, idUser }) {
                         <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
                         <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
                         <div className="grid grid-cols-2 gap-1 mt-20">
-                            <button onClick={() => handleDownloadClick('file1')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A</button>
+                            <DownloadReport />
+                            {/* <button onClick={() => handleDownloadClick('file1')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A</button>
                             <button onClick={() => handleDownloadClick('file2')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A</button>
                             <button onClick={() => handleDownloadClick('file3')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO B</button>
                             <button onClick={() => handleDownloadClick('file4')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP B</button>
                             <button onClick={() => handleDownloadClick('file5')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A e B</button>
-                            <button onClick={() => handleDownloadClick('file6')} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A e B</button>
+                            <button onClick={() => handleDownloadClick('file6')} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A e B</button> */}
                         </div>
-                        <AdminPanel btnPressed={btnPressed} />
+                        {/* <ExportReport btnPressed={btnPressed} /> */}
                         </div>
                         <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
                         <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
@@ -238,7 +243,7 @@ export default function Table({ type, implant, idUser }) {
                         <p></p>
                         <p></p>
                         <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
-                        <DownloadReport  downloadFor={"File_Scaricato"} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</DownloadReport>
+                        {/* <DownloadReport  downloadFor={"File_Scaricato"} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</DownloadReport> */}
                         </div>
                         </div>
                         

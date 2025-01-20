@@ -6,23 +6,56 @@ import { saveAs } from "file-saver";
 import { getSrvUrl } from '@@/config';
 import Cookies from 'js-cookie';
 
-/**
- * @author Daniele Zeraschi from Oppimittinetworking
- * 
- * @param {string}  reportType    Il tipo di report/esportazione ['file1','file2','file3','file4','file5','file6']
- * 
- */
-
 const srvurl = getSrvUrl();
 
 const getUrl = () => {
   return srvurl + '/bale';
 };
 
-const AdminPanel = ({ btnPressed }) => {
+const getUrlPlastic = () => {
+  return srvurl + '/plastic'; // Assuming '/plastic' endpoint returns the plastic types
+};
+
+/**
+ * @author Daniele Zeraschi from Oppimittinetworking
+ * 
+ * @param {string} btnPressed    Il tipo di report/esportazione 
+ * Valori possibili : [
+ *    'impianto-a',
+ *    'impianto-a-tempi',
+ *    'impianto-b', 
+ *    'impianto-b-tempi,
+ *    'impianto-ab',
+ *    'impianto-ab-tempi',
+ * ]
+ */
+const ExportReport = ({ btnPressed }) => {
+  
+  const [plasticData, setPlasticData] = useState([]);
   const [combinedData, setCombinedData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
 
+  useEffect(() => {
+    const fetchPlasticData = async () => {
+      try {
+        const resp = await fetch(getUrlPlastic());
+        if (!resp.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await resp.json();
+        if (data.code === 0) {
+          setPlasticData(data.data || []); // Assuming 'data' contains the list of plastics
+        } else {
+          setEmpty(true);
+        }
+      } catch (error) {
+        console.error("Error fetching plastic data:", error);
+      }
+    };
+
+    fetchPlasticData();
+  }, [btnPressed]);
   
   useEffect(() => {
     const fetchData = async () => {
@@ -63,11 +96,14 @@ const AdminPanel = ({ btnPressed }) => {
     const worksheet = workbook.addWorksheet('Report');
     
     worksheet.columns = [
-      { header: "Impianto", key: "implant", width: 15 },
-      { header: "Codice", key: "code", width: 15 },
-      { header: "Prodotto", key: "plastic", width: 15 },
-      { header: "Kg", key: "kg", width: 15 },
-      { header: "ID", key: "id", width: 15 }
+      { header: "", key: "implant", width: 15 },
+      { header: "", key: "code", width: 15 },
+      { header: "", key: "plastic", width: 15 },
+      { header: "", key: "weight", width: 15 },
+      { header: "", key: "id", width: 15 },
+      { header: "", key: "turn1", width: 15},
+      { header: "", key: "turn2", width: 15},
+      { header: "", key: "turn3", width: 15}
     ];
 
     worksheet.getCell('B1').value = new Date();
@@ -76,44 +112,50 @@ const AdminPanel = ({ btnPressed }) => {
     worksheet.getCell('C4').value = 'PRODOTTO';
     worksheet.getCell('D4').value = 'KG';
     worksheet.getCell('E4').value = 'ID';
+    worksheet.getCell('F4').value = 'KG';
+    worksheet.getCell('G4').value = 'ID';
+    worksheet.getCell('H4').value = 'KG';
+    worksheet.getCell('I4').value = 'ID';
+    worksheet.getCell('D3').value = 'TURNO 1';
+    worksheet.getCell('F3').value = 'TURNO 2';
+    worksheet.getCell('H3').value = 'TURNO 3';
+
+    plasticData.forEach((plastic) => {
+      worksheet.addRow({
+        plastic_type: plastic.plastic_type,
+      });
+    });
 
     combinedData.forEach((user) => {
       worksheet.addRow({
-        implant: user.implant,
-        code: user.code,
-        plastic: user.plastic,
-        kg: user.kg,
-        id: user.id
+        
       });
     });
 
     switch (reportType) {
-      case 'file1': // GIOR. IMPIANTO A
-        worksheet.addRow(['Implant', 'A']);
-        worksheet.addRow([1, 'Data for Implant A']);
+      case 'impianto-a': // GIOR. IMPIANTO A
+        worksheet.getCell('A1').value = 'IMPIANTO A';
         break;
 
-      case 'file2': // GIOR. TEMPI IMP A
+      case 'impianto-a-tempi': // GIOR. TEMPI IMP A
         worksheet.addRow(['Implant', 'A']);
         worksheet.addRow([1, 'Time data for Implant A']);
         break;
 
-      case 'file3': // GIOR. IMPIANTO B
-        worksheet.addRow(['Implant', 'B']);
-        worksheet.addRow([1, 'Data for Implant B']);
+      case 'impianto-b': // GIOR. IMPIANTO B
+        worksheet.getCell('A1').value = 'IMPIANTO B';
         break;
 
-      case 'file4': // GIOR. TEMPI IMP B
+      case 'impianto-b-tempi': // GIOR. TEMPI IMP B
         worksheet.addRow(['Implant', 'B']);
         worksheet.addRow([1, 'Time data for Implant B']);
         break;
 
-      case 'file5': // GIOR. IMPIANTO A e B
-        worksheet.addRow(['Implant', 'A and B']);
-        worksheet.addRow([1, 'Data for both Implants']);
+      case 'impianto-ab': // GIOR. IMPIANTO A e B
+        worksheet.getCell('A1').value = 'IMPIANTO A e B';
         break;
 
-      case 'file6': // GIOR. TEMPI IMP A e B
+      case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
         worksheet.addRow(['Implant', 'A and B']);
         worksheet.addRow([1, 'Time data for both Implants']);
         break;
@@ -136,4 +178,4 @@ const AdminPanel = ({ btnPressed }) => {
   }, [btnPressed]);
 };
 
-export default AdminPanel;
+export default ExportReport;
