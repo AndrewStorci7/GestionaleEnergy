@@ -16,7 +16,8 @@ const srvurl = getSrvUrl()
  * @param {string}  type    [ 'presser' | 'wheelman' | 'both' | 'admin' ]
  *                          Il tipo della pagina
  * 
- * @param {boolean} add     [ true | false ]
+ * @param {Object}  add     Oggetto che contiene lo stato di add e la funzione che gestisce il suo cambiamento 
+ *                          [ true | false ]
  *                          True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
  * @param {Object}  ids     Oggetto contenente gli ID delle balle create
@@ -35,7 +36,7 @@ const srvurl = getSrvUrl()
  */
 export default function TableContent({ 
     type, 
-    add, 
+    add,
     ids, 
     noData, 
     handleSelect,
@@ -44,7 +45,7 @@ export default function TableContent({
     selectedBaleId
 }) {
 
-    const { message } = useWebSocket();
+    const { ws, message } = useWebSocket();
 
     const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px] ";
@@ -118,7 +119,15 @@ export default function TableContent({
     } 
 
     const handleAddChange = () => {
-        setChangeFromAdd(!changeFromAdd)
+        // console.log("handlechange from table-content UPDATED")
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+            const message = JSON.stringify({ type: "reload", data: "___update___" })
+            ws.current.send(message);
+        } else {
+        console.log('WebSocket is not connected');
+        }
+        add.setAdd()
+        setChangeFromAdd(prev => !prev)
     } 
     
     useEffect(() =>  {
@@ -144,14 +153,15 @@ export default function TableContent({
 
                 if (data.code === 0) {
                     if (type === "presser")
-                        setContent(data.presser) //HotContent Error
+                        setContent(data.presser)
                     else if (type === "wheelman")
-                        setContent(data.wheelman) //HotContent Error
+                        setContent(data.wheelman)
                     else
-                        setContent([]) //HotContent Error
+                        setContent([])
                 } else {
-                    setEmpty(!isEmpty); //HotContent Error
-                    noData(data.message);
+                    setEmpty(prev => !prev);
+                    if (noData) noData(data.message);
+                    // return;
                 }
             } catch (error) {
                 console.log(error)
@@ -159,7 +169,7 @@ export default function TableContent({
         }
 
         fetchData();
-    }, [type, changeFromAdd, message]);
+    }, [type, add, changeFromAdd, message]);
 
     // test
     let i = 0;
@@ -169,7 +179,7 @@ export default function TableContent({
     const selectedBaleIdRef = useRef([]);
 
     const handleRowClick = (id) => {
-        console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);
+        // console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);
     
         // Ensure selectedBaleIdRef.current is initialized as an array
         if (!Array.isArray(selectedBaleIdRef.current)) {
@@ -186,14 +196,12 @@ export default function TableContent({
     
         handleSelect(newSelectedBaleId);
     
-        console.log("table-content after: " + JSON.stringify(newSelectedBaleId));
+        // console.log("table-content after: " + JSON.stringify(newSelectedBaleId));
     };
-    
-    
 
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
-            {(add) && ( 
+            {(add.state) && ( 
                 <InsertNewBale type={type} mod={primary} ids={ids} primary={primary} confirmHandle={handleAddChange} />
             )}
             {(!isEmpty) ? (

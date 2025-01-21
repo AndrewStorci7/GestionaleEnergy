@@ -116,96 +116,123 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                 }
             }
 
+            const body2 = { status: -1, where: idBale };
+
             const resp = fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ body })
             })
+
+            const resp2 = fetch(srvurl + "/update-status", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ body: body2 })
+            })
             
-            handlerConfirm
+            handlerConfirm()
 
         } catch (error) {
             // <Alert msg={error} />
-            console.log("Errore")
+            console.log("Errore", error)
         }
     }
 
     return (
         <>
             <div className='grid grid-cols-5'>
-                <SelectInput 
-                    searchFor={(type === 'presser') ? "plastic" : "cdbc"}
-                    value={(type === 'presser') ? plastic : cdbc}
-                    onChange={(e) => { 
-                        if (type === 'presser') {
-                            let code = e.target.selectedOptions[0].getAttribute("data-code");
-                            setPlastic(e.target.value); 
-                            setPlastic2(code);
-                        } else {
-                            setCdbc(e.target.value)
-                        }
-                    }} 
-                    fixedW 
-                />
-                <SelectInput 
-                    searchFor={(type === 'presser') ? "rei" : "reason"} 
-                    value={(type === 'presser') ? rei : reason}
-                    onChange={(e) => {
-                        if (type === 'presser')
-                            setRei(e.target.value)
-                        else setReason(e.target.value)
-                    }} 
-                    fixedW 
-                />
-                <SelectInput 
-                    searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
-                    value={(type === 'presser') ? cdbp : dest_wh}
-                    onChange={(e) => {
-                        if (type === 'presser')
-                            setCdbp(e.target.value)
-                        else setDestWh(e.target.value)
-                    }}  
-                    fixedW 
-                />
-                {(type === 'presser') ? (
+                <div className='relative px-[5px]'>
+                    <label className='absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Codice Plastica" : "Cond. Balla Carrel."}</label>
                     <SelectInput 
-                        searchFor={"selected-b"} 
-                        value={selected_b}
-                        onChange={(e) => setSelectedBale(e.target.value)} 
+                        searchFor={(type === 'presser') ? "plastic" : "cdbc"}
+                        value={(type === 'presser') ? plastic : cdbc}
+                        onChange={(e) => { 
+                            if (type === 'presser') {
+                                let code = e.target.selectedOptions[0].getAttribute("data-code");
+                                setPlastic(e.target.value); 
+                                setPlastic2(code);
+                            } else {
+                                setCdbc(e.target.value)
+                            }
+                        }} 
                         fixedW 
                     />
-                ) : (
-                    <input 
-                        type="number"
-                        id="peso-carrellista"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                        placeholder="Inserisci peso"
+                </div>
+                <div className='relative px-[5px]'>
+                    <label className='absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Utiliz. REI" : "Motivaz."}</label>
+                    <SelectInput 
+                        searchFor={(type === 'presser') ? "rei" : "reason"} 
+                        value={(type === 'presser') ? rei : reason}
+                        onChange={(e) => {
+                            if (type === 'presser')
+                                setRei(e.target.value)
+                            else setReason(e.target.value)
+                        }} 
+                        fixedW 
                     />
+                </div>
+                <div className='relative px-[5px]'>
+                    <label className='absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}</label>
+                    <SelectInput 
+                        searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
+                        value={(type === 'presser') ? cdbp : dest_wh}
+                        onChange={(e) => {
+                            if (type === 'presser')
+                                setCdbp(e.target.value)
+                            else setDestWh(e.target.value)
+                        }}  
+                        fixedW 
+                    />
+                </div>
+                {(type === 'presser') ? (
+                    <div className='relative px-[5px]'>
+                        <label className='absolute top-[-30px] left-[5px] font-bold'>Balla Selez.</label>
+                        <SelectInput 
+                            searchFor={"selected-b"} 
+                            value={selected_b}
+                            onChange={(e) => setSelectedBale(e.target.value)} 
+                            fixedW 
+                        />
+                    </div>
+                ) : (
+                    <div className='relative px-[5px]'>
+                        <label className='absolute top-[-30px] left-[5px] font-bold'>Peso (kg)</label>
+                        <input 
+                            className='text-black w-full'
+                            type="number"
+                            id="peso-carrellista"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                            placeholder="Inserisci peso"
+                        />
+                    </div>
                 )}
-                <input 
-                    className='text-black'
-                    type="text"
-                    id="note-carrellista"
-                    value={note || ""}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="Inserisci note"
-                    // defaultValue={note}
-                />
+                <div className='relative px-[5px]'>
+                    <label className='absolute top-[-30px] left-[5px] font-bold'>Note</label>
+                    <input 
+                        className='text-black w-full'
+                        type="text"
+                        id="note-carrellista"
+                        value={note || ""}
+                        onChange={(e) => setNote(e.target.value)}
+                        placeholder="Inserisci note"
+                        // defaultValue={note}
+                    />
+                </div>
             </div>
-            <div className='grid grid-cols-4'>
+            <div className='grid grid-cols-4 m-[10px] mt-[20px]'>
                 <button 
-                className='col-span-2'
+                className='col-span-2 border bg-primary'
                 onClick={handlerConfirm}
                 >
                     Annulla
                 </button>
                 <button 
-                className='on-btn-confirm col-span-2'
+                className='border bg-blue-400 col-span-2'
                 onClick={() => { 
                     const check = type === 'presser'
                     handleClick(check);
-                    handlerConfirm
+                    // handlerConfirm()
                 }}
                 >
                     OK

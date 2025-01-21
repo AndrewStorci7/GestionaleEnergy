@@ -92,18 +92,14 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                 body: JSON.stringify({ body })
             })
 
-            if (!resp.ok) {
-                <Alert msg={error} />
-            } else {
-                confirmHandle
-            }
-
         } catch (error) {
-            <Alert msg={error} />
+            // TOFIX
+            // <Alert msg={error} />
         }
     }
 
     const handleConfirmed = () =>{
+        confirmHandle()
         setShowConfirm(prev => !prev);
     }
 

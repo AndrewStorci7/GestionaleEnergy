@@ -31,21 +31,21 @@ export default function Admin() {
     const [type, setType] = useState("");
 
     // istanza del Web Socket
-    const [ws, setWs] = useState(null);
+    // const [ws, setWs] = useState(null);
     
     useEffect(() => {
 
-        const _ws = new WebSocket(wsurl);
+        // const _ws = new WebSocket(wsurl);
 
-        _ws.onopen = () => {
-            console.log('Connected to the WebSocket server');
-        };
+        // _ws.onopen = () => {
+        //     console.log('Connected to the WebSocket server');
+        // };
 
-        _ws.onmessage = (event) => {
-            console.log('Message from server:', event.data);
-        };
+        // _ws.onmessage = (event) => {
+        //     console.log('Message from server:', event.data);
+        // };
 
-        setWs(_ws);
+        // setWs(_ws);
 
         async function fetchData() {
             try {
@@ -69,15 +69,15 @@ export default function Admin() {
 
         fetchData();
 
-        if (_ws && _ws.readyState === WebSocket.OPEN) {
-            _ws.send(`User ${user} (${name} ${surname}) connected to the server`);
-        }
+        // if (_ws && _ws.readyState === WebSocket.OPEN) {
+        //     _ws.send(`User ${user} (${name} ${surname}) connected to the server`);
+        // }
 
-        return () => _ws.close();
+        // return () => _ws.close();
     }, []);
 
     return(
-        <WebSocketProvider>
+        <WebSocketProvider user={{ user, name, surname }}>
             <div className="w-[98%] m-[1%] overflow-hidden">
                 <CheckCookie/>
                 <Header 
@@ -91,7 +91,6 @@ export default function Admin() {
                     type={type}
                     implant={idImplant}
                     idUser={idUser}
-
                 />
                 <Footer />
             </div>

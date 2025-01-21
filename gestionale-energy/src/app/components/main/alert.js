@@ -27,8 +27,7 @@ export default function Alert({
   msg, 
   alertFor,
   handleClose,
-  idBale,
-  handlerMessage
+  idBale
 }) {
   
   const { ws } = useWebSocket();
@@ -43,15 +42,9 @@ export default function Alert({
   };
   
   const refreshPage = () => {
-    // console.log(ws.current)
-    
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      // const message = "update___" + (Math.floor(Math.random() * (1000 - 0 + 1)) + 0);
-      // const message = "update___" + md5(Math.floor(Math.random() * (1000 - 0 + 1)) + 0);
-
-      const message = "___update___"
+      const message = JSON.stringify({ type: "reload", data: "___update___" })
       ws.current.send(message);
-      // console.log(`Message sent: ${message}`);
     } else {
       console.log('WebSocket is not connected');
     }
@@ -194,6 +187,7 @@ export default function Alert({
               left: "50%",
               transform: "translate(-50%, -50%)",
               padding: "20px",
+              paddingTop: "50px",
               backgroundColor: "rgb(5, 181, 61)",
               color: "white",
               borderRadius: "5px",
@@ -205,10 +199,13 @@ export default function Alert({
               <UpdateValuesBale 
               type={(alertFor === "update-p") ? "presser" : "wheelman"}
               idBale={idBale}
-              handlerConfirm={() => closeAlert()}
+              handlerConfirm={() => {
+                closeAlert();
+                refreshPage();
+              }}
               />
               
-              <button
+              {/* <button
               onClick={() => {
                 closeAlert();
                 refreshPage();
@@ -224,7 +221,7 @@ export default function Alert({
               }}
               >
                 OK
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

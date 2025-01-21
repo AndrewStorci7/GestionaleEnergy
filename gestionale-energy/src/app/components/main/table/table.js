@@ -39,8 +39,12 @@ export default function Table({ type, implant, idUser }) {
     const [isSelected, setSelected] = useState(null)
     const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
 
-    const addHandle = (resp) => {
+    const closeInsertNewBaleComponent = () => {
         setState(prev => !prev)
+    }
+
+    const addHandle = (resp) => {
+        closeInsertNewBaleComponent()
         setResp(resp)
     }
 
@@ -92,7 +96,7 @@ export default function Table({ type, implant, idUser }) {
                                 type={"presser"} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
-                                add={addWasClicked} 
+                                add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent }} 
                                 ids={ids} 
                                 noData={noData} 
                                 primary 
@@ -101,7 +105,7 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={addWasClicked} />
+                            <TableContent type={"wheelman"} add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}}  />
                         </table>
                     </div>
 
@@ -131,7 +135,7 @@ export default function Table({ type, implant, idUser }) {
                             <TableHeader type={"wheelman"} primary />
                             <TableContent 
                                 type={"wheelman"} 
-                                add={addWasClicked} 
+                                add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}} 
                                 ids={ids} 
                                 noData={noData} 
                                 handleSelect={(e) => handleSelect(e)}
@@ -145,7 +149,7 @@ export default function Table({ type, implant, idUser }) {
                         </label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} />
-                            <TableContent type={"presser"} add={addWasClicked} />
+                            <TableContent type={"presser"} add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}}  />
                         </table>
                     </div>
 
