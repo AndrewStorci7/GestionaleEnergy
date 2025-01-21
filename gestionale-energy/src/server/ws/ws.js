@@ -29,7 +29,7 @@ class WebSocketApp {
                 
                 this.ws.clients.forEach((client) => {
                     if (client.readyState === WebSocket.OPEN && message == "___update___") {
-                        console.info("Check")
+                        // console.info("Check")
                         client.send(JSON.stringify({ code: 1001, message: md5(Math.floor(Math.random() * (1000 - 0 + 1)) + 0) }));
                         // client.send(msg);
                     }
