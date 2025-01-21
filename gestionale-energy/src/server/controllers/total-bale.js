@@ -1,7 +1,6 @@
 const Console = require('../inc/console')
+const Bale = require('./main/bale')
 const Common = require('./main/common')
-// const PresserBale = require('./presser')
-// const WheelmanBale = require('./wheelman')
 
 const axios = require('axios')
 
@@ -71,6 +70,34 @@ class TotalBale extends Common {
                 res.json({ code: 1, message: 'Errore nell\'inserimento' })
             }
     
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
+    }
+
+    /**
+     * Update the status of a total bale after updating a bale from Presser or Wheelman interface
+     * 
+     * @param {object} req 
+     * @param {object} res 
+     */
+    async updateStatusTotalBale(req, res) {
+        try {
+            const { body } = req.body;
+
+            // console.info("Entrato in updateStatusTotalBale")
+
+            const san = this.checkParams(body, { scope: "update", table: this.table })
+
+            const [check] = await this.db.query(san.query, san.params);
+    
+            if (check) {
+                res.json({ code: 0 });
+            } else {
+                res.json({ code: 1, message: "Errore nella modifica di una balla" });
+            }
+
         } catch (error) {
             console.error(error)
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
@@ -238,14 +265,6 @@ class TotalBale extends Common {
             if (id_bale !== null && id_bale !== undefined) {
 
                 var query = `DELETE FROM ${this.table} WHERE `;
-
-                // if (id_bale.length > 1) {
-                //     for (const id of id_bale) {
-                //         console.info(id)
-                //     }
-                // } else {
-                //     console.info(id_bale)
-                // }
 
                 const allId = await this.getIdsBale(id_bale)
                 const id_pb = allId[0].id_pb

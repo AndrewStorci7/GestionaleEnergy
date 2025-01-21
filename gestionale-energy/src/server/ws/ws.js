@@ -25,22 +25,33 @@ class WebSocketApp {
             
             _ws.on('message', (message) => {
                 
-                console.wsMessage(message)
-                
-                this.ws.clients.forEach((client) => {
-                    if (client.readyState === WebSocket.OPEN && message == "___update___") {
-                        // console.info("Check")
-                        client.send(JSON.stringify({ code: 1001, message: md5(Math.floor(Math.random() * (1000 - 0 + 1)) + 0) }));
-                        // client.send(msg);
+                // console.wsMessage(message)
+
+                try {
+                    const parsedMessage = JSON.parse(message);
+
+                    switch (parsedMessage.type) {
+                        case "reload": {
+                            console.info("Realod websocket type called")
+                            this.ws.clients.forEach((client) => {
+                                if (client.readyState === WebSocket.OPEN && parsedMessage.data == "___update___") {
+                                    client.send(JSON.stringify({ code: 1001, message: md5(Math.floor(Math.random() * (1000 - 0 + 1)) + 0) }));
+                                }
+                            });
+                            break;
+                        } 
+                        case "new-conncetion": {
+                            console.info("New Connection websocket type called")
+                            console.ws(`User connected: ${parsedMessage.data.user} (${parsedMessage.data.name} ${parsedMessage.data.surname})`);
+                            break;
+                        }
                     }
-                });
+                } catch (error) {
+                    console.error("Error parsing message", error);
+                }
             })
         })
     }
-
-    // onMessage(message) {
-        
-    // }
 
 }
 

@@ -5,10 +5,10 @@ const console = new Console("Bale");
 
 /**
  * 
+ * @author Andrea Storci form Oppimittinetworking
+ * 
  * @param {datetime}    datetime    DataTime
  * @param {string}      idUser      Id of user
- * 
- * @author Andrea Storci form Oppimittinetworking
  */
 class Bale extends Common {
 
@@ -52,6 +52,7 @@ class Bale extends Common {
             if (typeof obj === 'object') {
                 // console.info("Object detected")
 
+                const table = options.table;
                 var query = this.selectQuery(options)
                 var columns = []
                 var params = []
@@ -62,16 +63,22 @@ class Bale extends Common {
                     if (value !== '' && value !== 0 && (value !== 'undefined' || value !== undefined)) {
                         columns.push(key)
                         params.push(value)
+                        if (table === "pb_wb" && key === "where")
+                            params.push(value)
                     }
                 }
+
+                // console.info(params)
 
                 // Creo correttamente la query
                 for (const [index, val] of Object.entries(columns)) {
                     if (index < columns.length - 2)
                         query += `${val}=?, `
                     else 
-                        query += (val !== 'where') ? `${val}=? ` : "WHERE id=?"
+                        query += (val !== 'where') ? `${val}=? ` : `WHERE ${(table === "pb_wb") ? "id_pb=? OR id_wb=?": "id=?"}`
                 }
+
+                // console.info(query)
 
                 return { query, params }
             } else {
