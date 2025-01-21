@@ -1,5 +1,6 @@
 const Console = require('../inc/console')
 const WebSocket = require('ws')
+const md5 = require('md5')
 
 const console = new Console("WebSocketApp");
 
@@ -27,8 +28,10 @@ class WebSocketApp {
                 console.wsMessage(message)
                 
                 this.ws.clients.forEach((client) => {
-                    if (client.readyState === WebSocket.OPEN && message === "__update") {
-                        client.send({ code: 1001, message: "refresh_new_data" });
+                    if (client.readyState === WebSocket.OPEN && message == "___update___") {
+                        console.info("Check")
+                        client.send(JSON.stringify({ code: 1001, message: md5(Math.floor(Math.random() * (1000 - 0 + 1)) + 0) }));
+                        // client.send(msg);
                     }
                 });
             })

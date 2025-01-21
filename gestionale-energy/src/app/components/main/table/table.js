@@ -8,6 +8,8 @@ import BtnWheelman from "../btn-wheelman";
 import AdminPanel from "../admin-options";
 import BtnPresser from "../btn-presser";
 
+import { useWebSocket } from "../ws/use-web-socket";
+
 import { useEffect, useState } from "react";
 
 /**
@@ -24,7 +26,7 @@ import { useEffect, useState } from "react";
  */
 export default function Table({ type, implant, idUser }) {
 
-    // const {ws, message} = useWebSocket();
+    const { ws, message } = useWebSocket();
 
     // global message from the socket
     const [_message, setMessage] = useState("");

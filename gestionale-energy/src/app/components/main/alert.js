@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import UpdateValuesBale from "./update-bale";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
+import md5 from "md5";
 
 /**
 * @author Daniele Zeraschi from Oppimittinetworking
@@ -21,7 +22,7 @@ import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 * @param {int}       idBale       Id della balla da modificare
 *
 * @param {Function}  handlerMessage Funzione che gestisce l'aggiornamento 
-*/
+**/
 export default function Alert({
   msg, 
   alertFor,
@@ -42,10 +43,15 @@ export default function Alert({
   };
   
   const refreshPage = () => {
-    console.log(ws.current)
+    // console.log(ws.current)
+    
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      ws.current.send("__update");
-      console.log(`Message sent: ${message}`);
+      // const message = "update___" + (Math.floor(Math.random() * (1000 - 0 + 1)) + 0);
+      // const message = "update___" + md5(Math.floor(Math.random() * (1000 - 0 + 1)) + 0);
+
+      const message = "___update___"
+      ws.current.send(message);
+      // console.log(`Message sent: ${message}`);
     } else {
       console.log('WebSocket is not connected');
     }
