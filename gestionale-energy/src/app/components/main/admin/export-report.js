@@ -13,7 +13,7 @@ const getUrl = () => {
 };
 
 const getUrlPlastic = () => {
-  return srvurl + '/plastic'; // Assuming '/plastic' endpoint returns the plastic types
+  return srvurl + '/plastic';  // Assuming '/plastic' endpoint returns the plastic types
 };
 
 /**
@@ -34,14 +34,40 @@ const ExportReport = ({ btnPressed }) => {
   const [plasticData, setPlasticData] = useState([]);
   const [combinedData, setCombinedData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
-
+  const [plasticType, setPlasticType] = useState(null); // State for plastic type
+  const [implantType, setImplantType] = useState(null);
+  const [implantData, setImplantData] = useState([]);
+  
   useEffect(() => {
+
+    const fetchDataImplant = async () => {
+      try {
+        const url = getUrl(implantType);
+        const resp = await fetch(url, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        const data = await resp.json();
+        if (data.code === 0) {
+          setImplantData(data.data || []); // Assuming 'data' contains the list of plastics
+        } else {
+          setEmpty(true);
+        }
+      } catch (error) {
+        console.error("Error fetching plastic data:", error);
+        setEmpty(true);
+      }
+    };
+
+    
     const fetchPlasticData = async () => {
       try {
-        const resp = await fetch(getUrlPlastic());
-        if (!resp.ok) {
-          throw new Error("Network response was not ok");
-        }
+        const url = getUrlPlastic(plasticType);
+        const resp = await fetch(url, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
 
         const data = await resp.json();
         if (data.code === 0) {
@@ -51,44 +77,13 @@ const ExportReport = ({ btnPressed }) => {
         }
       } catch (error) {
         console.error("Error fetching plastic data:", error);
+        setEmpty(true);
       }
     };
 
     fetchPlasticData();
+    fetchDataImplant();
   }, [btnPressed]);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const cookies = JSON.parse(Cookies.get('user-info') || '{}');
-        const id_implant = cookies.id_implant;
-        const url = getUrl();
-
-        const resp = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id_implant }),
-        });
-
-        if (!resp.ok) {
-          throw new Error("Network response was not ok");
-        }
-
-        const data = await resp.json();
-        if (data.code === 0) {
-          const presserData = data.presser || [];
-          const wheelmanData = data.wheelman || [];
-          setCombinedData([...presserData, ...wheelmanData]);
-        } else {
-          setEmpty(true);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
 
   const handleDownload = (reportType) => {
@@ -96,45 +91,71 @@ const ExportReport = ({ btnPressed }) => {
     const worksheet = workbook.addWorksheet('Report');
     
     worksheet.columns = [
-      { header: "", key: "implant", width: 15 },
+      { header: "", key: "implants", width: 15 },
+      { header: "", key: "desc", width: 15,  },
       { header: "", key: "code", width: 15 },
-      { header: "", key: "plastic", width: 15 },
       { header: "", key: "weight", width: 15 },
-      { header: "", key: "id", width: 15 },
+      { header: "", key: "", width: 15 },
       { header: "", key: "turn1", width: 15},
       { header: "", key: "turn2", width: 15},
-      { header: "", key: "turn3", width: 15}
+      { header: "", key: "turn3", width: 20}
     ];
 
-    worksheet.getCell('B1').value = new Date();
+    worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet.getCell('E1').value = new Date();
+    worksheet.getCell('E1').font = {bold: true, name: 'Arial'};
     worksheet.getCell('A4').value = 'IMPIANTO';
+    worksheet.getCell('A4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('B4').value = 'CODICE';
     worksheet.getCell('C4').value = 'PRODOTTO';
     worksheet.getCell('D4').value = 'KG';
+    worksheet.getCell('D4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('E4').value = 'ID';
+    worksheet.getCell('E4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('F4').value = 'KG';
+    worksheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('G4').value = 'ID';
+    worksheet.getCell('G4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('H4').value = 'KG';
+    worksheet.getCell('H4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('I4').value = 'ID';
+    worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('D3').value = 'TURNO 1';
+    worksheet.mergeCells('D3:E3');
+    worksheet.getCell('D3:E3').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('F3').value = 'TURNO 2';
+    worksheet.mergeCells('F3:G3');
+    worksheet.getCell('F3:G3').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('H3').value = 'TURNO 3';
+    worksheet.mergeCells('H3:I3');
+    worksheet.getCell('H3:I3').alignment = { vertical: 'middle', horizontal: 'center' };
 
-    plasticData.forEach((plastic) => {
+    implantData.forEach((implant) => {
       worksheet.addRow({
-        plastic_type: plastic.plastic_type,
+         //Da continuare
       });
     });
 
-    combinedData.forEach((user) => {
-      worksheet.addRow({
-        
+    plasticData.forEach((plastic ) => {
+      const row = worksheet.addRow({
+        desc: plastic.desc,
+        code: plastic.code,
       });
+    
+    
+    
+      // Apply the same alignment to every cell in column B (for each row)
+      worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
     });
+
+    
 
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
-        worksheet.getCell('A1').value = 'IMPIANTO A';
+        worksheet.getCell('A1').value = 'IMPIANTO A - REPORT GIORNALIERO PER TURNI DEL';
+        worksheet.mergeCells('A1:D1');
+        worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
+        
         break;
 
       case 'impianto-a-tempi': // GIOR. TEMPI IMP A
@@ -143,7 +164,9 @@ const ExportReport = ({ btnPressed }) => {
         break;
 
       case 'impianto-b': // GIOR. IMPIANTO B
-        worksheet.getCell('A1').value = 'IMPIANTO B';
+      worksheet.getCell('A1').value = 'IMPIANTO B - REPORT GIORNALIERO PER TURNI DEL';
+      worksheet.mergeCells('A1:D1');
+      worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
         break;
 
       case 'impianto-b-tempi': // GIOR. TEMPI IMP B
@@ -152,11 +175,14 @@ const ExportReport = ({ btnPressed }) => {
         break;
 
       case 'impianto-ab': // GIOR. IMPIANTO A e B
-        worksheet.getCell('A1').value = 'IMPIANTO A e B';
+      worksheet.getCell('A1').value = 'IMPIANTO A e B - REPORT GIORNALIERO PER TURNI DEL';
+      worksheet.mergeCells('A1:D1');
+      worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
         break;
 
       case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
         worksheet.addRow(['Implant', 'A and B']);
+        worksheet.mergeCells('A1:D1');
         worksheet.addRow([1, 'Time data for both Implants']);
         break;
 
