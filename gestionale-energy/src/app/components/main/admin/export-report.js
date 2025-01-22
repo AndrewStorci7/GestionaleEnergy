@@ -35,32 +35,10 @@ const ExportReport = ({ btnPressed }) => {
   const [combinedData, setCombinedData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
   const [plasticType, setPlasticType] = useState(null); // State for plastic type
-  const [implantType, setImplantType] = useState(null);
-  const [implantData, setImplantData] = useState([]);
+  
+
   
   useEffect(() => {
-
-    const fetchDataImplant = async () => {
-      try {
-        const url = getUrl(implantType);
-        const resp = await fetch(url, {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        const data = await resp.json();
-        if (data.code === 0) {
-          setImplantData(data.data || []); // Assuming 'data' contains the list of plastics
-        } else {
-          setEmpty(true);
-        }
-      } catch (error) {
-        console.error("Error fetching plastic data:", error);
-        setEmpty(true);
-      }
-    };
-
-    
     const fetchPlasticData = async () => {
       try {
         const url = getUrlPlastic(plasticType);
@@ -71,6 +49,16 @@ const ExportReport = ({ btnPressed }) => {
 
         const data = await resp.json();
         if (data.code === 0) {
+          const query = `
+            SELECT 
+              code, 
+              COUNT(*) AS bale_count, 
+              SUM(weight) AS total_weight 
+            FROM 
+              bales 
+            GROUP BY 
+              code;
+          `;
           setPlasticData(data.data || []); // Assuming 'data' contains the list of plastics
         } else {
           setEmpty(true);
@@ -82,7 +70,7 @@ const ExportReport = ({ btnPressed }) => {
     };
 
     fetchPlasticData();
-    fetchDataImplant();
+    
   }, [btnPressed]);
 
 
@@ -91,15 +79,22 @@ const ExportReport = ({ btnPressed }) => {
     const worksheet = workbook.addWorksheet('Report');
     
     worksheet.columns = [
-      { header: "", key: "implants", width: 15 },
-      { header: "", key: "desc", width: 15,  },
+      { header: "", key: "implants", width: 10 },
+      { header: "", key: "desc", width: 10,  },
       { header: "", key: "code", width: 15 },
       { header: "", key: "weight", width: 15 },
       { header: "", key: "", width: 15 },
       { header: "", key: "turn1", width: 15},
       { header: "", key: "turn2", width: 15},
-      { header: "", key: "turn3", width: 20}
+      { header: "", key: "turn3", width: 15}
     ];
+
+    worksheet.getCell('A1').border = {
+      top: {style:'thin'},
+      left: {style:'thin'},
+      bottom: {style:'thin'},
+      right: {style:'thin'}
+    };
 
     worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('E1').value = new Date();
@@ -130,21 +125,42 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.mergeCells('H3:I3');
     worksheet.getCell('H3:I3').alignment = { vertical: 'middle', horizontal: 'center' };
 
-    implantData.forEach((implant) => {
-      worksheet.addRow({
-         //Da continuare
-      });
-    });
 
-    plasticData.forEach((plastic ) => {
-      const row = worksheet.addRow({
-        desc: plastic.desc,
-        code: plastic.code,
-      });
-    
-    
-    
-      // Apply the same alignment to every cell in column B (for each row)
+    plasticData
+      .filter(plastic => plastic.code !== 'none') // Filter out plastics with code 'none'
+      .forEach((plastic) => {
+        const row = worksheet.addRow({
+          desc: plastic.desc,
+          code: plastic.code,
+        });
+
+      
+      switch (reportType) {
+        case 'impianto-a': // GIOR. IMPIANTO A
+          worksheet.getCell(`A${row.number}`).value = 'A';
+          break;
+        case 'impianto-a-tempi': // GIOR. TEMPI IMP A
+          worksheet.getCell(`A${row.number}`).value = 'A';
+          break;
+        case 'impianto-b': // GIOR. IMPIANTO B
+          worksheet.getCell(`A${row.number}`).value = 'B';  
+          break;
+        case 'impianto-b-tempi': // GIOR. TEMPI IMP B
+          worksheet.getCell(`A${row.number}`).value = 'B';  
+          break;
+        case 'impianto-ab': // GIOR. IMPIANTO A e B
+          worksheet.getCell(`A${row.number}`).value = 'AB';
+          break;
+        case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
+          worksheet.getCell(`A${row.number}`).value = 'AB';
+          break;
+        default:
+          console.error('Unknown report type:', reportType);
+          return;
+      }
+
+      
+      worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
       worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
     });
 
@@ -155,7 +171,6 @@ const ExportReport = ({ btnPressed }) => {
         worksheet.getCell('A1').value = 'IMPIANTO A - REPORT GIORNALIERO PER TURNI DEL';
         worksheet.mergeCells('A1:D1');
         worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
-        
         break;
 
       case 'impianto-a-tempi': // GIOR. TEMPI IMP A
