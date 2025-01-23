@@ -18,9 +18,21 @@ class Common {
         this.id = id;
     }
 
-    checkTurn() {
+    /**
+     * 
+     * @param {number} str { 1 | 2 | 3 } Denota il turno da selezionare  
+     * @returns 
+     */
+    checkTurn(turn = 0) {
+        
         const rangeTime = new Date()
-        const _hour = rangeTime.getHours();
+        var _hour = rangeTime.getHours();
+        if (turn !== 0) {
+            if (turn !== 1 && turn !== 2 && turn !== 3) {
+                throw "errore: parametro turn non valido: deve essere unno tra questi valori {1, 2, 3} "
+            }
+            _hour = (turn === 1) ? 6 : (turn === 2) ? 14 : (turn === 3) ? 22 : rangeTime.getHours();
+        }
 
         if (_hour >= 6 && _hour < 14)
             return ['06:00:00', '13:59:59'];

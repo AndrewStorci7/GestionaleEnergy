@@ -24,6 +24,7 @@ const selectedBaleRoute = require('./routes/selected-bale');
 const reasonRouter = require('./routes/reason');
 const implantRouter = require('./routes/implant');
 const loginRouter = require('./routes/loginroutes');
+const reportRouter = require('./routes/report');
 
 const app = express();
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
@@ -54,6 +55,7 @@ app.use(reiRoute(db, "rei"));
 app.use(selectedBaleRoute(db, "selected_bale"));
 app.use(reasonRouter(db, "reas_not_tying"));
 app.use(implantRouter(db, "implants"));
+app.use(reportRouter(db));
 
 server.listen(PORT, () => {
     console.log(`Server running on ${URL}:${PORT}`);
