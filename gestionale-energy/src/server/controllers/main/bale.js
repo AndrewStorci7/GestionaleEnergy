@@ -31,10 +31,10 @@ class Bale extends Common {
             return "BETWEEN '06:00:00' AND '13:59:59'";
         else if (_hour >= 14 && _hour < 22)
             return "BETWEEN '14:00:00' AND '21:59:59'";
-        else if (_hour >= 22 && _hour < 6)
-            return "BETWEEN '22:00:00' AND '05:59:59'";
+        else if ((_hour >= 22 && _hour <= 24) || (_hour >=24 && _hour < 6))
+            return "BETWEEN '22:00:00' AND '23:59:59' OR BETWEEN '00:00:00' AND '05:59:59'";
         else
-            return "";
+            return "BETWEEN '22:00:00' AND '23:59:59' OR BETWEEN '00:00:00' AND '05:59:59'";
     }
 
     checkParams(obj, options) {

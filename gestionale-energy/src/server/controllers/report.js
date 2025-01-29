@@ -26,11 +26,33 @@ class Report extends Common {
             const { body } = req.body;
             const implant = body.implant;
 
-            const data = []
+            const data = new Array(3);
 
-            for (let i = 1; i <= 3; ++i) {
+            for (let i = 1; i < 4; ++i) {
 
+                // console.info(i)
                 const turn = super.checkTurn(i)
+
+                var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
+                    AND DATE(wheelman_bale.data_ins) = CURDATE()
+                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `
+                var params = [implant, turn[0], turn[1], turn[0], turn[1]]
+
+                if (turn[turn.length - 1] === 1) {
+                    condition = `AND (
+                        (DATE(presser_bale.data_ins) = CURDATE() 
+                        AND DATE(wheelman_bale.data_ins) = CURDATE()
+                        AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
+                        OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
+                        AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
+                        AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ))`
+                    params = [implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]]
+                }
+
+                console.info(turn)
                 
                 const [select] = await this.db.query(
                     `SELECT 
@@ -47,23 +69,21 @@ class Report extends Common {
                         ON pb_wb.id_wb = wheelman_bale.id
                     WHERE 
                         pb_wb.id_implant = ?
-                        AND DATE(presser_bale.data_ins) = CURDATE()
-                        AND DATE(wheelman_bale.data_ins) = CURDATE()
-                        AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ?
+                        ${condition}
                     GROUP BY 
                         code_plastic.code
                     LIMIT 100`,
-                    [implant, turn[0], turn[1], turn[0], turn[1]]
+                    params
                 );
 
                 if (select && select.length > 0) {
-                    data.push(select)
+                    // data.push(select)
+                    data[i - 1] = select
                 }
             }
 
             if (data && data.length > 0) {
-                // console.info(select)
+                console.info(data)
                 res.json({ code: 0, data: data })
             } else {
                 res.json({ code: 1, message: "No data fetched" })

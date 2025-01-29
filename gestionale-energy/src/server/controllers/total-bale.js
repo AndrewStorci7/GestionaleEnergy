@@ -94,17 +94,36 @@ class TotalBale extends Common {
             const wheelmanResult = [];
             const turn = super.checkTurn();
 
+            var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
+                AND DATE(wheelman_bale.data_ins) = CURDATE()
+                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `
+            var params = [id_implant, turn[0], turn[1], turn[0], turn[1]]
+
+            if (turn[turn.length - 1] === 1) {
+                condition = `AND (
+                    (DATE(presser_bale.data_ins) = CURDATE() 
+                    AND DATE(wheelman_bale.data_ins) = CURDATE()
+                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
+                    OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
+                    AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
+                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
+                )`
+                params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]]
+            }
+
             const [select] = await this.db.query(
                 `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants 
                 ON ${this.table}.id_pb = presser_bale.id AND
                 ${this.table}.id_wb = wheelman_bale.id AND
                 ${this.table}.id_implant = implants.id
                 WHERE ${this.table}.id_implant = ?
-                AND DATE(presser_bale.data_ins) = CURDATE()
-                AND DATE(wheelman_bale.data_ins) = CURDATE()
-                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ORDER BY TIME(presser_bale.data_ins) DESC, TIME(wheelman_bale.data_ins) DESC LIMIT 100 `,
-                [id_implant, turn[0], turn[1], turn[0], turn[1]]
+                ${condition}
+                ORDER BY TIME(presser_bale.data_ins) DESC, 
+                TIME(wheelman_bale.data_ins) DESC LIMIT 100`,
+                params
             );
 
             // console.info(select)

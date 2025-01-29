@@ -20,28 +20,31 @@ class Common {
 
     /**
      * 
-     * @param {number} str { 1 | 2 | 3 } Denota il turno da selezionare  
+     * @param {number} turn { 1 | 2 | 3 } Denota il turno da selezionare  
      * @returns 
      */
     checkTurn(turn = 0) {
-        
+        // console.info("Index ricvevuto" + turn)
         const rangeTime = new Date()
         var _hour = rangeTime.getHours();
-        if (turn !== 0) {
-            if (turn !== 1 && turn !== 2 && turn !== 3) {
-                throw "errore: parametro turn non valido: deve essere unno tra questi valori {1, 2, 3} "
-            }
-            _hour = (turn === 1) ? 6 : (turn === 2) ? 14 : (turn === 3) ? 22 : rangeTime.getHours();
+        if (turn != 0) {
+            // console.info(`Turno dentro checkTurn(): ${turn}`)
+            if (turn != 1 && turn != 2 && turn != 3) {
+                throw "errore: parametro turn non valido: deve essere uno tra questi valori {1, 2, 3}"
+            } else {
+                if (turn == 1) _hour = 7;
+                else if (turn == 2) _hour = 15;
+                else _hour = 23;
+            } 
+            // _hour = (turn === 1) ? 7 : (turn === 2) ? 15 : (turn === 3) ? 23 : rangeTime.getHours();
         }
 
         if (_hour >= 6 && _hour < 14)
-            return ['06:00:00', '13:59:59'];
+            return ['06:00:00', '13:59:59', 0];
         else if (_hour >= 14 && _hour < 22)
-            return ['14:00:00', '21:59:59'];
-        else if (_hour >= 22 && _hour < 6)
-            return ['22:00:00', '05:59:59'];
-        else
-            return ['', ''];
+            return ['14:00:00', '21:59:59', 0];
+        else if ((_hour >= 22 && _hour <= 24) || (_hour >=24 && _hour < 6))
+            return ['22:00:00', '23:59:59', '00:00:00', '05:59:59', 1];
     }
 
     convertSpecialCharsToHex(inputString) {
