@@ -16,9 +16,7 @@ const getUrlPlastic = () => {
   return srvurl + '/plastic';  // Assuming '/plastic' endpoint returns the plastic types
 };
 
-const getUrlWheelman = () => {
-  return srvurl + '/wheelman'
-}
+
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -39,19 +37,18 @@ const ExportReport = ({ btnPressed }) => {
   const [combinedData, setCombinedData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
   const [plasticType, setPlasticType] = useState(null); // State for plastic type
-  const [weightType, setWeightType] = useState(null); // State for plastic type
-  const [weightData, setWeightData] = useState(null); // State for plastic type
+
 
 
   
   useEffect(() => {
-    const fetchPlasticData = async () => {
+    const fetchReportData = async () => {
       try {
 
         const body = {
-          implant: (btnPressed === 'impianto-a') ? 1 : (btnPressed === 'impianto-b') ? 2 : (btnPressed === 'impianto-ab') ? [1, 2] : [1, 2],
+          implant: (btnPressed === 'impianto-a') ? 2 : (btnPressed === 'impianto-b') ? 1 : 2,//: (btnPressed === 'impianto-ab') ? [1, 2] : [1, 2]
         }
-        
+
         const resp = await fetch(srvurl + '/report', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -62,42 +59,18 @@ const ExportReport = ({ btnPressed }) => {
 
         console.log(data)
 
-        // if (data.code === 0) {
-        //   setPlasticData(data.data || []); // Assuming 'data' contains the list of plastics
-        // } else {
-        //   setEmpty(true);
-        // }
-      } catch (error) {
-        console.error("Error fetching plastic data:", error);
-        setEmpty(true);
-      }
-    };
-
-    /**
-     * 
-     */
-    const fetchWeightData = async () => {
-      try {
-        const url = getUrlWheelman(weightType);
-        const resp = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-        });
-
-        const data = await resp.json();
         if (data.code === 0) {
-          setWeightData(data.data || []); // Assuming 'data' contains the list of plastics
+          setCombinedData(data.data || []); 
         } else {
           setEmpty(true);
         }
       } catch (error) {
-        console.error("Error fetching plastic data:", error);
+        //console.error("Error fetching plastic data:", error);
         setEmpty(true);
       }
-    }
+    };
 
-    fetchPlasticData();
-    fetchWeightData();
+    fetchReportData();
   }, [btnPressed]);
 
 
@@ -155,21 +128,11 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getCell('F30 ').value = 'TOTALE';
     worksheet.getCell('J4').value = 'TOT. TURNO';
 
-    plasticData
-      .filter(plastic => plastic.code !== 'none') // Filter out plastics with code 'none'
-      .forEach((plastic) => {
-        const row = worksheet.addRow({
-          desc: plastic.desc,
-          code: plastic.code,
-        });
-
-    weightData
-    .forEach((weight) => {
-      worksheet.addRow({
-        weight: weight.weight
-      })
-    });
-
+    combinedData.forEach(() => {
+      
+      const row = worksheet.addRow({
+          plastic: 'prova'
+      });
       
       switch (reportType) {
         case 'impianto-a': // GIOR. IMPIANTO A
