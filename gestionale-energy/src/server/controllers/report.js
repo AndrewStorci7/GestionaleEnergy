@@ -69,6 +69,7 @@ class Report extends Common {
                         ON pb_wb.id_wb = wheelman_bale.id
                     WHERE 
                         pb_wb.id_implant = ?
+                        AND 
                         ${condition}
                     GROUP BY 
                         code_plastic.code

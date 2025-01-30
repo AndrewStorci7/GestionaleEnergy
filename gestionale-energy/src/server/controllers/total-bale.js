@@ -239,6 +239,10 @@ class TotalBale extends Common {
         }
     }
 
+    async balleTotali(req, res){
+        
+    }
+
     /**
      * Delete a multiple bales from ids
      * 
