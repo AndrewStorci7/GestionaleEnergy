@@ -39,7 +39,7 @@ class PresserBale extends Bale {
         
         const {id} = req;
         
-        console.info(`Data received: ${id}`)
+        // console.info(`Data received: ${id}`)
 
         const [rows] = await this.db.query(
             `SELECT ${this.table}.id AS 'id', code_plastic.code AS 'plastic',
@@ -112,8 +112,6 @@ class PresserBale extends Bale {
             console.info("[Update]: ", body)
 
             const san = this.checkParams(body, {scope: "update", table: this.table})
-            // console.info("QUERY DETECTED: " + prova.query)
-            // console.info("PARAMS DETECTED: " + prova.params)
             
             const [check] = await this.db.query(san.query, san.params);
     

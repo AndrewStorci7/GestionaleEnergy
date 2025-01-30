@@ -1,14 +1,14 @@
 'use client'
 
 import TableHeader from "./table-header";
-import CheckButton from "../select-button";
-import Icon from "../get-icon";
 import TableContent from "./table-content";
 import DownloadReport from "../admin/btn-report"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
 import ExportReport from "../admin/export-report";
 import BtnPresser from "../btn-presser";
+
+import { useWebSocket } from "../ws/use-web-socket";
 
 import { useEffect, useState } from "react";
 
@@ -26,6 +26,11 @@ import { useEffect, useState } from "react";
  */
 export default function Table({ type, implant, idUser }) {
 
+    const { ws, message } = useWebSocket();
+
+    // global message from the socket
+    const [_message, setMessage] = useState("");
+
     const [selectedType, setSelectedType] = useState("general");
     const [addWasClicked, setState] = useState(false)
     const [ids, setResp] = useState([])
@@ -34,8 +39,12 @@ export default function Table({ type, implant, idUser }) {
     const [isSelected, setSelected] = useState(null)
     const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
 
-    const addHandle = (resp) => {
+    const closeInsertNewBaleComponent = () => {
         setState(prev => !prev)
+    }
+
+    const addHandle = (resp) => {
+        closeInsertNewBaleComponent()
         setResp(resp)
     }
 
@@ -67,6 +76,10 @@ export default function Table({ type, implant, idUser }) {
     const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
     const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>
 
+    // useEffect(() => {
+    //     setMessage(message)
+    // }, [ws, message])
+
     switch (type) {
         case "admin": {
             return(
@@ -87,7 +100,7 @@ export default function Table({ type, implant, idUser }) {
                                 type={"presser"} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
-                                add={addWasClicked} 
+                                add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent }} 
                                 ids={ids} 
                                 noData={noData} 
                                 primary 
@@ -96,7 +109,7 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={addWasClicked} />
+                            <TableContent type={"wheelman"} add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}}  />
                         </table>
                     </div>
 
@@ -126,7 +139,7 @@ export default function Table({ type, implant, idUser }) {
                             <TableHeader type={"wheelman"} primary />
                             <TableContent 
                                 type={"wheelman"} 
-                                add={addWasClicked} 
+                                add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}} 
                                 ids={ids} 
                                 noData={noData} 
                                 handleSelect={(e) => handleSelect(e)}
@@ -140,7 +153,7 @@ export default function Table({ type, implant, idUser }) {
                         </label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} />
-                            <TableContent type={"presser"} add={addWasClicked} />
+                            <TableContent type={"presser"} add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}}  />
                         </table>
                     </div>
 

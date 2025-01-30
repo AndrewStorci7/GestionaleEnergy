@@ -92,47 +92,50 @@ export default function SelectInput({ searchFor, id, fixedW, value, onChange, ty
     }, [searchFor, value, onChange])
 
     return (
-        <select
-        id={id}
-        className={`${_CMNSTYLE_SELECT}`}
-        value={value}
-        onChange={onChange}
-        >
-            <option value={""}>-</option>
-            {content.map((_m, _i) => {
-                if (typeof _m === "object" && _m !== null) {
+        <>
+            {/* <label className="absolute top-0 left-0" htmlFor={id} >Prova</label> */}
+            <select
+            id={id}
+            className={`${_CMNSTYLE_SELECT}`}
+            value={value}
+            onChange={onChange}
+            >
+                <option value={""}>-</option>
+                {content.map((_m, _i) => {
+                    if (typeof _m === "object" && _m !== null) {
 
-                    // Variabili locali 
-                    let code = "";
-                    let data = ""
-                    let str = "";
-                    let tmp = "";
+                        // Variabili locali 
+                        let code = "";
+                        let data = ""
+                        let str = "";
+                        let tmp = "";
 
-                    // Controllo per impostare componente <option> correttamente:
-                    // <option value={id}>name</option>
-                    Object.keys(_m).map((key, __i) => {
-                        code += (key === "code" || key === "id") ? _m[key] : "";
-                        data = (key === "desc") ? _m[key] : "";
-                        tmp = (key === "desc") ? `\(${_m[key]}\)` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
-                        str += tmp + " "; 
+                        // Controllo per impostare componente <option> correttamente:
+                        // <option value={id}>name</option>
+                        Object.keys(_m).map((key, __i) => {
+                            code += (key === "code" || key === "id") ? _m[key] : "";
+                            data = (key === "desc") ? _m[key] : "";
+                            tmp = (key === "desc") ? `\(${_m[key]}\)` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
+                            str += tmp + " "; 
 
-                        // console.log("Actual value: " + _m[key] + "\nValue saved: " + code)
-                        // console.log("Value saved: ", code)
-                    })
+                            // console.log("Actual value: " + _m[key] + "\nValue saved: " + code)
+                            // console.log("Value saved: ", code)
+                        })
 
-                    return ( 
-                        <option key={"option-" + _i} value={code} data-code={data}>
-                            {str}
-                        </option>
-                    )
-                } else {
-                    return (
-                        <option key={_m[_i] + _i} value={_m}>
-                            {_m}
-                        </option>
-                    )
-                }
-            })}
-        </select>
+                        return ( 
+                            <option key={"option-" + _i} value={code} data-code={data}>
+                                {str}
+                            </option>
+                        )
+                    } else {
+                        return (
+                            <option key={_m[_i] + _i} value={_m}>
+                                {_m}
+                            </option>
+                        )
+                    }
+                })}
+            </select>
+        </>
     );
 }

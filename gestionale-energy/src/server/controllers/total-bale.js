@@ -1,7 +1,6 @@
 const Console = require('../inc/console')
+const Bale = require('./main/bale')
 const Common = require('./main/common')
-const PresserBale = require('./presser')
-const WheelmanBale = require('./wheelman')
 
 const axios = require('axios')
 
@@ -35,12 +34,12 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
-            console.info(data)
+            // console.info(data)
 
             const id_implant = data.id_implant;
             const id_presser = data.id_presser;
             
-            console.info(`Data (Presser Bale) received: ${id_presser}, ${id_implant}`);
+            // console.info(`Data (Presser Bale) received: ${id_presser}, ${id_implant}`);
             
             const check_ins_pb = await this.db.query(
                 "INSERT INTO presser_bale(id_presser) VALUES (?)",
@@ -78,6 +77,34 @@ class TotalBale extends Common {
     }
 
     /**
+     * Update the status of a total bale after updating a bale from Presser or Wheelman interface
+     * 
+     * @param {object} req 
+     * @param {object} res 
+     */
+    async updateStatusTotalBale(req, res) {
+        try {
+            const { body } = req.body;
+
+            // console.info("Entrato in updateStatusTotalBale")
+
+            const san = this.checkParams(body, { scope: "update", table: this.table })
+
+            const [check] = await this.db.query(san.query, san.params);
+    
+            if (check) {
+                res.json({ code: 0 });
+            } else {
+                res.json({ code: 1, message: "Errore nella modifica di una balla" });
+            }
+
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
+    }
+
+    /**
      * Get a total bale composed by information of the bale created by presser
      * and the information of the bale added by wheelman
      * 
@@ -88,7 +115,7 @@ class TotalBale extends Common {
         try {
             const { id_implant } = req.body;
     
-            console.info(`body received: ${id_implant}`)
+            // console.info(`body received: ${id_implant}`)
 
             const presserResult = [];
             const wheelmanResult = [];
@@ -126,8 +153,6 @@ class TotalBale extends Common {
                 params
             );
 
-            // console.info(select)
-
             if (select !== 'undefined' || select !== null) {
 
                 for (const e of select) {
@@ -152,18 +177,10 @@ class TotalBale extends Common {
                     res_wheelman.status = status;
                     // res_wheelman = await res_wheelman.json();
 
-                    // console.info("Content presser: ")
-                    // console.info(res_presser)
-                    // console.info("Content wheelman: ")
-                    // console.info(res_wheelman)
                     presserResult.push(res_presser)
                     wheelmanResult.push(res_wheelman)
                 };
             }
-            
-            // console.info("prova")
-            // console.info(presserResult)
-            // console.info(wheelmanResult)
 
             if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
                 res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult })
@@ -187,7 +204,7 @@ class TotalBale extends Common {
         try {
             const { id_implant } = req.body;
         
-            console.info(`Filtrato dal ID Impianto: ${id_implant}`);
+            // console.info(`Filtrato dal ID Impianto: ${id_implant}`);
         
             const [select] = await this.db.query(
                 `SELECT
@@ -239,8 +256,26 @@ class TotalBale extends Common {
         }
     }
 
-    async balleTotali(req, res){
+    /**
+     * Aggiornamento del conteggio delle balle in tempo reale
+     * @param {object} req 
+     * @param {object} res 
+     */
+    async balleTotali(req, res) {
+
+    }
         
+    getIdsBale = async (id) => {
+        const [select] = await this.db.query(
+            `SELECT * FROM ${this.table} WHERE id_pb=?`,
+            [id]
+        )
+
+        if (select) {
+            return select
+        } else {
+            throw new Error("Errore durante la selezione della balla")
+        }
     }
 
     /**
@@ -253,29 +288,45 @@ class TotalBale extends Common {
         try {
             const {id_bale} = req.body;
             
-            console.info("ID ELIMINA ricevuti: " + id_bale)
+            // console.info("ID ELIMINA ricevuti: " + id_bale)
 
             if (id_bale !== null && id_bale !== undefined) {
 
                 var query = `DELETE FROM ${this.table} WHERE `;
 
-                // if (id_bale.length > 1) {
-                //     for (const id of id_bale) {
-                //         console.info(id)
-                //     }
-                // } else {
-                //     console.info(id_bale)
-                // }
+                const allId = await this.getIdsBale(id_bale)
+                const id_pb = allId[0].id_pb
+                const id_wb = allId[0].id_wb
+
+                // console.info(allId)
 
                 const [check] = await this.db.query(
                     `DELETE FROM ${this.table} WHERE ${this.table}.id_pb=?`,
                     [id_bale]
                 )
+                // console.delete(check)
+                
+                if (check && check.affectedRows > 0) {
+                    // Check deletion of presser bale
+                    const [check_dp] = await this.db.query(
+                        "DELETE FROM presser_bale WHERE presser_bale.id=?",
+                        [id_pb]
+                    )
+                    // console.delete(check_dp)
+    
+                    // Check deletion of wheelman bale
+                    const [check_dw] = await this.db.query(
+                        "DELETE FROM wheelman_bale WHERE wheelman_bale.id=?",
+                        [id_wb]
+                    )
+                    // console.delete(check_dw)
 
-                console.delete(check)
-
-                if (check) {
-                    res.json({ cod: 0, message: `Balla numero ${id_bale} eliminata con successo!` })
+                    var message = `Balla numero ${id_bale} eliminata con successo!`
+                    
+                    if (check_dp.affectedRows === 0 || check_dw.affectedRows === 0)
+                        message += `\nBalla numero ${id_bale}`
+                    
+                    res.json({ cod: 0, message })
                 } else {
                     res.json({ cod: -1, message: `Errore nell'eliminazione Balla numero ${id_bale}` })
                 }

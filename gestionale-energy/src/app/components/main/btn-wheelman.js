@@ -42,24 +42,6 @@ export default function BtnWheelman({
         const f_id = (typeof id === 'object') ? id[0] : id;
         setIdBale(f_id)
         handleAlert("", 'update-w')
-        // try {
-    
-        //     const f_id = (typeof id === 'object') ? id[0] : id;
-
-        //     const check = await fetch(srvurl + '/delete-bale', {
-        //         method: 'POST',
-        //         headers: {'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ id_bale: f_id }),
-        //     })
-    
-        //     const resp = await check.json()
-    
-        //     if (resp.code < 0) {
-        //         handleAlert(resp.message)
-        //     }
-        // } catch (error) {
-        //     handleAlert(error)
-        // }
     }
 
     const handleClick = (f) => {
@@ -96,17 +78,27 @@ export default function BtnWheelman({
         if (idSelect !== null && idSelect.length > 0) {
             try {
 
-                const body = {printed: true, where: idSelect};
+                const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
+                const body2 = { status: 1, where: idSelect }; // Body per l'update dello stato della balla totale
+
                 // Invia la richiesta per aggiornare lo stato della balla
                 const response = await fetch(srvurl + '/uwheelmanbale', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({body}),
+                    body: JSON.stringify({ body }),
+                });
+
+                // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
+                const response2 = await fetch(srvurl + '/update-status', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ body: body2 }),
                 });
     
                 const result = await response.json();
-    
-                if (result.code === 0) {
+                const result2 = await response2.json();
+
+                if (result.code === 0 && result2.code === 0) {
                     // Se la risposta è positiva, mostra un messaggio di conferma
                     setScope(scope);
                     setErrorMessage(msg);
@@ -126,26 +118,26 @@ export default function BtnWheelman({
     }
     return(
         <>
-        <div className="w-1/2 font-bold">
-            <div className="flex flex-row-reverse px-11">
-                <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={() => handleClick()}>
-                    Modifica
-                </button>
-                <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[30px]" onClick = {() => handleStampa()}>
-                    Stampa Etich.
-                </button>
+            <div className="w-1/2 font-bold">
+                <div className="flex flex-row-reverse px-11">
+                    <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={() => handleClick()}>
+                        Modifica
+                    </button>
+                    <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[30px]" onClick = {() => handleStampa()}>
+                        Stampa Etich.
+                    </button>
+                </div>
             </div>
-        </div>
 
-        {showAlert && 
+            {showAlert && 
                 <Alert 
                     handleClose={closeAlert} 
                     alertFor={scope} 
                     msg={errorMessage}
                     idBale={idBale}
                 />
-        }
-       </>
+            }
+        </>
         
     )
        

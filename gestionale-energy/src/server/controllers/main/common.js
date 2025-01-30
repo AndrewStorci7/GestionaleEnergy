@@ -60,6 +60,75 @@ class Common {
         }).join('');
     }
 
+    /**
+     * 
+     * @param {Object} obj      Oggetto ricevuto tramite richiesta 
+     * @param {Object} options  Opzioni facoltative per la gestione dell'update
+     * 
+     * @returns {Object} 
+     */
+    checkParams(obj, options) {
+        if (options === null)
+            throw new Error("No Table was defined")
+
+        if (obj !== null && obj !== undefined) {
+            if (typeof obj === 'object') {
+                // console.info("Object detected")
+
+                const table = options.table;
+                var query = this.selectQuery(options)
+                var columns = []
+                var params = []
+                
+                // Creo un array con solo i valori diversi da "" (vuoto o null)
+                // Differenzio per evitare casini nella creazione della stringa per la query
+                for (const [key, value] of Object.entries(obj)) {
+                    if (value !== '' && value !== 0 && (value !== 'undefined' || value !== undefined)) {
+                        columns.push(key)
+                        params.push(value)
+                        if (table === "pb_wb" && key === "where")
+                            params.push(value)
+                    }
+                }
+
+                // console.info(params)
+
+                // Creo correttamente la query
+                for (const [index, val] of Object.entries(columns)) {
+                    if (index < columns.length - 2)
+                        query += `${val}=?, `
+                    else 
+                        query += (val !== 'where') ? `${val}=? ` : `WHERE ${(table === "pb_wb") ? "id_pb=? OR id_wb=?": "id=?"}`
+                }
+
+                // console.info(query)
+
+                return { query, params }
+            } else {
+                return obj
+            }
+        } else {
+            return null
+        }
+    }
+
+    /**
+     * Select query only for UPDATE and DELETE 
+     * 
+     * @param {object} options  
+     */
+    selectQuery(options) {
+        switch (options.scope) {
+            case "delete": {
+                return `DELETE FROM ${options.table} WHERE `
+            }
+            case "update": {
+                return `UPDATE ${options.table} SET ` 
+            }
+        }
+    }
+
+
     async prova(req, res) {
         try {
             const {body} = req.body 

@@ -22,15 +22,15 @@ const pool = mysql.createPool({
 
 const originalQuery = pool.query.bind(pool);
 pool.query = (sql, params, callback) => {
-    console.info(`\n[QUERY] ${sql}`);
-    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
+    // console.info(`\n[QUERY] ${sql}`);
+    // if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
     return originalQuery(sql, params, callback);
 };
 
 const originalExecute = pool.execute.bind(pool);
 pool.execute = (sql, params, callback) => {
-    console.info(`\n[EXECUTE] ${sql}`);
-    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
+    // console.info(`\n[EXECUTE] ${sql}`);
+    // if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
     return originalExecute(sql, params, callback);
 };
 

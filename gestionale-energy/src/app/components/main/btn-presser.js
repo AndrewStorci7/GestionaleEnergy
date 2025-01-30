@@ -37,7 +37,7 @@ export default function BtnPresser({
         setIdBale(idSelect)
     }, [idSelect])
 
-    const addNewBale = async () =>  {
+    const addNewBale = async () => {
         try {
             const data = {
                 id_presser: idUser,
@@ -88,29 +88,10 @@ export default function BtnPresser({
         const f_id = (typeof id === 'object') ? id[0] : id;
         setIdBale(f_id)
         handleAlert("", 'update-p')
-        // try {
-    
-        //     const f_id = (typeof id === 'object') ? id[0] : id;
-
-        //     const check = await fetch(srvurl + '/delete-bale', {
-        //         method: 'POST',
-        //         headers: {'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ id_bale: f_id }),
-        //     })
-    
-        //     const resp = await check.json()
-    
-        //     if (resp.code < 0) {
-        //         handleAlert(resp.message)
-        //     }
-        // } catch (error) {
-        //     handleAlert(error)
-        // }
     }
 
     const handleClick = (f) => {
-        // console.log(idSelect)
-        if (idSelect !== null) {
+        if (idSelect !== null && idSelect.length > 0) {
             if (f)
                 handleUpdate(idSelect)
             else handleDelete(idSelect)
