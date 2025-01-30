@@ -52,7 +52,7 @@ class Report extends Common {
                     params = [implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]]
                 }
 
-                console.info(turn)
+                // console.info(turn)
                 
                 const [select] = await this.db.query(
                     `SELECT 

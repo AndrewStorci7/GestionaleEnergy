@@ -99,8 +99,8 @@ class TotalBale extends Common {
             }
 
         } catch (error) {
-            console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            console.error(error);
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
         }
     }
 
@@ -124,8 +124,8 @@ class TotalBale extends Common {
             var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
                 AND DATE(wheelman_bale.data_ins) = CURDATE()
                 AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `
-            var params = [id_implant, turn[0], turn[1], turn[0], turn[1]]
+                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
+            var params = [id_implant, turn[0], turn[1], turn[0], turn[1]];
 
             if (turn[turn.length - 1] === 1) {
                 condition = `AND (
@@ -137,19 +137,36 @@ class TotalBale extends Common {
                     AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
                     AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
                     AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
-                )`
-                params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]]
+                )`;
+                params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
             }
 
             const [select] = await this.db.query(
-                `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants 
-                ON ${this.table}.id_pb = presser_bale.id AND
-                ${this.table}.id_wb = wheelman_bale.id AND
-                ${this.table}.id_implant = implants.id
-                WHERE ${this.table}.id_implant = ?
-                ${condition}
-                ORDER BY TIME(presser_bale.data_ins) DESC, 
-                TIME(wheelman_bale.data_ins) DESC LIMIT 100`,
+                `SELECT 
+                    ${this.table}.id_pb, 
+                    ${this.table}.id_wb, 
+                    ${this.table}.status,
+                    ${this.table}.id
+                FROM 
+                    ${this.table} 
+                JOIN 
+                    presser_bale 
+                JOIN 
+                    wheelman_bale 
+                JOIN 
+                    implants 
+                ON 
+                    ${this.table}.id_pb = presser_bale.id AND
+                    ${this.table}.id_wb = wheelman_bale.id AND
+                    ${this.table}.id_implant = implants.id
+                WHERE 
+                    ${this.table}.id_implant = ?
+                    ${condition}
+                ORDER BY 
+                    ${this.table}.status ASC,
+                    TIME(presser_bale.data_ins) DESC, 
+                    TIME(wheelman_bale.data_ins) DESC 
+                LIMIT 100`,
                 params
             );
 
@@ -157,40 +174,41 @@ class TotalBale extends Common {
 
                 for (const e of select) {
 
-                    var id_presser = e.id_pb
-                    var id_wheelman = e.id_wb
-                    var status = e.status
+                    var id_presser = e.id_pb;
+                    var id_wheelman = e.id_wb;
+                    var status = e.status;
+                    var id = e.id;
+
                     const [res_presser] = await fetch(this.internalUrl + '/presser', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
-                    }).then(res => res.json())
-                    // console.info(typeof res_presser)
+                    }).then(res => res.json());
                     res_presser.status = status;
-                    // res_presser.push(status)
-                    // res_presser = await res_presser.json();
+                    res_presser.idUnique = id;
+
                     const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
-                    }).then(res => res.json())
+                    }).then(res => res.json());
                     res_wheelman.status = status;
-                    // res_wheelman = await res_wheelman.json();
+                    res_wheelman.idUnique = id;
 
-                    presserResult.push(res_presser)
-                    wheelmanResult.push(res_wheelman)
+                    presserResult.push(res_presser);
+                    wheelmanResult.push(res_wheelman);
                 };
             }
 
             if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
-                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult })
+                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
             } else {
-                res.json({ code: 1, message: "Nessuna balla trovata" })
+                res.json({ code: 1, message: "Nessuna balla trovata" });
             }
             
         } catch (error) {
-            console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            console.error(error);
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
         }
     }
 
@@ -262,7 +280,59 @@ class TotalBale extends Common {
      * @param {object} res 
      */
     async balleTotali(req, res) {
+        try {
+            const { implant } = req.body;
+            const turn = super.checkTurn();
 
+            var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
+                AND DATE(wheelman_bale.data_ins) = CURDATE()
+                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `
+            var params = [implant, turn[0], turn[1], turn[0], turn[1]]
+
+            if (turn[turn.length - 1] === 1) {
+                condition = `AND (
+                    (DATE(presser_bale.data_ins) = CURDATE() 
+                    AND DATE(wheelman_bale.data_ins) = CURDATE()
+                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
+                    OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
+                    AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
+                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ))`
+                params = [implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]]
+            }
+            
+            const [select] = await this.db.query(
+                `SELECT 
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    code_plastic
+                LEFT JOIN presser_bale 
+                    ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb 
+                    ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                    ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    pb_wb.id_implant = ?
+                    AND presser_bale.id_rei = 1
+                    ${condition}`,
+                params
+            );
+
+            // console.info(select[0].totale_balle)
+
+            if (select && select.length > 0) {
+                res.json({ code: 0, message: select[0].totale_balle });
+            } else {
+                res.json({ code: 1, message: "Nessun balla" });
+            }
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
+        }
     }
         
     getIdsBale = async (id) => {
