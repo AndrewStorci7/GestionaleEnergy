@@ -13,24 +13,24 @@ const srvurl = getSrvUrl()
 /**
  * Custom component for handling the data of a bale
  * 
- * @param {string}  type    [ 'presser' | 'wheelman' | 'both' | 'admin' ]
+ * @param {string}      type    [ 'presser' | 'wheelman' | 'both' | 'admin' ]
  *                          Il tipo della pagina
  * 
- * @param {Object}  add     Oggetto che contiene lo stato di add e la funzione che gestisce il suo cambiamento 
+ * @param {Object}      add     Oggetto che contiene lo stato di add e la funzione che gestisce il suo cambiamento 
  *                          [ true | false ]
  *                          True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
- * @param {Object}  ids     Oggetto contenente gli ID delle balle create
+ * @param {Object}      ids     Oggetto contenente gli ID delle balle create
  *                          L'oggeto sarà null se il bottone aggiungi non è stato cliccato
  * 
- * @param {Function}noData  Funzione che aggiorna lo stato della variabile noData.
+ * @param {Function}    noData  Funzione che aggiorna lo stato della variabile noData.
  *                          Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
  * 
  * @param {Function}    handleSelect    Accetta una funzione che gestisce la selezione di una balla    
  * 
- * @param {boolean} primary Serve per settare correttamente il colore dello sfondo
+ * @param {boolean}     primary Serve per settare correttamente il colore dello sfondo
  * 
- * @param {boolean} tableChanged    Serve per ricaricare la componente quando viene effettuata una modifica, eliminazione o aggiunta
+ * @param {boolean}     tableChanged    Serve per ricaricare la componente quando viene effettuata una modifica, eliminazione o aggiunta
  * 
  * @returns
  */

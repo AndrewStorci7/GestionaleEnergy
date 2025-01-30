@@ -2,19 +2,34 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getEnv } from "@/app/config";
+import { getEnv, getSrvUrl } from "@/app/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 
-export default function Header({ implant, username, type, name, surname }) {
+const srvurl = getSrvUrl();
 
+/**
+ * 
+ */
+export default function Header({ 
+    implant, 
+    username, 
+    type, 
+    name, 
+    surname 
+}) {
+
+    const { ws, message } = useWebSocket();
+    
     const _CMN_PLACE_CENTER = "place-content-center";
-
+    
     const router = useRouter();
 
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
     const [turn, setTurn] = useState("Turno 1");
+    const [totalbales, setTotalBales] = useState(0);
 
     /**
      * Get Background Color
@@ -47,10 +62,44 @@ export default function Header({ implant, username, type, name, surname }) {
         router.push('/pages/login')
     }
 
+    const getUrl = () => {
+        return srvurl + '/balle-totali';
+    } 
     /**
      * Update the time every second
      */
     useEffect(() => {
+        // body = {
+          //   implant: implant
+         //}
+        const fetchData = async () => {
+            try {
+                const cookies = await JSON.parse(Cookies.get('user-info'));
+                const url = getUrl();
+                const implant = cookies.id_implant;
+
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ implant }),
+                });
+
+                if (!resp.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                const data = await resp.json();
+
+                console.log(data)
+
+                if (data.code == 0) {
+                    setTotalBales(data.message);
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        } 
+
         const interval = setInterval(() => {
             setTime(new Date().toLocaleTimeString());
             setDate(new Date().toLocaleDateString());
@@ -68,12 +117,13 @@ export default function Header({ implant, username, type, name, surname }) {
 
         }, 1000);
 
+        fetchData();
         return () => clearInterval(interval);
-    });
+    }, [message]);
 
     return (
         <header className="on-header on-fix-index">
-            <div className="grid grid-cols-7 gap-4">
+            <div className="grid grid-cols-8 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">
                     <Image
@@ -86,6 +136,9 @@ export default function Header({ implant, username, type, name, surname }) {
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {implant}
                 </div> {/* end implant */}
+                <div className={`${_CMN_PLACE_CENTER}`}>
+                    Balle totali: {totalbales}
+                </div> {/* end total bale */}
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {turn}
                 </div> {/* end turns */}
