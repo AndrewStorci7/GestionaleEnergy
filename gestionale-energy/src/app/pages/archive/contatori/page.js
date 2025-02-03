@@ -14,21 +14,23 @@ export default function Contatori({ }) {
     const [implant, setImplant] = useState(0);
     const [data, setData] = useState([]);
 
+    const getIdImplant = () => {
+        const cookieValue = JSON.parse(Cookies.get('user-info'));
+        setImplant(cookieValue.id_implant);
+        return cookieValue.id_implant;
+    }
+
     useEffect(() => {
-
-        const getIdImplant = () => {
-            const cookieValue = Cookies.get('user-info');
-            setImplant(cookieValue.id_implant)
-        }
-
-        getIdImplant();
 
         const fetchData = async () => {
             try {
+
+                const id_implant = getIdImplant();
+
                 const resp = await fetch(srvurl + "/contatori", {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ implant: implant })
+                    body: JSON.stringify({ implant: id_implant })
                 });
                 const res = await resp.json();
 

@@ -135,7 +135,7 @@ class Report extends Common {
                 LEFT JOIN wheelman_bale
                 ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                    pb_wb.id_implant = 2
+                    pb_wb.id_implant = ?
                 GROUP BY 
                     rei.id
                 ORDER BY
@@ -157,7 +157,7 @@ class Report extends Common {
                 LEFT JOIN wheelman_bale
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                    pb_wb.id_implant = 2
+                    pb_wb.id_implant = ?
                 GROUP BY 
                     cond_presser_bale.id
                 ORDER BY
@@ -179,7 +179,7 @@ class Report extends Common {
                 LEFT JOIN presser_bale
                 ON pb_wb.id_pb = presser_bale.id
                 WHERE 
-                    pb_wb.id_implant = 2
+                    pb_wb.id_implant = ?
                 GROUP BY 
                     cond_wheelman_bale.id
                 ORDER BY
@@ -201,7 +201,7 @@ class Report extends Common {
                 LEFT JOIN wheelman_bale
                 ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                pb_wb.id_implant = 2
+                pb_wb.id_implant = ?
                 GROUP BY 
                     selected_bale.id
                 ORDER BY
@@ -223,7 +223,7 @@ class Report extends Common {
                 LEFT JOIN presser_bale
                 ON pb_wb.id_pb = wheelman_bale.id
                 WHERE 
-                pb_wb.id_implant = 2
+                pb_wb.id_implant = ?
                 GROUP BY 
                     warehouse_dest.id
                 ORDER BY
@@ -245,7 +245,7 @@ class Report extends Common {
                 LEFT JOIN presser_bale
                 ON pb_wb.id_pb = presser_bale.id
                 WHERE 
-                    pb_wb.id_implant = 2
+                    pb_wb.id_implant = ?
                 GROUP BY 
                     reas_not_tying.id
                 ORDER BY
