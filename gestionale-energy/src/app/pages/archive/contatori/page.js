@@ -71,6 +71,8 @@ export default function Contatori() {
                 const restotbal2 =await totbal2.json();
 
                 if (res.code === 0 && res2.code === 0 && restotbal.code === 0 && restotbal2.code === 0) {
+                    console.log(res.data)
+                    console.log(res2.data)
                     console.log(restotbal.data)
                     console.log(restotbal2.data)
                     setDataA(res.data);  // Store data
@@ -93,7 +95,7 @@ export default function Contatori() {
     const renderSection = (title, items, option = "") => {
         return (
             <div>
-                <h3>{title}</h3>
+                <h3 className="font-semibold text-md">{title}</h3>
                 <ul>
                     {items.map((item, index) => (
                         <li key={index}>
@@ -110,46 +112,56 @@ export default function Contatori() {
             <CheckCookie />
             <div className="">
                 <h1>Contatori</h1>
-                {error && <div className="error-message">{error}</div>}
-                {dataTotalA && (
-                    <>
-                        {renderSection('Balle Totali Impianto A', dataTotalA, "total-bale")}
-                        {renderSection('Peso balle totali Impianto A', dataTotalB, "total-weight")}
-                    </>
-                )}
-                {dataTotalB && (
-                    <>
-                        {renderSection('Balle Totali Impianto B', dataTotalB, "total-bale")}
-                        {renderSection('Peso balle totali Impianto B', dataTotalB, "total-weight")}
-                    </>
-                )}
-                <div className="grid grid-cols-7">
+                <div className="">
                     {error && <div className="error-message">{error}</div>}
-                    {dataImplantA && (
-                        <>
-                            {renderSection('Motivazioni', dataImplantA.motivation[0])}
-                            {renderSection('Selected Warehouse', dataImplantA.sel_warehouse[0])}
-                            {renderSection('Balla Selezionata', dataImplantA.sel_bale[0])}
-                            {renderSection('Condition Wheel', dataImplantA.cond_wheel[0])}
-                            {renderSection('Condition Presser', dataImplantA.cond_pres[0])}
-                            {renderSection('Utilization by Rei', dataImplantA.utiliz_rei[0])}
-                            {renderSection('Plastic Code', dataImplantA.cont_plastic[0])}
-                        </>
-                    )}
-                    {dataImplantB && (
-                        <>
-                            {renderSection('Motivazioni', dataImplantB.motivation[0])}
-                            {renderSection('Selected Warehouse', dataImplantB.sel_warehouse[0])}
-                            {renderSection('Balla Selezionata', dataImplantB.sel_bale[0])}
-                            {renderSection('Condition Wheel', dataImplantB.cond_wheel[0])}
-                            {renderSection('Condition Presser', dataImplantB.cond_pres[0])}
-                            {renderSection('Utilization by Rei', dataImplantB.utiliz_rei[0])}
-                            {renderSection('Plastic Code', dataImplantB.cont_plastic[0])}
-                        </>
-                    )}
-                    {!(dataTotalA && dataTotalB && dataImplantA && dataImplantB) && (
-                        <p>Loading data...</p>
-                    )}
+                    <div className="grid grid-cols-7 bg-red-200">
+                        <h2 className="font-bold text-2xl">Impianto A</h2>
+                        <div className="col-span-7">
+                            {dataTotalA && (
+                                <>
+                                    {renderSection('Balle Totali Impianto A', dataTotalA, "total-bale")}
+                                    {renderSection('Peso balle totali Impianto A', dataTotalB, "total-weight")}
+                                </>
+                            )}
+                        </div>
+                        {dataImplantA && (
+                            <>
+                                {renderSection('Motivazioni', dataImplantA.motivation[0])}
+                                {renderSection('Selected Warehouse', dataImplantA.sel_warehouse[0])}
+                                {renderSection('Balla Selezionata', dataImplantA.sel_bale[0])}
+                                {renderSection('Condition Wheel', dataImplantA.cond_wheel[0])}
+                                {renderSection('Condition Presser', dataImplantA.cond_pres[0])}
+                                {renderSection('Utilization by Rei', dataImplantA.utiliz_rei[0])}
+                                {renderSection('Plastic Code', dataImplantA.cont_plastic[0])}
+                            </>
+                        )}
+                    </div>
+
+                    <div className="grid grid-cols-7 bg-green-200">
+                        <h2 className="font-bold text-2xl">Impianto B</h2>
+                        <div className="col-span-7">
+                            {dataTotalB && (
+                                <>
+                                    {renderSection('Balle Totali Impianto B', dataTotalB, "total-bale")}
+                                    {renderSection('Peso balle totali Impianto B', dataTotalB, "total-weight")}
+                                </>
+                            )}
+                        </div>
+                        {dataImplantB && (
+                            <>
+                                {renderSection('Motivazioni', dataImplantB.motivation[0])}
+                                {renderSection('Selected Warehouse', dataImplantB.sel_warehouse[0])}
+                                {renderSection('Balla Selezionata', dataImplantB.sel_bale[0])}
+                                {renderSection('Condition Wheel', dataImplantB.cond_wheel[0])}
+                                {renderSection('Condition Presser', dataImplantB.cond_pres[0])}
+                                {renderSection('Utilization by Rei', dataImplantB.utiliz_rei[0])}
+                                {renderSection('Plastic Code', dataImplantB.cont_plastic[0])}
+                            </>
+                        )}
+                        {!(dataTotalA && dataTotalB && dataImplantA && dataImplantB) && (
+                            <p>Loading data...</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </WebSocketProvider>
