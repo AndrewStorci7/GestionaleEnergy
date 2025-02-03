@@ -7,56 +7,151 @@ import { getSrvUrl } from '@@/config';
 import Cookies from 'js-cookie';
 import CheckCookie from "@/app/components/main/check-cookie";
 
+import { WebSocketProvider, useWebSocket } from "@/app/components/main/ws/use-web-socket";
+
 const srvurl = getSrvUrl();
 
-export default function Contatori({ }) {
+const cookie = JSON.parse(Cookies.get('user-info'));
+
+export default function Contatori() {
+
+    // const { ws, message } = useWebSocket();
+
+    const [user, setUser] = useState(cookie.username);
+    const [name, setName] = useState(cookie.name);
+    const [surname, setSurname] = useState(cookie.surname);
 
     const [implant, setImplant] = useState(0);
-    const [data, setData] = useState([]);
+    const [dataImplantA, setDataA] = useState(null);
+    const [dataImplantB, setDataB] = useState(null);
+    const [dataTotalA, setDataTotalA] = useState(null);
+    const [dataTotalB, setDataTotalB] = useState(null);
+    const [error, setError] = useState(null);
 
-    const getIdImplant = () => {
-        const cookieValue = JSON.parse(Cookies.get('user-info'));
-        setImplant(cookieValue.id_implant);
-        return cookieValue.id_implant;
-    }
+    // const getIdImplant = () => {
+    //     const cookieValue = JSON.parse(Cookies.get('user-info'));
+    //     setImplant(cookieValue.id_implant);
+    //     // setUser(cookieValue.username);
+    //     // setName(cookieValue.name);
+    //     // setSurname(cookieValue.surname);
+    //     return cookieValue.id_implant;
+    // };
 
     useEffect(() => {
-
         const fetchData = async () => {
             try {
-
-                const id_implant = getIdImplant();
-
+                // const id_implant = getIdImplant();
                 const resp = await fetch(srvurl + "/contatori", {
                     method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ implant: id_implant })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ implant: 1 }),
                 });
-                const res = await resp.json();
 
-                if (res.code === 0) {
-                    console.log(res)
-                    setData(res.data)
+                const resp2 = await fetch(srvurl + "/contatori", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ implant: 2 }),
+                });
+
+                const totbal = await fetch(srvurl + "/tot-balle", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ implant: 1 }),
+                });
+
+                const totbal2 = await fetch(srvurl + "/tot-balle", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ implant: 2 }),
+                });
+
+                const res = await resp.json();
+                const res2 = await resp2.json();
+                const restotbal = await totbal.json();
+                const restotbal2 =await totbal2.json();
+
+                if (res.code === 0 && res2.code === 0 && restotbal.code === 0 && restotbal2.code === 0) {
+                    console.log(restotbal.data)
+                    console.log(restotbal2.data)
+                    setDataA(res.data);  // Store data
+                    setDataB(res2.data);  // Store data
+                    setDataTotalA(restotbal.data);
+                    setDataTotalB(restotbal2.data);
                 } else {
-                    // TODO da cambiare con alert
-                    //setError(`Errore: ${error}`)
-                    // <Alert msg={error}/>
-                    console.error(error)
+                    setError("No data fetched");
+                    console.error(res.message);
                 }
             } catch (error) {
-                // TODO da cambiare con alert
-                //setError(`Errore: ${error}`)
-                // <Alert msg={error}/>
-                console.error(error)
+                setError("Error occurred while fetching the data");
+                console.error(error);
             }
-        }
+        };
 
         fetchData();
     }, []);
 
-    
+    const renderSection = (title, items, option = "") => {
+        return (
+            <div>
+                <h3>{title}</h3>
+                <ul>
+                    {items.map((item, index) => (
+                        <li key={index}>
+                            <strong>{(option === "") ? item.name : ""}</strong>: {(option === "total-weight") ? item.totale_peso : item.totale_balle}
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        );
+    };
 
     return (
-        <CheckCookie />
+        <WebSocketProvider user={{ user, name, surname }}>
+            <CheckCookie />
+            <div className="">
+                <h1>Contatori</h1>
+                {error && <div className="error-message">{error}</div>}
+                {dataTotalA && (
+                    <>
+                        {renderSection('Balle Totali Impianto A', dataTotalA, "total-bale")}
+                        {renderSection('Peso balle totali Impianto A', dataTotalB, "total-weight")}
+                    </>
+                )}
+                {dataTotalB && (
+                    <>
+                        {renderSection('Balle Totali Impianto B', dataTotalB, "total-bale")}
+                        {renderSection('Peso balle totali Impianto B', dataTotalB, "total-weight")}
+                    </>
+                )}
+                <div className="grid grid-cols-7">
+                    {error && <div className="error-message">{error}</div>}
+                    {dataImplantA && (
+                        <>
+                            {renderSection('Motivazioni', dataImplantA.motivation[0])}
+                            {renderSection('Selected Warehouse', dataImplantA.sel_warehouse[0])}
+                            {renderSection('Balla Selezionata', dataImplantA.sel_bale[0])}
+                            {renderSection('Condition Wheel', dataImplantA.cond_wheel[0])}
+                            {renderSection('Condition Presser', dataImplantA.cond_pres[0])}
+                            {renderSection('Utilization by Rei', dataImplantA.utiliz_rei[0])}
+                            {renderSection('Plastic Code', dataImplantA.cont_plastic[0])}
+                        </>
+                    )}
+                    {dataImplantB && (
+                        <>
+                            {renderSection('Motivazioni', dataImplantB.motivation[0])}
+                            {renderSection('Selected Warehouse', dataImplantB.sel_warehouse[0])}
+                            {renderSection('Balla Selezionata', dataImplantB.sel_bale[0])}
+                            {renderSection('Condition Wheel', dataImplantB.cond_wheel[0])}
+                            {renderSection('Condition Presser', dataImplantB.cond_pres[0])}
+                            {renderSection('Utilization by Rei', dataImplantB.utiliz_rei[0])}
+                            {renderSection('Plastic Code', dataImplantB.cont_plastic[0])}
+                        </>
+                    )}
+                    {!(dataTotalA && dataTotalB && dataImplantA && dataImplantB) && (
+                        <p>Loading data...</p>
+                    )}
+                </div>
+            </div>
+        </WebSocketProvider>
     );
 }

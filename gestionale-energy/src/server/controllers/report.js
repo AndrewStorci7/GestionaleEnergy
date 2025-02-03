@@ -84,11 +84,47 @@ class Report extends Common {
             }
 
             if (data && data.length > 0) {
-                console.info(data)
+                // console.info(data)
                 res.json({ code: 0, data: data })
             } else {
                 res.json({ code: 1, message: "No data fetched" })
             }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
+    }
+
+    async balleTotaliComplessive(req, res) {
+        try {
+            const { implant } = req.body;
+            const params = [implant];
+
+            const [select] = await this.db.query(
+                `SELECT 
+                    SUM(wheelman_bale.weight) AS "totale_peso",
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    code_plastic
+                LEFT JOIN presser_bale 
+                    ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb 
+                    ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                    ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    pb_wb.id_implant = ?
+                    AND presser_bale.id_rei = 1`,
+                params
+            );
+
+            if (select && select.length > 0) {
+                // console.info(data)
+                res.json({ code: 0, data: select })
+            } else {
+                res.json({ code: 1, message: "No data fetched" })
+            }
+
         } catch (error) {
             console.error(error)
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
@@ -103,7 +139,7 @@ class Report extends Common {
 
             const cont_plastic = await this.db.query(
                 `SELECT 
-                    code_plastic.code, 
+                    code_plastic.code AS 'name', 
                     COUNT(pb_wb.id_pb) AS "totale_balle"
                 FROM 
                     code_plastic
@@ -146,7 +182,7 @@ class Report extends Common {
 
             const cond_pres = await this.db.query(
                 `SELECT 
-                    cond_presser_bale.type,
+                    cond_presser_bale.type AS 'name',
                     COUNT(pb_wb.id_pb) AS "totale_balle"
                 FROM 
                     cond_presser_bale
@@ -168,7 +204,7 @@ class Report extends Common {
 
             const cond_wheel = await this.db.query(
                 `SELECT 
-                    cond_wheelman_bale.type,
+                    cond_wheelman_bale.type AS 'name',
                     COUNT(pb_wb.id_wb) AS "totale_balle"
                 FROM 
                     cond_wheelman_bale
