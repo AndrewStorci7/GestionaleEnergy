@@ -13,7 +13,7 @@ const CheckCookie = () => {
 
   useEffect(() => {
     const cookieValue = Cookies.get('user-info');
-    console.log('Checking cookie: ', cookieValue);
+    // console.log('Checking cookie: ', cookieValue);
 
     if (!cookieValue) {
       router.push('/pages/login');
@@ -25,6 +25,3 @@ const CheckCookie = () => {
 };
 
 export default CheckCookie
-
-
-

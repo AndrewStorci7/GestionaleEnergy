@@ -6,6 +6,7 @@ module.exports = (db, table) => {
     const controller = new Controller(db, table);
 
     router.post('/report', (req, res) => controller.reportGiornaliero(req, res));
+    router.post('/contatori', (req, res) => controller.reportContatori(req, res));
 
     return router;
 }

@@ -69,7 +69,6 @@ class Report extends Common {
                         ON pb_wb.id_wb = wheelman_bale.id
                     WHERE 
                         pb_wb.id_implant = ?
-                        AND 
                         ${condition}
                     GROUP BY 
                         code_plastic.code
@@ -89,6 +88,176 @@ class Report extends Common {
             } else {
                 res.json({ code: 1, message: "No data fetched" })
             }
+        } catch (error) {
+            console.error(error)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
+    }
+
+    async reportContatori(req, res) {
+        try {
+            const { implant } = req.body;
+            // const implant = body.implant;
+            const param = [implant];
+
+            const cont_plastic = await this.db.query(
+                `SELECT 
+                    code_plastic.code, 
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    code_plastic
+                LEFT JOIN presser_bale 
+                    ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb 
+                    ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                    ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    pb_wb.id_implant = ?
+                GROUP BY 
+                    code_plastic.code
+                LIMIT 100`,
+                param
+            );
+
+            const utiliz_rei = await this.db.query(
+                `SELECT 
+                    rei.name,
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    rei
+                LEFT JOIN presser_bale 
+                ON presser_bale.id_rei = rei.id
+                LEFT JOIN pb_wb 
+                ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    pb_wb.id_implant = 2
+                GROUP BY 
+                    rei.id
+                ORDER BY
+                    rei.id
+                LIMIT 100`,
+                param
+            );
+
+            const cond_pres = await this.db.query(
+                `SELECT 
+                    cond_presser_bale.type,
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    cond_presser_bale
+                LEFT JOIN presser_bale 
+                ON presser_bale.id_cpb= cond_presser_bale.id
+                LEFT JOIN pb_wb 
+                ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                    ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    pb_wb.id_implant = 2
+                GROUP BY 
+                    cond_presser_bale.id
+                ORDER BY
+                    cond_presser_bale.id
+                LIMIT 100`,
+                param
+            );
+
+            const cond_wheel = await this.db.query(
+                `SELECT 
+                    cond_wheelman_bale.type,
+                    COUNT(pb_wb.id_wb) AS "totale_balle"
+                FROM 
+                    cond_wheelman_bale
+                LEFT JOIN wheelman_bale 
+                ON wheelman_bale.id_cwb = cond_wheelman_bale.id
+                LEFT JOIN pb_wb 
+                ON pb_wb.id_wb = wheelman_bale.id
+                LEFT JOIN presser_bale
+                ON pb_wb.id_pb = presser_bale.id
+                WHERE 
+                    pb_wb.id_implant = 2
+                GROUP BY 
+                    cond_wheelman_bale.id
+                ORDER BY
+                    cond_wheelman_bale.id
+                LIMIT 100`,
+                param
+            );
+
+            const sel_bale = await this.db.query(
+                `SELECT 
+                    selected_bale.name,
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    selected_bale
+                LEFT JOIN presser_bale 
+                ON presser_bale.id_sb = selected_bale.id
+                LEFT JOIN pb_wb 
+                ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                pb_wb.id_implant = 2
+                GROUP BY 
+                    selected_bale.id
+                ORDER BY
+                    selected_bale.id
+                LIMIT 100`,
+                param
+            );
+
+            const sel_warehouse = await this.db.query(
+                `SELECT 
+                    warehouse_dest.name,
+                COUNT(pb_wb.id_wb) AS "totale_balle"
+                FROM 
+                    warehouse_dest
+                LEFT JOIN wheelman_bale 
+                ON wheelman_bale.id_wd = warehouse_dest.id
+                LEFT JOIN pb_wb 
+                ON pb_wb.id_wb = wheelman_bale.id
+                LEFT JOIN presser_bale
+                ON pb_wb.id_pb = wheelman_bale.id
+                WHERE 
+                pb_wb.id_implant = 2
+                GROUP BY 
+                    warehouse_dest.id
+                ORDER BY
+                    warehouse_dest.id
+                LIMIT 100`,
+                param        
+            );
+
+            const motivation = await this.db.query(
+                `SELECT 
+                    reas_not_tying.name,
+                COUNT(pb_wb.id_wb) AS "totale_balle"
+                FROM 
+                    reas_not_tying
+                LEFT JOIN wheelman_bale 
+                ON wheelman_bale.id_wd = reas_not_tying.id
+                LEFT JOIN pb_wb 
+                ON pb_wb.id_wb = wheelman_bale.id
+                LEFT JOIN presser_bale
+                ON pb_wb.id_pb = presser_bale.id
+                WHERE 
+                    pb_wb.id_implant = 2
+                GROUP BY 
+                    reas_not_tying.id
+                ORDER BY
+                    reas_not_tying.id
+                LIMIT 100`,
+                param
+            );
+
+            if (motivation && sel_warehouse && sel_bale && cond_wheel && cond_pres && utiliz_rei && cont_plastic) {
+                res.json({ code: 0, data: { motivation, sel_warehouse, sel_bale, cond_wheel, cond_pres, utiliz_rei, cont_plastic } })
+            } else {
+                res.json({ code: 1, message:"something went wrong" })
+            }
+
         } catch (error) {
             console.error(error)
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
