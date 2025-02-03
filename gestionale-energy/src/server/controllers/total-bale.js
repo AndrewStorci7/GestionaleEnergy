@@ -56,7 +56,7 @@ class TotalBale extends Common {
                 const [rows_wb] = await this.db.query("SELECT id FROM wheelman_bale ORDER BY id DESC LIMIT 1");
     
                 const check_ins_pbwb = await this.db.query(
-                    `INSERT INTO ${this.table} VALUES(?, ?, ?, ?)`,
+                    `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status) VALUES(?, ?, ?, ?)`,
                     [rows_pb[0].id, rows_wb[0].id, id_implant, 0]
                 );
     
