@@ -76,10 +76,6 @@ export default function Table({ type, implant, idUser }) {
     const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
     const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>
 
-    // useEffect(() => {
-    //     setMessage(message)
-    // }, [ws, message])
-
     switch (type) {
         case "admin": {
             return(

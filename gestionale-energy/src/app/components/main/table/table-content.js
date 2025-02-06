@@ -101,8 +101,6 @@ export default function TableContent({
         
         console.log("Fetching data...");
     };
-    
-    
 
     const handleCloseNote = (id) => {
         setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
@@ -171,16 +169,9 @@ export default function TableContent({
         fetchData();
     }, [type, add, changeFromAdd, message]);
 
-    // test
-    let i = 0;
-
-    // const [selectedBale, setSelectedBale] = useState(null)
-
     const selectedBaleIdRef = useRef([]);
 
     const handleRowClick = (id) => {
-        // console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);
-    
         // Ensure selectedBaleIdRef.current is initialized as an array
         if (!Array.isArray(selectedBaleIdRef.current)) {
             selectedBaleIdRef.current = [];
@@ -195,8 +186,6 @@ export default function TableContent({
         selectedBaleIdRef.current = newSelectedBaleId;
     
         handleSelect(newSelectedBaleId);
-    
-        // console.log("table-content after: " + JSON.stringify(newSelectedBaleId));
     };
 
     return (
@@ -211,8 +200,8 @@ export default function TableContent({
                     let date = "";
                     let hour = "";
                     let id = 0;
+                    // let idUnique = 0;
                     var status = "";
-                    ++i;
 
                     Object.keys(_m).map((key, __i) => {
                         if (key === "id") {
@@ -226,6 +215,9 @@ export default function TableContent({
                             else if (_m[key] === 1) status = "completed"
                             else status = "warning"
                         }
+                        // } else if (key === "idUnique") {
+                        //     idUnique = _m[key]
+                        // }
                     })
 
                     return (
@@ -243,9 +235,12 @@ export default function TableContent({
                                 </>
                             )}
                             {Object.keys(_m).map((key, __i) => (
-                                (key.startsWith("_") || key == "id" || key == "status" ) ? (
+                                (key.startsWith("_") || key == "id" || key == "status" || key == "idUnique" ) ? (
                                     null
-                                ) : (key === "notes") ? (
+                                ) // : (key === "idUnique") ? (
+                                    // <td>{_m[key]}</td>
+                                // )
+                                : (key === "notes") ? (
                                     (_m[key] !== "" && _m[key] !== null) ?
                                     <td>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>

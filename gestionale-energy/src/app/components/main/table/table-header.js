@@ -40,7 +40,7 @@ export default function TableHeader({ type, primary = false }) {
                     <thead className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}>
                         <tr>
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
-                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>}
+                            {/* {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>} */}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Stato</th>}
                             <th className={`${_CMNSTYLE_TD}`}>Plastica</th>
                             <th className={`${_CMNSTYLE_TD}`}>Codice</th>
@@ -63,7 +63,7 @@ export default function TableHeader({ type, primary = false }) {
                     <thead className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}>
                         <tr>
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
-                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>}
+                            {/* {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>} */}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Stato</th>}
                             <th className={`${_CMNSTYLE_TD}`}>Condiz. Balla Carrel.</th>
                             <th className={`${_CMNSTYLE_TD}`}>Motivaz.</th>

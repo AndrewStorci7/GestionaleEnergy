@@ -14,6 +14,9 @@ export default function Pressista() {
     const [user, setUser] = useState("");
     const [cookies, setCookies] = useState([]);
 
+    const [messageAlert, setMessageAlert] = useState(null);
+    const [showAlert, setShowAlert] = useState(false);
+
     useEffect(() => {
         try {
             setCookies(JSON.parse(Cookies.get('user-info')));
@@ -22,10 +25,9 @@ export default function Pressista() {
                 setUser(cookies.name);
             }
         } catch (error) {
-            //console.log(`Error: ${_err}`);
-            <Alert msg={error}/>
+            setMessageAlert(messageAlert);
+            showAlert(prev => !prev);
         }
-        // TODO set data for type user
     }, []);
 
     return(
@@ -38,6 +40,7 @@ export default function Pressista() {
                 type={user}
             />
             <Footer />
+            {(showAlert) && <Alert msg={messageAlert} />}
         </div>
     );
 }
