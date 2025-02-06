@@ -43,6 +43,7 @@ export default function TableContent({
     primary = false, 
     tableChange = false,
     selectedBaleId
+    
 }) {
 
     const { ws, message } = useWebSocket();
@@ -187,13 +188,9 @@ export default function TableContent({
         }
     
         // Check if the id is already in the selectedBaleIdRef array
-        const newSelectedBaleId = selectedBaleIdRef.current.includes(id)
-            ? selectedBaleIdRef.current.filter(baleId => baleId !== id)  // Remove the id if it's already selected
-            : [...selectedBaleIdRef.current, id];  // Add the id to the array if it's not selected
-    
-        // Update the ref with the new array of selected bale IDs
-        selectedBaleIdRef.current = newSelectedBaleId;
-    
+        let newSelectedBaleId = [id];  // Replace the array with just the current selected ID
+        newSelectedBaleId = selectedBaleId === id ? null : id;  // Toggle or set the new ID
+        selectedBaleIdRef.current = newSelectedBaleId;  // Update the ref to reflect the new selection
         handleSelect(newSelectedBaleId);
     
         // console.log("table-content after: " + JSON.stringify(newSelectedBaleId));
