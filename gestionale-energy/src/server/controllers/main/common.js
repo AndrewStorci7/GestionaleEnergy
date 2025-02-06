@@ -128,6 +128,43 @@ class Common {
         }
     }
 
+    /**
+     * Questa funzione serve per settare la corretta condizione di ricerca basata sull'orario (per turni)
+     * Ritorna un oggetto utilizzabile per l'esecuzione di una query.
+     * return {
+     *      "condition": condizione del where
+     *      "params": array con parametri per la query
+     * }
+     * 
+     * @param   {number} id_implant Id dell'impianto
+     * 
+     * @returns {Object} 
+     */
+    checkConditionForTurn(id_implant) {
+        const turn = this.checkTurn();
+
+        var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
+            AND DATE(wheelman_bale.data_ins) = CURDATE()
+            AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+            AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
+        var params = [id_implant, turn[0], turn[1], turn[0], turn[1]];
+
+        if (turn[turn.length - 1] === 1) {
+            condition = `AND (
+                (DATE(presser_bale.data_ins) = CURDATE() 
+                AND DATE(wheelman_bale.data_ins) = CURDATE()
+                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
+                OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
+                AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
+                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
+            )`;
+            params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
+        }
+
+        return { condition, params };
+    }
 
     async prova(req, res) {
         try {

@@ -188,7 +188,7 @@ export default function TableContent({
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
             {(add.state) && ( 
-                <InsertNewBale type={type} mod={primary} ids={ids} primary={primary} confirmHandle={handleAddChange} />
+                <InsertNewBale type={type} mod={primary} /* ids={ids} */ primary={primary} confirmHandle={handleAddChange} />
             )}
             {(!isEmpty) ? (
                 content.map((_m, _i) => {

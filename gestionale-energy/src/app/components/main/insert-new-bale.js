@@ -28,7 +28,13 @@ const srvurl = getSrvUrl();
  * 
  * @prop {function} confirmHandle Funzione che gestisce la conferma dell'aggiunta
  */
-export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }) {
+export default function InsertNewBale({ 
+    type, 
+    mod, 
+    ids, 
+    primary, 
+    confirmHandle 
+}) {
 
     const _CMNSTYLE_TD = "on-table-td";
 
@@ -53,48 +59,38 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
 
     /**
      * Handle Click function
+     * Questa funzione gestisce i dati per l'inserimetno di una nuova balla
      * 
      * @param {boolean} f 
      */
     const handleClick = (f) => {
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
-            let url = "";
-            let body = {};
-            if (f) {
-                url = srvurl + "/upresserbale";
-                body = {
-                    id_presser: cookie.id_user,
-                    id_plastic: plastic,
-                    id_rei: rei,
-                    id_cpb: cdbp,
-                    id_sb: selected_b,
-                    note: note,
-                    where: ids.id_presser_bale,
-                }
-            } else { 
-                url = srvurl + "/uwheelmanbale";
-                body = {
-                    id_wheelman: cookie.id_user,
-                    id_cwb: cdbc,
-                    id_rnt: reason,
-                    id_wd: dest_wh,
-                    note: note,
-                    printed: false, // Da modificare
-                    weight: weight,
-                    where: ids.id_wheelman_bale,
-                }
+            // const url = srvurl + "/upresserbale";
+            const url = srvurl + "/add-bale";
+            const body = {
+                id_presser: cookie.id_user,
+                id_plastic: plastic,
+                id_rei: rei,
+                id_cpb: cdbp,
+                id_sb: selected_b,
+                note: note,
             }
 
             const resp = fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ body })
+                body: JSON.stringify({ data: body })
             })
+
+            if (!resp.ok) {
+                // console.error(resp.json)
+            }
 
         } catch (error) {
             // TOFIX
             // <Alert msg={error} />
+            console.error(error)
         }
     }
 

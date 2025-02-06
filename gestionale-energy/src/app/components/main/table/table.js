@@ -45,7 +45,7 @@ export default function Table({ type, implant, idUser }) {
 
     const addHandle = (resp) => {
         closeInsertNewBaleComponent()
-        setResp(resp)
+        // setResp(resp)
     }
 
     const noData = (msg) =>  {
@@ -97,7 +97,7 @@ export default function Table({ type, implant, idUser }) {
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
                                 add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent }} 
-                                ids={ids} 
+                                // ids={ids} 
                                 noData={noData} 
                                 primary 
                             />
@@ -136,7 +136,7 @@ export default function Table({ type, implant, idUser }) {
                             <TableContent 
                                 type={"wheelman"} 
                                 add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}} 
-                                ids={ids} 
+                                // ids={ids} 
                                 noData={noData} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}

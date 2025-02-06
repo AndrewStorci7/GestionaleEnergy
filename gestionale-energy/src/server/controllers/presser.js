@@ -39,7 +39,7 @@ class PresserBale extends Bale {
         
         const {id} = req;
         
-        console.info(`Data received: ${id}`)
+        // console.info(`Data received: ${id}`)
 
         const [rows] = await this.db.query(
             `SELECT ${this.table}.id AS 'id', code_plastic.code AS 'plastic',
@@ -61,7 +61,7 @@ class PresserBale extends Bale {
             [id]
         )
     
-        console.info(rows)
+        // console.info(rows)
 
         if (rows && rows.length > 0) {
             // console.info(rows)
@@ -82,7 +82,7 @@ class PresserBale extends Bale {
         try {
             const data = await this.handlePresserData(req.body);
             
-            console.info(data) // test
+            // console.info(data) // test
     
             if (data.code !== 0) {
                 res.json(data)
@@ -109,7 +109,7 @@ class PresserBale extends Bale {
         try {
             const {body} = req.body;
             
-            console.info("[Update]: ", body)
+            // console.info("[Update]: ", body)
 
             const san = this.checkParams(body, {scope: "update", table: this.table})
             

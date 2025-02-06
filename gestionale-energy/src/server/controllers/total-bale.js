@@ -34,41 +34,44 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
-            // console.info(data)
+            console.info(data);
+
+            // res.json({ code: 0 });
 
             const id_implant = data.id_implant;
             const id_presser = data.id_presser;
             
             // console.info(`Data (Presser Bale) received: ${id_presser}, ${id_implant}`);
             
-            const check_ins_pb = await this.db.query(
-                "INSERT INTO presser_bale(id_presser) VALUES (?)",
-                [id_presser]
-            );
-            const check_ins_wb = await this.db.query(
-                `INSERT INTO wheelman_bale() VALUES ()`
-            );
+            // const check_ins_pb = await this.db.query(
+            //     "INSERT INTO presser_bale(id_presser) VALUES (?)",
+            //     [id_presser]
+            // );
+            // const check_ins_wb = await this.db.query(
+            //     `INSERT INTO wheelman_bale() VALUES ()`
+            // );
     
-            if (check_ins_pb && check_ins_wb) {
+            // if (check_ins_pb && check_ins_wb) {
                 
-                const [rows_pb] = await this.db.query("SELECT id FROM presser_bale ORDER BY id DESC LIMIT 1");
+            //     const [rows_pb] = await this.db.query("SELECT id FROM presser_bale ORDER BY id DESC LIMIT 1");
     
-                const [rows_wb] = await this.db.query("SELECT id FROM wheelman_bale ORDER BY id DESC LIMIT 1");
+            //     const [rows_wb] = await this.db.query("SELECT id FROM wheelman_bale ORDER BY id DESC LIMIT 1");
     
-                const check_ins_pbwb = await this.db.query(
-                    `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status) VALUES(?, ?, ?, ?)`,
-                    [rows_pb[0].id, rows_wb[0].id, id_implant, 0]
-                );
+            //     const check_ins_pbwb = await this.db.query(
+            //         `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status) VALUES(?, ?, ?, ?)`,
+            //         [rows_pb[0].id, rows_wb[0].id, id_implant, 0]
+            //     );
     
-                if (check_ins_pbwb) {
-                    res.json({ code: 0, data: { id_presser_bale: rows_pb[0].id, id_wheelman_bale: rows_wb[0].id }})
-                } else {
-                    res.json({ code: 1, message: "Errore nell'inserimento di una nuova balla" })
-                }
-    
-            } else {
-                res.json({ code: 1, message: 'Errore nell\'inserimento' })
-            }
+            //     if (check_ins_pbwb) {
+            //         res.json({ code: 0, data: { id_presser_bale: rows_pb[0].id, id_wheelman_bale: rows_wb[0].id }})
+            //     } else {
+            //         res.json({ code: 1, message: "Errore nell'inserimento di una nuova balla" })
+            //     }
+            // } else {
+            //     res.json({ code: 1, message: 'Errore nell\'inserimento' })
+            // }
+
+            res.json({ code: 0 });
     
         } catch (error) {
             console.error(error)
@@ -119,27 +122,8 @@ class TotalBale extends Common {
 
             const presserResult = [];
             const wheelmanResult = [];
-            const turn = super.checkTurn();
 
-            var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
-                AND DATE(wheelman_bale.data_ins) = CURDATE()
-                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
-            var params = [id_implant, turn[0], turn[1], turn[0], turn[1]];
-
-            if (turn[turn.length - 1] === 1) {
-                condition = `AND (
-                    (DATE(presser_bale.data_ins) = CURDATE() 
-                    AND DATE(wheelman_bale.data_ins) = CURDATE()
-                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
-                    OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
-                    AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
-                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
-                )`;
-                params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
-            }
+            const _params = super.checkConditionForTurn(id_implant);
 
             const [select] = await this.db.query(
                 `SELECT 
@@ -161,13 +145,13 @@ class TotalBale extends Common {
                     ${this.table}.id_implant = implants.id
                 WHERE 
                     ${this.table}.id_implant = ?
-                    ${condition}
+                    ${_params.condition}
                 ORDER BY 
                     ${this.table}.status ASC,
                     TIME(presser_bale.data_ins) DESC, 
                     TIME(wheelman_bale.data_ins) DESC 
                 LIMIT 100`,
-                params
+                _params.params
             );
 
             if (select !== 'undefined' || select !== null) {
@@ -186,7 +170,6 @@ class TotalBale extends Common {
                     })
                     .then(_res => _res.json())
                     .catch(_err => console.error(_err));
-                    // .catch(_res => res.json({ code: -1, message: _res }));
                     res_presser.status = status;
                     res_presser.idUnique = id;
 
@@ -197,7 +180,6 @@ class TotalBale extends Common {
                     })
                     .then(_res => _res.json())
                     .catch((_err) => console.error(_err));
-                    // .catch(_res => res.json({ code: -1, message: _res }));
                     res_wheelman.status = status;
                     res_wheelman.idUnique = id;
 
@@ -252,7 +234,6 @@ class TotalBale extends Common {
                     var id_presser = e.id_pb;
                     var id_wheelman = e.id_wb;
         
-                    
                     const [res_presser] = await fetch(this.internalUrl + '/presser', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
@@ -288,26 +269,8 @@ class TotalBale extends Common {
     async balleTotali(req, res) {
         try {
             const { implant } = req.body;
-            const turn = super.checkTurn();
 
-            var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
-                AND DATE(wheelman_bale.data_ins) = CURDATE()
-                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `
-            var params = [implant, turn[0], turn[1], turn[0], turn[1]]
-
-            if (turn[turn.length - 1] === 1) {
-                condition = `AND (
-                    (DATE(presser_bale.data_ins) = CURDATE() 
-                    AND DATE(wheelman_bale.data_ins) = CURDATE()
-                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
-                    OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
-                    AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
-                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ))`
-                params = [implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]]
-            }
+            const _params = super.checkConditionForTurn(implant);
             
             const [select] = await this.db.query(
                 `SELECT 
@@ -323,8 +286,8 @@ class TotalBale extends Common {
                 WHERE 
                     pb_wb.id_implant = ?
                     AND presser_bale.id_rei = 1
-                    ${condition}`,
-                params
+                    ${_params.condition}`,
+                _params.params
             );
 
             // console.info(select[0].totale_balle)

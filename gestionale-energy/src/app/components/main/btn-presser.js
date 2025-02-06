@@ -39,24 +39,25 @@ export default function BtnPresser({
 
     const addNewBale = async () => {
         try {
-            const data = {
-                id_presser: idUser,
-                id_implant: implant
-            }
+            // const data = {
+            //     id_presser: idUser,
+            //     id_implant: implant
+            // }
     
-            const check = await fetch(srvurl + '/add-bale', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json' },
-                body: JSON.stringify({ data }),
-            })
+            // const check = await fetch(srvurl + '/add-bale', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ data }),
+            // })
     
-            const resp = await check.json()
+            // const resp = await check.json()
     
-            if (!check.ok) {
-                handleAlert("Errore nel SERVER durante la modifica!")
-            } else {
-                clickAddHandle(resp.data)
-            }
+            // if (!check.ok) {
+            //     handleAlert("Errore nel SERVER durante la modifica!")
+            // } else {
+            //     clickAddHandle(resp.data)
+            // }
+            clickAddHandle()
         } catch (error) {
             handleAlert(error)
         }
@@ -143,9 +144,9 @@ export default function BtnPresser({
             </div>
 
             {showAlert && 
-                <Alert 
-                    handleClose={closeAlert} 
-                    alertFor={scope} 
+                <Alert
+                    handleClose={closeAlert}
+                    alertFor={scope}
                     msg={errorMessage}
                     idBale={idBale}
                 />
