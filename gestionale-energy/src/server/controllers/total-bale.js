@@ -183,7 +183,10 @@ class TotalBale extends Common {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
-                    }).then(res => res.json());
+                    })
+                    .then(_res => _res.json())
+                    .catch(_err => console.error(_err));
+                    // .catch(_res => res.json({ code: -1, message: _res }));
                     res_presser.status = status;
                     res_presser.idUnique = id;
 
@@ -191,7 +194,10 @@ class TotalBale extends Common {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
-                    }).then(res => res.json());
+                    })
+                    .then(_res => _res.json())
+                    .catch((_err) => console.error(_err));
+                    // .catch(_res => res.json({ code: -1, message: _res }));
                     res_wheelman.status = status;
                     res_wheelman.idUnique = id;
 

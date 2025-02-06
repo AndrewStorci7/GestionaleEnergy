@@ -98,7 +98,7 @@ class Report extends Common {
     async balleTotaliComplessive(req, res) {
         try {
             const { implant } = req.body;
-            const params = [implant];
+            const params = implant;
 
             const [select] = await this.db.query(
                 `SELECT 
@@ -135,7 +135,7 @@ class Report extends Common {
         try {
             const { implant } = req.body;
             // const implant = body.implant;
-            const param = [implant];
+            const param = implant;
 
             const cont_plastic = await this.db.query(
                 `SELECT 
