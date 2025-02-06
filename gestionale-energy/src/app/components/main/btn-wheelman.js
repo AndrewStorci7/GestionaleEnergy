@@ -46,7 +46,7 @@ export default function BtnWheelman({
 
     const handleClick = (f) => {
         // Check if idSelect is not null and has a length property
-        if (idSelect !== null && idSelect.length > 0) {
+        if (idSelect !== null && idSelect) {
             handleUpdate(idSelect)
         } else {
             handleAlert("Nessuna balla selezionata!")
@@ -75,7 +75,7 @@ export default function BtnWheelman({
     };
 
     const handleStampa = async (msg="I dati sono stati stampati correttamente", scope = "confirmed") => {
-        if (idSelect !== null && idSelect.length > 0) {
+        if (idSelect !== null && idSelect) {
             try {
 
                 const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
@@ -116,6 +116,7 @@ export default function BtnWheelman({
             handleAlert("Nessuna balla selezionata!");
         }
     }
+    
     return(
         <>
             <div className="w-1/2 font-bold">

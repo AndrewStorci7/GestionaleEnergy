@@ -18,6 +18,7 @@ const cookie = JSON.parse(Cookies.get('user-info'));
 export default function Contatori() {
 
     const [something, setSomething] = useState(null);
+    const { ws, message } = useWebSocket();
 
     const [user, setUser] = useState(cookie.username);
     const [name, setName] = useState(cookie.name);
@@ -114,7 +115,7 @@ export default function Contatori() {
             <CheckCookie />
             <RenderCounters handler={() => setSomething} />
             <div className="">
-                <h1>Contatori</h1>
+                <h1 className="font-bold text-3xl">Contatori</h1>
                 <div className="">
                     {error && <div className="error-message">{error}</div>}
                     <div className="grid grid-cols-7 bg-red-200">

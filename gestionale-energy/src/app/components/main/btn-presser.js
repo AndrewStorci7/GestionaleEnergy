@@ -91,7 +91,7 @@ export default function BtnPresser({
     }
 
     const handleClick = (f) => {
-        if (idSelect !== null && idSelect.length > 0) {
+        if (idSelect !== null || idSelect) {
             if (f)
                 handleUpdate(idSelect)
             else handleDelete(idSelect)
