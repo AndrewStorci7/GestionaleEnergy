@@ -235,10 +235,10 @@ export default function Table({ type, implant, idUser }) {
                             <input className=" mb-1.5" type="date"></input>
                             <input className=" mb-1.5" type="date"></input>
                             <p className="ml-3 mb-1.5">IMPIANTO</p>
-                            <SelectInput id="search-input-implants" searchFor={"implants"} />
+                            <SelectInput id="search-input-implants" searchFor={"implants"} isForSearch />
                             <p></p>
                             <p className="ml-3 mb-1.5">TIPO PLASTICA</p>
-                            <SelectInput id="search-input-plastic" searchFor={"plastic"} />
+                            <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
                             <p></p>
                             <p className="ml-3 mb-1.5">PESO</p>
                             <select name="peso" id="pesoid"> 

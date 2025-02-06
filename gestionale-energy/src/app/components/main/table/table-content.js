@@ -123,7 +123,7 @@ export default function TableContent({
             const message = JSON.stringify({ type: "reload", data: "___update___" })
             ws.current.send(message);
         } else {
-        console.log('WebSocket is not connected');
+            console.log('WebSocket is not connected');
         }
         add.setAdd()
         setChangeFromAdd(prev => !prev)
