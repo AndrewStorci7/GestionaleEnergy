@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
  */
 export default function Table({ type, implant, idUser }) {
 
-    const { ws, message } = useWebSocket();
+    // const { ws, message } = useWebSocket();
 
     // global message from the socket
     const [_message, setMessage] = useState("");
@@ -59,7 +59,7 @@ export default function Table({ type, implant, idUser }) {
 
     const handleSelect = (select) => {
         setSelected(select)
-        console.log("IS SELECTED: " + isSelected)
+        // console.log("IS SELECTED: " + isSelected)
     }
 
     const handleDownloadClick = (reportType) => {
@@ -74,7 +74,7 @@ export default function Table({ type, implant, idUser }) {
     const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
     const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
     const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
-    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>
+    const _CMN_ONLY_VIEW = <span className="text-extrabold"><u>solo visualizzazione</u></span>
 
     // useEffect(() => {
     //     setMessage(message)
@@ -84,7 +84,7 @@ export default function Table({ type, implant, idUser }) {
         case "admin": {
             return(
                 <>
-                    <h1 className={_CMNSTYLE_TITLE}>Pagina Amminstratore Sviluppatore</h1>
+                    <h1 className={_CMNSTYLE_TITLE}>Pagina Amministratore Sviluppatore</h1>
                     <p>In fase di sviluppo</p>
                 </>
             );
