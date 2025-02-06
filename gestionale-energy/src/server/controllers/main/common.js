@@ -19,18 +19,19 @@ class Common {
     }
 
     /**
+     * Funzione che ritorna il corretto range di TIME() per effettuare la ricerca corretta per turno
      * 
-     * @param {number} turn { 1 | 2 | 3 } Denota il turno da selezionare  
+     * @param {number} turn { 1 | 2 | 3 } Denota il turno da selezionare
      * @returns 
      */
     checkTurn(turn = 0) {
-        // console.info("Index ricvevuto" + turn)
-        const rangeTime = new Date()
+
+        const rangeTime = new Date();
         var _hour = rangeTime.getHours();
         if (turn != 0) {
             // console.info(`Turno dentro checkTurn(): ${turn}`)
             if (turn != 1 && turn != 2 && turn != 3) {
-                throw "errore: parametro turn non valido: deve essere uno tra questi valori {1, 2, 3}"
+                throw "errore: parametro turn non valido: deve essere uno tra questi valori {1, 2, 3}";
             } else {
                 if (turn == 1) _hour = 7;
                 else if (turn == 2) _hour = 15;
@@ -61,6 +62,7 @@ class Common {
     }
 
     /**
+     * Funzione che crea e adatta la query per l'UPDATE o DELETE query sul DB
      * 
      * @param {Object} obj      Oggetto ricevuto tramite richiesta 
      * @param {Object} options  Opzioni facoltative per la gestione dell'update
@@ -69,11 +71,10 @@ class Common {
      */
     checkParams(obj, options) {
         if (options === null)
-            throw new Error("No Table was defined")
+            throw new Error("No Table was defined");
 
         if (obj !== null && obj !== undefined) {
             if (typeof obj === 'object') {
-                // console.info("Object detected")
 
                 const table = options.table;
                 var query = this.selectQuery(options)
@@ -84,10 +85,10 @@ class Common {
                 // Differenzio per evitare casini nella creazione della stringa per la query
                 for (const [key, value] of Object.entries(obj)) {
                     if (value !== '' && value !== 0 && (value !== 'undefined' || value !== undefined)) {
-                        columns.push(key)
-                        params.push(value)
+                        columns.push(key);
+                        params.push(value);
                         if (table === "pb_wb" && key === "where")
-                            params.push(value)
+                            params.push(value);
                     }
                 }
 
@@ -96,14 +97,14 @@ class Common {
                 // Creo correttamente la query
                 for (const [index, val] of Object.entries(columns)) {
                     if (index < columns.length - 2)
-                        query += `${val}=?, `
+                        query += `${val}=?, `;
                     else 
-                        query += (val !== 'where') ? `${val}=? ` : `WHERE ${(table === "pb_wb") ? "id_pb=? OR id_wb=?": "id=?"}`
+                        query += (val !== 'where') ? `${val}=? ` : `WHERE ${(table === "pb_wb") ? "id_pb=? OR id_wb=?": "id=?"}`;
                 }
 
                 // console.info(query)
 
-                return { query, params }
+                return { query, params };
             } else {
                 return obj
             }
@@ -113,18 +114,21 @@ class Common {
     }
 
     /**
-     * Select query only for UPDATE and DELETE 
+     * Select query only for UPDATE, DELETE 
      * 
      * @param {object} options  
      */
     selectQuery(options) {
         switch (options.scope) {
             case "delete": {
-                return `DELETE FROM ${options.table} WHERE `
+                return `DELETE FROM ${options.table} WHERE `;
             }
             case "update": {
-                return `UPDATE ${options.table} SET ` 
+                return `UPDATE ${options.table} SET `;
             }
+            // case "insert": {
+            //     return `INSERT INTO ${options.table}`;
+            // }
         }
     }
 

@@ -34,12 +34,22 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
-            console.info(data);
+            const [test] = await fetch(this.internalUrl + '/presser/set', { 
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ body: data })
+            })
+            .then(_res => _res.json())
+            .catch((_err) => console.error(_err));
+
+            console.info(test);
 
             // res.json({ code: 0 });
 
-            const id_implant = data.id_implant;
-            const id_presser = data.id_presser;
+            // const id_implant = data.id_implant;
+            // const id_presser = data.id_presser;
+
+
             
             // console.info(`Data (Presser Bale) received: ${id_presser}, ${id_implant}`);
             

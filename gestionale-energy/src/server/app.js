@@ -10,7 +10,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./inc/db');
-const WebSocket = require('ws')
+const WebSocket = require('ws');
 
 const presserRoute = require('./routes/presser');
 const wheelmanRoute = require('./routes/wheelman');
@@ -25,15 +25,15 @@ const reasonRouter = require('./routes/reason');
 const implantRouter = require('./routes/implant');
 const loginRouter = require('./routes/loginroutes');
 const reportRouter = require('./routes/report');
-const WebSocketApp = require('./ws/ws')
+const WebSocketApp = require('./ws/ws');
 
 const app = express();
 const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS_DEV;
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
-const server = require('http').createServer(app)
-const wss = new WebSocket.Server({ server })
-const wsa = new WebSocketApp(wss)
+const server = require('http').createServer(app);
+const wss = new WebSocket.Server({ server });
+const wsa = new WebSocketApp(wss);
 
 wsa.onConnection();
 

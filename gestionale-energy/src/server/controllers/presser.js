@@ -13,7 +13,7 @@ const console = new Console("Presser");
 class PresserBale extends Bale {
 
     constructor(db, table, id, idUser, plastic, rei, cpb, sb, note, datetime = "") {
-        super(db, table, id, datetime)
+        super(db, table, id, datetime);
         this.idUser = idUser;
         this.plastic = plastic;
         this.rei = rei;
@@ -42,24 +42,37 @@ class PresserBale extends Bale {
         // console.info(`Data received: ${id}`)
 
         const [rows] = await this.db.query(
-            `SELECT ${this.table}.id AS 'id', code_plastic.code AS 'plastic',
-            code_plastic.desc AS 'code',
-            rei.name AS 'rei',
-            ${this.table}.id_rei AS '_idRei',
-            cond_${this.table}.type AS 'condition',
-            ${this.table}.id_cpb AS '_idCpb',
-            selected_bale.name AS 'selected_bale',
-            ${this.table}.id_sb AS '_idSb',
-            ${this.table}.note AS 'notes',
-            ${this.table}.data_ins AS 'data_ins'
-            FROM ${this.table} JOIN code_plastic JOIN cond_${this.table} JOIN rei JOIN selected_bale
-            ON ${this.table}.id_cpb = cond_${this.table}.id AND
-            ${this.table}.id_plastic = code_plastic.code AND
-            ${this.table}.id_rei = rei.id AND
-            ${this.table}.id_sb = selected_bale.id
-            WHERE ${this.table}.id = ? LIMIT 1`,
+            `SELECT 
+                ${this.table}.id AS 'id', 
+                code_plastic.code AS 'plastic',
+                code_plastic.desc AS 'code',
+                rei.name AS 'rei',
+                ${this.table}.id_rei AS '_idRei',
+                cond_${this.table}.type AS 'condition',
+                ${this.table}.id_cpb AS '_idCpb',
+                selected_bale.name AS 'selected_bale',
+                ${this.table}.id_sb AS '_idSb',
+                ${this.table}.note AS 'notes',
+                ${this.table}.data_ins AS 'data_ins'
+            FROM 
+                ${this.table} 
+            JOIN 
+                code_plastic 
+            JOIN 
+                cond_${this.table} 
+            JOIN 
+                rei 
+            JOIN 
+                selected_bale
+            ON 
+                ${this.table}.id_cpb = cond_${this.table}.id AND
+                ${this.table}.id_plastic = code_plastic.code AND
+                ${this.table}.id_rei = rei.id AND
+                ${this.table}.id_sb = selected_bale.id
+            WHERE 
+                ${this.table}.id = ? LIMIT 1`,
             [id]
-        )
+        );
     
         // console.info(rows)
 
@@ -96,7 +109,24 @@ class PresserBale extends Bale {
     }
 
     async set(req, res) {
-        // TODO
+        try {
+            const { body } = req.body;
+
+            console.info(body);
+            console.info(typeof body);
+
+            const check_ins_pb = await this.db.query(
+                `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
+                VALUES( ?, ?, ?, ?, ?, ? )`,
+                body,
+            );
+
+            console.info(check_ins_pb);
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
     }
 
     /**
