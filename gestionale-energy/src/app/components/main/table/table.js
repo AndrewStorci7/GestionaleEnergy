@@ -37,20 +37,20 @@ export default function Table({ type, implant, idUser }) {
     const [msgEmpty, setMsg] = useState("")
     const [isEmpty, setEmpty] = useState(false)
     const [isSelected, setSelected] = useState(null)
-    const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
+    const [btnPressed, setBtnPressed] = useState(null); // Track which button was pressed
 
     const closeInsertNewBaleComponent = () => {
-        setState(prev => !prev)
+        setState(prev => !prev);
     }
 
     const addHandle = (resp) => {
-        closeInsertNewBaleComponent()
-        setResp(resp)
+        closeInsertNewBaleComponent();
+        setResp(resp);
     }
 
     const noData = (msg) =>  {
-        setEmpty(prev => !prev)
-        setMsg(msg)
+        setEmpty(prev => !prev);
+        setMsg(msg);
     }
 
     const handleTypeChange = (type) => {
@@ -58,7 +58,7 @@ export default function Table({ type, implant, idUser }) {
     };
 
     const handleSelect = (select) => {
-        setSelected(select)
+        setSelected(select);
         // console.log("IS SELECTED: " + isSelected)
     }
 
@@ -120,13 +120,13 @@ export default function Table({ type, implant, idUser }) {
                         idSelect={isSelected}
                     />
 
-                    {(!addWasClicked) ? (
+                    {/* {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
                             <h1 className={`${_CMNSTYLE_EMPTY}`}>
                                 {msgEmpty}
                             </h1>
                         </div>
-                    ) : null }
+                    ) : null } */}
                 </>
             );
         }
@@ -164,13 +164,13 @@ export default function Table({ type, implant, idUser }) {
                         idSelect={isSelected}
                     />
 
-                    {(!addWasClicked) ? (
+                    {/* {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
                             <h1 className={`${_CMNSTYLE_EMPTY}`}>
                                 {msgEmpty}
                             </h1>
                         </div>
-                    ) : null }
+                    ) : null } */}
                 </>
             );
         }

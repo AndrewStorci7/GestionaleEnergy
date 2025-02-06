@@ -120,7 +120,6 @@ export default function TableContent({
     } 
 
     const handleAddChange = () => {
-        // console.log("handlechange from table-content UPDATED")
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
             const message = JSON.stringify({ type: "reload", data: "___update___" })
             ws.current.send(message);
@@ -172,17 +171,9 @@ export default function TableContent({
         fetchData();
     }, [type, add, changeFromAdd, message]);
 
-    // test
-    let i = 0;
-
-    // const [selectedBale, setSelectedBale] = useState(null)
-
     const selectedBaleIdRef = useRef([]);
 
     const handleRowClick = (id) => {
-        // console.log("table-content: " + id + ", current bales selected: " + selectedBaleIdRef.current);
-    
-        // Ensure selectedBaleIdRef.current is initialized as an array
         if (!Array.isArray(selectedBaleIdRef.current)) {
             selectedBaleIdRef.current = [];
         }
@@ -192,8 +183,6 @@ export default function TableContent({
         newSelectedBaleId = selectedBaleId === id ? null : id;  // Toggle or set the new ID
         selectedBaleIdRef.current = newSelectedBaleId;  // Update the ref to reflect the new selection
         handleSelect(newSelectedBaleId);
-    
-        // console.log("table-content after: " + JSON.stringify(newSelectedBaleId));
     };
 
     return (
@@ -209,7 +198,6 @@ export default function TableContent({
                     let hour = "";
                     let id = 0;
                     var status = "";
-                    ++i;
 
                     Object.keys(_m).map((key, __i) => {
                         if (key === "id") {

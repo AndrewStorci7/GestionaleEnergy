@@ -28,6 +28,7 @@ const reportRouter = require('./routes/report');
 const WebSocketApp = require('./ws/ws')
 
 const app = express();
+const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS_DEV;
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
 const server = require('http').createServer(app)
@@ -56,7 +57,7 @@ app.use(reasonRouter(db, "reas_not_tying"));
 app.use(implantRouter(db, "implants"));
 app.use(reportRouter(db));
 
-server.listen(PORT, () => {
+server.listen(PORT, ADDRESS, () => {
     console.log(`Server running on ${URL}:${PORT}`);
 });
 
