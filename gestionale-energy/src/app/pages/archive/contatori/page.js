@@ -18,7 +18,7 @@ const cookie = JSON.parse(Cookies.get('user-info'));
 export default function Contatori() {
 
     const [something, setSomething] = useState(null);
-    const { ws, message } = useWebSocket();
+    // const { ws, message } = useWebSocket();
 
     const [user, setUser] = useState(cookie.username);
     const [name, setName] = useState(cookie.name);

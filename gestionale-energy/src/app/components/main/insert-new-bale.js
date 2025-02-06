@@ -112,6 +112,7 @@ export default function InsertNewBale({ type, mod, ids, primary, confirmHandle }
                             <td className={`${_CMNSTYLE_TD}`} >
                                 <CheckButton />
                             </td>
+                            <td></td>
                             <td className={`${_CMNSTYLE_TD}`} >
                                 <Icon type={status} />
                             </td>

@@ -197,7 +197,7 @@ export default function TableContent({
                     let date = "";
                     let hour = "";
                     let id = 0;
-                    // let idUnique = 0;
+                    let idUnique = 0;
                     var status = "";
 
                     Object.keys(_m).map((key, __i) => {
@@ -211,10 +211,9 @@ export default function TableContent({
                             if (_m[key] === 0) status = "working"
                             else if (_m[key] === 1) status = "completed"
                             else status = "warning"
+                        } else if (key === "idUnique") {
+                            idUnique = _m[key];
                         }
-                        // } else if (key === "idUnique") {
-                        //     idUnique = _m[key]
-                        // }
                     })
 
                     return (
@@ -226,6 +225,9 @@ export default function TableContent({
                                         isSelected={(selectedBaleId === id)}
                                         handleClick={() => handleRowClick(id)} />
                                     </td>
+                                    <td className={`${_CMNSTYLE_TD} font-bold`} key={"idUnique" + _i}>
+                                        {idUnique}
+                                    </td>
                                     <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}>
                                         <Icon type={status} />
                                     </td>
@@ -234,10 +236,7 @@ export default function TableContent({
                             {Object.keys(_m).map((key, __i) => (
                                 (key.startsWith("_") || key == "id" || key == "status" || key == "idUnique" ) ? (
                                     null
-                                ) // : (key === "idUnique") ? (
-                                    // <td>{_m[key]}</td>
-                                // )
-                                : (key === "notes") ? (
+                                ) : (key === "notes") ? (
                                     (_m[key] !== "" && _m[key] !== null) ?
                                     <td>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
