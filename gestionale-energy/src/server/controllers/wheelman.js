@@ -87,7 +87,39 @@ class WheelmanBale extends Bale {
     }
 
     async set(req, res) {
-        // TODO
+        try {
+            // const { body } = req.body;
+
+            // var arr_body = new Array;
+
+            // if (body !== null)
+            //     arr_body = Object.values(body);
+
+            // console.info(body);
+
+            // const check_ins_pb = await this.db.query(
+            //     `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
+            //     VALUES( ?, ?, ?, ?, ?, ? )`,
+            //     arr_body,
+            // );
+
+            const check_ins_pb = await this.db.query(
+                `INSERT INTO ${this.table} VALUES ()`,
+            );
+
+            console.info(check_ins_pb[0]);
+
+            if (check_ins_pb[0].serverStatus === 2) {
+                const id_new_bale = check_ins_pb[0].insertId;
+                res.json({ code: 0, message: { id_new_bale }});
+            } else {
+                const info = check_ins_pb[0].info;
+                res.json({ code: 1, message: { info }});
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
     }
 
     async update(req, res) {
