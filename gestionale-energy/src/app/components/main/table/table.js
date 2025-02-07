@@ -49,8 +49,8 @@ export default function Table({ type, implant, idUser }) {
     }
 
     const noData = (msg) =>  {
-        setEmpty(prev => !prev)
-        setMsg(msg)
+        setEmpty(prev => !prev);
+        setMsg(msg);
     }
 
     const handleTypeChange = (type) => {
@@ -58,8 +58,8 @@ export default function Table({ type, implant, idUser }) {
     };
 
     const handleSelect = (select) => {
-        setSelected(select)
-        console.log("IS SELECTED: " + isSelected)
+        setSelected(select);
+        // console.log("IS SELECTED: " + isSelected)
     }
 
     const handleDownloadClick = (reportType) => {
@@ -67,14 +67,14 @@ export default function Table({ type, implant, idUser }) {
     }
 
     /// Common style
-    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
-    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center"
+    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
+    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
     const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
     const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
     const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
     const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
-    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>
+    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
 
     switch (type) {
         case "admin": {

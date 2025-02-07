@@ -67,20 +67,24 @@ export default function InsertNewBale({
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
             // const url = srvurl + "/upresserbale";
+            if (!plastic || plastic === null || plastic == "undefined" || plastic == "")
+                console.log("Plastica non selezionata"); 
+
             const url = srvurl + "/add-bale";
+            const implant = cookie.id_implant;
             const body = {
                 id_presser: cookie.id_user,
                 id_plastic: plastic,
-                id_rei: rei,
-                id_cpb: cdbp,
-                id_sb: selected_b,
+                id_rei: rei || 1,
+                id_cpb: cdbp || 1,
+                id_sb: selected_b || 1,
                 note: note,
-            }
+            };
 
             const resp = fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ data: body })
+                body: JSON.stringify({ data: { implant, body } })
             })
 
             if (!resp.ok) {
@@ -90,14 +94,25 @@ export default function InsertNewBale({
         } catch (error) {
             // TOFIX
             // <Alert msg={error} />
-            console.error(error)
+            console.error(error);
         }
-    }
+    };
 
     const handleConfirmed = () =>{
         confirmHandle()
         setShowConfirm(prev => !prev);
-    }
+    };
+
+    /**
+     * Handle view Alert
+     * 
+     * @param {string} msg Message to display
+     */
+    const handleAlert = (msg, scope = "error") => {
+        setScope(scope);
+        setErrorMessage(msg);
+        setShowAlert(prev => !prev);
+    };
 
     switch (type) {
         case "presser": {

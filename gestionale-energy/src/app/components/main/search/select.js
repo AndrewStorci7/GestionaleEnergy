@@ -36,6 +36,8 @@ export default function SelectInput({
     props
 ) {
 
+    console.log("Value fomr SelectInput: " + value);
+
     const fixed_width = (fixedW) && "w-full";
     const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black`;
 
@@ -98,16 +100,20 @@ export default function SelectInput({
         }
 
         fetchData();
-    }, [searchFor, value, onChange])
+    }, [searchFor, value, onChange]);
 
     return (
         <select
             id={id}
             className={`${_CMNSTYLE_SELECT}`}
-            value={(value == "" || value === null || !value) ? 1 : value}
+            value={value}
             onChange={onChange}
         >
-            {(isForSearch) && <option value={""} selected>-</option>}
+            {(isForSearch || searchFor === "plastic") && 
+                <option value={""}>-</option>
+            }
+
+            {/* Iterate the content data */}
             {content.map((_m, _i) => {
                 if (typeof _m === "object" && _m !== null) {
 

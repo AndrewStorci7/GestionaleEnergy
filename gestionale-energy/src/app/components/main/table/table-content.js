@@ -125,8 +125,8 @@ export default function TableContent({
         } else {
             console.log('WebSocket is not connected');
         }
-        add.setAdd()
-        setChangeFromAdd(prev => !prev)
+        add.setAdd();
+        setChangeFromAdd(prev => !prev);
     } 
     
     useEffect(() =>  {
@@ -134,7 +134,7 @@ export default function TableContent({
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 const id_implant = cookies.id_implant;
-                const url = getUrl()
+                const url = getUrl();
                 
                 const resp = await fetch(url, {
                     method: 'POST',
@@ -148,15 +148,15 @@ export default function TableContent({
 
                 const data = await resp.json();
 
-                console.log(data)
+                console.log(data);
 
                 if (data.code === 0) {
                     if (type === "presser")
-                        setContent(data.presser)
+                        setContent(data.presser);
                     else if (type === "wheelman")
-                        setContent(data.wheelman)
+                        setContent(data.wheelman);
                     else
-                        setContent([])
+                        setContent([]);
                 } else {
                     setEmpty(prev => !prev);
                     if (noData) noData(data.message);
@@ -168,7 +168,7 @@ export default function TableContent({
         }
 
         fetchData();
-    }, [type, add, changeFromAdd, message]);
+    }, [message]);
 
     const selectedBaleIdRef = useRef([]);
 
@@ -188,7 +188,13 @@ export default function TableContent({
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
             {(add.state) && ( 
-                <InsertNewBale type={type} mod={primary} /* ids={ids} */ primary={primary} confirmHandle={handleAddChange} />
+                <InsertNewBale 
+                    type={type} 
+                    mod={primary} 
+                    // ids={ids}
+                    primary={primary} 
+                    confirmHandle={handleAddChange}
+                />
             )}
             {(!isEmpty) ? (
                 content.map((_m, _i) => {
