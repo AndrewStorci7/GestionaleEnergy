@@ -16,8 +16,6 @@ const getUrlPlastic = () => {
   return srvurl + '/plastic';  // Assuming '/plastic' endpoint returns the plastic types
 };
 
-
-
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
@@ -37,40 +35,42 @@ const ExportReport = ({ btnPressed }) => {
   const [combinedData, setCombinedData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
   const [plasticType, setPlasticType] = useState(null); // State for plastic type
-
-
+  
 
   
   useEffect(() => {
-    const fetchReportData = async () => {
+    const fetchPlasticData = async () => {
       try {
-
-        const body = {
-          implant: (btnPressed === 'impianto-a') ? 2 : (btnPressed === 'impianto-b') ? 1 : 2,//: (btnPressed === 'impianto-ab') ? [1, 2] : [1, 2]
-        }
-
-        const resp = await fetch(srvurl + '/report', {
-          method: 'POST',
+        const url = getUrlPlastic(plasticType);
+        const resp = await fetch(url, {
+          method: 'GET',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ body })
         });
 
         const data = await resp.json();
-
-        console.log(data)
-
         if (data.code === 0) {
-          setCombinedData(data.data || []); 
+          const query = `
+            SELECT 
+              code, 
+              COUNT(*) AS bale_count, 
+              SUM(weight) AS total_weight 
+            FROM 
+              bales 
+            GROUP BY 
+              code;
+          `;
+          setPlasticData(data.data || []); // Assuming 'data' contains the list of plastics
         } else {
           setEmpty(true);
         }
       } catch (error) {
-        //console.error("Error fetching plastic data:", error);
+        console.error("Error fetching plastic data:", error);
         setEmpty(true);
       }
     };
 
-    fetchReportData();
+    fetchPlasticData();
+    
   }, [btnPressed]);
 
 
@@ -125,14 +125,16 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.mergeCells('H3:I3');
     worksheet.getCell('H3:I3').alignment = { vertical: 'middle', horizontal: 'center' };
 
-    worksheet.getCell('F30 ').value = 'TOTALE';
-    worksheet.getCell('J4').value = 'TOT. TURNO';
 
-    combinedData.forEach(() => {
-      
-      const row = worksheet.addRow({
-          plastic: 'prova'
-      });
+    plasticData
+      .filter(plastic => plastic.code !== 'none') // Filter out plastics with code 'none'
+      .forEach((plastic) => {
+        const row = worksheet.addRow({
+          desc: plastic.desc,
+          code: plastic.code,
+          weight: plastic.totale_balle
+        });
+
       
       switch (reportType) {
         case 'impianto-a': // GIOR. IMPIANTO A
@@ -189,9 +191,9 @@ const ExportReport = ({ btnPressed }) => {
         break;
 
       case 'impianto-ab': // GIOR. IMPIANTO A e B
-      worksheet.getCell('A1').value = 'IMPIANTO A e B - REPORT GIORNALIERO PER TURNI DEL';
-      worksheet.mergeCells('A1:D1');
-      worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
+        worksheet.getCell('A1').value = 'IMPIANTO A e B - REPORT GIORNALIERO PER TURNI DEL';
+        worksheet.mergeCells('A1:D1');
+        worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
         break;
 
       case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B

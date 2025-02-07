@@ -95,6 +95,7 @@ class Report extends Common {
         }
     }
 
+
     async balleTotaliComplessive(req, res) {
         try {
             const { implant } = req.body;
@@ -134,7 +135,6 @@ class Report extends Common {
     async reportContatori(req, res) {
         try {
             const { implant } = req.body;
-            // const implant = body.implant;
             const param = implant;
 
             const cont_plastic = await this.db.query(
@@ -249,7 +249,7 @@ class Report extends Common {
             const sel_warehouse = await this.db.query(
                 `SELECT 
                     warehouse_dest.name,
-                COUNT(pb_wb.id_wb) AS "totale_balle"
+                    COUNT(pb_wb.id_wb) AS "totale_balle"
                 FROM 
                     warehouse_dest
                 LEFT JOIN wheelman_bale 
@@ -271,7 +271,7 @@ class Report extends Common {
             const motivation = await this.db.query(
                 `SELECT 
                     reas_not_tying.name,
-                COUNT(pb_wb.id_wb) AS "totale_balle"
+                    COUNT(pb_wb.id_wb) AS "totale_balle"
                 FROM 
                     reas_not_tying
                 LEFT JOIN wheelman_bale 
@@ -299,6 +299,56 @@ class Report extends Common {
         } catch (error) {
             console.error(error)
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
+    }
+
+    /**
+     * TODO
+     * Creare una funzione che accetti come body due parametri: { nome_tabella: "<nome_tabella>", tipo: "" }
+     * con il nome della tabella sarà possibile andare ad inserire dinamicamente la ricerca dei dati.
+     * 
+     * const { body } = req.body;
+     * 
+     * SELECT * FROM ${body.nome_tabella}
+     */
+
+    async reportDinamico(req, res) {
+        try {
+            const { implant } = req.body; // Estrai l'impianto dalla richiesta
+    
+            // Parametro per la query
+            const param = implant;
+    
+            // Query SQL per ottenere il totale delle balle per ogni tipo di plastica
+            const [select] = await this.db.query(
+                `SELECT 
+                    code_plastic.code AS 'name', 
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    code_plastic
+                LEFT JOIN presser_bale 
+                    ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb 
+                    ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                    ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    pb_wb.id_implant = ?  
+                    AND presser_bale.id_rei = 1
+                GROUP BY 
+                    code_plastic.code`, 
+                [param] // Parametro che è l'ID dell'impianto
+            );
+    
+            // Verifica se sono stati trovati dati
+            if (select && select.length > 0) {
+                res.json({ code: 0, data: select });
+            } else {
+                res.json({ code: 1, message: "No data fetched" });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
 }
