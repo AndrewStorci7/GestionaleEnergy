@@ -31,28 +31,27 @@ class Report extends Common {
 
             for (let i = 1; i < 4; ++i) {
 
-                const params = super.checkConditionForTurn(implant, i);
+                const params = super.checkConditionForTurn(implant, "report", i);
                 
                 const [select] = await this.db.query(
                     `SELECT 
                         code_plastic.code, 
                         SUM(wheelman_bale.weight) AS "totale_peso",
                         COUNT(pb_wb.id_pb) AS "totale_balle"
-                        FROM 
+                    FROM 
                         code_plastic
                     LEFT JOIN presser_bale 
                         ON presser_bale.id_plastic = code_plastic.code
+                        ${params.condition.first}
+                        ${params.condition.second}
                     LEFT JOIN pb_wb 
                         ON pb_wb.id_pb = presser_bale.id
+                        ${params.condition.third}
                     LEFT JOIN wheelman_bale
                         ON pb_wb.id_wb = wheelman_bale.id
-                    WHERE 
-                        pb_wb.id_implant = ?
-                        AND presser_bale.id_rei = 1
-                        ${params.condition}
+                        ${params.condition.fourth}
                     GROUP BY 
-                        code_plastic.code
-                    LIMIT 100`,
+                        code_plastic.code`,
                     params.params
                 );
 

@@ -126,9 +126,6 @@ class Common {
             case "update": {
                 return `UPDATE ${options.table} SET `;
             }
-            // case "insert": {
-            //     return `INSERT INTO ${options.table}`;
-            // }
         }
     }
 
@@ -146,27 +143,39 @@ class Common {
      * 
      * @returns {Object} 
      */
-    checkConditionForTurn(id_implant, type, turnIndex = 0) {
+    checkConditionForTurn(id_implant, type = null, turnIndex = 0) {
         const turn = this.checkTurn(turnIndex);
 
-        var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
-            AND DATE(wheelman_bale.data_ins) = CURDATE()
-            AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-            AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
+        var condition = `AND DATE(presser_bale.data_ins) = CURDATE() AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ? AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
         var params = [id_implant, turn[0], turn[1], turn[0], turn[1]];
 
+        // Diffrenzio il ritrono della funzioni per tipo di chiamata
+        // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
+        if (type === "report") {
+            condition = {
+                first: `AND (presser_bale.id_rei = 1 OR presser_bale.id_rei IS NULL) `,
+                second: `AND DATE(presser_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
+                third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) `,
+                fourth: `AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `,
+            };
+            params = [turn[0], turn[1], id_implant, turn[0], turn[1]];
+        }
+
         if (turn[turn.length - 1] === 1) {
-            condition = `AND (
-                (DATE(presser_bale.data_ins) = CURDATE() 
-                AND DATE(wheelman_bale.data_ins) = CURDATE()
-                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
-                OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
-                AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
-                AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
-            )`;
+            condition = `AND ((DATE(presser_bale.data_ins) = CURDATE() AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ? AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ) OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(presser_bale.data_ins) BETWEEN ? AND ? AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ))`;
             params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
+
+            // Diffrenzio il ritrono della funzioni per tipo di chiamata
+        // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
+            if (type === "report") {
+                condition = {
+                    first: `AND (presser_bale.id_rei = 1 OR presser_bale.id_rei IS NULL) `,
+                    second: `AND ((DATE(presser_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ?) OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )) `,
+                    third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL)`,
+                    fourth: `AND ((DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ) OR (DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )) `,
+                };
+                params = [turn[0], turn[1], turn[2], turn[3], id_implant, turn[0], turn[1], turn[2], turn[3]];
+            }
         }
 
         return { condition, params };
