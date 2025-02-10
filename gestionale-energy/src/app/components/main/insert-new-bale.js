@@ -33,7 +33,8 @@ export default function InsertNewBale({
     mod, 
     ids, 
     primary, 
-    confirmHandle 
+    confirmHandle,
+    visible = false
 }) {
 
     const _CMNSTYLE_TD = "on-table-td";
@@ -117,7 +118,8 @@ export default function InsertNewBale({
     switch (type) {
         case "presser": {
             return (
-                <tr className={`${_CMNSTYLE_TD}`} >
+                // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`}>
+                <tr className={`${_CMNSTYLE_TD}`}>
                     {(primary) ? (
                         <>
                             <td className={`${_CMNSTYLE_TD}`} >
@@ -204,6 +206,7 @@ export default function InsertNewBale({
         }
         case "wheelman": {
             return (
+                // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`} >
                 <tr className={`${_CMNSTYLE_TD}`} >
                     {(primary) ? (
                         <>

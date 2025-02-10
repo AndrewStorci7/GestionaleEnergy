@@ -66,9 +66,8 @@ class TotalBale extends Common {
             } else {
                 res.json({ code: 1, message: "Errore nell'inserimento di una nuova balla" });
             }
-    
         } catch (error) {
-            console.error(error)
+            console.error(error);
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }

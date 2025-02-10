@@ -36,12 +36,9 @@ export default function SelectInput({
     props
 ) {
 
-    console.log("Value fomr SelectInput: " + value);
-
     const fixed_width = (fixedW) && "w-full";
     const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black`;
 
-    // Rotta per server
     const [error, setError] = useState("");
     // Risposta ottenuta dal server
     const [content, setContent] = useState([]);

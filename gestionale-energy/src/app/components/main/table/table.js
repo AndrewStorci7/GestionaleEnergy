@@ -29,7 +29,7 @@ export default function Table({ type, implant, idUser }) {
     const { ws, message } = useWebSocket();
 
     // global message from the socket
-    const [_message, setMessage] = useState("");
+    // const [_message, setMessage] = useState("");
 
     const [selectedType, setSelectedType] = useState("general");
     const [addWasClicked, setState] = useState(false)
@@ -44,6 +44,7 @@ export default function Table({ type, implant, idUser }) {
     }
 
     const addHandle = (resp) => {
+        console.log("Second Step ADD, calling 'addHandle()' on Table");
         closeInsertNewBaleComponent()
         // setResp(resp)
     }
@@ -76,6 +77,10 @@ export default function Table({ type, implant, idUser }) {
     const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
     const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
 
+    useEffect(() => {
+        console.log("Relaod from Table");
+    }, [message]);
+
     switch (type) {
         case "admin": {
             return(
@@ -96,7 +101,10 @@ export default function Table({ type, implant, idUser }) {
                                 type={"presser"} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
-                                add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent }} 
+                                add={{ 
+                                    state: addWasClicked, 
+                                    setAdd: closeInsertNewBaleComponent 
+                                }} 
                                 // ids={ids} 
                                 noData={noData} 
                                 primary 
@@ -135,11 +143,14 @@ export default function Table({ type, implant, idUser }) {
                             <TableHeader type={"wheelman"} primary />
                             <TableContent 
                                 type={"wheelman"} 
-                                add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}} 
-                                // ids={ids} 
-                                noData={noData} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
+                                add={{ 
+                                    state: addWasClicked, 
+                                    setAdd: closeInsertNewBaleComponent
+                                }} 
+                                // ids={ids} 
+                                noData={noData} 
                                 primary 
                             />
                         </table>
@@ -156,7 +167,6 @@ export default function Table({ type, implant, idUser }) {
                     <BtnWheelman 
                         implant={implant}
                         idUser={idUser}
-                        // clickAddHandle={addHandle}
                         idSelect={isSelected}
                     />
 
