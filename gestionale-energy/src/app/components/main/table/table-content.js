@@ -52,12 +52,11 @@ export default function TableContent({
     const _CMNSTYLE_TD = "border border-slate-400 h-[40px] ";
     const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
 
-    const [changeFromAdd, setChangeFromAdd] = useState(false) 
+    // const [changeFromAdd, setChangeFromAdd] = useState(false) 
     const [content, setContent] = useState([]);
-    const [isEmpty, setEmpty] = useState(false)
+    const [isEmpty, setEmpty] = useState(false);
 
     const [openNotes, setOpenNotes] = useState({}); // Track open notes by their ID
-    //const [showNote, setShowNote] = useState(false);  // state to show the note
 
     const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
 
@@ -90,17 +89,8 @@ export default function TableContent({
         setOpenNotes(prev => {
             // Non modificare se lo stato è già aggiornato come previsto
             const newState = { ...prev, [id]: !prev[id] };
-    
-            // Stampa per il debugging
-            console.log("Toggling note for ID", id, "New state:", newState);
-    
             return newState;
         });
-    
-        // Log per il contenuto e la richiesta dei dati
-        console.log("Rendering rows for content", content);
-        
-        console.log("Fetching data...");
     };
 
     const handleCloseNote = (id) => {
@@ -117,16 +107,15 @@ export default function TableContent({
         return srvurl + '/bale';
     } 
 
-    const handleAddChange = () => {
-        // console.log("handlechange from table-content UPDATED")
+    const handleAddChange = async () => {
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-            const message = JSON.stringify({ type: "reload", data: "___update___" })
-            ws.current.send(message);
+            const message = JSON.stringify({ type: "reload", data: "___update___" });
+            await ws.current.send(message);
         } else {
-        console.log('WebSocket is not connected');
+            console.log('WebSocket is not connected');
         }
-        add.setAdd()
-        setChangeFromAdd(prev => !prev)
+        add.setAdd();
+        // setChangeFromAdd(prev => !prev);
     } 
     
     useEffect(() =>  {
@@ -134,7 +123,7 @@ export default function TableContent({
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 const id_implant = cookies.id_implant;
-                const url = getUrl()
+                const url = getUrl();
                 
                 const resp = await fetch(url, {
                     method: 'POST',
@@ -148,27 +137,24 @@ export default function TableContent({
 
                 const data = await resp.json();
 
-                console.log(data)
-
                 if (data.code === 0) {
                     if (type === "presser")
-                        setContent(data.presser)
+                        setContent(data.presser);
                     else if (type === "wheelman")
-                        setContent(data.wheelman)
+                        setContent(data.wheelman);
                     else
-                        setContent([])
+                        setContent([]);
                 } else {
                     setEmpty(prev => !prev);
                     if (noData) noData(data.message);
-                    // return;
                 }
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
         }
 
         fetchData();
-    }, [type, add, changeFromAdd, message]);
+    }, [message]);
 
     const selectedBaleIdRef = useRef([]);
 
@@ -188,8 +174,24 @@ export default function TableContent({
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
             {(add.state) && ( 
-                <InsertNewBale type={type} mod={primary} /* ids={ids} */ primary={primary} confirmHandle={handleAddChange} />
+                <InsertNewBale
+                    type={type}
+                    mod={primary}
+                    // ids={ids}
+                    primary={primary}
+                    confirmHandle={handleAddChange}
+                />
             )}
+
+            {/* PROVA */}
+            {/* <InsertNewBale
+                type={type}
+                mod={primary}
+                // ids={ids}
+                primary={primary}
+                confirmHandle={handleAddChange}
+                visible={add.state}
+            /> */}
             {(!isEmpty) ? (
                 content.map((_m, _i) => {
 
@@ -208,9 +210,9 @@ export default function TableContent({
                             hour = _m[key].substr(11, 8);
                         } else if (key === "status") {
                             //Se il valore è 0, Lavorazione(working), Se il valore è 1, Stampato(completed), Se il valore è -1 (warning)
-                            if (_m[key] === 0) status = "working"
-                            else if (_m[key] === 1) status = "completed"
-                            else status = "warning"
+                            if (_m[key] === 0) status = "working";
+                            else if (_m[key] === 1) status = "completed";
+                            else status = "warning";
                         } else if (key === "idUnique") {
                             idUnique = _m[key];
                         }

@@ -61,25 +61,25 @@ export default function SearchInput({ type }) {
                     <label 
                     className={`${_CMNSTYLE_LABEL}`}
                     htmlFor="search-input-status">Lavorazione</label>
-                    <SelectInput id="search-input-status" searchFor={"status"} />
+                    <SelectInput id="search-input-status" searchFor={"status"} isForSearch />
                 </div>
                 <div>
                     <label 
                     className={`${_CMNSTYLE_LABEL}`}
                     htmlFor="search-input-plastic">Plastica</label>
-                    <SelectInput id="search-input-plastic" searchFor={"plastic"} />
+                    <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
                 </div>
                 <div>
                     <label 
                     className={`${_CMNSTYLE_LABEL}`}
                     htmlFor={`search-input-${searchFor[0]}`} >{label_title[0]}</label>
-                    <SelectInput id={`search-input-${searchFor[0]}`} searchFor={searchFor[0]}/>
+                    <SelectInput id={`search-input-${searchFor[0]}`} searchFor={searchFor[0]} isForSearch />
                 </div>
                 <div>
                     <label 
                     className={`${_CMNSTYLE_LABEL}`}
                     htmlFor={`search-input-${searchFor[1]}`} >{label_title[1]}</label>
-                    <SelectInput id={`search-input-${searchFor[1]}`} searchFor={searchFor[1]} />
+                    <SelectInput id={`search-input-${searchFor[1]}`} searchFor={searchFor[1]} isForSearch />
                 </div>
                 <div className={`${_CMNSTYLE_DIV}`}>
                     <button className={`${_CMNSTYLE_BTN} text-xl`}>

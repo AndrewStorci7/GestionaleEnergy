@@ -37,29 +37,12 @@ export default function BtnPresser({
         setIdBale(idSelect)
     }, [idSelect])
 
-    const addNewBale = async () => {
+    const addNewBale = () => {
         try {
-            // const data = {
-            //     id_presser: idUser,
-            //     id_implant: implant
-            // }
-    
-            // const check = await fetch(srvurl + '/add-bale', {
-            //     method: 'POST',
-            //     headers: {'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ data }),
-            // })
-    
-            // const resp = await check.json()
-    
-            // if (!check.ok) {
-            //     handleAlert("Errore nel SERVER durante la modifica!")
-            // } else {
-            //     clickAddHandle(resp.data)
-            // }
-            clickAddHandle()
+            console.log("First step ADD, calling 'clickAddHandle()'");
+            clickAddHandle();
         } catch (error) {
-            handleAlert(error)
+            handleAlert(error);
         }
     }
 

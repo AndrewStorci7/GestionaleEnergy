@@ -34,47 +34,40 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
-            console.info(data);
+            const id_implant = data.implant;
+            var id_new_presser_bale = 0;
+            var id_new_wheelman_bale = 0;
 
-            // res.json({ code: 0 });
+            const data_presser = await fetch(this.internalUrl + '/presser/set', { 
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ body: data.body })
+            })
+            .then(_res => _res.json())
+            .catch((_err) => console.error(_err));
+            id_new_presser_bale = data_presser.message.id_new_bale;
 
-            const id_implant = data.id_implant;
-            const id_presser = data.id_presser;
-            
-            // console.info(`Data (Presser Bale) received: ${id_presser}, ${id_implant}`);
-            
-            // const check_ins_pb = await this.db.query(
-            //     "INSERT INTO presser_bale(id_presser) VALUES (?)",
-            //     [id_presser]
-            // );
-            // const check_ins_wb = await this.db.query(
-            //     `INSERT INTO wheelman_bale() VALUES ()`
-            // );
-    
-            // if (check_ins_pb && check_ins_wb) {
-                
-            //     const [rows_pb] = await this.db.query("SELECT id FROM presser_bale ORDER BY id DESC LIMIT 1");
-    
-            //     const [rows_wb] = await this.db.query("SELECT id FROM wheelman_bale ORDER BY id DESC LIMIT 1");
-    
-            //     const check_ins_pbwb = await this.db.query(
-            //         `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status) VALUES(?, ?, ?, ?)`,
-            //         [rows_pb[0].id, rows_wb[0].id, id_implant, 0]
-            //     );
-    
-            //     if (check_ins_pbwb) {
-            //         res.json({ code: 0, data: { id_presser_bale: rows_pb[0].id, id_wheelman_bale: rows_wb[0].id }})
-            //     } else {
-            //         res.json({ code: 1, message: "Errore nell'inserimento di una nuova balla" })
-            //     }
-            // } else {
-            //     res.json({ code: 1, message: 'Errore nell\'inserimento' })
-            // }
+            const data_wheelman = await fetch(this.internalUrl + '/wheelman/set', { 
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ body: data.body })
+            })
+            .then(_res => _res.json())
+            .catch((_err) => console.error(_err));
+            id_new_wheelman_bale = data_wheelman.message.id_new_bale;
 
-            res.json({ code: 0 });
-    
+            const check_ins_pbwb = await this.db.query(
+                `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status) VALUES(?, ?, ?, ?)`,
+                [id_new_presser_bale, id_new_wheelman_bale, id_implant, 0]
+            );
+
+            if (check_ins_pbwb && check_ins_pbwb[0].serverStatus === 2) {
+                res.json({ code: 0, data: { id_presser_bale: id_new_presser_bale, id_wheelman_bale: id_new_wheelman_bale }});
+            } else {
+                res.json({ code: 1, message: "Errore nell'inserimento di una nuova balla" });
+            }
         } catch (error) {
-            console.error(error)
+            console.error(error);
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }
