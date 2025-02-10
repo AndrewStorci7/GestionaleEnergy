@@ -23,43 +23,22 @@ class Report extends Common {
     async reportGiornaliero(req, res) {
         try {
 
-            const { body } = req.body;
-            const implant = body.implant;
+            const { implant } = req.body;
+            // const implant = body.implant;
+            console.info(implant);
 
             const data = new Array(3);
 
             for (let i = 1; i < 4; ++i) {
 
-                // console.info(i)
-                const turn = super.checkTurn(i)
-
-                var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
-                    AND DATE(wheelman_bale.data_ins) = CURDATE()
-                    AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                    AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `
-                var params = [implant, turn[0], turn[1], turn[0], turn[1]]
-
-                if (turn[turn.length - 1] === 1) {
-                    condition = `AND (
-                        (DATE(presser_bale.data_ins) = CURDATE() 
-                        AND DATE(wheelman_bale.data_ins) = CURDATE()
-                        AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )
-                        OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) 
-                        AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)
-                        AND TIME(presser_bale.data_ins) BETWEEN ? AND ?
-                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ))`
-                    params = [implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]]
-                }
-
-                // console.info(turn)
+                const params = super.checkConditionForTurn(implant, i);
                 
                 const [select] = await this.db.query(
                     `SELECT 
                         code_plastic.code, 
                         SUM(wheelman_bale.weight) AS "totale_peso",
                         COUNT(pb_wb.id_pb) AS "totale_balle"
-                    FROM 
+                        FROM 
                         code_plastic
                     LEFT JOIN presser_bale 
                         ON presser_bale.id_plastic = code_plastic.code
@@ -70,11 +49,11 @@ class Report extends Common {
                     WHERE 
                         pb_wb.id_implant = ?
                         AND presser_bale.id_rei = 1
-                        ${condition}
+                        ${params.condition}
                     GROUP BY 
                         code_plastic.code
                     LIMIT 100`,
-                    params
+                    params.params
                 );
 
                 if (select && select.length > 0) {

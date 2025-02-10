@@ -140,12 +140,14 @@ class Common {
      *      "params": array con parametri per la query
      * }
      * 
-     * @param   {number} id_implant Id dell'impianto
+     * @param {number} id_implant   Id dell'impianto
+     * @param {string} type         Tipo di condizione  
+     * @param {number} turnIndex    Numero del turno per la condizione (delego a `checkTurn()`)
      * 
      * @returns {Object} 
      */
-    checkConditionForTurn(id_implant) {
-        const turn = this.checkTurn();
+    checkConditionForTurn(id_implant, type, turnIndex = 0) {
+        const turn = this.checkTurn(turnIndex);
 
         var condition = `AND DATE(presser_bale.data_ins) = CURDATE()
             AND DATE(wheelman_bale.data_ins) = CURDATE()

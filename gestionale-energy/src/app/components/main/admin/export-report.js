@@ -12,8 +12,8 @@ const getUrl = () => {
   return srvurl + '/bale';
 };
 
-const getUrlPlastic = () => {
-  return srvurl + '/plastic';  // Assuming '/plastic' endpoint returns the plastic types
+const getUrlReport = () => {
+  return srvurl + '/report';
 };
 
 /**
@@ -31,50 +31,45 @@ const getUrlPlastic = () => {
  */
 const ExportReport = ({ btnPressed }) => {
   
-  const [plasticData, setPlasticData] = useState([]);
-  const [combinedData, setCombinedData] = useState([]);
+  const [reportData, setReportData] = useState(null);
   const [isEmpty, setEmpty] = useState(false);
-  const [plasticType, setPlasticType] = useState(null); // State for plastic type
-  
-
   
   useEffect(() => {
-    const fetchPlasticData = async () => {
+    const fetchReportData = async () => {
       try {
-        const url = getUrlPlastic(plasticType);
+        console.log('prova inside ExportReport');
+        const implant = (btnPressed == 'impianto-a') ? 2 : (btnPressed == 'impianto-b') ? 1 : 0;
+        const url = getUrlReport();
         const resp = await fetch(url, {
-          method: 'GET',
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ implant })
         });
 
         const data = await resp.json();
-        if (data.code === 0) {
-          const query = `
-            SELECT 
-              code, 
-              COUNT(*) AS bale_count, 
-              SUM(weight) AS total_weight 
-            FROM 
-              bales 
-            GROUP BY 
-              code;
-          `;
-          setPlasticData(data.data || []); // Assuming 'data' contains the list of plastics
-        } else {
-          setEmpty(true);
-        }
+
+        console.log(data);
+
+        // if (data.code === 0) {
+        //   setReportData(data.data || null); // Assuming 'data' contains the list of plastics
+        // } else {
+        //   setEmpty(true);
+        // }
       } catch (error) {
-        console.error("Error fetching plastic data:", error);
+        console.error("Error Fetching Data:", error);
         setEmpty(true);
       }
     };
 
-    fetchPlasticData();
+    fetchReportData();
     
   }, [btnPressed]);
 
-
   const handleDownload = (reportType) => {
+
+    if (!reportData || reportData === null || reportData.length == 0)
+      return;
+
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Report');
     
@@ -126,13 +121,12 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getCell('H3:I3').alignment = { vertical: 'middle', horizontal: 'center' };
 
 
-    plasticData
-      .filter(plastic => plastic.code !== 'none') // Filter out plastics with code 'none'
-      .forEach((plastic) => {
+    reportData
+      .filter() // Filter out plastics with code 'none'
+      .forEach(() => {
         const row = worksheet.addRow({
-          desc: plastic.desc,
-          code: plastic.code,
-          weight: plastic.totale_balle
+            implant: id_implant,
+            
         });
 
       
