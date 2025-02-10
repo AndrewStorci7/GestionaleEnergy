@@ -50,7 +50,6 @@ class TotalBale extends Common {
             const data_wheelman = await fetch(this.internalUrl + '/wheelman/set', { 
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ body: data.body })
             })
             .then(_res => _res.json())
             .catch((_err) => console.error(_err));

@@ -119,7 +119,7 @@ class PresserBale extends Bale {
             const { body } = req.body;
             const arr_body = Object.values(body);
 
-            console.info(body);
+            // console.info(body);
 
             const check_ins_pb = await this.db.query(
                 `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
@@ -127,7 +127,7 @@ class PresserBale extends Bale {
                 arr_body,
             );
 
-            console.info(check_ins_pb[0]);
+            // console.info(check_ins_pb[0]);
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;

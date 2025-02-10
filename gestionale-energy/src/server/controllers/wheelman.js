@@ -88,7 +88,7 @@ class WheelmanBale extends Bale {
 
     async set(req, res) {
         try {
-            // const { body } = req.body;
+            const { body } = req.body;
 
             // var arr_body = new Array;
 
@@ -102,12 +102,16 @@ class WheelmanBale extends Bale {
             //     VALUES( ?, ?, ?, ?, ?, ? )`,
             //     arr_body,
             // );
+            console.info(body === null);
+            
+            // if (body !== null) {
+            // }
 
             const check_ins_pb = await this.db.query(
                 `INSERT INTO ${this.table} VALUES ()`,
             );
 
-            console.info(check_ins_pb[0]);
+            // console.info(check_ins_pb[0]);
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
@@ -116,6 +120,7 @@ class WheelmanBale extends Bale {
                 const info = check_ins_pb[0].info;
                 res.json({ code: 1, message: { info }});
             }
+            
         } catch (error) {
             console.error(error);
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
