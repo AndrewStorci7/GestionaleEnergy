@@ -8,10 +8,6 @@ import Cookies from 'js-cookie';
 
 const srvurl = getSrvUrl();
 
-const getUrl = () => {
-  return srvurl + '/bale';
-};
-
 const getUrlReport = () => {
   return srvurl + '/report';
 };
@@ -47,17 +43,17 @@ const ExportReport = ({ btnPressed }) => {
         });
 
         const data = await resp.json();
-
         console.log(data);
 
-        // if (data.code === 0) {
-        //   setReportData(data.data || null); // Assuming 'data' contains the list of plastics
-        // } else {
-        //   setEmpty(true);
-        // }
+       {/* if (data.code === 0) {
+          setReportData(data.data|| null); // Set report data or null
+          setEmpty(false); // Reset empty state
+        } else {
+          setEmpty(true); // Set empty state if no data is returned
+        }*/}
       } catch (error) {
         console.error("Error Fetching Data:", error);
-        setEmpty(true);
+        setEmpty(true); // Set empty state on error
       }
     };
 
@@ -67,33 +63,31 @@ const ExportReport = ({ btnPressed }) => {
 
   const handleDownload = (reportType) => {
 
-    if (!reportData || reportData === null || reportData.length == 0)
-      return;
+    if (!reportData || reportData.length === 0) {
+      console.log("No report data available for download.");
+      return; // Return early if no data
+    }
 
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Report');
-    
+
+    // Define columns
     worksheet.columns = [
-      { header: "", key: "implants", width: 10 },
-      { header: "", key: "desc", width: 10,  },
-      { header: "", key: "code", width: 15 },
-      { header: "", key: "weight", width: 15 },
-      { header: "", key: "", width: 15 },
-      { header: "", key: "turn1", width: 15},
-      { header: "", key: "turn2", width: 15},
-      { header: "", key: "turn3", width: 15}
+      { header: "IMPIANTO", key: "code", width: 10 },
+      { header: "CODICE", key: "totale_peso", width: 15 },
+      { header: "PRODOTTO", key: "totale_balle", width: 15 },
     ];
 
     worksheet.getCell('A1').border = {
-      top: {style:'thin'},
-      left: {style:'thin'},
-      bottom: {style:'thin'},
-      right: {style:'thin'}
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' }
     };
 
-    worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
+    // Customizing headers and alignment
     worksheet.getCell('E1').value = new Date();
-    worksheet.getCell('E1').font = {bold: true, name: 'Arial'};
+    worksheet.getCell('E1').font = { bold: true, name: 'Arial' };
     worksheet.getCell('A4').value = 'IMPIANTO';
     worksheet.getCell('A4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('B4').value = 'CODICE';
@@ -110,50 +104,19 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getCell('H4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('I4').value = 'ID';
     worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('D3').value = 'TURNO 1';
-    worksheet.mergeCells('D3:E3');
-    worksheet.getCell('D3:E3').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('F3').value = 'TURNO 2';
-    worksheet.mergeCells('F3:G3');
-    worksheet.getCell('F3:G3').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('H3').value = 'TURNO 3';
-    worksheet.mergeCells('H3:I3');
-    worksheet.getCell('H3:I3').alignment = { vertical: 'middle', horizontal: 'center' };
-
-
-    reportData
-      .filter() // Filter out plastics with code 'none'
-      .forEach(() => {
+    console.log("Report Data:", reportData);
+    // Fill rows with report data
+    reportData.forEach((report, index) => {
+        
         const row = worksheet.addRow({
-            implant: id_implant,
-            
+          
+            code: report.code, 
+            totale_peso: report.totale_peso, 
+            totale_balle: report.totale_balle, 
+
         });
-
       
-      switch (reportType) {
-        case 'impianto-a': // GIOR. IMPIANTO A
-          worksheet.getCell(`A${row.number}`).value = 'A';
-          break;
-        case 'impianto-a-tempi': // GIOR. TEMPI IMP A
-          worksheet.getCell(`A${row.number}`).value = 'A';
-          break;
-        case 'impianto-b': // GIOR. IMPIANTO B
-          worksheet.getCell(`A${row.number}`).value = 'B';  
-          break;
-        case 'impianto-b-tempi': // GIOR. TEMPI IMP B
-          worksheet.getCell(`A${row.number}`).value = 'B';  
-          break;
-        case 'impianto-ab': // GIOR. IMPIANTO A e B
-          worksheet.getCell(`A${row.number}`).value = 'AB';
-          break;
-        case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
-          worksheet.getCell(`A${row.number}`).value = 'AB';
-          break;
-        default:
-          console.error('Unknown report type:', reportType);
-          return;
-      }
-
+     
       
       worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
       worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
