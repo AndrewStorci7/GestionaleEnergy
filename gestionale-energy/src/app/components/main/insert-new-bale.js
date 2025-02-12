@@ -1,12 +1,14 @@
 'use-client';
 
-import { getSrvUrl } from '@/app/config'
+import { getSrvUrl, refreshPage } from '@/app/config'
 import React, { useState } from 'react'
 import CheckButton from "./select-button"
 import Icon from './get-icon';
 import SelectInput from './search/select'
 import Cookies from 'js-cookie';
 import Alert from './alert';
+
+import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 
 const srvurl = getSrvUrl();
 
@@ -36,6 +38,8 @@ export default function InsertNewBale({
     confirmHandle,
     visible = false
 }) {
+
+    const { ws, message } = useWebSocket();
 
     const _CMNSTYLE_TD = "on-table-td";
 
@@ -67,7 +71,7 @@ export default function InsertNewBale({
     const handleClick = (f) => {
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
-            // const url = srvurl + "/upresserbale";
+
             if (!plastic || plastic === null || plastic == "undefined" || plastic == "")
                 console.log("Plastica non selezionata"); 
 
@@ -87,15 +91,17 @@ export default function InsertNewBale({
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ data: { implant, body } })
             })
+            .then(_res => _res.json());
 
-            if (!resp.ok) {
-                // console.error(resp.json)
-            }
-
+            if (resp.code === 0) {
+                refreshPage(ws);
+            } 
+            // else {
+            //     handleAlert(resp.message);
+            // }
         } catch (error) {
-            // TOFIX
-            // <Alert msg={error} />
             console.error(error);
+            // handleAlert(error)
         }
     };
 
@@ -104,16 +110,17 @@ export default function InsertNewBale({
         setShowConfirm(prev => !prev);
     };
 
-    /**
-     * Handle view Alert
-     * 
-     * @param {string} msg Message to display
-     */
-    const handleAlert = (msg, scope = "error") => {
-        setScope(scope);
-        setErrorMessage(msg);
-        setShowAlert(prev => !prev);
-    };
+    // /**
+    //  * Handle view Alert
+    //  * 
+    //  * @param {string} msg Message to display
+    //  * @param {string} scope Scopo della chiamata e comparsa 
+    //  */
+    // const handleAlert = (msg, scope = "error") => {
+    //     setScope(scope);
+    //     setErrorMessage(msg);
+    //     setShowAlert(prev => !prev);
+    // };
 
     switch (type) {
         case "presser": {
@@ -204,88 +211,88 @@ export default function InsertNewBale({
                 </tr>
             )
         }
-        case "wheelman": {
-            return (
-                // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`} >
-                <tr className={`${_CMNSTYLE_TD}`} >
-                    {(primary) ? (
-                        <>
-                            <td className={`${_CMNSTYLE_TD}`} >
-                                <CheckButton />
-                            </td>
-                            <td className={`${_CMNSTYLE_TD}`} >
-                                <Icon type={status} />
-                            </td>
-                        </>
-                    ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"cdbc"} 
-                        value={cdbc}
-                        onChange={(e) => setCdbc(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"reason"} 
-                        value={reason}
-                        onChange={(e) => setReason(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && <input 
-                        type="number"
-                        id="peso-pressista"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                        placeholder="Inserisci peso"
-                        />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"dest-wh"} 
-                        value={dest_wh}
-                        onChange={(e) => setDestWh(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && <input 
-                        type="text"
-                        id="note-carrellista"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        placeholder="Inserisci note"
-                        />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`} >
-                        stato
-                    </td>
-                    {(primary) ? (
-                        <td className={`${_CMNSTYLE_TD}`} >
-                            <button 
-                            className='on-btn-confirm'
-                            onClick={() => { 
-                                handleClick(false);
-                                handleConfirmed();
-                            }}
-                            >
-                                OK
-                            </button>
-                        </td>
-                    ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* DATA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* ORA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
-                </tr>
-            )
-        }
+        // case "wheelman": {
+        //     return (
+        //         // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`} >
+        //         <tr className={`${_CMNSTYLE_TD}`} >
+        //             {(primary) ? (
+        //                 <>
+        //                     <td className={`${_CMNSTYLE_TD}`} >
+        //                         <CheckButton />
+        //                     </td>
+        //                     <td className={`${_CMNSTYLE_TD}`} >
+        //                         <Icon type={status} />
+        //                     </td>
+        //                 </>
+        //             ) : null }
+        //             <td className={`${_CMNSTYLE_TD}`}>
+        //                 {(mod) && 
+        //                 <SelectInput 
+        //                 searchFor={"cdbc"} 
+        //                 value={cdbc}
+        //                 onChange={(e) => setCdbc(e.target.value)} 
+        //                 fixedW />}
+        //             </td>
+        //             <td className={`${_CMNSTYLE_TD}`}>
+        //                 {(mod) && 
+        //                 <SelectInput 
+        //                 searchFor={"reason"} 
+        //                 value={reason}
+        //                 onChange={(e) => setReason(e.target.value)} 
+        //                 fixedW />}
+        //             </td>
+        //             <td className={`${_CMNSTYLE_TD}`}>
+        //                 {(mod) && <input 
+        //                 type="number"
+        //                 id="peso-pressista"
+        //                 value={weight}
+        //                 onChange={(e) => setWeight(e.target.value)}
+        //                 placeholder="Inserisci peso"
+        //                 />}
+        //             </td>
+        //             <td className={`${_CMNSTYLE_TD}`}>
+        //                 {(mod) && 
+        //                 <SelectInput 
+        //                 searchFor={"dest-wh"} 
+        //                 value={dest_wh}
+        //                 onChange={(e) => setDestWh(e.target.value)} 
+        //                 fixedW />}
+        //             </td>
+        //             <td className={`${_CMNSTYLE_TD}`}>
+        //                 {(mod) && <input 
+        //                 type="text"
+        //                 id="note-carrellista"
+        //                 value={note}
+        //                 onChange={(e) => setNote(e.target.value)}
+        //                 placeholder="Inserisci note"
+        //                 />}
+        //             </td>
+        //             <td className={`${_CMNSTYLE_TD}`} >
+        //                 stato
+        //             </td>
+        //             {(primary) ? (
+        //                 <td className={`${_CMNSTYLE_TD}`} >
+        //                     <button 
+        //                     className='on-btn-confirm'
+        //                     onClick={() => { 
+        //                         handleClick(false);
+        //                         handleConfirmed();
+        //                     }}
+        //                     >
+        //                         OK
+        //                     </button>
+        //                 </td>
+        //             ) : null }
+        //             <td className={`${_CMNSTYLE_TD}`}>
+        //                 {/* DATA */}
+        //                 {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
+        //             </td>
+        //             <td className={`${_CMNSTYLE_TD}`}>
+        //                 {/* ORA */}
+        //                 {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
+        //             </td>
+        //         </tr>
+        //     )
+        // }
     }
 }

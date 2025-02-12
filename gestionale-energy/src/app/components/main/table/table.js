@@ -44,7 +44,6 @@ export default function Table({ type, implant, idUser }) {
     }
 
     const addHandle = (resp) => {
-        console.log("Second Step ADD, calling 'addHandle()' on Table");
         closeInsertNewBaleComponent()
         // setResp(resp)
     }

@@ -39,7 +39,6 @@ export default function BtnPresser({
 
     const addNewBale = () => {
         try {
-            console.log("First step ADD, calling 'clickAddHandle()'");
             clickAddHandle();
         } catch (error) {
             handleAlert(error);

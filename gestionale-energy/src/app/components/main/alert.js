@@ -41,7 +41,7 @@ export default function Alert({
     handleClose();
   };
   
-  const refreshPage = () => {
+  const refreshPage = (ws) => {
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
       const message = JSON.stringify({ type: "reload", data: "___update___" })
       ws.current.send(message);
