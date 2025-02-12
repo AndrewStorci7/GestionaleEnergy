@@ -27,13 +27,30 @@ const getUrlReport = () => {
  */
 const ExportReport = ({ btnPressed }) => {
   
+  const [implantData, setImplantData] = useState(null);
   const [reportData, setReportData] = useState(null);
   const [isEmpty, setEmpty] = useState(false);
-  
+
   useEffect(() => {
+    
+    // const setImplantDataFetch = async () => {
+    //   switch (btnPressed) {
+    //     case 'impianto-a':
+    //       setImplantData({ id_implant: 2, letter: 'A' });
+    //       break;
+    //     case 'impianto-b':
+    //       setImplantData({ id_implant: 1, letter: 'B' });
+    //       break;
+    //     default:
+    //       setImplantData({ id_implant: 2, letter: 'A' });
+    //       break;
+    //   }
+    // }
+    // setImplantDataFetch();
+
     const fetchReportData = async () => {
       try {
-        console.log('prova inside ExportReport');
+        // console.log('prova inside ExportReport');
         const implant = (btnPressed == 'impianto-a') ? 2 : (btnPressed == 'impianto-b') ? 1 : 0;
         const url = getUrlReport();
         const resp = await fetch(url, {
@@ -45,12 +62,12 @@ const ExportReport = ({ btnPressed }) => {
         const data = await resp.json();
         console.log(data);
 
-       {/* if (data.code === 0) {
-          setReportData(data.data|| null); // Set report data or null
+        if (data.code === 0) {
+          setReportData(data.data || null); // Set report data or null
           setEmpty(false); // Reset empty state
         } else {
           setEmpty(true); // Set empty state if no data is returned
-        }*/}
+        }
       } catch (error) {
         console.error("Error Fetching Data:", error);
         setEmpty(true); // Set empty state on error
@@ -73,9 +90,19 @@ const ExportReport = ({ btnPressed }) => {
 
     // Define columns
     worksheet.columns = [
-      { header: "IMPIANTO", key: "code", width: 10 },
-      { header: "CODICE", key: "totale_peso", width: 15 },
-      { header: "PRODOTTO", key: "totale_balle", width: 15 },
+      { header: "IMPIANTO", key: "", width: 10 },
+      { header: "CODICE", key: "desc", width: 10 },
+      { header: "PRODOTTO", key: "code", width: 15 },
+      { header: "", key: "totale_peso", width: 15 },
+      { header: "", key: "", width: 15 },
+      { header: "", key: "totale_peso", width: 15 },
+      { header: "", key: "", width: 15 },
+      { header: "", key: "totale_peso", width: 15 },
+      { header: "", key: "", width: 15 },
+      /*{ header: "KG", key: "weight", width: 15 },
+      { header: "", key: "turn1", width: 15 },
+      { header: "", key: "turn2", width: 15 },
+      { header: "", key: "turn3", width: 15 }*/
     ];
 
     worksheet.getCell('A1').border = {
@@ -104,23 +131,60 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getCell('H4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('I4').value = 'ID';
     worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'center' };
-    console.log("Report Data:", reportData);
-    // Fill rows with report data
-    reportData.forEach((report, index) => {
-        
-        const row = worksheet.addRow({
-          
-            code: report.code, 
-            totale_peso: report.totale_peso, 
-            totale_balle: report.totale_balle, 
+    console.log("reportData:", reportData);
 
+    
+
+    reportData.forEach((report, index) => {
+      console.log(`Report at index ${index}:`, report);
+      
+      if (typeof report === 'object' && report !== null) {
+        console.log(`Items in report ${index}:`, report);
+        report.forEach((item, itemIndex) => {
+          console.log(`Item ${itemIndex}:`, item, item.code);
+          const row = worksheet.addRow({
+              desc: item.desc,
+              code: item.code,
+              totale_peso: item.totale_peso,
+              totale_balle: item.totale_balle,
+          });
+
+          switch (reportType) {
+            case 'impianto-a': // GIOR. IMPIANTO A
+              worksheet.getCell(`A${row.number}`).value = 'A';
+              break;
+            case 'impianto-a-tempi': // GIOR. TEMPI IMP A
+              worksheet.getCell(`A${row.number}`).value = 'A';
+              break;
+            case 'impianto-b': // GIOR. IMPIANTO B
+              worksheet.getCell(`A${row.number}`).value = 'B';  
+              break;
+            case 'impianto-b-tempi': // GIOR. TEMPI IMP B
+              worksheet.getCell(`A${row.number}`).value = 'B';  
+              break;
+            case 'impianto-ab': // GIOR. IMPIANTO A e B
+              worksheet.getCell(`A${row.number}`).value = 'AB';
+              break;
+            case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
+              worksheet.getCell(`A${row.number}`).value = 'AB';
+              break;
+            default:
+              console.error('Unknown report type:', reportType);
+              return;
+          }
+
+          worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
+          worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
         });
+      } else {
+        console.error(`No items found or items is not an array in report ${index}`);
+      }
       
-     
       
-      worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
-      worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
     });
+    
+    
+
 
     
 
