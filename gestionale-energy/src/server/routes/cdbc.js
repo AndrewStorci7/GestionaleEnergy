@@ -1,9 +1,9 @@
-const express = require('express');
-const Controller = require('../controllers/cdbc');
+import express from 'express';
+import Controller from '../controllers/cdbc.js';
 
-module.exports = (db, table) => {
+export default (db, queue,  table) => {
     const router = express.Router();
-    const controller = new Controller(db, table);
+    const controller = new Controller(db, queue,  table);
 
     router.get('/cdbc', (req, res) => controller.get(req, res));
 

@@ -1,5 +1,5 @@
-const Bale = require('./main/bale')
-const Console = require('../inc/console');
+import Bale from './main/bale.js';
+import Console from '../inc/console.js';;
 
 const console = new Console("Wheelman");
 
@@ -12,28 +12,9 @@ const console = new Console("Wheelman");
  */
 class WheelmanBale extends Bale {
 
-    constructor(db, table, id) {
-        super(db, table, id)
-        // this.idUser = idUser;
-        // this.plastic = plastic;
-        // this.rei = rei;
-        // this.cpb = cpb;
-        // this.sb = sb;
-        // this.note = note;
+    constructor(db, queue, table) {
+        super(db, queue, table);
     }
-
-    // get info() {
-    //     return { 
-    //         id: this.id, 
-    //         idUser: this.idUser, 
-    //         plastic: this.plastic, 
-    //         rei: this.rei, 
-    //         cpb: this.cpb, 
-    //         sb: this.sb,
-    //         note: this.note,
-    //         datetime: this.datetime
-    //     }
-    // }
 
     handleWheelmanData = async (req) => {
         const {id} = req.body;
@@ -70,77 +51,68 @@ class WheelmanBale extends Bale {
     };
 
     async get(req, res) {
-        try {
-            const data = await this.handleWheelmanData(req);
-            
-            // console.info(data) // test
-            
-            if (data.code !== 0) {
-                res.json(data)
-            } else {
-                res.json({ code: 0, data: data.rows })
+        await this.queue.add(async () => {
+            try {
+                const data = await this.handleWheelmanData(req);
+                
+                // console.info(data) // test
+                
+                if (data.code !== 0) {
+                    res.json(data)
+                } else {
+                    res.json({ code: 0, data: data.rows })
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        } catch (error) {
-            console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
-        }
+        }, { priority: 0 });
     }
 
     async set(req, res) {
-        try {
-            // const { body } = req.body;
-
-            // var arr_body = new Array;
-
-            // if (body !== null)
-            //     arr_body = Object.values(body);
-
-            // console.info(body);
-
-            // const check_ins_pb = await this.db.query(
-            //     `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
-            //     VALUES( ?, ?, ?, ?, ?, ? )`,
-            //     arr_body,
-            // );
-
-            const check_ins_pb = await this.db.query(
-                `INSERT INTO ${this.table} VALUES ()`,
-            );
-
-            console.info(check_ins_pb[0]);
-
-            if (check_ins_pb[0].serverStatus === 2) {
-                const id_new_bale = check_ins_pb[0].insertId;
-                res.json({ code: 0, message: { id_new_bale }});
-            } else {
-                const info = check_ins_pb[0].info;
-                res.json({ code: 1, message: { info }});
+        await this.queue.add(async () => {
+            try {
+                const check_ins_pb = await this.db.query(
+                    `INSERT INTO ${this.table} VALUES ()`,
+                );
+    
+                // console.info(check_ins_pb[0]);
+    
+                if (check_ins_pb[0].serverStatus === 2) {
+                    const id_new_bale = check_ins_pb[0].insertId;
+                    res.json({ code: 0, message: { id_new_bale }});
+                } else {
+                    const info = check_ins_pb[0].info;
+                    res.json({ code: 1, message: { info }});
+                }
+            } catch (error) {
+                console.error(error);
+                res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        } catch (error) {
-            console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
-        }
+        }, { priority: 0 });
     }
 
     async update(req, res) {
-        try {
-            const { body } = req.body;
-
-            const san = this.checkParams(body, {scope: "update", table: this.table})
-            
-            const [check] = await this.db.query(san.query, san.params);
+        await this.queue.add(async () => {
+            try {
+                const { body } = req.body;
     
-            if (check) {
-                res.json({ code: 0 });
-            } else {
-                res.json({ code: 1, message: "Errore nella modifica di una balla" });
+                const san = this.checkParams(body, {scope: "update", table: this.table})
+                
+                const [check] = await this.db.query(san.query, san.params);
+        
+                if (check) {
+                    res.json({ code: 0 });
+                } else {
+                    res.json({ code: 1, message: "Errore nella modifica di una balla" });
+                }
+            } catch (error) {
+                console.error(error)
+                res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
-        }
+        }, { priority: 0 });
     }
 
 }
 
-module.exports = WheelmanBale
+export default WheelmanBale

@@ -1,5 +1,5 @@
-const Console = require('../inc/console');
-const Common = require('./main/common');
+import Console from '../inc/console.js';
+import Common from './main/common.js';
 
 const console = new Console("Login")
 
@@ -13,25 +13,27 @@ const console = new Console("Login")
  */
 class Login extends Common {
 
-    constructor(db, id, username, type) {
-        super(db, id)
+    constructor(db, queue, table, username, type) {
+        super(db, queue, table)
         this.username = username;
         this.type = type;
     }
 
     async check(req, res) {
-        try {
-            const { username, password } = req.body;
-            const [rows] = await this.db.query(`SELECT * FROM user WHERE user.username='${username}' AND user.password='${password}'`);
-            if (rows && rows.length > 0) {
-                res.json(rows)
-            } else {
-                res.json({ code: 1, message: "Credenziali errate" });
+        await this.queue.add(async () => {
+            try {
+                const { username, password } = req.body;
+                const [rows] = await this.db.query(`SELECT * FROM user WHERE user.username='${username}' AND user.password='${password}'`);
+                if (rows && rows.length > 0) {
+                    res.json(rows)
+                } else {
+                    res.json({ code: 1, message: "Credenziali errate" });
+                }
+            } catch (error) {
+                console.error(error)
+                res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
-        }
+        }, { priority: 0 });
     }
 
     /**
@@ -78,4 +80,4 @@ class Login extends Common {
 
 }
 
-module.exports = Login;
+export default Login;

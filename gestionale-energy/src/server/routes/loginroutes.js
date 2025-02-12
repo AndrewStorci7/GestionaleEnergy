@@ -1,9 +1,9 @@
-const express = require('express');
-const Controller = require('../controllers/login');
+import express from 'express';
+import Controller from '../controllers/login.js';
 
-module.exports = (db, table) => {
+export default (db, queue,  table) => {
     const router = express.Router();
-    const controller = new Controller(db, table);
+    const controller = new Controller(db, queue,  table);
 
     router.post('/login', (req, res) => controller.check(req, res));
 

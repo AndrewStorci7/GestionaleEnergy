@@ -1,4 +1,4 @@
-const Console = require('../../inc/console');
+import Console from '../../inc/console.js';
 
 const console = new Console("Common");
 
@@ -12,10 +12,10 @@ const console = new Console("Common");
  */
 class Common {
 
-    constructor(db, table, id) {
+    constructor(db, queue, table) {
         this.db = db;
+        this.queue = queue;
         this.table = table;
-        this.id = id;
     }
 
     /**
@@ -166,7 +166,7 @@ class Common {
             params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
 
             // Diffrenzio il ritrono della funzioni per tipo di chiamata
-        // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
+            // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
             if (type === "report") {
                 condition = {
                     first: `AND (presser_bale.id_rei = 1 OR presser_bale.id_rei IS NULL) `,
@@ -194,5 +194,5 @@ class Common {
     }
 }
 
-module.exports = Common
+export default Common
 

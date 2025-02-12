@@ -1,5 +1,5 @@
-const Common = require('./main/common');
-const Console = require('../inc/console');
+import Common from './main/common.js';
+import Console from '../inc/console.js';
 
 const console = new Console("Plastic");
 
@@ -11,9 +11,8 @@ const console = new Console("Plastic");
  */
 class Plastic extends Common {
     
-    constructor(db, id, name) {
-        super(db, id);
-        this.name = name;
+    constructor(db, queue, table) {
+        super(db, queue, table);
     }
 
     /**
@@ -23,21 +22,23 @@ class Plastic extends Common {
      * @param {object} res  object response 
      */
     async get(req, res) {
-        try {
-            const [select] = await this.db.query(
-                "SELECT code_plastic.code AS code, code_plastic.type AS plastic_type, code_plastic.desc FROM code_plastic"
-            );
-    
-            if (select && select.length > 0) {
-                // console.info(select)
-                res.json({ code: 0, data: select })
-            } else {
-                res.json({ code: 1, message: "No data fetched" })
+        await this.queue.add(async () => {
+            try {
+                const [select] = await this.db.query(
+                    "SELECT code_plastic.code AS code, code_plastic.type AS plastic_type, code_plastic.desc FROM code_plastic"
+                );
+        
+                if (select && select.length > 0) {
+                    // console.info(select)
+                    res.json({ code: 0, data: select })
+                } else {
+                    res.json({ code: 1, message: "No data fetched" })
+                }
+            } catch (error) {
+                console.error(error)
+                res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
-        }
+        }, { priority: 0 });
     }
 
     /**
@@ -49,4 +50,4 @@ class Plastic extends Common {
     }
 }
 
-module.exports = Plastic
+export default Plastic

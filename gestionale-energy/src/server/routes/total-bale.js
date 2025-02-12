@@ -1,9 +1,9 @@
-const express = require('express');
-const Controller = require('../controllers/total-bale');
+import express from 'express';
+import Controller from '../controllers/total-bale.js';
 
-module.exports = (db, table) => {
+export default (db, queue,  table) => {
     const router = express.Router();
-    const controller = new Controller(db, table);
+    const controller = new Controller(db, queue,  table);
 
     // Add a new bale
     router.post('/add-bale', (req, res) => controller.add(req, res));

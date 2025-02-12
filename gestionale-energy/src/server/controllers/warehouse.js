@@ -1,5 +1,5 @@
-const Console = require('../inc/console')
-const Common = require('./main/common')
+import Console from '../inc/console.js';
+import Common from './main/common.js';
 
 const console = new Console("TotalBale")
 
@@ -11,30 +11,31 @@ const console = new Console("TotalBale")
  */
 class Warehouse extends Common {
 
-    constructor(db, id, name) {
-        super(db, id)
-        this.name = name;
+    constructor(db, queue, table) {
+        super(db, queue, table);
     }
 
     /**
      * Get a total of bale as the format
      */
     async get(req, res) {
-        try {
-            const [select] = await this.db.query(
-                "SELECT * FROM warehouse_dest"
-            );
-    
-            if (select && select.length > 0) {
-                // console.info(select)
-                res.json({ code: 0, data: select })
-            } else {
-                res.json({ code: 1, message: "No data fetched" })
+        await this.queue.add(async () => {
+            try {
+                const [select] = await this.db.query(
+                    "SELECT * FROM warehouse_dest"
+                );
+        
+                if (select && select.length > 0) {
+                    // console.info(select)
+                    res.json({ code: 0, data: select })
+                } else {
+                    res.json({ code: 1, message: "No data fetched" })
+                }
+            } catch (error) {
+                console.error(error)
+                res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        } catch (error) {
-            console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
-        }
+        }, { priority: 0 });
     }
 
     /**
@@ -45,4 +46,4 @@ class Warehouse extends Common {
     }
 }
 
-module.exports = Warehouse
+export default Warehouse

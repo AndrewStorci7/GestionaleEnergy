@@ -1,9 +1,9 @@
-const express = require('express');
-const Controller = require('../controllers/reason');
+import express from 'express';
+import Controller from '../controllers/reason.js';
 
-module.exports = (db, table) => {
+export default (db, queue,  table) => {
     const router = express.Router();
-    const controller = new Controller(db, table);
+    const controller = new Controller(db, queue,  table);
 
     router.get('/reason', (req, res) => controller.get(req, res));
 

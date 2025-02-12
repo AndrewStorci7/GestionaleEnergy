@@ -1,5 +1,5 @@
-const Common = require('./common');
-const Console = require('../../inc/console');
+import Common from './common.js';
+import Console from '../../inc/console.js';
 
 const console = new Console("Bale");
 
@@ -12,15 +12,8 @@ const console = new Console("Bale");
  */
 class Bale extends Common {
 
-    constructor(db, table, idUser, datetime) {
-        super(db, table, idUser);
-        // this.db = db;
-        // this.idUser = idUser;
-        this.datetime = datetime;
-    }
-
-    get info() {
-        return { datetime: this.datetime, idUser: this.idUser };
+    constructor(db, queue, table) {
+        super(db, queue, table);
     }
 
     checkTurn() {
@@ -106,4 +99,4 @@ class Bale extends Common {
     }
 }
 
-module.exports = Bale;
+export default Bale;
