@@ -99,6 +99,7 @@ const ExportReport = ({ btnPressed }) => {
       { header: "", key: "", width: 15 },
       { header: "", key: "totale_peso", width: 15 },
       { header: "", key: "", width: 15 },
+      { header: "", key: "", width: 15 },
       /*{ header: "KG", key: "weight", width: 15 },
       { header: "", key: "turn1", width: 15 },
       { header: "", key: "turn2", width: 15 },
@@ -113,27 +114,41 @@ const ExportReport = ({ btnPressed }) => {
     };
 
     // Customizing headers and alignment
-    worksheet.getCell('E1').value = new Date();
-    worksheet.getCell('E1').font = { bold: true, name: 'Arial' };
+    worksheet.getCell('F1').value = new Date();
+    worksheet.getCell('F1').font = { bold: true, name: 'Arial' };
     worksheet.getCell('A4').value = 'IMPIANTO';
     worksheet.getCell('A4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('B4').value = 'CODICE';
+    worksheet.getCell('B4').value = 'COD.';
+    worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('C4').value = 'PRODOTTO';
+    worksheet.getCell('C4').alignment = { vertical: 'middle'};
+    worksheet.getCell('D3').value = '1° TURNO';
+    worksheet.mergeCells('D3:E3');
+    worksheet.getCell('D3:E3').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('D4').value = 'KG';
     worksheet.getCell('D4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('E4').value = 'ID';
+    worksheet.getCell('E4').value = 'N° BALLE';
     worksheet.getCell('E4').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet.getCell('F3').value = '2° TURNO';
+    worksheet.mergeCells('F3:G3');
+    worksheet.getCell('F3:G3').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('F4').value = 'KG';
     worksheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('G4').value = 'ID';
+    worksheet.getCell('G4').value = 'N° BALLE';
     worksheet.getCell('G4').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet.getCell('H3').value = '3° TURNO';
+    worksheet.mergeCells('H3:I3');
+    worksheet.getCell('H3:I3').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('H4').value = 'KG';
     worksheet.getCell('H4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('I4').value = 'ID';
+    worksheet.getCell('I4').value = 'N° BALLE';
     worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet.getCell('J4').value = 'TOT.TURNO';
+    worksheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'center' };
+
     console.log("reportData:", reportData);
 
-    
+    const seenCodes = new Set();
 
     reportData.forEach((report, index) => {
       console.log(`Report at index ${index}:`, report);
@@ -142,12 +157,18 @@ const ExportReport = ({ btnPressed }) => {
         console.log(`Items in report ${index}:`, report);
         report.forEach((item, itemIndex) => {
           console.log(`Item ${itemIndex}:`, item, item.code);
+
+          if (seenCodes.has(item.code)) {
+            return;  
+          }
           const row = worksheet.addRow({
               desc: item.desc,
               code: item.code,
               totale_peso: item.totale_peso,
               totale_balle: item.totale_balle,
           });
+
+          seenCodes.add(item.code);
 
           switch (reportType) {
             case 'impianto-a': // GIOR. IMPIANTO A
@@ -179,19 +200,13 @@ const ExportReport = ({ btnPressed }) => {
       } else {
         console.error(`No items found or items is not an array in report ${index}`);
       }
-      
-      
+
     });
-    
-    
-
-
-    
 
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
         worksheet.getCell('A1').value = 'IMPIANTO A - REPORT GIORNALIERO PER TURNI DEL';
-        worksheet.mergeCells('A1:D1');
+        worksheet.mergeCells('A1:E1');
         worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
         break;
 
@@ -202,7 +217,7 @@ const ExportReport = ({ btnPressed }) => {
 
       case 'impianto-b': // GIOR. IMPIANTO B
       worksheet.getCell('A1').value = 'IMPIANTO B - REPORT GIORNALIERO PER TURNI DEL';
-      worksheet.mergeCells('A1:D1');
+      worksheet.mergeCells('A1:E1');
       worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
         break;
 
@@ -213,13 +228,13 @@ const ExportReport = ({ btnPressed }) => {
 
       case 'impianto-ab': // GIOR. IMPIANTO A e B
         worksheet.getCell('A1').value = 'IMPIANTO A e B - REPORT GIORNALIERO PER TURNI DEL';
-        worksheet.mergeCells('A1:D1');
+        worksheet.mergeCells('A1:E1');
         worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
         break;
 
       case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
         worksheet.addRow(['Implant', 'A and B']);
-        worksheet.mergeCells('A1:D1');
+        worksheet.mergeCells('A1:E1');
         worksheet.addRow([1, 'Time data for both Implants']);
         break;
 
@@ -227,12 +242,139 @@ const ExportReport = ({ btnPressed }) => {
         console.error('Unknown report type:', reportType);
         return;
     }
+    
+    worksheet.getCell('C31').value = 'TOTALE';
+
+    for (let row = 3; row <= 31; row++){
+      worksheet.getRow(row).height = 20;
+    }
+
+    worksheet.getRow(3).font = { bold: true, name: 'Calibri' };
+    worksheet.getRow(4).font = { bold: true, name: 'Calibri' };
+    worksheet.getColumn('C').alignment = { vertical: 'middle' };
+    worksheet.getCell('A3:A30').font = { bold: true, name: 'Calibri' };
+    worksheet.getColumn('B').font = { bold: true, name: 'Calibri' };
+    worksheet.getColumn('C').font = { bold: true, name: 'Calibri' };
+
+    for (let row = 4; row <= 29; row++) {
+      worksheet.getCell(`A${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 29; row++) {
+      worksheet.getCell(`B${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`C${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`D${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`E${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`F${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`G${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`H${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`I${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 31; row++) {
+      worksheet.getCell(`J${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    worksheet.getCell('D3').border = {
+      top: {style: 'thin'},
+      left: {style: 'thin'},
+      bottom: {style: 'thin'},
+      right: {style: 'thin'}
+    };
+
+    worksheet.getCell('F3').border = {
+      top: {style: 'thin'},
+      left: {style: 'thin'},
+      bottom: {style: 'thin'},
+      right: {style: 'thin'}
+    };
+
+    worksheet.getCell('H3').border = {
+      top: {style: 'thin'},
+      left: {style: 'thin'},
+      bottom: {style: 'thin'},
+      right: {style: 'thin'}
+    };
+  
+  
 
     workbook.xlsx.writeBuffer().then((buffer) => {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, `${reportType}.xlsx`);
     });
   };
+
 
   useEffect(() => {
     if (btnPressed) {
