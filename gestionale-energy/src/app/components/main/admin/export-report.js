@@ -94,15 +94,15 @@ const ExportReport = ({ btnPressed }) => {
       { header: "CODICE", key: "desc", width: 10 },
       { header: "PRODOTTO", key: "code", width: 15 },
       { header: "", key: "totale_peso", width: 15 },
+      { header: "", key: "totale_balle", width: 15 },
       { header: "", key: "", width: 15 },
-      { header: "", key: "totale_peso", width: 15 },
       { header: "", key: "", width: 15 },
-      { header: "", key: "totale_peso", width: 15 },
+      { header: "", key: "", width: 15 },
       { header: "", key: "", width: 15 },
       { header: "", key: "", width: 15 },
       /*{ header: "KG", key: "weight", width: 15 },
       { header: "", key: "turn1", width: 15 },
-      { header: "", key: "turn2", width: 15 },
+      { header: "", key: "turn2", width: 15
       { header: "", key: "turn3", width: 15 }*/
     ];
 
@@ -252,7 +252,7 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getRow(3).font = { bold: true, name: 'Calibri' };
     worksheet.getRow(4).font = { bold: true, name: 'Calibri' };
     worksheet.getColumn('C').alignment = { vertical: 'middle' };
-    worksheet.getCell('A3:A30').font = { bold: true, name: 'Calibri' };
+    worksheet.getColumn('A').font = { bold: true, name: 'Calibri' };
     worksheet.getColumn('B').font = { bold: true, name: 'Calibri' };
     worksheet.getColumn('C').font = { bold: true, name: 'Calibri' };
 
