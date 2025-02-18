@@ -1,4 +1,5 @@
-import { getSrvUrl } from '@@/config';
+'use client';
+import { getSrvUrl, getBgColor } from '@@/config';
 import { useEffect, useState, useRef } from 'react';
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
@@ -7,8 +8,19 @@ import InsertNewBale from '../insert-new-bale';
 import Alert from '../alert';
 
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
+import { refreshPage } from '../../../config';
 
-const srvurl = getSrvUrl()
+const srvurl = getSrvUrl();
+
+/**
+     * Get Url of route
+     * 
+     * @param {string} type 
+     * @returns 
+     */
+const getUrl = () => {
+    return srvurl + '/bale';
+} 
 
 /**
  * Custom component for handling the data of a bale
@@ -60,27 +72,6 @@ export default function TableContent({
 
     const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
 
-    /**
-     * Get Background Color
-     * 
-     * @param {string} type 
-     * @returns 
-     */
-    const getBgColor = (type) => {
-        switch (type) {
-            case 'admin':
-                return "bg-primary_2" 
-            case 'presser':
-                return "bg-primary_2" 
-            case 'wheelman':
-                return "bg-secondary_2" 
-            case 'both':
-                return "bg-secondary_2" 
-            default:
-                return "bg-primary_2"
-        }
-    }
-
     const handleNoteClick = (id, note) => {
         // Impostare il messaggio della nota
         setNoteMessage(note);
@@ -97,31 +88,15 @@ export default function TableContent({
         setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
     };
 
-    /**
-     * Get Url of route
-     * 
-     * @param {string} type 
-     * @returns 
-     */
-    const getUrl = () => {
-        return srvurl + '/bale';
-    } 
-
-    const handleAddChange = async () => {
-        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-            const message = JSON.stringify({ type: "reload", data: "___update___" });
-            await ws.current.send(message);
-        } else {
-            console.log('WebSocket is not connected');
-        }
+    const handleAddChange = (ws) => {
+        refreshPage(ws);
         add.setAdd();
-        // setChangeFromAdd(prev => !prev);
     } 
     
     useEffect(() =>  {
         const fetchData = async () => {
             try {
-                const cookies = await JSON.parse(Cookies.get('user-info'));
+                const cookies = JSON.parse(Cookies.get('user-info'));
                 const id_implant = cookies.id_implant;
                 const url = getUrl();
                 
@@ -131,19 +106,14 @@ export default function TableContent({
                     body: JSON.stringify({ id_implant }),
                 });
 
-                if (!resp.ok) {
-                    throw new Error("Network response was not ok");
-                }
-
                 const data = await resp.json();
 
+                console.log("Table-Content: " + data);
+                
                 if (data.code === 0) {
-                    if (type === "presser")
-                        setContent(data.presser);
-                    else if (type === "wheelman")
-                        setContent(data.wheelman);
-                    else
-                        setContent([]);
+                    if (type === "presser") setContent(data.presser);
+                    else if (type === "wheelman") setContent(data.wheelman);
+                    else setContent([]);
                 } else {
                     setEmpty(prev => !prev);
                     if (noData) noData(data.message);
@@ -160,9 +130,8 @@ export default function TableContent({
 
     const handleRowClick = (id) => {
         // Ensure selectedBaleIdRef.current is initialized as an array
-        if (!Array.isArray(selectedBaleIdRef.current)) {
+        if (!Array.isArray(selectedBaleIdRef.current))
             selectedBaleIdRef.current = [];
-        }
     
         // Check if the id is already in the selectedBaleIdRef array
         let newSelectedBaleId = [id];  // Replace the array with just the current selected ID
@@ -179,19 +148,10 @@ export default function TableContent({
                     mod={primary}
                     // ids={ids}
                     primary={primary}
-                    confirmHandle={handleAddChange}
+                    confirmHandle={handleAddChange(ws)}
                 />
             )}
 
-            {/* PROVA */}
-            {/* <InsertNewBale
-                type={type}
-                mod={primary}
-                // ids={ids}
-                primary={primary}
-                confirmHandle={handleAddChange}
-                visible={add.state}
-            /> */}
             {(!isEmpty) ? (
                 content.map((_m, _i) => {
 

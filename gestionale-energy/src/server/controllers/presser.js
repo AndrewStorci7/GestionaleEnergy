@@ -1,7 +1,7 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';
 
-const console = new Console("Presser");
+const console = new Console("Presser", 1);
 
 /**
  * 
@@ -18,10 +18,8 @@ class PresserBale extends Bale {
 
     handlePresserData = async (req) => {
         
-        const {id} = req;
-        
-        // console.info(`Data received: ${id}`)
-
+        const {id} = req.body;
+        // console.info(`Data received: ${id}`, "yellow");
         const [rows] = await this.db.query(
             `SELECT 
                 ${this.table}.id AS 'id', 
@@ -52,13 +50,12 @@ class PresserBale extends Bale {
                 ${this.table}.id_sb = selected_bale.id
             WHERE 
                 ${this.table}.id = ? LIMIT 1`,
-            [id]
+            id
         );
     
         // console.info(rows)
 
         if (rows && rows.length > 0) {
-            // console.info(rows)
             return rows;
         } else {
             console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
@@ -73,11 +70,11 @@ class PresserBale extends Bale {
      * @param {object} res 
      */
     async get(req, res) {
-        await this.queue.add(async () => {
+        await this.queue.add(() => {
             try {
-                const data = await this.handlePresserData(req.body);
+                const data = this.handlePresserData(req);
                 
-                // console.info(data) // test
+                console.info(data) // test
         
                 if (data.code !== 0) {
                     res.json(data)
@@ -89,6 +86,7 @@ class PresserBale extends Bale {
                 res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
         }, { priority: 0 });
+        console.info("GET Single Bale completed", "green");
     }
 
     /**
@@ -111,20 +109,21 @@ class PresserBale extends Bale {
                     arr_body,
                 );
     
-                console.info(check_ins_pb[0]);
+                // console.info(check_ins_pb[0]);
     
                 if (check_ins_pb[0].serverStatus === 2) {
                     const id_new_bale = check_ins_pb[0].insertId;
-                    res.json({ code: 0, message: { id_new_bale }});
+                    res.json({ code: 0, message: { id_new_bale } });
                 } else {
                     const info = check_ins_pb[0].info;
-                    res.json({ code: 1, message: { info }});
+                    res.json({ code: 1, message: { info } });
                 }
             } catch (error) {
                 console.error(error);
                 res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        })
+        }, { priority: 0 });
+        console.info("SET Single Bale completed", "green");
     }
 
     /**
@@ -153,7 +152,7 @@ class PresserBale extends Bale {
                 console.error(error)
                 res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
-        })
+        }, { priority: 0 });
     }
 
     /**

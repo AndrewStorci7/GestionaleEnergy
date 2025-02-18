@@ -57,6 +57,28 @@ const getWsUrl = () => {
 }
 
 /**
+ * Get Background Color
+ * 
+ * @param {string} type 
+ * @param {string} scope default: "header"
+ * @returns 
+ */
+const getBgColor = (type, scope = "header") => {
+    switch (type) {
+        case 'admin':
+            return (scope === "header") ? "bg-primary" : (scope === "theader") ? "bg-primary" : "bg-primary_2";
+        case 'presser':
+            return (scope === "header") ? "bg-primary" : (scope === "theader") ? "bg-primary" : "bg-primary_2";
+        case 'wheelman':
+            return (scope === "header") ? "bg-secondary" : (scope === "theader") ? "bg-secondary" : "bg-secondary_2";
+        case 'both':
+            return (scope === "header") ? "bg-thirdary_1" : (scope === "theader") ? "bg-secondary" : "bg-secondary_2";
+        default:
+            return (scope === "header") ? "bg-primary" : (scope === "theader") ? "bg-primary" : "bg-primary_2";
+    }
+}
+
+/**
  * Reload Server through Websocket
  * 
  * @param {object} ws WebSocket istance
@@ -74,5 +96,6 @@ export {
     getEnv, 
     getSrvUrl, 
     getWsUrl, 
+    getBgColor,
     refreshPage 
 };

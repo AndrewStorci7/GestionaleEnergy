@@ -70,6 +70,7 @@ export default function SelectInput({
         const fetchData = async () => {
             try {
                 const url = getUrl(searchFor);
+                console.log(url)
 
                 if (url != -1) {
                     const resp = await fetch(url, {
@@ -83,11 +84,8 @@ export default function SelectInput({
         
                     const data = await resp.json();
         
-                    if (data.code === 0) {
-                        setContent(data.data);
-                    } else {
-                        setError(data.message);
-                    }
+                    if (data.code === 0) setContent(data.data);
+                    else setError(data.message);
                 } else {
                     setContent(["In lavorazione", "Cambiato", "Completato"]);
                 }
@@ -97,7 +95,7 @@ export default function SelectInput({
         }
 
         fetchData();
-    }, [searchFor, value, onChange]);
+    }, []);
 
     return (
         <select

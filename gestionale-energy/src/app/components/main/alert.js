@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import UpdateValuesBale from "./update-bale";
+import { refreshPage } from "@/app/config";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 import md5 from "md5";
 
@@ -39,15 +40,6 @@ export default function Alert({
   const closeAlert = () => {
     setShowAlert(false);
     handleClose();
-  };
-  
-  const refreshPage = (ws) => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const message = JSON.stringify({ type: "reload", data: "___update___" })
-      ws.current.send(message);
-    } else {
-      console.log('WebSocket is not connected');
-    }
   };
   
   const handleConfirmedClose = () => {
@@ -157,7 +149,7 @@ export default function Alert({
               <button
               onClick={() => {
                 closeAlert();
-                refreshPage();
+                refreshPage(ws);
               }}
               style={{
                 padding: "5px 10px",
@@ -201,7 +193,7 @@ export default function Alert({
               idBale={idBale}
               handlerConfirm={() => {
                 closeAlert();
-                refreshPage();
+                refreshPage(ws);
               }}
               />
               

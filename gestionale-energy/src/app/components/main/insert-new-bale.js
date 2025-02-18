@@ -68,7 +68,7 @@ export default function InsertNewBale({
      * 
      * @param {boolean} f 
      */
-    const handleClick = (f) => {
+    const handleClick = async (f) => {
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
 
@@ -86,14 +86,15 @@ export default function InsertNewBale({
                 note: note,
             };
 
-            const resp = fetch(url, {
+            const resp = await fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ data: { implant, body } })
             })
-            .then(_res => _res.json());
+            // .then(_res => _res.json());
+            const data = await resp.json()
 
-            if (resp.code === 0) {
+            if (data.code === 0) {
                 refreshPage(ws);
             } 
             // else {

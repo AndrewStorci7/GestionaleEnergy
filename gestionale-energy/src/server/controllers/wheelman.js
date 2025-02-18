@@ -1,7 +1,7 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';;
 
-const console = new Console("Wheelman");
+const console = new Console("Wheelman", 1);
 
 /**
  * 
@@ -17,33 +17,17 @@ class WheelmanBale extends Bale {
     }
 
     handleWheelmanData = async (req) => {
+        
         const {id} = req.body;
-        
-        // console.info(`Id Presser received: ${id}`);
-        
+        // console.info(`Data received: ${id}`, "yellow");
         const [rows] = await this.db.query(
-            `SELECT ${this.table}.id AS 'id', 
-            cond_${this.table}.type AS 'condition',
-            ${this.table}.id_cwb AS '_idCwb',
-            reas_not_tying.name AS 'reason',
-            ${this.table}.id_rnt AS '_idRnt',
-            ${this.table}.weight AS 'weight',
-            warehouse_dest.name AS 'warehouse',
-            ${this.table}.id_wd AS '_idWd',
-            ${this.table}.note AS 'notes',
-            ${this.table}.printed AS 'is_printed',
-            ${this.table}.data_ins AS 'data_ins'
-            FROM ${this.table} JOIN reas_not_tying JOIN cond_${this.table} JOIN warehouse_dest
-            ON ${this.table}.id_cwb = cond_${this.table}.id AND
-            ${this.table}.id_rnt = reas_not_tying.id AND
-            ${this.table}.id_wd = warehouse_dest.id
-            WHERE ${this.table}.id = ? LIMIT 1`,
-            [id]
+            `SELECT ${this.table}.id AS 'id', cond_${this.table}.type AS 'condition', ${this.table}.id_cwb AS '_idCwb', reas_not_tying.name AS 'reason', ${this.table}.id_rnt AS '_idRnt', ${this.table}.weight AS 'weight', warehouse_dest.name AS 'warehouse', ${this.table}.id_wd AS '_idWd', ${this.table}.note AS 'notes', ${this.table}.printed AS 'is_printed', ${this.table}.data_ins AS 'data_ins' FROM ${this.table} JOIN reas_not_tying JOIN cond_${this.table} JOIN warehouse_dest ON ${this.table}.id_cwb = cond_${this.table}.id AND ${this.table}.id_rnt = reas_not_tying.id AND ${this.table}.id_wd = warehouse_dest.id WHERE ${this.table}.id = ? LIMIT 1`,
+            id
         );
     
         if (rows && rows.length > 0) {
-            // console.info(rows) // test
-            return rows
+            console.info(rows) // test
+            return rows;
         } else {
             console.info({ code: 1, message: "Nessuna balla trovata" }) // test
             return { code: 1, message: "Nessuna balla trovata" }
@@ -51,11 +35,11 @@ class WheelmanBale extends Bale {
     };
 
     async get(req, res) {
-        await this.queue.add(async () => {
+        await this.queue.add(() => {
             try {
-                const data = await this.handleWheelmanData(req);
+                const data = this.handleWheelmanData(req);
                 
-                // console.info(data) // test
+                console.info(data) // test
                 
                 if (data.code !== 0) {
                     res.json(data)
@@ -67,6 +51,7 @@ class WheelmanBale extends Bale {
                 res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
         }, { priority: 0 });
+        console.info("GET Single Bale completed", "green");
     }
 
     async set(req, res) {
@@ -90,6 +75,7 @@ class WheelmanBale extends Bale {
                 res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
         }, { priority: 0 });
+        console.info("SET Single Bale completed", "green");
     }
 
     async update(req, res) {

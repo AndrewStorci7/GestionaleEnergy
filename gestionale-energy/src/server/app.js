@@ -57,20 +57,20 @@ const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS_DEV;
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
 
+// Middleware per fare il parse in JSON
+app.use(express.json());
+// Accetta CORS
+app.use(cors());
+
 // Istanza Server Web Socket
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 const wsa = new WebSocketApp(wss);
 
 // Coda di priorità
-const queue = new PQueue({ concurrency: 1 });
+const queue = new PQueue({ concurrency: 2 });
 
 wsa.onConnection();
-
-// Middleware per fare il parse in JSON
-app.use(express.json());
-// Accetta CORS
-app.use(cors());
 
 app.use(loginRouter(db, queue));
 

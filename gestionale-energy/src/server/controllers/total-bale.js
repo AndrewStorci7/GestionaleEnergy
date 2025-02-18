@@ -1,7 +1,7 @@
 import Console from '../inc/console.js';
 import Common from './main/common.js';
 
-const console = new Console("TotalBale");
+const console = new Console("TotalBale", 1);
 
 /**
  * 
@@ -10,11 +10,7 @@ class TotalBale extends Common {
 
     constructor(db, queue, table) {
         super(db, queue, table);
-        // this.idPB = idPB;
-        // this.idWB = idWB;
-        // this.implant = implant;
-        this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}` 
-        // this.presserbale = new PresserBale(db)
+        this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}`;
     }
 
     /**
@@ -69,6 +65,7 @@ class TotalBale extends Common {
                 res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             }
         }, { priority: 0 });
+        console.info("Add new bale completed", "green");
     }
 
     /**
@@ -112,8 +109,6 @@ class TotalBale extends Common {
         await this.queue.add(async () => {
             try {
                 const { id_implant } = req.body;
-        
-                // console.info(`body received: ${id_implant}`)
     
                 const presserResult = [];
                 const wheelmanResult = [];
@@ -124,42 +119,44 @@ class TotalBale extends Common {
                     `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status, ${this.table}.id FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants ON ${this.table}.id_pb = presser_bale.id AND ${this.table}.id_wb = wheelman_bale.id AND ${this.table}.id_implant = implants.id WHERE ${this.table}.id_implant = ? ${_params.condition} ORDER BY ${this.table}.status ASC, TIME(presser_bale.data_ins) DESC, TIME(wheelman_bale.data_ins) DESC LIMIT 100`,
                     _params.params
                 );
-    
+
+                // console.info(select)
+
                 if (select !== 'undefined' || select !== null) {
-    
+
                     for (const e of select) {
-    
+
                         var id_presser = e.id_pb;
                         var id_wheelman = e.id_wb;
                         var status = e.status;
                         var id = e.id;
-    
-                        const [res_presser] = await fetch(this.internalUrl + '/presser', { 
+
+                        const res_presser = await fetch(this.internalUrl + '/presser', { 
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({ id: id_presser })
-                        })
-                        .then(_res => _res.json())
-                        .catch(_err => console.error(_err));
-                        res_presser.status = status;
-                        res_presser.idUnique = id;
-    
-                        const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
+                        });
+                        const data_presser = await res_presser.json();
+                        console.info(data_presser);
+                        data_presser.status = status;
+                        data_presser.idUnique = id;
+
+                        const res_wheelman = await fetch(this.internalUrl + '/wheelman', { 
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({ id: id_wheelman })
-                        })
-                        .then(_res => _res.json())
-                        .catch((_err) => console.error(_err));
-                        res_wheelman.status = status;
-                        res_wheelman.idUnique = id;
-    
-                        presserResult.push(res_presser);
-                        wheelmanResult.push(res_wheelman);
+                        });
+                        const data_wheelman = await res_wheelman.json();
+                        data_wheelman.status = status;
+                        data_wheelman.idUnique = id;
+
+                        presserResult.push(data_presser);
+                        wheelmanResult.push(data_wheelman);
                     };
                 }
     
                 if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
+                    // console.info("Sending response");
                     res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
                 } else {
                     res.json({ code: 1, message: "Nessuna balla trovata" });
@@ -170,6 +167,7 @@ class TotalBale extends Common {
                 res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
             }
         }, { priority: 0 });
+        console.info("Get All Bales completed", "green");
     }
 
     /**
@@ -352,11 +350,11 @@ class TotalBale extends Common {
     
     
             } catch (error) {
-                console.error(error)
-                res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
+                console.error(error);
+                res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
             }
         }, { priority: 0 });
     }
 }
 
-export default TotalBale
+export default TotalBale;

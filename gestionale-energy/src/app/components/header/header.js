@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getEnv, getSrvUrl } from "@/app/config";
+import { getEnv, getSrvUrl, getBgColor } from "@/app/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
@@ -32,34 +32,13 @@ export default function Header({
     const [totalbales, setTotalBales] = useState(0);
 
     /**
-     * Get Background Color
-     * 
-     * @param {string} type 
-     * @returns 
-     */
-    const getBgColor = (type) => {
-        switch (type) {
-            case 'admin':
-                return "bg-primary"
-            case 'presser':
-                return "bg-primary"
-            case 'wheelman':
-                return "bg-secondary"
-            case 'both':
-                return "bg-thirdary_1"
-            default:
-                return "bg-primary"
-        }
-    }
-
-    /**
      * Logout handler
      * 
      * Remove the setted Cookie 'user-info'
      */
     const logout = () => {
         Cookies.remove('user-info', { path: '/', domain: getEnv('NEXT_PUBLIC_APP_DOMAIN') })
-        router.push('/pages/login')
+        router.push('/pages/login');
     }
 
     const getUrl = () => {
@@ -69,9 +48,6 @@ export default function Header({
      * Update the time every second
      */
     useEffect(() => {
-        // body = {
-          //   implant: implant
-         //}
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
@@ -82,19 +58,13 @@ export default function Header({
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ implant }),
+                })
+                .then(resp => {
+                    const data = resp.json();
+                    if (data.code == 0) {
+                        setTotalBales(data.message);
+                    }
                 });
-
-                if (!resp.ok) {
-                    throw new Error("Network response was not ok");
-                }
-
-                const data = await resp.json();
-
-                console.log(data)
-
-                if (data.code == 0) {
-                    setTotalBales(data.message);
-                }
             } catch (error) {
                 console.log(error)
             }
@@ -149,13 +119,13 @@ export default function Header({
                     {time}
                 </div> {/* end time */}
                 <div className="realtive">
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)} w-full px-[10px] rounded-t-md text-white`}>
+                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type, "header")} w-full px-[10px] rounded-t-md text-white`}>
                         {username}
                     </div>
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)}_2 w-full px-[10px]`}>
+                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type, "header")}_2 w-full px-[10px]`}>
                         <span className="w-fit">{name} {surname}</span>
                     </div>
-                    <div className={`flex justify-end ${getBgColor(type)}_2 w-full p-[10px] rounded-b-md`}>
+                    <div className={`flex justify-end ${getBgColor(type, "header")}_2 w-full p-[10px] rounded-b-md`}>
                         <button
                         className="rounded-md bg-gray-300 px-[5px]"
                         onClick={logout}
