@@ -51,7 +51,7 @@ const ExportReport = ({ btnPressed }) => {
     const fetchReportData = async () => {
       try {
         // console.log('prova inside ExportReport');
-        const implant = (btnPressed == 'impianto-a') ? 2 : (btnPressed == 'impianto-b') ? 1 : 0;
+        const implant = (btnPressed == 'impianto-a') ? 1 : (btnPressed == 'impianto-b') ? 2 : 0;
         const url = getUrlReport();
         const resp = await fetch(url, {
           method: 'POST',
@@ -74,7 +74,9 @@ const ExportReport = ({ btnPressed }) => {
       }
     };
 
-    fetchReportData();
+    if (btnPressed) {
+      fetchReportData();
+    }
     
   }, [btnPressed]);
 
@@ -93,12 +95,12 @@ const ExportReport = ({ btnPressed }) => {
       { header: "IMPIANTO", key: "", width: 10 },
       { header: "CODICE", key: "desc", width: 10 },
       { header: "PRODOTTO", key: "code", width: 15 },
-      { header: "", key: "totale_peso", width: 15 },
-      { header: "", key: "totale_balle", width: 15 },
-      { header: "", key: "", width: 15 },
-      { header: "", key: "", width: 15 },
-      { header: "", key: "", width: 15 },
-      { header: "", key: "", width: 15 },
+      { header: "", key: "totale_peso_turno_1", width: 15 },
+      { header: "", key: "totale_balle_turno_1", width: 15 },
+      { header: "", key: "totale_peso_turno_2", width: 15 },
+      { header: "", key: "totale_balle_turno_2", width: 15 },
+      { header: "", key: "totale_peso_turno_3", width: 15 },
+      { header: "", key: "totale_balle_turno_3", width: 15 },
       { header: "", key: "", width: 15 },
       /*{ header: "KG", key: "weight", width: 15 },
       { header: "", key: "turn1", width: 15 },
@@ -146,62 +148,114 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getCell('J4').value = 'TOT.TURNO';
     worksheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'center' };
 
-    console.log("reportData:", reportData);
+    // console.log("reportData:", reportData);
 
-    const seenCodes = new Set();
+    const prova_array = new Array(); // All'interno i dati sono disposti correttmanete
 
     reportData.forEach((report, index) => {
-      console.log(`Report at index ${index}:`, report);
-      
       if (typeof report === 'object' && report !== null) {
-        console.log(`Items in report ${index}:`, report);
+        
         report.forEach((item, itemIndex) => {
-          console.log(`Item ${itemIndex}:`, item, item.code);
-
-          if (seenCodes.has(item.code)) {
-            return;  
+   
+          if (index === 0) {
+            prova_array[item.code] = { "codice": item.desc, "totale_balle_1": item.totale_balle, "totale_peso_1": item.totale_peso }
+          } else if (index === 1) {
+            Object.assign(prova_array[item.code], { 
+              "totale_balle_2": item.totale_balle, 
+              "totale_peso_2": item.totale_peso 
+            });
+          } else {
+            Object.assign(prova_array[item.code], { 
+              "totale_balle_3": item.totale_balle, 
+              "totale_peso_3": item.totale_peso 
+            });
           }
-          const row = worksheet.addRow({
-              desc: item.desc,
-              code: item.code,
-              totale_peso: item.totale_peso,
-              totale_balle: item.totale_balle,
-          });
-
-          seenCodes.add(item.code);
-
-          switch (reportType) {
-            case 'impianto-a': // GIOR. IMPIANTO A
-              worksheet.getCell(`A${row.number}`).value = 'A';
-              break;
-            case 'impianto-a-tempi': // GIOR. TEMPI IMP A
-              worksheet.getCell(`A${row.number}`).value = 'A';
-              break;
-            case 'impianto-b': // GIOR. IMPIANTO B
-              worksheet.getCell(`A${row.number}`).value = 'B';  
-              break;
-            case 'impianto-b-tempi': // GIOR. TEMPI IMP B
-              worksheet.getCell(`A${row.number}`).value = 'B';  
-              break;
-            case 'impianto-ab': // GIOR. IMPIANTO A e B
-              worksheet.getCell(`A${row.number}`).value = 'AB';
-              break;
-            case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
-              worksheet.getCell(`A${row.number}`).value = 'AB';
-              break;
-            default:
-              console.error('Unknown report type:', reportType);
-              return;
-          }
-
-          worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
-          worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
         });
+
+        // report.forEach((item, itemIndex) => {
+          // console.log(`Item ${itemIndex}:`, item, item.code);
+          
+
+           //var row = null;
+          // // var column_tmp = ['D', 'E'];
+
+          // if (seenCodes.has(item.code)) {
+          //   if (itemIndex === 1) {
+          //     row = worksheet.addRow({
+          //       totale_peso_turno_2: item.totale_peso ,
+          //       totale_balle_turno_2: item.totale_balle ,
+          //     });
+          //     // column_tmp = ['F', 'G'];
+          //   } else {
+          //     row = worksheet.addRow({
+          //       totale_peso_turno_3: item.totale_peso ,
+          //       totale_balle_turno_3: item.totale_balle,
+          //     });
+          //     // column_tmp = ['H', 'I'];
+          //   }
+          //   return;  
+          // } else {
+          //   row = worksheet.addRow({
+          //     desc: item.desc,
+          //     code: item.code,
+          //     totale_peso_turno_1: item.totale_peso,
+          //     totale_balle_turno_1: item.totale_balle || 0, 
+          //   });
+          //   seenCodes.add(item.code);
+          // }
+
+          //  switch (reportType) {
+          //    case 'impianto-a': // GIOR. IMPIANTO A
+          //      worksheet.getCell(`A${row.number}`).value = 'A';
+      
+          //      break;
+          //    case 'impianto-a-tempi': // GIOR. TEMPI IMP A
+          //      worksheet.getCell(`A${row.number}`).value = 'A';
+          //      break;
+          //    case 'impianto-b': // GIOR. IMPIANTO B
+          //      worksheet.getCell(`A${row.number}`).value = 'B';  
+          //      break;
+          //    case 'impianto-b-tempi': // GIOR. TEMPI IMP B
+          //      worksheet.getCell(`A${row.number}`).value = 'B';  
+          //      break;
+          //    case 'impianto-ab': // GIOR. IMPIANTO A e B
+          //      worksheet.getCell(`A${row.number}`).value = 'AB';
+          //      break;
+          //    case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
+          //      worksheet.getCell(`A${row.number}`).value = 'AB';
+          //      break;
+          //   default:
+          //     console.error('Unknown report type:', reportType);
+          //     return;
+          //  }
+
+          // worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
+          // worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
+          // Ogni volta che si esegue l'iterazione, imposta il valore per la colonna determinata dinamicamente
+          // worksheet.getCell(`${column_tmp[0]}${row.number}`).value = item.totale_peso || "Nullo";
+          // worksheet.getCell(`${column_tmp[1]}${row.number}`).value = item.totale_balle || "Nullo";
+        // });
       } else {
         console.error(`No items found or items is not an array in report ${index}`);
       }
 
     });
+
+    var row = null;
+    Object.keys(prova_array).forEach((index) => {
+      // console.log(index, index);
+      row = worksheet.addRow({  
+        desc: prova_array[index].codice,
+        code: index,
+        totale_peso_turno_1: prova_array[index].totale_peso_1,
+        totale_balle_turno_1: prova_array[index].totale_balle_1,
+        totale_peso_turno_2: prova_array[index].totale_peso_2,  
+        totale_balle_turno_2: prova_array[index].totale_balle_2,  
+        totale_peso_turno_3: prova_array[index].totale_peso_3,  
+        totale_balle_turno_3: prova_array[index].totale_balle_3,
+      });
+    });
+    // console.log(prova_array);
 
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
@@ -216,9 +270,9 @@ const ExportReport = ({ btnPressed }) => {
         break;
 
       case 'impianto-b': // GIOR. IMPIANTO B
-      worksheet.getCell('A1').value = 'IMPIANTO B - REPORT GIORNALIERO PER TURNI DEL';
-      worksheet.mergeCells('A1:E1');
-      worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
+        worksheet.getCell('A1').value = 'IMPIANTO B - REPORT GIORNALIERO PER TURNI DEL';
+        worksheet.mergeCells('A1:E1');
+        worksheet.getCell('A1').font = {  bold: true, name: 'Arial' }
         break;
 
       case 'impianto-b-tempi': // GIOR. TEMPI IMP B
@@ -366,6 +420,44 @@ const ExportReport = ({ btnPressed }) => {
       bottom: {style: 'thin'},
       right: {style: 'thin'}
     };
+
+    
+    const calculateTotals = () => {
+      let totalKg1 = 0;
+      let totalBalle1 = 0;
+      let totalKg2 = 0;
+      let totalBalle2 = 0;
+      let totalKg3 = 0;
+      let totalBalle3 = 0;
+    
+     
+      for (let row = 5; row <= 28; row++) {
+        const kg1 = worksheet.getCell(`D${row}`).value;
+        const balle1 = worksheet.getCell(`E${row}`).value;
+        const kg2 = worksheet.getCell(`F${row}`).value;
+        const balle2 = worksheet.getCell(`G${row}`).value;
+        const kg3 = worksheet.getCell(`H${row}`).value;
+        const balle3 = worksheet.getCell(`I${row}`).value;
+    
+        totalKg1 += (typeof kg1 === 'number' ? kg1 : parseFloat(kg1) || 0);
+        totalBalle1 += (typeof balle1 === 'number' ? balle1 : parseFloat(balle1) || 0);
+        totalKg2 += (typeof kg2 === 'number' ? kg2 : parseFloat(kg2) || 0);
+        totalBalle2 += (typeof balle2 === 'number' ? balle2 : parseFloat(balle2) || 0);
+        totalKg3 += (typeof kg3 === 'number' ? kg3 : parseFloat(kg3) || 0);
+        totalBalle3 += (typeof balle3 === 'number' ? balle3 : parseFloat(balle3) || 0);
+      }
+      
+      worksheet.getCell(`D${worksheet.rowCount}`).value = totalKg1;
+      worksheet.getCell(`E${worksheet.rowCount}`).value = totalBalle1;
+      worksheet.getCell(`F${worksheet.rowCount}`).value = totalKg2;
+      worksheet.getCell(`G${worksheet.rowCount}`).value = totalBalle2;
+      worksheet.getCell(`H${worksheet.rowCount}`).value = totalKg3;
+      worksheet.getCell(`I${worksheet.rowCount}`).value = totalBalle3;  
+    };
+    
+    calculateTotals();
+    
+
   
   
 
@@ -375,12 +467,13 @@ const ExportReport = ({ btnPressed }) => {
     });
   };
 
-
   useEffect(() => {
-    if (btnPressed) {
-      handleDownload(btnPressed);
+    if (reportData) {
+      handleDownload(btnPressed);  // Trigger the download once the reportData is available
     }
-  }, [btnPressed]);
+  }, [btnPressed]);  // This effect depends on reportData and btnPressed
+
+  
 };
 
 export default ExportReport;
