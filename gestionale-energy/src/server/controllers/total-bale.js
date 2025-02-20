@@ -1,24 +1,134 @@
-const Console = require('../inc/console')
-const Bale = require('./main/bale')
-const Common = require('./main/common')
+import Console from '../inc/console.js';
+import Common from './main/common.js';
 
-const axios = require('axios')
-
-const console = new Console("TotalBale")
+const console = new Console("TotalBale", 1);
 
 /**
+ * Total Bale data: get the data from presser and wheelman
  * 
+ * @author Andrea Storci from Oppimittinetworking
  */
 class TotalBale extends Common {
 
-    constructor(db, table, id) {
-        super(db, table, id)
-        // this.idPB = idPB;
-        // this.idWB = idWB;
-        // this.implant = implant;
-        this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}` 
-        // this.presserbale = new PresserBale(db)
+    constructor(db, table) {
+        super(db, table);
+        this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}`;
     }
+
+/// ------------------------------------------------------------------------------------------------------------
+/// Prova gestione Promise generata da Claude
+/// ------------------------------------------------------------------------------------------------------------
+    // async get(req, res) {
+    //     try {
+    //         const { id_implant } = req.body;
+    //         if (!id_implant) {
+    //             return res.status(400).json({ 
+    //                 code: 1, 
+    //                 message: "Missing id_implant parameter" 
+    //             });
+    //         }
+
+    //         const _params = this.checkConditionForTurn(id_implant);
+    //         const select = await this.fetchBaleData(_params);
+            
+    //         if (!select || select.length === 0) {
+    //             return res.json({ 
+    //                 code: 1, 
+    //                 message: "Nessuna balla trovata" 
+    //             });
+    //         }
+
+    //         const results = await this.processResults(select);
+            
+    //         return res.json({ 
+    //             code: 0, 
+    //             presser: results.presserResult, 
+    //             wheelman: results.wheelmanResult 
+    //         });
+    //     } catch (error) {
+    //         console.error('Queue processing error:', error);
+    //         return res.status(500).json({ 
+    //             code: 1, 
+    //             message: `Error processing request: ${error.message}` 
+    //         });
+    //     }
+    // }
+
+    // async fetchBaleData(_params) {
+    //     const [select] = await this.db.query(
+    //         `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status, ${this.table}.id 
+    //         FROM ${this.table} 
+    //         JOIN presser_bale 
+    //         JOIN wheelman_bale 
+    //         JOIN implants 
+    //         ON ${this.table}.id_pb = presser_bale.id 
+    //         AND ${this.table}.id_wb = wheelman_bale.id 
+    //         AND ${this.table}.id_implant = implants.id 
+    //         WHERE ${this.table}.id_implant = ? ${_params.condition} 
+    //         ORDER BY ${this.table}.status ASC, 
+    //         TIME(presser_bale.data_ins) DESC, 
+    //         TIME(wheelman_bale.data_ins) DESC 
+    //         LIMIT 100`,
+    //         _params.params
+    //     );
+    //     return select;
+    // }
+
+    // async fetchEntityData(endpoint, id) {
+    //     try {
+    //         const response = await fetch(`${this.internalUrl}/${endpoint}`, {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Accept': 'application/json'
+    //             },
+    //             body: JSON.stringify({ id })
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+
+    //         return await response.json();
+    //     } catch (error) {
+    //         console.error(`Error fetching ${endpoint} data:`, error);
+    //         throw error;
+    //     }
+    // }
+
+    // async processResults(select) {
+    //     const presserResult = [];
+    //     const wheelmanResult = [];
+
+    //     for (const item of select) {
+    //         try {
+    //             const [presserData, wheelmanData] = await Promise.all([
+    //                 this.fetchEntityData('presser', item.id_pb),
+    //                 this.fetchEntityData('wheelman', item.id_wb)
+    //             ]);
+
+    //             console.info("[Presser data]: ", presserData);
+    //             console.info("[Wheelman data]: ", wheelmanData);
+
+    //             presserData.status = item.status;
+    //             presserData.idUnique = item.id;
+    //             wheelmanData.status = item.status;
+    //             wheelmanData.idUnique = item.id;
+
+    //             presserResult.push(presserData);
+    //             wheelmanResult.push(wheelmanData);
+    //         } catch (error) {
+    //             console.error('Error processing item:', error);
+    //             continue;
+    //         }
+    //     }
+
+    //     return { presserResult, wheelmanResult };
+    // }    
+
+/// ------------------------------------------------------------------------------------------------------------
+/// FINE Prova gestione Promise generata da Claude
+/// ------------------------------------------------------------------------------------------------------------
 
     /**
      * Add Bale on DB
@@ -38,22 +148,23 @@ class TotalBale extends Common {
             var id_new_presser_bale = 0;
             var id_new_wheelman_bale = 0;
 
+            /// Fetch dei dati del pressista 
             const data_presser = await fetch(this.internalUrl + '/presser/set', { 
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ body: data.body })
-            })
-            .then(_res => _res.json())
-            .catch((_err) => console.error(_err));
-            id_new_presser_bale = data_presser.message.id_new_bale;
+            });
+            const data_presser_resolved = await data_presser.json();
+            id_new_presser_bale = data_presser_resolved.message.id_new_bale;
 
+            /// Fetch dei dati del carrellista
             const data_wheelman = await fetch(this.internalUrl + '/wheelman/set', { 
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ body: data.body })
             })
-            .then(_res => _res.json())
-            .catch((_err) => console.error(_err));
-            id_new_wheelman_bale = data_wheelman.message.id_new_bale;
+            const data_wheelman_resolved = await data_wheelman.json();
+            id_new_wheelman_bale = data_wheelman_resolved.message.id_new_bale;
 
             const check_ins_pbwb = await this.db.query(
                 `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status) VALUES(?, ?, ?, ?)`,
@@ -81,8 +192,6 @@ class TotalBale extends Common {
         try {
             const { body } = req.body;
 
-            // console.info("Entrato in updateStatusTotalBale")
-
             const san = this.checkParams(body, { scope: "update", table: this.table })
 
             const [check] = await this.db.query(san.query, san.params);
@@ -92,7 +201,6 @@ class TotalBale extends Common {
             } else {
                 res.json({ code: 1, message: "Errore nella modifica di una balla" });
             }
-
         } catch (error) {
             console.error(error);
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
@@ -109,74 +217,45 @@ class TotalBale extends Common {
     async get(req, res) {
         try {
             const { id_implant } = req.body;
-    
-            // console.info(`body received: ${id_implant}`)
-
             const presserResult = [];
             const wheelmanResult = [];
-
             const _params = super.checkConditionForTurn(id_implant);
 
             const [select] = await this.db.query(
-                `SELECT 
-                    ${this.table}.id_pb, 
-                    ${this.table}.id_wb, 
-                    ${this.table}.status,
-                    ${this.table}.id
-                FROM 
-                    ${this.table} 
-                JOIN 
-                    presser_bale 
-                JOIN 
-                    wheelman_bale 
-                JOIN 
-                    implants 
-                ON 
-                    ${this.table}.id_pb = presser_bale.id AND
-                    ${this.table}.id_wb = wheelman_bale.id AND
-                    ${this.table}.id_implant = implants.id
-                WHERE 
-                    ${this.table}.id_implant = ?
-                    ${_params.condition}
-                ORDER BY 
-                    ${this.table}.status ASC,
-                    TIME(presser_bale.data_ins) DESC, 
-                    TIME(wheelman_bale.data_ins) DESC 
-                LIMIT 100`,
+                `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status, ${this.table}.id FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants ON ${this.table}.id_pb = presser_bale.id AND ${this.table}.id_wb = wheelman_bale.id AND ${this.table}.id_implant = implants.id WHERE ${this.table}.id_implant = ? ${_params.condition} ORDER BY ${this.table}.status ASC, TIME(presser_bale.data_ins) DESC, TIME(wheelman_bale.data_ins) DESC LIMIT 100`,
                 _params.params
             );
 
             if (select !== 'undefined' || select !== null) {
-
                 for (const e of select) {
-
                     var id_presser = e.id_pb;
                     var id_wheelman = e.id_wb;
                     var status = e.status;
                     var id = e.id;
 
-                    const [res_presser] = await fetch(this.internalUrl + '/presser', { 
+                    /// Fetch dei dati del pressista
+                    const res_presser = await fetch(this.internalUrl + '/presser', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
-                    })
-                    .then(_res => _res.json())
-                    .catch(_err => console.error(_err));
-                    res_presser.status = status;
-                    res_presser.idUnique = id;
+                    });
+                    const data_presser = await res_presser.json();
+                    console.info(data_presser);
+                    data_presser.status = status;
+                    data_presser.idUnique = id;
 
-                    const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
+                    /// Fetch dei dati del carrellista
+                    const res_wheelman = await fetch(this.internalUrl + '/wheelman', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
-                    })
-                    .then(_res => _res.json())
-                    .catch((_err) => console.error(_err));
-                    res_wheelman.status = status;
-                    res_wheelman.idUnique = id;
+                    });
+                    const data_wheelman = await res_wheelman.json();
+                    data_wheelman.status = status;
+                    data_wheelman.idUnique = id;
 
-                    presserResult.push(res_presser);
-                    wheelmanResult.push(res_wheelman);
+                    presserResult.push(data_presser);
+                    wheelmanResult.push(data_wheelman);
                 };
             }
 
@@ -185,7 +264,6 @@ class TotalBale extends Common {
             } else {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
-            
         } catch (error) {
             console.error(error);
             res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
@@ -202,8 +280,6 @@ class TotalBale extends Common {
         try {
             const { id_implant } = req.body;
         
-            // console.info(`Filtrato dal ID Impianto: ${id_implant}`);
-        
             const [select] = await this.db.query(
                 `SELECT
                     ${this.table}.id_pb, ${this.table}.id_wb, 
@@ -218,7 +294,6 @@ class TotalBale extends Common {
             );
         
             if (select && select.length > 0) {
-                
                 const presserResult = [];
                 const wheelmanResult = [];
         
@@ -246,7 +321,6 @@ class TotalBale extends Common {
             } else {
                 res.json({ code: 1, message: "Nessuna Balla Trovata." });
             }
-        
         } catch (error) {
             console.error(error);
             res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
@@ -318,59 +392,48 @@ class TotalBale extends Common {
     async delete(req, res) {
         try {
             const {id_bale} = req.body;
-            
-            // console.info("ID ELIMINA ricevuti: " + id_bale)
 
             if (id_bale !== null && id_bale !== undefined) {
 
-                var query = `DELETE FROM ${this.table} WHERE `;
-
-                const allId = await this.getIdsBale(id_bale)
-                const id_pb = allId[0].id_pb
-                const id_wb = allId[0].id_wb
-
-                // console.info(allId)
+                const allId = await this.getIdsBale(id_bale);
+                const id_pb = allId[0].id_pb;
+                const id_wb = allId[0].id_wb;
 
                 const [check] = await this.db.query(
                     `DELETE FROM ${this.table} WHERE ${this.table}.id_pb=?`,
                     [id_bale]
-                )
-                // console.delete(check)
+                );
                 
                 if (check && check.affectedRows > 0) {
-                    // Check deletion of presser bale
+                    // Check delete of presser bale
                     const [check_dp] = await this.db.query(
                         "DELETE FROM presser_bale WHERE presser_bale.id=?",
                         [id_pb]
-                    )
-                    // console.delete(check_dp)
-    
-                    // Check deletion of wheelman bale
+                    );
+
+                    // Check delete of wheelman bale
                     const [check_dw] = await this.db.query(
                         "DELETE FROM wheelman_bale WHERE wheelman_bale.id=?",
                         [id_wb]
-                    )
-                    // console.delete(check_dw)
+                    );
 
-                    var message = `Balla numero ${id_bale} eliminata con successo!`
+                    var message = `Balla numero ${id_bale} eliminata con successo!`;
                     
                     if (check_dp.affectedRows === 0 || check_dw.affectedRows === 0)
-                        message += `\nBalla numero ${id_bale}`
+                        message += `\nBalla numero ${id_bale}`;
                     
-                    res.json({ cod: 0, message })
+                    res.json({ code: 0, message });
                 } else {
-                    res.json({ cod: -1, message: `Errore nell'eliminazione Balla numero ${id_bale}` })
+                    res.json({ code: -1, message: `Errore nell'eliminazione Balla numero ${id_bale}` });
                 }
             } else {
-                res.json({ code: -1, message: "Nessuna balla specificata" })
+                res.json({ code: -1, message: "Nessuna balla specificata" });
             }
-
-
         } catch (error) {
-            console.error(error)
-            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
+            console.error(error);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
 }
 
-module.exports = TotalBale
+export default TotalBale;

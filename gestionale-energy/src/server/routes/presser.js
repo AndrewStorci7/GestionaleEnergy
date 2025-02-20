@@ -1,12 +1,12 @@
-const express = require('express');
-const Controller = require('../controllers/presser');
+import express from 'express';
+import Controller from '../controllers/presser.js';
 
-module.exports = (db, table) => {
+export default (db, table) => {
     const router = express.Router();
     const controller = new Controller(db, table);
 
-    router.post('/presser', (req, res) => controller.get(req, res));
-    router.post('/upresserbale', (req, res) => controller.update(req, res));
+    router.post('/presser/get', (req, res) => controller.get(req, res));
+    router.post('/presser/update', (req, res) => controller.update(req, res));
     router.post('/presser/set', (req, res) => controller.set(req, res));
 
     return router;

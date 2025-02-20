@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import SelectInput from './search/select';
-import { getSrvUrl } from '@@/config';
+import { updateStatusTotalbale, getServerRoute } from '@@/config';
 import Alert from '@@/components/main/alert'
 import Cookies from 'js-cookie';
-
-const srvurl = getSrvUrl()
 
 /**
  * @author Andrea Storci from Oppimittinetworking.com
@@ -32,54 +30,50 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
 
     /*
     Dati da prelevare lato carrellista:
-    _idCwb --> Condizione balla carrellista
-    _idRnt --> Motivazione
-    weight --> Peso
-    _idWd  --> magazzino destinazione
+        _idCwb --> Condizione balla carrellista
+        _idRnt --> Motivazione
+        weight --> Peso
+        _idWd  --> magazzino destinazione
     */
     useEffect(() => {
         const fetchData = async () => {
             try {
                 if (type === 'presser') {
-                    const resp = await fetch(srvurl + "/presser", {
+                    const resp = await fetch(getServerRoute("presser"), {
                         method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ id: idBale })
-                    })
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ id: idBale })
+                    });
     
-                    const data = await resp.json()
+                    const data = await resp.json();
     
-                    console.log(data[0])
-    
-                    setPlastic(data[0].plastic)
-                    setRei(data[0]._idRei)
-                    setCdbp(data[0]._idCpb)
-                    setSelectedBale(data[0]._idSb)
-                    setNote(data[0].notes)
+                    setPlastic(data[0].plastic);
+                    setRei(data[0]._idRei);
+                    setCdbp(data[0]._idCpb);
+                    setSelectedBale(data[0]._idSb);
+                    setNote(data[0].notes);
                 } else {
-                    const resp = await fetch(srvurl + "/wheelman", {
+                    const resp = await fetch(getServerRoute("wheelman"), {
                         method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ id: idBale })
-                    })
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ id: idBale })
+                    });
     
-                    const data = await resp.json()
+                    const data = await resp.json();
     
-                    console.log(data[0])
-    
-                    setCdbc(data[0]._idCwb)
-                    setReason(data[0]._idRnt)
-                    setWeight(data[0].weight)
-                    setDestWh(data[0]._idWd)
-                    setNote(data[0].notes)
+                    setCdbc(data[0]._idCwb);
+                    setReason(data[0]._idRnt);
+                    setWeight(data[0].weight);
+                    setDestWh(data[0]._idWd);
+                    setNote(data[0].notes);
                 }
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
         }
 
-        fetchData()
-    }, [idBale])
+        fetchData();
+    }, [idBale]);
 
     /**
      * Handle Click function
@@ -89,52 +83,32 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
     const handleClick = (f) => {
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
-            let url = "";
-            let body = {};
-            if (f) {
-                url = srvurl + "/upresserbale";
-                body = {
-                    id_presser: cookie.id_user,
-                    id_plastic: plastic,
-                    id_rei: rei,
-                    id_cpb: cdbp,
-                    id_sb: selected_b,
-                    note: note,
-                    where: idBale,
-                }
-            } else { 
-                url = srvurl + "/uwheelmanbale";
-                body = {
-                    id_wheelman: cookie.id_user,
-                    id_cwb: cdbc,
-                    id_rnt: reason,
-                    id_wd: dest_wh,
-                    note: note,
-                    printed: false, // Da modificare
-                    weight: weight,
-                    where: idBale,
-                }
+            const body = {
+                id_presser: cookie.id_user,
+                id_plastic: plastic,
+                id_rei: rei,
+                id_cpb: cdbp,
+                id_sb: selected_b,
+                note: note,
+                where: idBale,
             }
 
             const body2 = { status: -1, where: idBale };
 
-            const resp = fetch(url, {
+            const resp = fetch(getServerRoute("update-presser-bale"), {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ body })
-            })
+            });
 
-            const resp2 = fetch(srvurl + "/update-status", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ body: body2 })
-            })
-            
-            handlerConfirm()
+            // Aggiorna lo stato della balla totale
+            updateStatusTotalbale(body2);
+            // Gestisco la conferma e ri-renderizzo la componente padre
+            handlerConfirm();
 
         } catch (error) {
             // <Alert msg={error} />
-            console.log("Errore", error)
+            console.log("Errore", error);
         }
     }
 
@@ -150,7 +124,7 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                             if (type === 'presser') {
                                 let code = e.target.selectedOptions[0].getAttribute("data-code");
                                 setPlastic(e.target.value); 
-                                setPlastic2(code);
+                                // setPlastic2(code);
                             } else {
                                 setCdbc(e.target.value)
                             }
@@ -232,7 +206,6 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                 onClick={() => { 
                     const check = type === 'presser'
                     handleClick(check);
-                    // handlerConfirm()
                 }}
                 >
                     OK

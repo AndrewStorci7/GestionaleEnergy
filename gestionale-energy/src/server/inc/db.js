@@ -1,8 +1,11 @@
 // Configuring .env file
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const mysql = require('mysql2');
-const Console = require('./console');
+// const mysql = require('mysql2');
+import mysql from 'mysql2';
+// const Console = require('./console');
+import Console from './console.js';
 
 const console = new Console("Database");
 
@@ -22,16 +25,16 @@ const pool = mysql.createPool({
 
 const originalQuery = pool.query.bind(pool);
 pool.query = (sql, params, callback) => {
-    // console.info(`\n[QUERY] ${sql}`);
-    // if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
+    console.info(`\n[QUERY] ${sql}`);
+    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
     return originalQuery(sql, params, callback);
 };
 
 const originalExecute = pool.execute.bind(pool);
 pool.execute = (sql, params, callback) => {
-    // console.info(`\n[EXECUTE] ${sql}`);
-    // if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
+    console.info(`\n[EXECUTE] ${sql}`);
+    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
     return originalExecute(sql, params, callback);
 };
 
-module.exports = pool.promise();
+export default pool.promise();

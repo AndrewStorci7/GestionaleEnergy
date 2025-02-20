@@ -26,27 +26,28 @@ import { useEffect, useState } from "react";
  */
 export default function Table({ type, implant, idUser }) {
 
+    // WebSocket instance
     const { ws, message } = useWebSocket();
-
-    // global message from the socket
-    // const [_message, setMessage] = useState("");
+    /// Common style
+    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
+    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
+    const _CMNSTYLE_TITLE = "text-3xl font-bold";
+    const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
+    const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
+    const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
+    const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
+    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
 
     const [selectedType, setSelectedType] = useState("general");
-    const [addWasClicked, setState] = useState(false)
-    const [ids, setResp] = useState([])
+    const [addWasClicked, setAddClick] = useState(false)
+    // const [ids, setResp] = useState([]);
     const [msgEmpty, setMsg] = useState("")
     const [isEmpty, setEmpty] = useState(false)
     const [isSelected, setSelected] = useState(null)
     const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
-
-    const closeInsertNewBaleComponent = () => {
-        setState(prev => !prev)
-    }
-
-    const addHandle = (resp) => {
-        console.log("Second Step ADD, calling 'addHandle()' on Table");
-        closeInsertNewBaleComponent()
-        // setResp(resp)
+    const add = { 
+        state: addWasClicked, 
+        setAdd: setAddClick 
     }
 
     const noData = (msg) =>  {
@@ -60,26 +61,15 @@ export default function Table({ type, implant, idUser }) {
 
     const handleSelect = (select) => {
         setSelected(select);
-        // console.log("IS SELECTED: " + isSelected)
     }
 
     const handleDownloadClick = (reportType) => {
         setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
     }
 
-    /// Common style
-    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
-    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
-    const _CMNSTYLE_TITLE = "text-3xl font-bold";
-    const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
-    const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
-    const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
-    const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
-    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
-
-    useEffect(() => {
-        console.log("Relaod from Table");
-    }, [message]);
+    // useEffect(() => {
+    //     console.log("Relaod from Table");
+    // }, [message]);
 
     switch (type) {
         case "admin": {
@@ -101,11 +91,7 @@ export default function Table({ type, implant, idUser }) {
                                 type={"presser"} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
-                                add={{ 
-                                    state: addWasClicked, 
-                                    setAdd: closeInsertNewBaleComponent 
-                                }} 
-                                // ids={ids} 
+                                add={add}  
                                 noData={noData} 
                                 primary 
                             />
@@ -113,14 +99,14 @@ export default function Table({ type, implant, idUser }) {
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}}  />
+                            <TableContent type={"wheelman"} add={add}  />
                         </table>
                     </div>
 
                     <BtnPresser 
                         implant={implant}
                         idUser={idUser}
-                        clickAddHandle={addHandle}
+                        clickAddHandle={setAddClick}
                         idSelect={isSelected}
                     />
 
@@ -145,10 +131,7 @@ export default function Table({ type, implant, idUser }) {
                                 type={"wheelman"} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
-                                add={{ 
-                                    state: addWasClicked, 
-                                    setAdd: closeInsertNewBaleComponent
-                                }} 
+                                add={add}
                                 // ids={ids} 
                                 noData={noData} 
                                 primary 
@@ -160,7 +143,7 @@ export default function Table({ type, implant, idUser }) {
                         </label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} />
-                            <TableContent type={"presser"} add={{ state: addWasClicked, setAdd: closeInsertNewBaleComponent}}  />
+                            <TableContent type={"presser"} add={add}  />
                         </table>
                     </div>
 

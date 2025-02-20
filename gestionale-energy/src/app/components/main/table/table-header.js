@@ -1,3 +1,5 @@
+import { getBgColor } from "@@/config";
+
 /**
  * 
  * @param {string}  type    [ 'presser' | 'wheelman' | 'both' | 'admin' ]
@@ -7,30 +9,12 @@
  * @returns 
  */
 export default function TableHeader({ type, primary = false }) {
-    
-    const getBgColor = (type) => {
-        switch (type) {
-            case 'admin':
-                return "bg-primary"
-            case 'presser':
-                return "bg-primary"
-            case 'wheelman':
-                return "bg-secondary"
-            case 'both':
-                return "bg-secondary"
-            default:
-                return "bg-primary"
-        }
-    }
 
     // const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
     const _CMNSTYLE_TD = "border border-slate-400";
     const _MAX_HEIGHT = "h-[50px]";
     const bg_style = (primary) ? getBgColor(type) : 'bg-thirdary opacity-50';
     const text_color = (primary) ? 'text-white' : 'text-black';
-    const left_fixed = (!primary) ? 'left-[50%]' : null;
-    const text = "";
-
 
     switch (type) {
         case 'presser': {

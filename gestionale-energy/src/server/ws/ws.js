@@ -1,6 +1,8 @@
-const Console = require('../inc/console')
-const WebSocket = require('ws')
-const md5 = require('md5')
+import Console from '../inc/console.js';
+// const WebSocket = require('ws')
+import WebSocket from 'ws';
+// const md5 = require('md5')
+import md5 from 'md5'; 
 
 const console = new Console("WebSocketApp");
 
@@ -55,4 +57,4 @@ class WebSocketApp {
 
 }
 
-module.exports = WebSocketApp
+export default WebSocketApp

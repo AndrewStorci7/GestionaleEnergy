@@ -1,25 +1,27 @@
-const express = require('express');
-const Controller = require('../controllers/total-bale');
+import express from 'express';
+import Controller from '../controllers/total-bale.js';
 
-module.exports = (db, table) => {
+export default (db, table) => {
     const router = express.Router();
     const controller = new Controller(db, table);
 
     // Add a new bale
-    router.post('/add-bale', (req, res) => controller.add(req, res));
+    router.post('/bale/add', (req, res) => controller.add(req, res));
 
     // Delete bale
-    router.post('/delete-bale', (req, res) => controller.delete(req, res));
+    router.post('/bale/delete', (req, res) => controller.delete(req, res));
 
-    router.post('/update-status', (req, res) => controller.updateStatusTotalBale(req, res));
+    // Update status of a bale
+    router.post('/bale/status/update', (req, res) => controller.updateStatusTotalBale(req, res));
+
     // Conteggio Balle Totali in tempo reale
-    router.post('/balle-totali', (req, res) => controller.balleTotali(req, res));
-    // Prendi Balla dal ID Impianto
-    router.post('/id-bale', (req,res) => controller.getByImplantId(req, res));
-    // TEST converisone stringhe
-    router.post('/injection', (req, res) => controller.prova(req, res));
+    router.post('/bale/total-count', (req, res) => controller.balleTotali(req, res));
 
-    router.post('/bale', (req, res) => controller.get(req, res));
+    // Get ID bale
+    router.post('/bale/id', (req,res) => controller.getByImplantId(req, res));
+    
+    // Get a bale
+    router.post('/bale/get', (req, res) => controller.get(req, res));
     
     return router;
 }

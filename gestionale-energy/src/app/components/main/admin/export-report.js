@@ -1,22 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { getSrvUrl } from '@@/config';
-import Cookies from 'js-cookie';
-
-const srvurl = getSrvUrl();
-
-const getUrl = () => {
-  return srvurl + '/bale';
-};
-
-const getUrlPlastic = () => {
-  return srvurl + '/plastic';  // Assuming '/plastic' endpoint returns the plastic types
-};
-
-
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -33,13 +20,10 @@ const getUrlPlastic = () => {
  */
 const ExportReport = ({ btnPressed }) => {
   
-  const [plasticData, setPlasticData] = useState([]);
+  // const [plasticData, setPlasticData] = useState([]);
   const [combinedData, setCombinedData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
-  const [plasticType, setPlasticType] = useState(null); // State for plastic type
-
-
-
+  // const [plasticType, setPlasticType] = useState(null); // State for plastic type
   
   useEffect(() => {
     const fetchReportData = async () => {
@@ -56,8 +40,6 @@ const ExportReport = ({ btnPressed }) => {
         });
 
         const data = await resp.json();
-
-        console.log(data)
 
         if (data.code === 0) {
           setCombinedData(data.data || []); 

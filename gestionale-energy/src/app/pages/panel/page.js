@@ -34,19 +34,6 @@ export default function Admin() {
     // const [ws, setWs] = useState(null);
     
     useEffect(() => {
-
-        // const _ws = new WebSocket(wsurl);
-
-        // _ws.onopen = () => {
-        //     console.log('Connected to the WebSocket server');
-        // };
-
-        // _ws.onmessage = (event) => {
-        //     console.log('Message from server:', event.data);
-        // };
-
-        // setWs(_ws);
-
         async function fetchData() {
             try {
 
@@ -59,21 +46,18 @@ export default function Admin() {
                     setUser(cookies.username);
                     setType(cookies.type);
                     setName(cookies.name);
-                    setSurname(cookies.surname);  
-                }else(CheckCookie())
+                    setSurname(cookies.surname);
+                }  
+                // } else if (CheckCookie()) {
+
+                // }
             } catch (error) {
-                //console.log(`Error: ${_err}`);
-                <Alert msg={error}/>
+                console.log(`Error: ${_err}`);
+                // <Alert msg={error}/>
             }
         }
 
         fetchData();
-
-        // if (_ws && _ws.readyState === WebSocket.OPEN) {
-        //     _ws.send(`User ${user} (${name} ${surname}) connected to the server`);
-        // }
-
-        // return () => _ws.close();
     }, []);
 
     return(

@@ -1,10 +1,7 @@
 'use client';
 
-import { getSrvUrl } from '@/app/config';
+import { getServerRoute } from '@@/config';
 import React, { useEffect, useState } from 'react'
-import Alert from './alert';
-
-const srvurl = getSrvUrl();
 
 /**
  * Select component that display the available implants
@@ -23,7 +20,7 @@ export default function SelectImplants({ onChange, ref }, props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resp = await fetch(srvurl + "/implants", {
+                const resp = await fetch(getServerRoute("implants"), {
                     method: 'GET',
                     headers: {'Content-Type': 'application/json'},
                 });

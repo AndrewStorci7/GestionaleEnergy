@@ -8,9 +8,15 @@ const _padEnd = 16;
 
 const _CMN_TEXT_ERROR = ""
 
+/**
+ * @param {number} level    { 
+ *      1 => Debug, 
+ *      2 => No Info, only errors 
+ * }
+ */
 class Console {
 
-    constructor(fileName, lvl = 1) {
+    constructor(fileName, lvl = 2) {
         this.location = fileName;
         this.level = lvl;
     }
@@ -97,20 +103,24 @@ class Console {
 
     /**
      * Dispaly Info
-     * @param {any} str 
+     * @param {any}     str 
+     * @param {string}  color
      */
-    info(str) {
-        var date = new Date()
-        var callerInfo = this.getCallerInfo();
-        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} ${'Info'.padEnd(3)} ${_reset}][${callerInfo}]: `;
-        let msg = "Generic Info"
-        if (str != "undefined" || str != null) {
-            if (typeof str === "object")
-                msg = `${this.safeStringify(str)}`;
-            else msg = `${str}`;
-        }
+    info(str, color = "") {
+        if (this.level !== 2) {
+            const fontColor = this.getColor(color);
+            const date = new Date()
+            const callerInfo = this.getCallerInfo();
+            const ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} ${'Info'.padEnd(3)} ${_reset}][${callerInfo}]: ${fontColor}`;
+            let msg = "Generic Info" + _reset;
+            if (str != "undefined" || str != null) {
+                if (typeof str === "object")
+                    msg = `${this.safeStringify(str)} ${_reset}`;
+                else msg = `${str} ${_reset}`;
+            }
 
-        console.log(ret + msg);
+            console.log(ret + msg);
+        }
     }
 
     /**
@@ -136,9 +146,9 @@ class Console {
      * @param {any} str
      */
     delete(str) {
-        var date = new Date()
-        var callerInfo = this.getCallerInfo();
-        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'Delete'.padEnd(3)} ${_reset}][${callerInfo}]: `;
+        const date = new Date()
+        const callerInfo = this.getCallerInfo();
+        const ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'Delete'.padEnd(3)} ${_reset}][${callerInfo}]: `;
         let msg = `${_blue}Delete Info${_reset}: `
         if (str != "undefined" || str != null || str != "") {
             if (typeof str === "object")
@@ -149,6 +159,28 @@ class Console {
         console.log(ret + msg);
     }
 
+    /**
+     * Get color for text
+     * @param {string} color
+     * @return {string}
+     */
+    getColor(color = "") {
+        switch (color) {
+            case "blue" || "blu":
+                return _blue;
+            case "red" || "rosso":
+                return _red;
+            case "yellow" || "giallo":
+                return _yellow;
+            case "cyan" || "ciano":
+                return _cyan;
+            case "green" || "verde":
+                return _green;
+            default:
+                return _blue;
+        }
+    }
+
     /// TODO
     /// Create a funztion that colorize string [QUERY] and [PARAMS]
     // databaseQuery(str) {
@@ -157,4 +189,4 @@ class Console {
 
 }
 
-module.exports = Console
+export default Console

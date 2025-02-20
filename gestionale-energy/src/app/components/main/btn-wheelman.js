@@ -1,10 +1,7 @@
 'use client'
-
 import Alert from '@@/components/main/alert';
-import { getSrvUrl } from '@@/config';
+import { getServerRoute } from '@@/config';
 import React, { useEffect, useState } from "react";
-
-const srvurl = getSrvUrl()
 
 /**
  * Button for wheelman
@@ -36,27 +33,27 @@ export default function BtnWheelman({
 
     useEffect(() => {
         setIdBale(idSelect)
-    }, [idSelect])
+    }, [idSelect]);
 
     const handleUpdate = async (id) => {
         const f_id = (typeof id === 'object') ? id[0] : id;
-        setIdBale(f_id)
-        handleAlert("", 'update-w')
+        setIdBale(f_id);
+        handleAlert("", 'update-w');
     }
 
     const handleClick = (f) => {
         // Check if idSelect is not null and has a length property
         if (idSelect !== null && idSelect) {
-            handleUpdate(idSelect)
+            handleUpdate(idSelect);
         } else {
-            handleAlert("Nessuna balla selezionata!")
+            handleAlert("Nessuna balla selezionata!");
         }
     }
     
 
     const [showAlert, setShowAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-    const [scope, setScope] = useState("")
+    const [scope, setScope] = useState("");
 
     /**
      * Handle the error when no bale is selected
@@ -64,7 +61,7 @@ export default function BtnWheelman({
      * @param {string} msg Message to display
      */
     const handleAlert = (msg, scope = "error") => {
-        setScope(scope)
+        setScope(scope);
         setErrorMessage(msg);
         setShowAlert(prev => !prev);
     };
@@ -72,9 +69,9 @@ export default function BtnWheelman({
     // Funzione per chiudere l'alert
     const closeAlert = () => {
         setShowAlert(prev => !prev);
-    };
+    }
 
-    const handleStampa = async (msg="I dati sono stati stampati correttamente", scope = "confirmed") => {
+    const handleStampa = async (msg = "I dati sono stati stampati correttamente", scope = "confirmed") => {
         if (idSelect !== null && idSelect) {
             try {
 
@@ -82,14 +79,14 @@ export default function BtnWheelman({
                 const body2 = { status: 1, where: idSelect }; // Body per l'update dello stato della balla totale
 
                 // Invia la richiesta per aggiornare lo stato della balla
-                const response = await fetch(srvurl + '/uwheelmanbale', {
+                const response = await fetch(getServerRoute("update-wheelman-bale"), {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ body }),
                 });
 
                 // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
-                const response2 = await fetch(srvurl + '/update-status', {
+                const response2 = await fetch(getServerRoute("update-status-bale"), {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ body: body2 }),

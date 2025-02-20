@@ -1,5 +1,5 @@
-const Common = require('./main/common');
-const Console = require('../inc/console');
+import Common from './main/common.js';;
+import Console from '../inc/console.js';;
 
 const console = new Console("Cdn Bale Wheelman");
 
@@ -11,9 +11,8 @@ const console = new Console("Cdn Bale Wheelman");
  */
 class Cdbc extends Common {
     
-    constructor(db, id, name) {
-        super(db, id);
-        this.name = name;
+    constructor(db, table) {
+        super(db, table);
     }
 
     /**
@@ -29,10 +28,10 @@ class Cdbc extends Common {
             );
     
             if (select && select.length > 0) {
-                // console.info(select)
-                res.json({ code: 0, data: select })
+                console.info(select);
+                res.json({ code: 0, data: select });
             } else {
-                res.json({ code: 1, message: "No data fetched" })
+                res.json({ code: 1, message: "No data fetched" });
             }
         } catch (error) {
             console.error(error)
@@ -51,4 +50,4 @@ class Cdbc extends Common {
     }
 }
 
-module.exports = Cdbc
+export default Cdbc

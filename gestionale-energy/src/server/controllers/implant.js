@@ -1,5 +1,5 @@
-const Common = require('./main/common');
-const Console = require('../inc/console');
+import Common from './main/common.js';;
+import Console from '../inc/console.js';;
 
 const console = new Console("Implant");
 
@@ -11,9 +11,8 @@ const console = new Console("Implant");
  */
 class Implant extends Common {
     
-    constructor(db, id, name) {
-        super(db, id);
-        this.name = name;
+    constructor(db, table) {
+        super(db, table);
     }
 
     /**
@@ -51,4 +50,4 @@ class Implant extends Common {
     }
 }
 
-module.exports = Implant
+export default Implant

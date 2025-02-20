@@ -1,7 +1,5 @@
-import { getSrvUrl } from "@/app/config";
+import { getServerRoute } from "@/app/config";
 import { useEffect, useState } from "react";
-
-const srvurl = getSrvUrl()
 
 /**
  * 
@@ -43,33 +41,13 @@ export default function SelectInput({
     // Risposta ottenuta dal server
     const [content, setContent] = useState([]);
 
-    const getUrl = (searchFor) => {
-        switch (searchFor) {
-            case "status":
-                return -1;
-            case "plastic":
-                return srvurl + "/plastic";
-            case "cdbc":
-                return srvurl + "/cdbc";
-            case "cdbp":
-                return srvurl + "/cdbp";
-            case "dest-wh":
-                return srvurl + "/dest-wh";
-            case "rei":
-                return srvurl + "/rei";
-            case "selected-b":
-                return srvurl + "/selected-b";
-            case "implants":
-                return  srvurl + "/implants";
-            case "reason":
-                return srvurl + "/reason";
-        }
-    }
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = getUrl(searchFor);
+                if (searchFor === undefined || searchFor === null)
+                    return;
+
+                const url = getServerRoute(searchFor);
 
                 if (url != -1) {
                     const resp = await fetch(url, {
@@ -83,11 +61,8 @@ export default function SelectInput({
         
                     const data = await resp.json();
         
-                    if (data.code === 0) {
-                        setContent(data.data);
-                    } else {
-                        setError(data.message);
-                    }
+                    if (data.code === 0) setContent(data.data);
+                    else setError(data.message);
                 } else {
                     setContent(["In lavorazione", "Cambiato", "Completato"]);
                 }
@@ -97,7 +72,7 @@ export default function SelectInput({
         }
 
         fetchData();
-    }, [searchFor, value, onChange]);
+    }, [searchFor]);
 
     return (
         <select

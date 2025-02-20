@@ -1,7 +1,7 @@
-const Bale = require('./main/bale')
-const Console = require('../inc/console');
+import Bale from './main/bale.js';
+import Console from '../inc/console.js';
 
-const console = new Console("Presser");
+const console = new Console("Presser", 1);
 
 /**
  * 
@@ -12,35 +12,14 @@ const console = new Console("Presser");
  */
 class PresserBale extends Bale {
 
-    constructor(db, table, id, idUser, plastic, rei, cpb, sb, note, datetime = "") {
-        super(db, table, id, datetime);
-        this.idUser = idUser;
-        this.plastic = plastic;
-        this.rei = rei;
-        this.cpb = cpb;
-        this.sb = sb;
-        this.note = note;
-    }
-
-    get info() {
-        return { 
-            id: this.id, 
-            idUser: this.idUser, 
-            plastic: this.plastic, 
-            rei: this.rei, 
-            cpb: this.cpb, 
-            sb: this.sb,
-            note: this.note,
-            datetime: this.datetime
-        }
+    constructor(db, table) {
+        super(db, table);
     }
 
     handlePresserData = async (req) => {
         
-        const {id} = req;
-        
-        // console.info(`Data received: ${id}`)
-
+        const {id} = req.body;
+        // console.info(`Data received: ${id}`, "yellow");
         const [rows] = await this.db.query(
             `SELECT 
                 ${this.table}.id AS 'id', 
@@ -71,19 +50,18 @@ class PresserBale extends Bale {
                 ${this.table}.id_sb = selected_bale.id
             WHERE 
                 ${this.table}.id = ? LIMIT 1`,
-            [id]
+            id
         );
     
-        // console.info(rows)
+        console.info(rows);
 
         if (rows && rows.length > 0) {
-            // console.info(rows)
-            return rows;
+            return rows[0];
         } else {
             console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
             return { code: 1, message: "Nessuna balla trovata" };
         }
-    };
+    }
 
     /**
      * Get a single bale
@@ -93,18 +71,18 @@ class PresserBale extends Bale {
      */
     async get(req, res) {
         try {
-            const data = await this.handlePresserData(req.body);
+            const data = await this.handlePresserData(req);
             
-            // console.info(data) // test
+            console.info(data); // test
     
-            if (data.code !== 0) {
-                res.json(data)
-            } else {
-                res.json({ code: 0, data: data.rows })
+            if (data.code !== 0) { // Nel caso in cui non ottengo dati
+                res.json(data);
+            } else { // in caso contrario, invio i dati
+                res.json({ code: 0, data: data.rows });
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
         }
     }
 
@@ -119,7 +97,7 @@ class PresserBale extends Bale {
             const { body } = req.body;
             const arr_body = Object.values(body);
 
-            // console.info(body);
+            console.info(body);
 
             const check_ins_pb = await this.db.query(
                 `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
@@ -127,14 +105,14 @@ class PresserBale extends Bale {
                 arr_body,
             );
 
-            // console.info(check_ins_pb[0]);
+            console.info(check_ins_pb[0]);
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
-                res.json({ code: 0, message: { id_new_bale }});
+                res.json({ code: 0, message: { id_new_bale } });
             } else {
                 const info = check_ins_pb[0].info;
-                res.json({ code: 1, message: { info }});
+                res.json({ code: 1, message: { info } });
             }
         } catch (error) {
             console.error(error);
@@ -152,7 +130,7 @@ class PresserBale extends Bale {
         try {
             const {body} = req.body;
             
-            // console.info("[Update]: ", body)
+            console.info("[Update]: ", body);
 
             const san = this.checkParams(body, {scope: "update", table: this.table})
             
@@ -185,4 +163,4 @@ class PresserBale extends Bale {
 
 }
 
-module.exports = PresserBale
+export default PresserBale

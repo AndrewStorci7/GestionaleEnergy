@@ -1,13 +1,17 @@
-const express = require('express');
-const Controller = require('../controllers/report');
+import express from 'express';
+import Controller from '../controllers/report.js';
 
-module.exports = (db, table) => {
+export default (db, table) => {
     const router = express.Router();
     const controller = new Controller(db, table);
 
-    router.post('/report', (req, res) => controller.reportGiornaliero(req, res));
-    router.post('/tot-balle', (req, res) => controller.balleTotaliComplessive(req, res));
-    router.post('/contatori', (req, res) => controller.reportContatori(req, res));
+    router.post('/report/daily', (req, res) => controller.reportGiornaliero(req, res));
+    
+    router.post('/report/total-bale', (req, res) => controller.balleTotaliComplessive(req, res));
+
+    router.post('/report/contatori', (req, res) => controller.reportContatori(req, res));
+
+    router.post('/report/dynamic', (req, res) => controller.reportDinamico(req, res));
 
     return router;
 }

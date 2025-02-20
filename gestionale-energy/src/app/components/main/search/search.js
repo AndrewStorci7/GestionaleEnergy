@@ -45,9 +45,7 @@ export default function SearchInput({ type }) {
     }
 
     useEffect(() => {
-        console.log("Tipo from props: ", type)
         setData(type)
-        console.log(bg_color, label_title[0], searchFor[0])
     }, [type])
 
     return(

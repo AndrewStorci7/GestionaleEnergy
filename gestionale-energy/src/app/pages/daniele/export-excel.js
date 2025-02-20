@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { getSrvUrl } from '@@/config';
+import { getServerRoute } from '@@/config';
 import Cookies from 'js-cookie';
-
-const srvurl = getSrvUrl();
-
-const getUrl = () => {
-    return srvurl + '/bale'
-};
 
 const ExportExcel = ({ combinedData }) => {
   const handleExport = async () => {
@@ -70,7 +64,7 @@ const UserComponent = () => {
       try {
         const cookies = await JSON.parse(Cookies.get('user-info'));
         const id_implant = cookies.id_implant;
-        const url = getUrl();
+        const url = getServerRoute("bale");
         
         const resp = await fetch(url, {
           method: 'POST',
@@ -83,7 +77,6 @@ const UserComponent = () => {
         }
 
         const data = await resp.json();
-        console.log(data);
 
         if (data.code === 0) {
           const presserData = data.presser || [];

@@ -20,8 +20,8 @@ export default function MainContent({ type, implant, idUser, ...props}) {
     const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
     const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center"
 
-    const [isEmpty, setEmpty] = useState(false)
-    const [msgEmpty, setMsg] = useState("")
+    const [isEmpty, setEmpty] = useState(false);
+    const [msgEmpty, setMsg] = useState("");
 
     const noData = (msg) =>  {
         setEmpty(!isEmpty)

@@ -2,12 +2,10 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getEnv, getSrvUrl } from "@/app/config";
+import { getEnv, getBgColor, getServerRoute } from "@/app/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
-
-const srvurl = getSrvUrl();
 
 /**
  * 
@@ -32,52 +30,25 @@ export default function Header({
     const [totalbales, setTotalBales] = useState(0);
 
     /**
-     * Get Background Color
-     * 
-     * @param {string} type 
-     * @returns 
-     */
-    const getBgColor = (type) => {
-        switch (type) {
-            case 'admin':
-                return "bg-primary"
-            case 'presser':
-                return "bg-primary"
-            case 'wheelman':
-                return "bg-secondary"
-            case 'both':
-                return "bg-thirdary_1"
-            default:
-                return "bg-primary"
-        }
-    }
-
-    /**
      * Logout handler
      * 
      * Remove the setted Cookie 'user-info'
      */
     const logout = () => {
         Cookies.remove('user-info', { path: '/', domain: getEnv('NEXT_PUBLIC_APP_DOMAIN') })
-        router.push('/pages/login')
+        router.push('/pages/login');
     }
 
-    const getUrl = () => {
-        return srvurl + '/balle-totali';
-    } 
     /**
      * Update the time every second
      */
     useEffect(() => {
-        // body = {
-          //   implant: implant
-         //}
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
-                const url = getUrl();
+                const url = getServerRoute("total-bale-count");
                 const implant = cookies.id_implant;
-
+                
                 const resp = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -89,8 +60,6 @@ export default function Header({
                 }
 
                 const data = await resp.json();
-
-                console.log(data)
 
                 if (data.code == 0) {
                     setTotalBales(data.message);

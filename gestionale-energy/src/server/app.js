@@ -5,42 +5,47 @@
  */
 
 // Configuring .env file
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const express = require('express');
-const cors = require('cors');
-const db = require('./inc/db');
-const WebSocket = require('ws');
+import express from 'express';
+import cors from 'cors';
+import db from './inc/db.js';
+import WebSocket, { WebSocketServer } from 'ws';
+import WebSocketApp from './ws/ws.js';
+import { createServer } from 'http';
 
-const presserRoute = require('./routes/presser');
-const wheelmanRoute = require('./routes/wheelman');
-const totalBaleRoute = require('./routes/total-bale');
-const plasticRoute = require('./routes/plastic');
-const cdbpRoute = require('./routes/cdbp');
-const cdbcRoute = require('./routes/cdbc');
-const warehouseRoute = require('./routes/warehouse');
-const reiRoute = require('./routes/rei');
-const selectedBaleRoute = require('./routes/selected-bale');
-const reasonRouter = require('./routes/reason');
-const implantRouter = require('./routes/implant');
-const loginRouter = require('./routes/loginroutes');
-const reportRouter = require('./routes/report');
-const WebSocketApp = require('./ws/ws');
+import presserRoute from './routes/presser.js';
+import wheelmanRoute from './routes/wheelman.js';
+import totalBaleRoute from './routes/total-bale.js';
+import plasticRoute from './routes/plastic.js';
+import cdbpRoute from './routes/cdbp.js';
+import cdbcRoute from './routes/cdbc.js';
+import warehouseRoute from './routes/warehouse.js';
+import reiRoute from './routes/rei.js';
+import selectedBaleRoute from './routes/selected-bale.js';
+import reasonRouter from './routes/reason.js';
+import implantRouter from './routes/implant.js';
+import loginRouter from './routes/loginroutes.js';
+import reportRouter from './routes/report.js';
 
+// Istanza app Express 
 const app = express();
 const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS_DEV;
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
-const server = require('http').createServer(app);
-const wss = new WebSocket.Server({ server });
+
+// Middleware per fare il parse in JSON
+app.use(express.json());
+// Accetta CORS
+app.use(cors());
+
+// Istanza Server Web Socket
+const server = createServer(app);
+const wss = new WebSocketServer({ server });
 const wsa = new WebSocketApp(wss);
 
 wsa.onConnection();
-
-// Middleware to parse in JSON
-app.use(express.json());
-// Allow CORS
-app.use(cors());
 
 app.use(loginRouter(db));
 
