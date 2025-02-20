@@ -243,16 +243,16 @@ const ExportReport = ({ btnPressed }) => {
 
     var row = null;
     Object.keys(prova_array).forEach((index) => {
-      // console.log(index, index);
+      console.log(prova_array[index], typeof prova_array[index].totale_peso_1, prova_array[index].totale_peso_1);
       row = worksheet.addRow({  
         desc: prova_array[index].codice,
         code: index,
-        totale_peso_turno_1: prova_array[index].totale_peso_1,
-        totale_balle_turno_1: prova_array[index].totale_balle_1,
-        totale_peso_turno_2: prova_array[index].totale_peso_2,  
-        totale_balle_turno_2: prova_array[index].totale_balle_2,  
-        totale_peso_turno_3: prova_array[index].totale_peso_3,  
-        totale_balle_turno_3: prova_array[index].totale_balle_3,
+        totale_peso_turno_1: Number(prova_array[index].totale_peso_1),
+        totale_balle_turno_1: Number(prova_array[index].totale_balle_1),
+        totale_peso_turno_2: Number(prova_array[index].totale_peso_2),  
+        totale_balle_turno_2: Number(prova_array[index].totale_balle_2),  
+        totale_peso_turno_3: Number(prova_array[index].totale_peso_3),  
+        totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
       });
     });
     // console.log(prova_array);
@@ -421,45 +421,18 @@ const ExportReport = ({ btnPressed }) => {
       right: {style: 'thin'}
     };
 
-    
     const calculateTotals = () => {
-      let totalKg1 = 0;
-      let totalBalle1 = 0;
-      let totalKg2 = 0;
-      let totalBalle2 = 0;
-      let totalKg3 = 0;
-      let totalBalle3 = 0;
-    
-     
-      for (let row = 5; row <= 28; row++) {
-        const kg1 = worksheet.getCell(`D${row}`).value;
-        const balle1 = worksheet.getCell(`E${row}`).value;
-        const kg2 = worksheet.getCell(`F${row}`).value;
-        const balle2 = worksheet.getCell(`G${row}`).value;
-        const kg3 = worksheet.getCell(`H${row}`).value;
-        const balle3 = worksheet.getCell(`I${row}`).value;
-    
-        totalKg1 += (typeof kg1 === 'number' ? kg1 : parseFloat(kg1) || 0);
-        totalBalle1 += (typeof balle1 === 'number' ? balle1 : parseFloat(balle1) || 0);
-        totalKg2 += (typeof kg2 === 'number' ? kg2 : parseFloat(kg2) || 0);
-        totalBalle2 += (typeof balle2 === 'number' ? balle2 : parseFloat(balle2) || 0);
-        totalKg3 += (typeof kg3 === 'number' ? kg3 : parseFloat(kg3) || 0);
-        totalBalle3 += (typeof balle3 === 'number' ? balle3 : parseFloat(balle3) || 0);
-      }
-      
-      worksheet.getCell(`D${worksheet.rowCount}`).value = totalKg1;
-      worksheet.getCell(`E${worksheet.rowCount}`).value = totalBalle1;
-      worksheet.getCell(`F${worksheet.rowCount}`).value = totalKg2;
-      worksheet.getCell(`G${worksheet.rowCount}`).value = totalBalle2;
-      worksheet.getCell(`H${worksheet.rowCount}`).value = totalKg3;
-      worksheet.getCell(`I${worksheet.rowCount}`).value = totalBalle3;  
+      worksheet.getCell(`D${worksheet.rowCount}`).value = { formula: `SUM(D5:D28)` };
+      worksheet.getCell(`E${worksheet.rowCount}`).value = { formula: `SUM(E5:E28)` };
+      worksheet.getCell(`F${worksheet.rowCount}`).value = { formula: `SUM(F5:F28)` };
+      worksheet.getCell(`G${worksheet.rowCount}`).value = { formula: `SUM(G5:G28)` };
+      worksheet.getCell(`H${worksheet.rowCount}`).value = { formula: `SUM(H5:H28)` };
+      worksheet.getCell(`I${worksheet.rowCount}`).value = { formula: `SUM(I5:I28)` };
     };
     
     calculateTotals();
     
-
-  
-  
+    
 
     workbook.xlsx.writeBuffer().then((buffer) => {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
