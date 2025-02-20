@@ -7,6 +7,7 @@ import InsertNewBale from '../insert-new-bale';
 import Alert from '../alert';
 
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
+import { refreshPage } from '@/app/config';
 
 const srvurl = getSrvUrl()
 
@@ -108,12 +109,7 @@ export default function TableContent({
     } 
 
     const handleAddChange = async () => {
-        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-            const message = JSON.stringify({ type: "reload", data: "___update___" });
-            await ws.current.send(message);
-        } else {
-            console.log('WebSocket is not connected');
-        }
+        refreshPage(ws);
         add.setAdd();
         // setChangeFromAdd(prev => !prev);
     } 

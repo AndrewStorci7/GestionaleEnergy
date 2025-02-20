@@ -56,4 +56,23 @@ const getWsUrl = () => {
     return wsurl
 }
 
-export { getEnv, getSrvUrl, getWsUrl };
+/**
+ * Reload Server through Websocket
+ * 
+ * @param {object} ws WebSocket istance
+ */
+const refreshPage = (ws) => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        const message = JSON.stringify({ type: "reload", data: "___update___" })
+        ws.current.send(message);
+    } else {
+        console.log('WebSocket is not connected');
+    }
+};
+
+export { 
+    getEnv, 
+    getSrvUrl, 
+    getWsUrl,
+    refreshPage 
+};
