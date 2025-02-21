@@ -1,7 +1,7 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';;
 
-const console = new Console("Wheelman", 1);
+const console = new Console("Wheelman");
 
 /**
  * 
@@ -101,10 +101,10 @@ class WheelmanBale extends Bale {
             
             console.info(data) // test
             
-            if (data.code === 1) { // Nel caso in cui non ottengo dati
+            if (data.code !== 0) { // Nel caso in cui non ottengo dati
                 res.json(data);
             } else { // in caso contrario, invio i dati
-                res.json({ code: 0, data: data.rows })
+                res.json({ code: 0, data: data });
             }
         } catch (error) {
             console.error(error);

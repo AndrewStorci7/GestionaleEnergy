@@ -144,6 +144,10 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
+            if (data === null) {
+                res.status(500).send("Non sono stati ricevuti i dati: body vuoto");
+            }
+
             const id_implant = data.implant;
             var id_new_presser_bale = 0;
             var id_new_wheelman_bale = 0;
@@ -178,7 +182,7 @@ class TotalBale extends Common {
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
         }
     }
 
@@ -215,8 +219,14 @@ class TotalBale extends Common {
      * @param {object} res
      */
     async get(req, res) {
+        
+        console.info("Get Total bale called", "yellow");
+
         try {
             const { id_implant } = req.body;
+
+            // console.info(id_implant); // test
+
             const presserResult = [];
             const wheelmanResult = [];
             const _params = super.checkConditionForTurn(id_implant);
@@ -252,6 +262,9 @@ class TotalBale extends Common {
             );
 
             if (select !== 'undefined' || select !== null) {
+
+                // console.info(select); // test
+
                 for (const e of select) {
                     var id_presser = e.id_pb;
                     var id_wheelman = e.id_wb;
@@ -259,23 +272,24 @@ class TotalBale extends Common {
                     var id = e.id;
 
                     /// Fetch dei dati del pressista
-                    const res_presser = await fetch(this.internalUrl + '/presser', { 
+                    const res_presser = await fetch(this.internalUrl + '/presser/get', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
                     });
                     const data_presser = await res_presser.json();
-                    console.info(data_presser);
+                    // console.info(data_presser);
                     data_presser.status = status;
                     data_presser.idUnique = id;
 
                     /// Fetch dei dati del carrellista
-                    const res_wheelman = await fetch(this.internalUrl + '/wheelman', { 
+                    const res_wheelman = await fetch(this.internalUrl + '/wheelman/get', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
                     });
                     const data_wheelman = await res_wheelman.json();
+                    // console.info(data_wheelman);
                     data_wheelman.status = status;
                     data_wheelman.idUnique = id;
 
@@ -326,13 +340,13 @@ class TotalBale extends Common {
                     var id_presser = e.id_pb;
                     var id_wheelman = e.id_wb;
         
-                    const [res_presser] = await fetch(this.internalUrl + '/presser', { 
+                    const [res_presser] = await fetch(this.internalUrl + '/presser/get', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_presser })
                     }).then(res => res.json());
         
-                    const [res_wheelman] = await fetch(this.internalUrl + '/wheelman', { 
+                    const [res_wheelman] = await fetch(this.internalUrl + '/wheelman/get', { 
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: id_wheelman })
