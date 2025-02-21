@@ -22,14 +22,7 @@ class Report extends Common {
      */
     async reportGiornaliero(req, res) {
         try {
-<<<<<<< HEAD
             const { implant } = req.body;
-=======
-
-            const { implant } = req.body;
-            // const implant = body.implant;
->>>>>>> dev/selezione-balla
-            console.info(implant);
 
             const data = new Array(3);
 
