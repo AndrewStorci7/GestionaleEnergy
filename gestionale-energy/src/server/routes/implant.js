@@ -6,6 +6,7 @@ module.exports = (db, table) => {
     const controller = new Controller(db, table);
 
     router.get('/implants', (req, res) => controller.get(req, res));
-
+    router.get('/implants/id', (req, res) => controller.getById(req, res));
+    
     return router;
 }

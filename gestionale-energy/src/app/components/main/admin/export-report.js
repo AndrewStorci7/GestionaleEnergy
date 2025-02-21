@@ -12,6 +12,9 @@ const getUrlReport = () => {
   return srvurl + '/report';
 };
 
+const getUrlImplant = () => {
+  return srvurl + '/implants'
+}
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
@@ -32,38 +35,32 @@ const ExportReport = ({ btnPressed }) => {
   const [isEmpty, setEmpty] = useState(false);
 
   useEffect(() => {
-    
-    // const setImplantDataFetch = async () => {
-    //   switch (btnPressed) {
-    //     case 'impianto-a':
-    //       setImplantData({ id_implant: 2, letter: 'A' });
-    //       break;
-    //     case 'impianto-b':
-    //       setImplantData({ id_implant: 1, letter: 'B' });
-    //       break;
-    //     default:
-    //       setImplantData({ id_implant: 2, letter: 'A' });
-    //       break;
-    //   }
-    // }
-    // setImplantDataFetch();
-
     const fetchReportData = async () => {
       try {
         // console.log('prova inside ExportReport');
         const implant = (btnPressed == 'impianto-a') ? 1 : (btnPressed == 'impianto-b') ? 2 : 0;
         const url = getUrlReport();
+        const urlImplant = getUrlImplant();
+
+        {/*const respImp = await fetch(urlImplant, {
+          method: 'GET',
+          headers: {'Content-Type': 'application/json'}
+        })*/}
+
         const resp = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ implant })
         });
 
+        //const dataImp = await respImp.json();
         const data = await resp.json();
         console.log(data);
+        //console.log(dataImp);
 
         if (data.code === 0) {
           setReportData(data.data || null); // Set report data or null
+          
           setEmpty(false); // Reset empty state
         } else {
           setEmpty(true); // Set empty state if no data is returned
@@ -88,7 +85,7 @@ const ExportReport = ({ btnPressed }) => {
     }
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Report');
+    const worksheet = workbook.addWorksheet('IMPIANTO');
 
     // Define columns
     worksheet.columns = [
@@ -102,10 +99,7 @@ const ExportReport = ({ btnPressed }) => {
       { header: "", key: "totale_peso_turno_3", width: 15 },
       { header: "", key: "totale_balle_turno_3", width: 15 },
       { header: "", key: "", width: 15 },
-      /*{ header: "KG", key: "weight", width: 15 },
-      { header: "", key: "turn1", width: 15 },
-      { header: "", key: "turn2", width: 15
-      { header: "", key: "turn3", width: 15 }*/
+      
     ];
 
     worksheet.getCell('A1').border = {
@@ -171,70 +165,6 @@ const ExportReport = ({ btnPressed }) => {
             });
           }
         });
-
-        // report.forEach((item, itemIndex) => {
-          // console.log(`Item ${itemIndex}:`, item, item.code);
-          
-
-           //var row = null;
-          // // var column_tmp = ['D', 'E'];
-
-          // if (seenCodes.has(item.code)) {
-          //   if (itemIndex === 1) {
-          //     row = worksheet.addRow({
-          //       totale_peso_turno_2: item.totale_peso ,
-          //       totale_balle_turno_2: item.totale_balle ,
-          //     });
-          //     // column_tmp = ['F', 'G'];
-          //   } else {
-          //     row = worksheet.addRow({
-          //       totale_peso_turno_3: item.totale_peso ,
-          //       totale_balle_turno_3: item.totale_balle,
-          //     });
-          //     // column_tmp = ['H', 'I'];
-          //   }
-          //   return;  
-          // } else {
-          //   row = worksheet.addRow({
-          //     desc: item.desc,
-          //     code: item.code,
-          //     totale_peso_turno_1: item.totale_peso,
-          //     totale_balle_turno_1: item.totale_balle || 0, 
-          //   });
-          //   seenCodes.add(item.code);
-          // }
-
-          //  switch (reportType) {
-          //    case 'impianto-a': // GIOR. IMPIANTO A
-          //      worksheet.getCell(`A${row.number}`).value = 'A';
-      
-          //      break;
-          //    case 'impianto-a-tempi': // GIOR. TEMPI IMP A
-          //      worksheet.getCell(`A${row.number}`).value = 'A';
-          //      break;
-          //    case 'impianto-b': // GIOR. IMPIANTO B
-          //      worksheet.getCell(`A${row.number}`).value = 'B';  
-          //      break;
-          //    case 'impianto-b-tempi': // GIOR. TEMPI IMP B
-          //      worksheet.getCell(`A${row.number}`).value = 'B';  
-          //      break;
-          //    case 'impianto-ab': // GIOR. IMPIANTO A e B
-          //      worksheet.getCell(`A${row.number}`).value = 'AB';
-          //      break;
-          //    case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
-          //      worksheet.getCell(`A${row.number}`).value = 'AB';
-          //      break;
-          //   default:
-          //     console.error('Unknown report type:', reportType);
-          //     return;
-          //  }
-
-          // worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
-          // worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
-          // Ogni volta che si esegue l'iterazione, imposta il valore per la colonna determinata dinamicamente
-          // worksheet.getCell(`${column_tmp[0]}${row.number}`).value = item.totale_peso || "Nullo";
-          // worksheet.getCell(`${column_tmp[1]}${row.number}`).value = item.totale_balle || "Nullo";
-        // });
       } else {
         console.error(`No items found or items is not an array in report ${index}`);
       }
@@ -255,6 +185,30 @@ const ExportReport = ({ btnPressed }) => {
         totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
       });
     });
+    
+    switch (reportType) {
+      case 'impianto-a': // GIOR. IMPIANTO A
+        worksheet.getCell(`A${row.number}`).value = 'A';
+        break;
+      case 'impianto-a-tempi': // GIOR. TEMPI IMP A
+        worksheet.getCell(`A${row.number}`).value = 'A';
+        break;
+      case 'impianto-b': // GIOR. IMPIANTO B
+        worksheet.getCell(`A${row.number}`).value = 'B';  
+        break;
+      case 'impianto-b-tempi': // GIOR. TEMPI IMP B
+        worksheet.getCell(`A${row.number}`).value = 'B';  
+        break;
+      case 'impianto-ab': // GIOR. IMPIANTO A e B
+        worksheet.getCell(`A${row.number}`).value = 'AB';
+        break;
+      case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
+        worksheet.getCell(`A${row.number}`).value = 'AB';
+        break;
+      default:
+        console.error('Unknown report type:', reportType);
+        return;
+    }
     // console.log(prova_array);
 
     switch (reportType) {
