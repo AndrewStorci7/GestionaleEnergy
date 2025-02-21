@@ -47,9 +47,19 @@ export default function Alert({
     window.location.reload();
   };
   
+  const handleConfirm = () => {
+    try {
+      closeAlert();
+      refreshPage(ws);
+    } catch (error) {
+      alertFor = "error";
+      msg = error;
+    }
+  }
+
   useEffect(() => {
     setSanitize(alertFor.startsWith('update') ? 'update' : alertFor)
-  }, [alertFor])
+  }, [alertFor]);
   
   switch(sanitize_alertFor) {
     case "error": {
@@ -71,7 +81,7 @@ export default function Alert({
           }}> 
             <p>Errore: {msg}</p>
             <button
-            onClick={closeAlert}
+            onClick={() => closeAlert()}
             style={{
               padding: "5px 10px",
               backgroundColor: "darkred",
@@ -108,7 +118,7 @@ export default function Alert({
             }}> 
               <p>{msg}</p>
               <button
-              onClick={closeAlert}
+              onClick={() => closeAlert()}
               style={{
                 padding: "5px 10px",
                 backgroundColor: "orange",
@@ -147,10 +157,7 @@ export default function Alert({
             > 
               <p>{msg ? msg : "I dati sono stati inseriti correttamente!"}</p>
               <button
-              onClick={() => {
-                closeAlert();
-                refreshPage(ws);
-              }}
+              onClick={() => handleConfirm()}
               style={{
                 padding: "5px 10px",
                 backgroundColor: "seagreen",
@@ -189,12 +196,9 @@ export default function Alert({
             }}
             > 
               <UpdateValuesBale 
-              type={(alertFor === "update-p") ? "presser" : "wheelman"}
-              idBale={idBale}
-              handlerConfirm={() => {
-                closeAlert();
-                refreshPage(ws);
-              }}
+                type={(alertFor === "update-p") ? "presser" : "wheelman"}
+                idBale={idBale}
+                handlerConfirm={() => handleConfirm()}
               />
             </div>
           </div>

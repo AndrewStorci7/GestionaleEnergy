@@ -84,11 +84,26 @@ const getBgColor = (type, scope = "header") => {
  * @param {object} ws WebSocket istance
  */
 const refreshPage = (ws) => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+    if (isWebSocketConnected(ws)) {
         const message = JSON.stringify({ type: "reload", data: "___update___" })
         ws.current.send(message);
     } else {
-        console.log('WebSocket is not connected');
+        // console.log('WebSocket is not connected');
+        throw new Error("Websocket non connesso");
+    }
+}
+
+/**
+ * Check if the websocket is connected
+ * 
+ * @param {object} ws WebSocket instance
+ * @returns True id the websocket is connected
+ */
+const isWebSocketConnected = (ws) => {
+    if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -118,42 +133,66 @@ const getServerRoute = (route) => {
         case "dest-wh": return getSrvUrl() + "/dest-wh/get";
         case "rei": return getSrvUrl() + "/rei/get";
         case "selected-b": return getSrvUrl() + "/selected-b/get";
-        case "implants": return  getSrvUrl() + "/implants/get";
+        case "implants": return getSrvUrl() + "/implants/get";
         case "reason": return getSrvUrl() + "/reason/get";
         
         //////////////////////////////////////////////////////
         // Rotte per la balla totale
-        case "bale" || "balla": return getSrvUrl() + "/bale/get";
-        case "aggiungi-balla" || "add-bale": return getSrvUrl() + "/bale/add";
-        case "rimuovi-balla" || "delete-bale": return getSrvUrl() + "/bale/delete";
-        case "aggiorna-stato-balla" || "update-status-bale": return getSrvUrl() + "/bale/status/update";
-        case ("totale-balle" || "total-bale-count"): return getSrvUrl() + "/bale/total-count";
-        case "id-balla" || "id-bale": return getSrvUrl() + "/bale/id";
+        case "bale":
+        case "balla": 
+            return getSrvUrl() + "/bale/get";
+        case "aggiungi-balla":
+        case "add-bale": 
+            return getSrvUrl() + "/bale/add";
+        case "rimuovi-balla": 
+        case "delete-bale": 
+            return getSrvUrl() + "/bale/delete";
+        case "aggiorna-stato-balla": 
+        case "update-status-bale": 
+            return getSrvUrl() + "/bale/status/update";
+        case "totale-balle": 
+        case "total-bale-count": 
+            return getSrvUrl() + "/bale/total-count";
+        case "id-balla": 
+        case "id-bale": 
+            return getSrvUrl() + "/bale/id";
         
         //////////////////////////////////////////////////////
         // Rotte per la gestione dei dati della balla lato PRESSISTA
-        case "pressista" || "presser": return getSrvUrl() + "/presser/get";
-        case "aggiungi-balla-pressista" || "add-presser-bale": return getSrvUrl() + "/presser/set"; // non ancora sviluppata
-        // case "rimuovi-balla-pressista" || "delete-presser-bale": return getSrvUrl() + "/presser/delete"; // non ancora sviluppata
-        case "aggiorna-balla-pressista" || "update-presser-bale": return getSrvUrl() + "/presser/update";
+        case "pressista":
+        case "presser": 
+            return getSrvUrl() + "/presser/get";
+        case "aggiungi-balla-pressista": 
+        case "add-presser-bale": 
+            return getSrvUrl() + "/presser/set"; // non ancora sviluppata
+        // case "rimuovi-balla-pressista": case "delete-presser-bale": return getSrvUrl() + "/presser/delete"; // non ancora sviluppata
+        case "aggiorna-balla-pressista": 
+        case "update-presser-bale": 
+            return getSrvUrl() + "/presser/update";
         
         //////////////////////////////////////////////////////
         // Rotte per la gestione dei dati della balla lato CARRELLISTA
-        case "carrellista" || "wheelman": return getSrvUrl() + "/wheelman/get";
-        case "aggiungi-balla-carrellista" || "add-wheelman-bale": return getSrvUrl() + "/wheelman/set"; // non ancora sviluppata
+        case "carrellista": 
+        case "wheelman": 
+            return getSrvUrl() + "/wheelman/get";
+        case "aggiungi-balla-carrellista": 
+        case "add-wheelman-bale": 
+            return getSrvUrl() + "/wheelman/set"; // non ancora sviluppata
         // case "rimuovi-balla-carrellista" || "delete-wheelman-bale": return getSrvUrl() + "/wheelman/delete"; // non ancora sviluppata
-        case "aggiorna-balla-carrellista" || "update-wheelman-bale": return getSrvUrl() + "/wheelman/update";
+        case "aggiorna-balla-carrellista": 
+        case "update-wheelman-bale": 
+            return getSrvUrl() + "/wheelman/update";
 
         // //////////////////////////////////////////////////////
         // // Rotte per la gestione dei dati di ogni inserimento, eliomina, modifica di qualsiasi balla
         // // si potranno ottenere tutti i vari contatori delle balle inserite per tipo di plastica,
         // // tipo reimballaggio, ecc...
-        // case "bale" || "balla": return getSrvUrl() + "/bale/get";
-        // case "aggiungi-balla" || "add-bale": return getSrvUrl() + "/bale/add";
-        // case "rimuovi-balla" || "delete-bale": return getSrvUrl() + "/bale/delete";
-        // case "aggiorna-stato-balla" || "update-status-bale": return getSrvUrl() + "/bale/status/update";
-        // case "totale-balle" || "total-bale-count": return getSrvUrl() + "/bale/total-count";
-        // case "id-balla" || "id-bale": return getSrvUrl() + "/bale/id";
+        // case "bale": case "balla": return getSrvUrl() + "/bale/get";
+        // case "aggiungi-balla": case "add-bale": return getSrvUrl() + "/bale/add";
+        // case "rimuovi-balla": case "delete-bale": return getSrvUrl() + "/bale/delete";
+        // case "aggiorna-stato-balla": case "update-status-bale": return getSrvUrl() + "/bale/status/update";
+        // case "totale-balle": case "total-bale-count": return getSrvUrl() + "/bale/total-count";
+        // case "id-balla": case "id-bale": return getSrvUrl() + "/bale/id";
     }
 }
 
@@ -162,12 +201,12 @@ const getServerRoute = (route) => {
  * @param {string} url 
  * @param {object} body 
  */
-const updateStatusTotalbale = (body, method = 'POST', url = getServerRoute("update-status-bale")) => {
+const updateStatusTotalbale = async (body, method = 'POST', url = getServerRoute("update-status-bale")) => {
     try {
         if (body === undefined || body === null)
             throw new Error("Empty body passed");
 
-        const resp2 = fetch(url, {
+        const resp2 = await fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ body })
@@ -183,6 +222,7 @@ export {
     getWsUrl, 
     getBgColor,
     refreshPage,
+    isWebSocketConnected,
     getServerRoute,
     updateStatusTotalbale
 };

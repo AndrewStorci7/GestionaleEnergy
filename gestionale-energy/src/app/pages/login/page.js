@@ -41,8 +41,8 @@ export default function LoginPage() {
             let crypted_pw = md5(md5(password));
 
             try {
-                
-                const resp = await fetch(getServerRoute("login"), {
+                const url = await getServerRoute("login");
+                const resp = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({username, password: crypted_pw}),

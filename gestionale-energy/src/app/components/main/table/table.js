@@ -50,6 +50,10 @@ export default function Table({ type, implant, idUser }) {
         setAdd: setAddClick 
     }
 
+    const handleAddPressed = () => {
+        setAddClick(prev => !prev);
+    }
+
     const noData = (msg) =>  {
         setEmpty(prev => !prev);
         setMsg(msg);
@@ -92,7 +96,7 @@ export default function Table({ type, implant, idUser }) {
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
                                 add={add}  
-                                noData={noData} 
+                                noData={() => noData()} 
                                 primary 
                             />
                         </table>
@@ -106,7 +110,7 @@ export default function Table({ type, implant, idUser }) {
                     <BtnPresser 
                         implant={implant}
                         idUser={idUser}
-                        clickAddHandle={setAddClick}
+                        clickAddHandle={() => handleAddPressed()}
                         idSelect={isSelected}
                     />
 

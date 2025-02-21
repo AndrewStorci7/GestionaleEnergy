@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { getWsUrl } from '@/app/config';
-// import { WebSocket } from 'ws';
 
-const wsurl = getWsUrl();
-console.log(wsurl)
+const wsurl = await getWsUrl();
 const WebSocketContext = createContext();
 
 /**
@@ -16,17 +14,14 @@ const WebSocketContext = createContext();
 export const WebSocketProvider = ({ user, children }) => {
 
     const ws = useRef(null);
-    // const [ws, setWs] = useState(null)
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
         ws.current = new WebSocket(wsurl);
-        // const websocket = new WebSocket(wsurl)
 
         ws.current.onopen = () => {
             console.log('WebSocket connection opened');
             ws.current.send(JSON.stringify({ type: "new-conncetion", data: user }));
-            // ws.current.send({ type: 'username', data: user });
         };
 
         ws.current.onmessage = (event) => {
@@ -37,8 +32,6 @@ export const WebSocketProvider = ({ user, children }) => {
         ws.current.onclose = () => {
             console.log('WebSocket connection closed');
         };
-
-        // setWs(websocket)
 
         return () => ws.current.close();
     }, [user]);

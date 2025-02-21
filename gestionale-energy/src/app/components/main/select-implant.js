@@ -20,7 +20,8 @@ export default function SelectImplants({ onChange, ref }, props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resp = await fetch(getServerRoute("implants"), {
+                const url = await getServerRoute("implants");
+                const resp = await fetch(url, {
                     method: 'GET',
                     headers: {'Content-Type': 'application/json'},
                 });

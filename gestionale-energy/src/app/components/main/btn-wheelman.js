@@ -77,16 +77,18 @@ export default function BtnWheelman({
 
                 const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
                 const body2 = { status: 1, where: idSelect }; // Body per l'update dello stato della balla totale
+                const url_update_wheelman = await getServerRoute("update-wheelman-bale");
+                const url_update_status = await getServerRoute("update-status-bale");
 
                 // Invia la richiesta per aggiornare lo stato della balla
-                const response = await fetch(getServerRoute("update-wheelman-bale"), {
+                const response = await fetch(url_update_wheelman, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ body }),
                 });
 
                 // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
-                const response2 = await fetch(getServerRoute("update-status-bale"), {
+                const response2 = await fetch(url_update_status, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ body: body2 }),

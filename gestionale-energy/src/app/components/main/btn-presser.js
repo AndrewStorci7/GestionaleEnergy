@@ -1,10 +1,7 @@
 'use client'
-
 import Alert from '@@/components/main/alert';
-import { getSrvUrl } from '@@/config';
+import { getServerRoute } from '@@/config';
 import React, { useEffect, useState } from "react";
-
-const srvurl = getSrvUrl()
 
 /**
  * Custom component for adding, updating or erase a bale 
@@ -50,7 +47,8 @@ export default function BtnPresser({
         try {
             const f_id = (typeof id === 'object') ? id[0] : id;
 
-            const check = await fetch(srvurl + '/delete-bale', {
+            const url = await getServerRoute('delete-bale');
+            const check = await fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_bale: f_id }),

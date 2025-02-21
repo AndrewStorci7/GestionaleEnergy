@@ -95,6 +95,7 @@ export default function TableContent({
                 }
 
                 const data = await resp.json();
+                console.log(data);
 
                 if (data.code === 0) {
                     if (type === "presser")

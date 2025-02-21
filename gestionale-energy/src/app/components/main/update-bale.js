@@ -39,7 +39,8 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
         const fetchData = async () => {
             try {
                 if (type === 'presser') {
-                    const resp = await fetch(getServerRoute("presser"), {
+                    const url = await getServerRoute("presser");
+                    const resp = await fetch(url, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: idBale })
@@ -53,7 +54,8 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                     setSelectedBale(data[0]._idSb);
                     setNote(data[0].notes);
                 } else {
-                    const resp = await fetch(getServerRoute("wheelman"), {
+                    const url = await getServerRoute("wheelman");
+                    const resp = await fetch(url, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ id: idBale })
@@ -80,7 +82,7 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
      * 
      * @param {boolean} f 
      */
-    const handleClick = (f) => {
+    const handleClick = async () => {
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
             const body = {
@@ -94,15 +96,15 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
             }
 
             const body2 = { status: -1, where: idBale };
-
-            const resp = fetch(getServerRoute("update-presser-bale"), {
+            const url = await getServerRoute("update-presser-bale");
+            const resp = await fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ body })
             });
 
             // Aggiorna lo stato della balla totale
-            updateStatusTotalbale(body2);
+            await updateStatusTotalbale(body2);
             // Gestisco la conferma e ri-renderizzo la componente padre
             handlerConfirm();
 
@@ -203,10 +205,7 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                 </button>
                 <button 
                 className='border bg-blue-400 col-span-2'
-                onClick={() => { 
-                    const check = type === 'presser'
-                    handleClick(check);
-                }}
+                onClick={() => handleClick()}
                 >
                     OK
                 </button>

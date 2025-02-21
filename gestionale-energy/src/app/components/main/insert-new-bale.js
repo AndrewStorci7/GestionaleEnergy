@@ -1,14 +1,13 @@
 'use-client';
-
-import { getSrvUrl } from '@/app/config'
-import React, { useState } from 'react'
-import CheckButton from "./select-button"
+import { getServerRoute, refreshPage, isWebSocketConnected } from '@/app/config';
+import React, { useState } from 'react';
+import CheckButton from "./select-button";
 import Icon from './get-icon';
-import SelectInput from './search/select'
+import SelectInput from './search/select';
 import Cookies from 'js-cookie';
 import Alert from './alert';
 
-const srvurl = getSrvUrl();
+import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 
 /**
  * Compoent used only by type 'presser' and 'wheelman'
@@ -37,6 +36,8 @@ export default function InsertNewBale({
     visible = false
 }) {
 
+    const { ws, message } = useWebSocket();
+
     const _CMNSTYLE_TD = "on-table-td";
 
     // Dati Pressista
@@ -64,14 +65,19 @@ export default function InsertNewBale({
      * 
      * @param {boolean} f 
      */
-    const handleClick = (f) => {
+    const handleClick = async () => {
         try {
+            if (!isWebSocketConnected(ws))
+                console.error("WebSocket is not connected");
+
             const cookie = JSON.parse(Cookies.get('user-info'));
-            // const url = srvurl + "/upresserbale";
+
             if (!plastic || plastic === null || plastic == "undefined" || plastic == "")
                 console.log("Plastica non selezionata"); 
 
-            const url = srvurl + "/add-bale";
+            const url = await getServerRoute("add-bale");
+
+            console.log(url);
             const implant = cookie.id_implant;
             const body = {
                 id_presser: cookie.id_user,
@@ -82,7 +88,7 @@ export default function InsertNewBale({
                 note: note,
             };
 
-            const resp = fetch(url, {
+            const resp = await fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ data: { implant, body } })
@@ -90,17 +96,21 @@ export default function InsertNewBale({
 
             if (!resp.ok) {
                 // console.error(resp.json)
+                console.log("error occurred while adding a new bale")
+            } else {
+                confirmHandle();
+                refreshPage(ws);
             }
 
         } catch (error) {
             // TOFIX
             // <Alert msg={error} />
-            console.error(error);
+            console.log(error);
         }
     };
 
     const handleConfirmed = () =>{
-        confirmHandle()
+        
         setShowConfirm(prev => !prev);
     };
 
@@ -190,7 +200,7 @@ export default function InsertNewBale({
                             >
                                 OK
                             </button>
-                            {showConfirm && <Alert alertFor="confirmed" handleClose={handleConfirmed} />}
+                            {/* showConfirm && <Alert alertFor="confirmed" handleClose={() => handleConfirmed()} /> */}
                         </td>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>

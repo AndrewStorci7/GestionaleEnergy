@@ -8,10 +8,8 @@ import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
 import Alert from "@/app/components/main/alert";
 import CheckCookie from "@/app/components/main/check-cookie";
-import { getWsUrl } from "@/app/config";
-import { WebSocketProvider } from '@@/components/main/ws/use-web-socket';
 
-const wsurl = getWsUrl();
+import { WebSocketProvider } from '@@/components/main/ws/use-web-socket';
 
 export default function Admin() {
 
@@ -52,7 +50,7 @@ export default function Admin() {
 
                 // }
             } catch (error) {
-                console.log(`Error: ${_err}`);
+                console.log(`Error: ${error}`);
                 // <Alert msg={error}/>
             }
         }

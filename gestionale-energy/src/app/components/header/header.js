@@ -46,7 +46,7 @@ export default function Header({
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
-                const url = getServerRoute("total-bale-count");
+                const url = await getServerRoute("total-bale-count");
                 const implant = cookies.id_implant;
                 
                 const resp = await fetch(url, {

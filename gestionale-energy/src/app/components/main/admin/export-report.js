@@ -4,7 +4,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { getSrvUrl } from '@@/config';
 
-const srvurl = getSrvUrl();
+const srvurl = await getSrvUrl();
 
 const getUrlReport = () => {
   return srvurl + '/report';

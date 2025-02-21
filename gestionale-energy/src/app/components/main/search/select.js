@@ -47,7 +47,7 @@ export default function SelectInput({
                 if (searchFor === undefined || searchFor === null)
                     return;
 
-                const url = getServerRoute(searchFor);
+                const url = await getServerRoute(searchFor);
 
                 if (url != -1) {
                     const resp = await fetch(url, {

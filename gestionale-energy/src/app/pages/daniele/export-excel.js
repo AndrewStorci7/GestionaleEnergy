@@ -64,7 +64,7 @@ const UserComponent = () => {
       try {
         const cookies = await JSON.parse(Cookies.get('user-info'));
         const id_implant = cookies.id_implant;
-        const url = getServerRoute("bale");
+        const url = await getServerRoute("bale");
         
         const resp = await fetch(url, {
           method: 'POST',
