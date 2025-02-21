@@ -139,8 +139,9 @@ class TotalBale extends Common {
                 WHERE 
                     ${this.table}.id_implant = ?
                     ${_params.condition}
+                    AND pb_wb.status != 1
                 ORDER BY 
-                    ${this.table}.status ASC,
+                    ${this.table}.id DESC,
                     TIME(presser_bale.data_ins) DESC, 
                     TIME(wheelman_bale.data_ins) DESC 
                 LIMIT 100`,
