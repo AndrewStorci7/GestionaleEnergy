@@ -22,7 +22,13 @@ class Report extends Common {
      */
     async reportGiornaliero(req, res) {
         try {
+<<<<<<< HEAD
             const { implant } = req.body;
+=======
+
+            const { implant } = req.body;
+            // const implant = body.implant;
+>>>>>>> dev/selezione-balla
             console.info(implant);
 
             const data = new Array(3);
@@ -34,6 +40,8 @@ class Report extends Common {
                 const [select] = await this.db.query(
                     `SELECT 
                         code_plastic.code, 
+                        code_plastic.desc,
+                        
                         SUM(wheelman_bale.weight) AS "totale_peso",
                         COUNT(pb_wb.id_pb) AS "totale_balle"
                     FROM 

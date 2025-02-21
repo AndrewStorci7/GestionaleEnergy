@@ -222,7 +222,32 @@ class TotalBale extends Common {
             const _params = super.checkConditionForTurn(id_implant);
 
             const [select] = await this.db.query(
-                `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status, ${this.table}.id FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants ON ${this.table}.id_pb = presser_bale.id AND ${this.table}.id_wb = wheelman_bale.id AND ${this.table}.id_implant = implants.id WHERE ${this.table}.id_implant = ? ${_params.condition} ORDER BY ${this.table}.status ASC, TIME(presser_bale.data_ins) DESC, TIME(wheelman_bale.data_ins) DESC LIMIT 100`,
+                `SELECT 
+                    ${this.table}.id_pb, 
+                    ${this.table}.id_wb, 
+                    ${this.table}.status,
+                    ${this.table}.id
+                FROM 
+                    ${this.table} 
+                JOIN 
+                    presser_bale 
+                JOIN 
+                    wheelman_bale 
+                JOIN 
+                    implants 
+                ON 
+                    ${this.table}.id_pb = presser_bale.id AND
+                    ${this.table}.id_wb = wheelman_bale.id AND
+                    ${this.table}.id_implant = implants.id
+                WHERE 
+                    ${this.table}.id_implant = ?
+                    ${_params.condition}
+                    AND pb_wb.status != 1
+                ORDER BY 
+                    ${this.table}.id DESC,
+                    TIME(presser_bale.data_ins) DESC, 
+                    TIME(wheelman_bale.data_ins) DESC 
+                LIMIT 100`,
                 _params.params
             );
 
