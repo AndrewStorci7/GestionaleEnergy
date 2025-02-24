@@ -98,6 +98,7 @@ export default function TableContent({
                 console.log(data);
 
                 if (data.code === 0) {
+                    setEmpty(false);
                     if (type === "presser")
                         setContent(data.presser);
                     else if (type === "wheelman")
@@ -105,7 +106,8 @@ export default function TableContent({
                     else
                         setContent([]);
                 } else {
-                    setEmpty(prev => !prev);
+                    // setEmpty(prev => !prev);
+                    setEmpty(true);
                     if (noData) noData(data.message);
                 }
             } catch (error) {

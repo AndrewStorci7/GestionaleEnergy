@@ -220,7 +220,7 @@ class TotalBale extends Common {
      */
     async get(req, res) {
         
-        console.info("Get Total bale called", "yellow");
+        // console.info("Get Total bale called", "yellow");
 
         try {
             const { id_implant } = req.body;

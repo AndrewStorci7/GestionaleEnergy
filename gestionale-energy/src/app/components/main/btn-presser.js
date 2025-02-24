@@ -28,15 +28,18 @@ export default function BtnPresser({
     clickAddHandle
 }) {
 
-    const [idBale, setIdBale] = useState(0)
+    const [idBale, setIdBale] = useState(0);
+    const [showAlert, setShowAlert] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [scope, setScope] = useState('');
 
     useEffect(() => {
-        setIdBale(idSelect)
-    }, [idSelect])
+        setIdBale(idSelect);
+    }, [idSelect]);
 
     const addNewBale = () => {
         try {
-            console.log("First step ADD, calling 'clickAddHandle()'");
+            // console.log("First step ADD, calling 'clickAddHandle()'");
             clickAddHandle();
         } catch (error) {
             handleAlert(error);
@@ -52,39 +55,35 @@ export default function BtnPresser({
                 method: 'POST',
                 headers: {'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_bale: f_id }),
-            })
+            });
     
-            const resp = await check.json()
+            const resp = await check.json();
     
             if (resp.code < 0) {
-                handleAlert(resp.message)
+                handleAlert(resp.message);
             } else {
-                handleAlert(resp.message, 'confirmed')
+                handleAlert(resp.message, 'confirmed');
             } 
         } catch (error) {
-            handleAlert(error)
+            handleAlert(error);
         }
     }
 
     const handleUpdate = async (id) => {
         const f_id = (typeof id === 'object') ? id[0] : id;
-        setIdBale(f_id)
-        handleAlert("", 'update-p')
+        setIdBale(f_id);
+        handleAlert("", 'update-p');
     }
 
     const handleClick = (f) => {
         if (idSelect !== null || idSelect) {
             if (f)
-                handleUpdate(idSelect)
-            else handleDelete(idSelect)
+                handleUpdate(idSelect);
+            else handleDelete(idSelect);
         } else {
-            handleAlert("Nessuna balla selezionata!")
+            handleAlert("Nessuna balla selezionata!");
         }
     }
-
-    const [showAlert, setShowAlert] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [scope, setScope] = useState('')
 
     /**
      * Handle the error when no bale is selected
@@ -92,7 +91,7 @@ export default function BtnPresser({
      * @param {string} msg Message to display
      */
     const handleAlert = (msg, scope = "error") => {
-        setScope(scope)
+        setScope(scope);
         setErrorMessage(msg);
         setShowAlert(prev => !prev);
     };

@@ -75,9 +75,9 @@ export default function InsertNewBale({
             if (!plastic || plastic === null || plastic == "undefined" || plastic == "")
                 console.log("Plastica non selezionata"); 
 
-            const url = await getServerRoute("add-bale");
+            const url = getServerRoute("add-bale");
 
-            console.log(url);
+            // console.log(url);
             const implant = cookie.id_implant;
             const body = {
                 id_presser: cookie.id_user,
@@ -92,11 +92,11 @@ export default function InsertNewBale({
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ data: { implant, body } })
-            })
+            });
 
             if (!resp.ok) {
                 // console.error(resp.json)
-                console.log("error occurred while adding a new bale")
+                console.log("error occurred while adding a new bale");
             } else {
                 confirmHandle();
                 refreshPage(ws);
@@ -110,7 +110,6 @@ export default function InsertNewBale({
     };
 
     const handleConfirmed = () =>{
-        
         setShowConfirm(prev => !prev);
     };
 
@@ -196,8 +195,7 @@ export default function InsertNewBale({
                             onClick={() => { 
                                 handleClick(true);
                                 handleConfirmed();
-                            }}
-                            >
+                            }}>
                                 OK
                             </button>
                             {/* showConfirm && <Alert alertFor="confirmed" handleClose={() => handleConfirmed()} /> */}
@@ -280,8 +278,7 @@ export default function InsertNewBale({
                             onClick={() => { 
                                 handleClick(false);
                                 handleConfirmed();
-                            }}
-                            >
+                            }}>
                                 OK
                             </button>
                         </td>

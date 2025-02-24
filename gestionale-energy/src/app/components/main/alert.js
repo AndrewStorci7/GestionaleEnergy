@@ -58,7 +58,7 @@ export default function Alert({
   }
 
   useEffect(() => {
-    setSanitize(alertFor.startsWith('update') ? 'update' : alertFor)
+    setSanitize(alertFor.startsWith('update') ? 'update' : alertFor);
   }, [alertFor]);
   
   switch(sanitize_alertFor) {

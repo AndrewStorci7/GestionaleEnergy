@@ -17,6 +17,7 @@ export const WebSocketProvider = ({ user, children }) => {
     const [message, setMessage] = useState(null);
 
     useEffect(() => {
+
         ws.current = new WebSocket(wsurl);
 
         ws.current.onopen = () => {
@@ -37,7 +38,7 @@ export const WebSocketProvider = ({ user, children }) => {
     }, [user]);
 
     return (
-        <WebSocketContext.Provider value={{ws, message}}>
+        <WebSocketContext.Provider value={{ ws, message }}>
             {children}
         </WebSocketContext.Provider>
     );
