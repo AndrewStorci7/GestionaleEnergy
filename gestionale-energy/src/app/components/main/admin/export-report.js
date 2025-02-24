@@ -40,7 +40,7 @@ const ExportReport = ({ btnPressed }) => {
         // console.log('prova inside ExportReport');
         const implant = (btnPressed == 'impianto-a') ? 1 : (btnPressed == 'impianto-b') ? 2 : 0;
         const url = getUrlReport();
-        const urlImplant = getUrlImplant();
+        
 
         {/*const respImp = await fetch(urlImplant, {
           method: 'GET',
@@ -99,6 +99,7 @@ const ExportReport = ({ btnPressed }) => {
       { header: "", key: "totale_peso_turno_3", width: 15 },
       { header: "", key: "totale_balle_turno_3", width: 15 },
       { header: "", key: "", width: 15 },
+      { header: "", key: "", width: 15 },
       
     ];
 
@@ -141,12 +142,17 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('J4').value = 'TOT.TURNO';
     worksheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet.getCell('K4').value = 'TOT.CHILI';
+    worksheet.getCell('K4').alignment = { vertical: 'middle', horizontal: 'center' };
 
     // console.log("reportData:", reportData);
 
     const prova_array = new Array(); // All'interno i dati sono disposti correttmanete
+    // This gives the current row number
 
+   
     reportData.forEach((report, index) => {
+      
       if (typeof report === 'object' && report !== null) {
         
         report.forEach((item, itemIndex) => {
@@ -169,8 +175,11 @@ const ExportReport = ({ btnPressed }) => {
         console.error(`No items found or items is not an array in report ${index}`);
       }
 
-    });
 
+
+    });
+    
+    
     var row = null;
     Object.keys(prova_array).forEach((index) => {
       console.log(prova_array[index], typeof prova_array[index].totale_peso_1, prova_array[index].totale_peso_1);
@@ -184,31 +193,67 @@ const ExportReport = ({ btnPressed }) => {
         totale_peso_turno_3: Number(prova_array[index].totale_peso_3),  
         totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
       });
+
+      
     });
-    
+
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
-        worksheet.getCell(`A${row.number}`).value = 'A';
+    
+        // Fix: Row variable conflict, corrected loop range and setting cell value as string
+        for (let i = 5; i <= 28; i++) {
+          worksheet.getCell(`A${i}`).value = 'A'; // Set the cell value to 'A' as a string
+          worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+          worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        }
         break;
+    
       case 'impianto-a-tempi': // GIOR. TEMPI IMP A
-        worksheet.getCell(`A${row.number}`).value = 'A';
+        for (let i = 5; i <= 28; i++) {
+          worksheet.getCell(`A${i}`).value = 'A'; // Set the cell value to 'A' as a string
+          worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+          worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        }
         break;
+        
       case 'impianto-b': // GIOR. IMPIANTO B
-        worksheet.getCell(`A${row.number}`).value = 'B';  
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
         break;
+    
       case 'impianto-b-tempi': // GIOR. TEMPI IMP B
-        worksheet.getCell(`A${row.number}`).value = 'B';  
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
         break;
+    
       case 'impianto-ab': // GIOR. IMPIANTO A e B
-        worksheet.getCell(`A${row.number}`).value = 'AB';
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
         break;
+    
       case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
-        worksheet.getCell(`A${row.number}`).value = 'AB';
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
         break;
+    
       default:
         console.error('Unknown report type:', reportType);
         return;
     }
+    
+
     // console.log(prova_array);
 
     switch (reportType) {
@@ -252,6 +297,7 @@ const ExportReport = ({ btnPressed }) => {
     }
     
     worksheet.getCell('C31').value = 'TOTALE';
+    
 
     for (let row = 3; row <= 31; row++){
       worksheet.getRow(row).height = 20;
@@ -345,8 +391,17 @@ const ExportReport = ({ btnPressed }) => {
       };
     }
 
-    for (let row = 4; row <= 31; row++) {
+    for (let row = 4; row <= 28; row++) {
       worksheet.getCell(`J${row}:J${row}`).border = {
+        top: {style: 'thin'},
+        left: {style: 'thin'},
+        bottom: {style: 'thin'},
+        right: {style: 'thin'}
+      };
+    }
+
+    for (let row = 4; row <= 28; row++) {
+      worksheet.getCell(`K${row}:K${row}`).border = {
         top: {style: 'thin'},
         left: {style: 'thin'},
         bottom: {style: 'thin'},
@@ -382,10 +437,14 @@ const ExportReport = ({ btnPressed }) => {
       worksheet.getCell(`G${worksheet.rowCount}`).value = { formula: `SUM(G5:G28)` };
       worksheet.getCell(`H${worksheet.rowCount}`).value = { formula: `SUM(H5:H28)` };
       worksheet.getCell(`I${worksheet.rowCount}`).value = { formula: `SUM(I5:I28)` };
+
+      
     };
-    
+
     calculateTotals();
-    
+
+    worksheet.getCell('J5').value = { formula: `SUM(E5;G5;I5)` };
+    worksheet.getCell('J6').value = { formula: `SUM(E6;G6;I6)` };
     
 
     workbook.xlsx.writeBuffer().then((buffer) => {
