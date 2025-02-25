@@ -30,22 +30,15 @@ const getUrlImplant = () => {
  */
 const ExportReport = ({ btnPressed }) => {
   
-  const [implantData, setImplantData] = useState(null);
   const [reportData, setReportData] = useState(null);
   const [isEmpty, setEmpty] = useState(false);
 
   useEffect(() => {
     const fetchReportData = async () => {
       try {
-        // console.log('prova inside ExportReport');
-        const implant = (btnPressed == 'impianto-a') ? 1 : (btnPressed == 'impianto-b') ? 2 : 0;
-        const url = getUrlReport();
         
-
-        {/*const respImp = await fetch(urlImplant, {
-          method: 'GET',
-          headers: {'Content-Type': 'application/json'}
-        })*/}
+        const implant = (btnPressed == 'impianto-a') ? 2 : (btnPressed == 'impianto-b') ? 1 :(btnPressed == 'impianto-ab') ? [1,2] : 0;
+        const url = getUrlReport();
 
         const resp = await fetch(url, {
           method: 'POST',
@@ -53,10 +46,8 @@ const ExportReport = ({ btnPressed }) => {
           body: JSON.stringify({ implant })
         });
 
-        //const dataImp = await respImp.json();
         const data = await resp.json();
         console.log(data);
-        //console.log(dataImp);
 
         if (data.code === 0) {
           setReportData(data.data || null); // Set report data or null
@@ -174,11 +165,7 @@ const ExportReport = ({ btnPressed }) => {
       } else {
         console.error(`No items found or items is not an array in report ${index}`);
       }
-
-
-
     });
-    
     
     var row = null;
     Object.keys(prova_array).forEach((index) => {
@@ -193,8 +180,6 @@ const ExportReport = ({ btnPressed }) => {
         totale_peso_turno_3: Number(prova_array[index].totale_peso_3),  
         totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
       });
-
-      
     });
     
     // Totale Balle / Chili
@@ -262,9 +247,6 @@ const ExportReport = ({ btnPressed }) => {
         console.error('Unknown report type:', reportType);
         return;
     }
-    
-
-    // console.log(prova_array);
 
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
@@ -307,7 +289,6 @@ const ExportReport = ({ btnPressed }) => {
     }
     
     worksheet.getCell('C31').value = 'TOTALE';
-    
 
     for (let row = 3; row <= 31; row++){
       worksheet.getRow(row).height = 20;
@@ -320,125 +301,28 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getColumn('B').font = { bold: true, name: 'Calibri' };
     worksheet.getColumn('C').font = { bold: true, name: 'Calibri' };
 
-    for (let row = 4; row <= 28; row++) {
-      worksheet.getCell(`A${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 28; row++) {
-      worksheet.getCell(`B${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`C${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`D${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`E${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`F${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`G${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`H${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`I${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 28; row++) {
-      worksheet.getCell(`J${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 28; row++) {
-      worksheet.getCell(`K${row}:K${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    worksheet.getCell('D3').border = {
-      top: {style: 'thin'},
-      left: {style: 'thin'},
-      bottom: {style: 'thin'},
-      right: {style: 'thin'}
+    const applyBorders = (range) => {
+      for (let row = range.start; row <= range.end; row++) {
+        worksheet.getCell(`${range.col}${row}`).border = {
+          top: {style: 'thin'},
+          left: {style: 'thin'},
+          bottom: {style: 'thin'},
+          right: {style: 'thin'}
+        };
+      }
     };
-
-    worksheet.getCell('F3').border = {
-      top: {style: 'thin'},
-      left: {style: 'thin'},
-      bottom: {style: 'thin'},
-      right: {style: 'thin'}
-    };
-
-    worksheet.getCell('H3').border = {
-      top: {style: 'thin'},
-      left: {style: 'thin'},
-      bottom: {style: 'thin'},
-      right: {style: 'thin'}
-    };
+    
+    applyBorders({col: 'A', start: 4, end: 28});
+    applyBorders({col: 'B', start: 4, end: 28});
+    applyBorders({col: 'C', start: 4, end: 31});
+    applyBorders({col: 'D', start: 3, end: 31});
+    applyBorders({col: 'E', start: 4, end: 31});
+    applyBorders({col: 'F', start: 3, end: 31});
+    applyBorders({col: 'G', start: 4, end: 31});
+    applyBorders({col: 'H', start: 3, end: 31});
+    applyBorders({col: 'I', start: 4, end: 31});
+    applyBorders({col: 'J', start: 4, end: 28});
+    applyBorders({col: 'K', start: 4, end: 28});
 
     const calculateTotals = () => {
       worksheet.getCell(`D${worksheet.rowCount}`).value = { formula: `SUM(D5:D28)` };
@@ -447,17 +331,9 @@ const ExportReport = ({ btnPressed }) => {
       worksheet.getCell(`G${worksheet.rowCount}`).value = { formula: `SUM(G5:G28)` };
       worksheet.getCell(`H${worksheet.rowCount}`).value = { formula: `SUM(H5:H28)` };
       worksheet.getCell(`I${worksheet.rowCount}`).value = { formula: `SUM(I5:I28)` };
-
-      
     };
 
     calculateTotals();
-
-    
- 
-
-    
-    
 
     workbook.xlsx.writeBuffer().then((buffer) => {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -466,12 +342,11 @@ const ExportReport = ({ btnPressed }) => {
   };
 
   useEffect(() => {
-    if (reportData) {
-      handleDownload(btnPressed);  // Trigger the download once the reportData is available
+    if (reportData && btnPressed) {
+      // Make sure the download happens only once and when appropriate
+      handleDownload(btnPressed);
     }
-  }, [btnPressed]);  // This effect depends on reportData and btnPressed
-
-  
+  }, [reportData]);
 };
 
 export default ExportReport;
