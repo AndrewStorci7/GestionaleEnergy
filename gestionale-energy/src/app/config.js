@@ -187,7 +187,9 @@ const getServerRoute = (route) => {
         // // Rotte per la gestione dei dati di ogni inserimento, eliomina, modifica di qualsiasi balla
         // // si potranno ottenere tutti i vari contatori delle balle inserite per tipo di plastica,
         // // tipo reimballaggio, ecc...
-        // case "bale": case "balla": return getSrvUrl() + "/bale/get";
+        case "report-giornaliero": 
+        case "report-daily": 
+            return getSrvUrl() + "/report/daily";
         // case "aggiungi-balla": case "add-bale": return getSrvUrl() + "/bale/add";
         // case "rimuovi-balla": case "delete-bale": return getSrvUrl() + "/bale/delete";
         // case "aggiorna-stato-balla": case "update-status-bale": return getSrvUrl() + "/bale/status/update";

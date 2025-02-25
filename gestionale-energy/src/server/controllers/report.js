@@ -24,6 +24,8 @@ class Report extends Common {
         try {
             const { implant } = req.body;
 
+            co
+
             const data = new Array(3);
 
             for (let i = 1; i < 4; ++i) {

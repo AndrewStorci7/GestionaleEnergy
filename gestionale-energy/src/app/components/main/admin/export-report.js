@@ -2,17 +2,8 @@
 import { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { getSrvUrl } from '@@/config';
+import { getServerRoute } from '@@/config';
 
-const srvurl = await getSrvUrl();
-
-const getUrlReport = () => {
-  return srvurl + '/report';
-};
-
-const getUrlImplant = () => {
-  return srvurl + '/implants'
-}
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
@@ -28,31 +19,60 @@ const getUrlImplant = () => {
  */
 const ExportReport = ({ btnPressed }) => {
   
-  const [reportData, setReportData] = useState(null);
+  const [reportData, setReportData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
 
   useEffect(() => {
     const fetchReportData = async () => {
       try {
         
-        const implant = (btnPressed == 'impianto-a') ? 2 : (btnPressed == 'impianto-b') ? 1 :(btnPressed == 'impianto-ab') ? [1,2] : 0;
-        const url = getUrlReport();
+        const implant = (btnPressed == 'impianto-a') ? [2] : (btnPressed == 'impianto-b') ? [1] :(btnPressed == 'impianto-ab') ? [1,2] : 0;
+        const url = getServerRoute("report-daily");
 
-        const resp = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ implant })
-        });
-
-        const data = await resp.json();
-
-        if (data.code === 0) {
-          setReportData(data.data || null); // Set report data or null
-          
-          setEmpty(false); // Reset empty state
+        if (implant === 0) {
+          console.log("errore");
         } else {
-          setEmpty(true); // Set empty state if no data is returned
+          for ( const i in implant ) {
+            console.log("Impianto ", implant[i]);
+            const resp = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ implant: implant[i] })
+            });
+    
+            const data = await resp.json();
+    
+            if (data.code === 0) {
+              // if (i === 0) {
+              //   setReportData(data.data || null); // Set report data or null
+              // } else {
+              //   setReportData([ ...reportData, data.data ]);
+              // }
+              setReportData( prevReportData => [...(prevReportData || []), data.data] );
+              
+              setEmpty(false); // Reset empty state
+              console.log(reportData);
+            } else {
+              setEmpty(true); // Set empty state if no data is returned
+            }
+          }
         }
+
+        // const resp = await fetch(url, {
+        //   method: 'POST',
+        //   headers: { 'Content-Type': 'application/json' },
+        //   body: JSON.stringify({ implant })
+        // });
+
+        // const data = await resp.json();
+
+        // if (data.code === 0) {
+        //   setReportData(data.data || null); // Set report data or null
+          
+        //   setEmpty(false); // Reset empty state
+        // } else {
+        //   setEmpty(true); // Set empty state if no data is returned
+        // }
       } catch (error) {
         console.error("Error Fetching Data:", error);
         setEmpty(true); // Set empty state on error
