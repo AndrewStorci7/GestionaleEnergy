@@ -48,10 +48,11 @@ const ExportReport = ({ btnPressed }) => {
               // } else {
               //   setReportData([ ...reportData, data.data ]);
               // }
-              setReportData( prevReportData => [...(prevReportData || []), data.data] );
-              
-              setEmpty(false); // Reset empty state
-              console.log(reportData);
+              setReportData(prevReportData => {
+                const updatedData = [...(prevReportData || []), data.data];
+                console.log('Updated Report Data:', updatedData);
+                return updatedData;
+              });
             } else {
               setEmpty(true); // Set empty state if no data is returned
             }
