@@ -196,11 +196,21 @@ const ExportReport = ({ btnPressed }) => {
 
       
     });
+    
+    // Totale Balle / Chili
+    reportData.forEach((report) => {
+      report.forEach((item, rowIndex) => {
+        const rowNum = rowIndex + 5; 
+    
+        worksheet.getCell(`J${rowNum}`).value = { formula: `SUM(E${rowNum},G${rowNum},I${rowNum})` };
+        worksheet.getCell(`K${rowNum}`).value = { formula: `SUM(D${rowNum},F${rowNum},H${rowNum})` };
+      });
+    });
 
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
     
-        // Fix: Row variable conflict, corrected loop range and setting cell value as string
+        
         for (let i = 5; i <= 28; i++) {
           worksheet.getCell(`A${i}`).value = 'A'; // Set the cell value to 'A' as a string
           worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
@@ -310,7 +320,7 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getColumn('B').font = { bold: true, name: 'Calibri' };
     worksheet.getColumn('C').font = { bold: true, name: 'Calibri' };
 
-    for (let row = 4; row <= 29; row++) {
+    for (let row = 4; row <= 28; row++) {
       worksheet.getCell(`A${row}:J${row}`).border = {
         top: {style: 'thin'},
         left: {style: 'thin'},
@@ -319,7 +329,7 @@ const ExportReport = ({ btnPressed }) => {
       };
     }
 
-    for (let row = 4; row <= 29; row++) {
+    for (let row = 4; row <= 28; row++) {
       worksheet.getCell(`B${row}:J${row}`).border = {
         top: {style: 'thin'},
         left: {style: 'thin'},
@@ -443,8 +453,10 @@ const ExportReport = ({ btnPressed }) => {
 
     calculateTotals();
 
-    worksheet.getCell('J5').value = { formula: `SUM(E5;G5;I5)` };
-    worksheet.getCell('J6').value = { formula: `SUM(E6;G6;I6)` };
+    
+ 
+
+    
     
 
     workbook.xlsx.writeBuffer().then((buffer) => {
