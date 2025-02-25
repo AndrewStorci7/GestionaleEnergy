@@ -34,7 +34,6 @@ class Report extends Common {
                     `SELECT 
                         code_plastic.code, 
                         code_plastic.desc,
-                        
                         SUM(wheelman_bale.weight) AS "totale_peso",
                         COUNT(pb_wb.id_pb) AS "totale_balle"
                     FROM 

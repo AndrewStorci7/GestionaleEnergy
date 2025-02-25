@@ -11,7 +11,11 @@ import Cookies from 'js-cookie';
  * @param {int}     idBale  Id numerico della balla da modificare 
  * @param {Function} handlerConfirm Funzione che gestisce il flusso dopo aver cliccato il bottone di Annulla o Conferma 
  */
-export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
+export default function UpdateValuesBale({ 
+    type, 
+    idBale, 
+    handlerConfirm 
+}) {
 
     // Dati Pressista
     const [plastic, setPlastic] = useState(""); // Id plastica
@@ -47,12 +51,14 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                     });
     
                     const data = await resp.json();
+
+                    // console.log(data);
     
-                    setPlastic(data[0].plastic);
-                    setRei(data[0]._idRei);
-                    setCdbp(data[0]._idCpb);
-                    setSelectedBale(data[0]._idSb);
-                    setNote(data[0].notes);
+                    setPlastic(data.plastic);
+                    setRei(data._idRei);
+                    setCdbp(data._idCpb);
+                    setSelectedBale(data._idSb);
+                    setNote(data.notes);
                 } else {
                     const url = await getServerRoute("wheelman");
                     const resp = await fetch(url, {
@@ -62,12 +68,14 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                     });
     
                     const data = await resp.json();
+
+                    // console.log(data);
     
-                    setCdbc(data[0]._idCwb);
-                    setReason(data[0]._idRnt);
-                    setWeight(data[0].weight);
-                    setDestWh(data[0]._idWd);
-                    setNote(data[0].notes);
+                    setCdbc(data._idCwb);
+                    setReason(data._idRnt);
+                    setWeight(data.weight);
+                    setDestWh(data._idWd);
+                    setNote(data.notes);
                 }
             } catch (error) {
                 console.log(error);
@@ -93,7 +101,7 @@ export default function UpdateValuesBale({ type, idBale, handlerConfirm }) {
                 id_sb: selected_b,
                 note: note,
                 where: idBale,
-            }
+            };
 
             const body2 = { status: -1, where: idBale };
             const url = await getServerRoute("update-presser-bale");

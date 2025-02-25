@@ -63,7 +63,7 @@ const getWsUrl = () => {
  * @param {string} scope default: "header"
  * @returns 
  */
-const getBgColor = (type, scope = "header") => {
+const getBgColor = (type, scope = "") => {
     switch (type) {
         case 'admin':
             return (scope === "header") ? "bg-primary" : (scope === "theader") ? "bg-primary" : "bg-primary_2";

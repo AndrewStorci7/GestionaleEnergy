@@ -41,8 +41,8 @@ export default function Table({ type, implant, idUser }) {
     const [selectedType, setSelectedType] = useState("general");
     const [addWasClicked, setAddClick] = useState(false)
     // const [ids, setResp] = useState([]);
-    const [msgEmpty, setMsg] = useState("")
-    const [isEmpty, setEmpty] = useState(false)
+    const [msgEmpty, setMsg] = useState("");
+    const [isEmpty, setEmpty] = useState(false);
     const [isSelected, setSelected] = useState(null)
     const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
     const add = { 
@@ -55,7 +55,7 @@ export default function Table({ type, implant, idUser }) {
     }
 
     const noData = (msg) =>  {
-        setEmpty(prev => !prev);
+        setEmpty(false);
         setMsg(msg);
     }
 
@@ -71,13 +71,9 @@ export default function Table({ type, implant, idUser }) {
         setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
     }
 
-    // useEffect(() => {
-    //     console.log("Relaod from Table");
-    // }, [message]);
-
     switch (type) {
         case "admin": {
-            return(
+            return (
                 <>
                     <h1 className={_CMNSTYLE_TITLE}>Pagina Amminstratore Sviluppatore</h1>
                     <p>In fase di sviluppo</p>
@@ -85,25 +81,42 @@ export default function Table({ type, implant, idUser }) {
             );
         }
         case "presser": {
-            return(
+            return (
                 <>
                     <div className={`${_CMNSTYLE_DIV} shadow-lg`}>
                         <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary `}>Pressista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} primary />
+                            
+                            {/* BALLE IN LAVORAZIONE */}
                             <TableContent 
                                 type={"presser"} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
                                 add={add}  
-                                noData={() => noData()} 
+                                noData={(e) => noData(e)} 
+                                primary 
+                            />
+
+                            {/* BALLE COMPLETATE */}
+                            <TableContent 
+                                type={"presser"} 
+                                handleSelect={(e) => handleSelect(e)}
+                                selectedBaleId={isSelected} 
+                                useFor={"specific"}
+                                noData={(e) => noData(e)} 
                                 primary 
                             />
                         </table>
                         <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={add}  />
+
+                            {/* BALLE IN LAVORAZIONE */}
+                            <TableContent type={"wheelman"} add={add} />
+                            
+                            {/* BALLE COMPLETATE */}
+                            <TableContent type={"wheelman"} useFor={"specific"} />
                         </table>
                     </div>
 
@@ -125,19 +138,30 @@ export default function Table({ type, implant, idUser }) {
             );
         }
         case "wheelman": {
-            return(
+            return (
                 <>
                     <div className={`${_CMNSTYLE_DIV} shadow-lg`}>
                         <label htmlFor="gest-on-table"  className={`${_CMNSTYLE_LABEL} text-white bg-secondary`} >Carrellista</label>
                         <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"wheelman"} primary />
+                            
+                            {/* BALLE IN LAVORAZIONE */}
                             <TableContent 
                                 type={"wheelman"} 
                                 handleSelect={(e) => handleSelect(e)}
                                 selectedBaleId={isSelected}
                                 add={add}
-                                // ids={ids} 
-                                noData={noData} 
+                                noData={(e) => noData(e)} 
+                                primary 
+                            />
+
+                            {/* BALLE COMPLETATE */}
+                            <TableContent 
+                                type={"wheelman"} 
+                                handleSelect={(e) => handleSelect(e)}
+                                selectedBaleId={isSelected}
+                                useFor={"specific"}
+                                noData={(e) => noData(e)} 
                                 primary 
                             />
                         </table>
@@ -147,7 +171,12 @@ export default function Table({ type, implant, idUser }) {
                         </label>
                         <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
                             <TableHeader type={"presser"} />
+
+                            {/* BALLE IN LAVORAZIONE */}
                             <TableContent type={"presser"} add={add}  />
+
+                            {/* BALLE COMPLETATE */}
+                            <TableContent type={"presser"} useFor={"specific"} />
                         </table>
                     </div>
 
@@ -212,48 +241,40 @@ export default function Table({ type, implant, idUser }) {
                     
                     {selectedType === "general" && (
                         <div className={`grid grid-cols-2 gap-2 relative  h-[60vh]`}>
-                        <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
-                        <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
-                        <div className="grid grid-cols-2 gap-1 mt-20">
-                            <DownloadReport />
-                            {/* <button onClick={() => handleDownloadClick('file1')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A</button>
-                            <button onClick={() => handleDownloadClick('file2')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A</button>
-                            <button onClick={() => handleDownloadClick('file3')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO B</button>
-                            <button onClick={() => handleDownloadClick('file4')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP B</button>
-                            <button onClick={() => handleDownloadClick('file5')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A e B</button>
-                            <button onClick={() => handleDownloadClick('file6')} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A e B</button> */}
+                            <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
+                                <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
+                                <div className="grid grid-cols-2 gap-1 mt-20">
+                                    <DownloadReport />
+                                </div>
+
+                            </div>
+                            <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
+                                <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
+                                <div className="grid grid-cols-3 gap-1 mt-20">
+                                    <p className="ml-3 mb-1.5">PERIODO</p>
+                                    <input className=" mb-1.5" type="date"></input>
+                                    <input className=" mb-1.5" type="date"></input>
+                                    <p className="ml-3 mb-1.5">IMPIANTO</p>
+                                    <SelectInput id="search-input-implants" searchFor={"implants"} isForSearch />
+                                    <p></p>
+                                    <p className="ml-3 mb-1.5">TIPO PLASTICA</p>
+                                    <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
+                                    <p></p>
+                                    <p className="ml-3 mb-1.5">PESO</p>
+                                    <select name="peso" id="pesoid"> 
+                                        <option value="esempio_a">-</option>
+                                    </select>
+                                    <p></p>
+                                    <p className="ml-3 mb-1.5">TURNO</p>
+                                    <select name="turno" id="turnoid">
+                                        <option value="esempio_a">-</option>
+                                    </select>
+                                    <p></p>
+                                    <p></p>
+                                    <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
+                                </div>
+                            </div>
                         </div>
-                        {/* <ExportReport btnPressed={btnPressed} /> */}
-                        </div>
-                        <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
-                        <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
-                        <div className="grid grid-cols-3 gap-1 mt-20">
-                            <p className="ml-3 mb-1.5">PERIODO</p>
-                            <input className=" mb-1.5" type="date"></input>
-                            <input className=" mb-1.5" type="date"></input>
-                            <p className="ml-3 mb-1.5">IMPIANTO</p>
-                            <SelectInput id="search-input-implants" searchFor={"implants"} isForSearch />
-                            <p></p>
-                            <p className="ml-3 mb-1.5">TIPO PLASTICA</p>
-                            <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
-                            <p></p>
-                            <p className="ml-3 mb-1.5">PESO</p>
-                            <select name="peso" id="pesoid"> 
-                            <option value="esempio_a">-</option>
-                            </select>
-                        <p></p>
-                        <p className="ml-3 mb-1.5">TURNO</p>
-                        <select name="turno" id="turnoid">
-                            <option value="esempio_a">-</option>
-                        </select>
-                        <p></p>
-                        <p></p>
-                        <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
-                        {/* <DownloadReport  downloadFor={"File_Scaricato"} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</DownloadReport> */}
-                        </div>
-                        </div>
-                        
-                    </div>
                     )}
                 </>
             );

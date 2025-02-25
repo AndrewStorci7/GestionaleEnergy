@@ -11,18 +11,19 @@ import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
 /**
  * Custom component for handling the data of a bale
  * 
- * @param {string}      type    [ 'presser' | 'wheelman' | 'both' | 'admin' ]
- *                          Il tipo della pagina
+ * @param {string}      type    [ `presser` | `wheelman` | `both` | `admin` ]
+ *                              Il tipo della pagina
  * 
  * @param {Object}      add     Oggetto che contiene lo stato di add e la funzione che gestisce il suo cambiamento 
- *                          [ true | false ]
- *                          True se il bottone di aggiunta è stato premuto, altrimenti false
+ *                              [ `true` | `false` ]
+ *                              True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
- * @param {Object}      ids     Oggetto contenente gli ID delle balle create
- *                          L'oggeto sarà null se il bottone aggiungi non è stato cliccato
+ * @param {Object}      useFor  [ `regular` | `specific` ]
+ *                              Di default è impostato su `regolar`, ovvero, che stampa tutte le alle ancora in lavorazione.
+ *                              Se invece viene impostato su `specific`, allora stamperà le balle completate. 
  * 
  * @param {Function}    noData  Funzione che aggiorna lo stato della variabile noData.
- *                          Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
+ *                              Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
  * 
  * @param {Function}    handleSelect    Accetta una funzione che gestisce la selezione di una balla    
  * 
@@ -35,7 +36,7 @@ import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
 export default function TableContent({ 
     type, 
     add,
-    ids, 
+    useFor = 'regular', 
     noData, 
     handleSelect,
     primary = false, 
@@ -81,13 +82,16 @@ export default function TableContent({
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
-                const id_implant = cookies.id_implant;
+                const body = {
+                    id_implant: cookies.id_implant,
+                    useFor, // prendo solo le balle ancora in lavorazione
+                };
                 const url = getServerRoute("bale");
                 
                 const resp = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ id_implant }),
+                    body: JSON.stringify({ body }),
                 });
 
                 if (!resp.ok) {
@@ -99,14 +103,10 @@ export default function TableContent({
 
                 if (data.code === 0) {
                     setEmpty(false);
-                    if (type === "presser")
-                        setContent(data.presser);
-                    else if (type === "wheelman")
-                        setContent(data.wheelman);
-                    else
-                        setContent([]);
+                    if (type === "presser") setContent(data.presser);
+                    else if (type === "wheelman") setContent(data.wheelman);
+                    else setContent([]);
                 } else {
-                    // setEmpty(prev => !prev);
                     setEmpty(true);
                     if (noData) noData(data.message);
                 }
@@ -122,9 +122,8 @@ export default function TableContent({
 
     const handleRowClick = (id) => {
         // Ensure selectedBaleIdRef.current is initialized as an array
-        if (!Array.isArray(selectedBaleIdRef.current)) {
+        if (!Array.isArray(selectedBaleIdRef.current))
             selectedBaleIdRef.current = [];
-        }
     
         // Check if the id is already in the selectedBaleIdRef array
         let newSelectedBaleId = [id];  // Replace the array with just the current selected ID
@@ -135,7 +134,7 @@ export default function TableContent({
 
     return (
         <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
-            {(add.state) && ( 
+            {(useFor === 'regular' && add.state) && ( 
                 <InsertNewBale
                     type={type}
                     mod={primary}
@@ -175,9 +174,9 @@ export default function TableContent({
                             {(primary) && (
                                 <>
                                     <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}>
-                                        <CheckButton 
+                                        {(useFor === 'regular') && <CheckButton 
                                         isSelected={(selectedBaleId === id)}
-                                        handleClick={() => handleRowClick(id)} />
+                                        handleClick={() => handleRowClick(id)} />}
                                     </td>
                                     <td className={`${_CMNSTYLE_TD} font-bold`} key={"idUnique" + _i}>
                                         {idUnique}

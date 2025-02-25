@@ -223,9 +223,16 @@ class TotalBale extends Common {
         // console.info("Get Total bale called", "yellow");
 
         try {
-            const { id_implant } = req.body;
+            const { body } = req.body;
+            const id_implant = body.id_implant;
+            const useFor = body.useFor;
+            var cond_status = 'pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
 
             // console.info(id_implant); // test
+
+            if (useFor === 'specific') {
+                cond_status = 'pb_wb.status = 1';
+            }
 
             const presserResult = [];
             const wheelmanResult = [];
@@ -252,7 +259,7 @@ class TotalBale extends Common {
                 WHERE 
                     ${this.table}.id_implant = ?
                     ${_params.condition}
-                    AND pb_wb.status != 1
+                    AND ${cond_status}
                 ORDER BY 
                     ${this.table}.id DESC,
                     TIME(presser_bale.data_ins) DESC, 

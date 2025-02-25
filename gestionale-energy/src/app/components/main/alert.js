@@ -65,7 +65,7 @@ export default function Alert({
     case "error": {
       return(
         <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-3">
-          <div
+          <div className=""
           style={{
             position: "fixed",
             top: "50%",
@@ -198,7 +198,7 @@ export default function Alert({
               <UpdateValuesBale 
                 type={(alertFor === "update-p") ? "presser" : "wheelman"}
                 idBale={idBale}
-                handlerConfirm={() => handleConfirm()}
+                handlerConfirm={handleConfirm}
               />
             </div>
           </div>

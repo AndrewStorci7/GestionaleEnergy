@@ -118,17 +118,16 @@ export default function Header({
                     {time}
                 </div> {/* end time */}
                 <div className="realtive">
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)} w-full px-[10px] rounded-t-md text-white`}>
+                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type, "header")} w-full px-[10px] rounded-t-md text-white`}>
                         {username}
                     </div>
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)}_2 w-full px-[10px]`}>
+                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)} w-full px-[10px]`}>
                         <span className="w-fit">{name} {surname}</span>
                     </div>
-                    <div className={`flex justify-end ${getBgColor(type)}_2 w-full p-[10px] rounded-b-md`}>
+                    <div className={`flex justify-end ${getBgColor(type)} w-full p-[10px] rounded-b-md`}>
                         <button
                         className="rounded-md bg-gray-300 px-[5px]"
-                        onClick={logout}
-                        >
+                        onClick={logout} >
                             Logout
                         </button>
                     </div>
