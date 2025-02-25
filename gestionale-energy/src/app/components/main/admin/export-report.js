@@ -10,6 +10,9 @@ const getUrlReport = () => {
   return srvurl + '/report';
 };
 
+const getUrlImplant = () => {
+  return srvurl + '/implants'
+}
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
@@ -25,32 +28,16 @@ const getUrlReport = () => {
  */
 const ExportReport = ({ btnPressed }) => {
   
-  const [implantData, setImplantData] = useState(null);
   const [reportData, setReportData] = useState(null);
   const [isEmpty, setEmpty] = useState(false);
 
   useEffect(() => {
-    
-    // const setImplantDataFetch = async () => {
-    //   switch (btnPressed) {
-    //     case 'impianto-a':
-    //       setImplantData({ id_implant: 2, letter: 'A' });
-    //       break;
-    //     case 'impianto-b':
-    //       setImplantData({ id_implant: 1, letter: 'B' });
-    //       break;
-    //     default:
-    //       setImplantData({ id_implant: 2, letter: 'A' });
-    //       break;
-    //   }
-    // }
-    // setImplantDataFetch();
-
     const fetchReportData = async () => {
       try {
-        // console.log('prova inside ExportReport');
-        const implant = (btnPressed == 'impianto-a') ? 1 : (btnPressed == 'impianto-b') ? 2 : 0;
+        
+        const implant = (btnPressed == 'impianto-a') ? 2 : (btnPressed == 'impianto-b') ? 1 :(btnPressed == 'impianto-ab') ? [1,2] : 0;
         const url = getUrlReport();
+
         const resp = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -61,6 +48,7 @@ const ExportReport = ({ btnPressed }) => {
 
         if (data.code === 0) {
           setReportData(data.data || null); // Set report data or null
+          
           setEmpty(false); // Reset empty state
         } else {
           setEmpty(true); // Set empty state if no data is returned
@@ -85,7 +73,7 @@ const ExportReport = ({ btnPressed }) => {
     }
 
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Report');
+    const worksheet = workbook.addWorksheet('IMPIANTO');
 
     // Define columns
     worksheet.columns = [
@@ -99,10 +87,8 @@ const ExportReport = ({ btnPressed }) => {
       { header: "", key: "totale_peso_turno_3", width: 15 },
       { header: "", key: "totale_balle_turno_3", width: 15 },
       { header: "", key: "", width: 15 },
-      /*{ header: "KG", key: "weight", width: 15 },
-      { header: "", key: "turn1", width: 15 },
-      { header: "", key: "turn2", width: 15
-      { header: "", key: "turn3", width: 15 }*/
+      { header: "", key: "", width: 15 },
+      
     ];
 
     worksheet.getCell('A1').border = {
@@ -144,12 +130,17 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'center' };
     worksheet.getCell('J4').value = 'TOT.TURNO';
     worksheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet.getCell('K4').value = 'TOT.CHILI';
+    worksheet.getCell('K4').alignment = { vertical: 'middle', horizontal: 'center' };
 
     // console.log("reportData:", reportData);
 
     const prova_array = new Array(); // All'interno i dati sono disposti correttmanete
+    // This gives the current row number
 
+   
     reportData.forEach((report, index) => {
+      
       if (typeof report === 'object' && report !== null) {
         
         report.forEach((item, itemIndex) => {
@@ -168,76 +159,11 @@ const ExportReport = ({ btnPressed }) => {
             });
           }
         });
-
-        // report.forEach((item, itemIndex) => {
-          // console.log(`Item ${itemIndex}:`, item, item.code);
-          
-
-           //var row = null;
-          // // var column_tmp = ['D', 'E'];
-
-          // if (seenCodes.has(item.code)) {
-          //   if (itemIndex === 1) {
-          //     row = worksheet.addRow({
-          //       totale_peso_turno_2: item.totale_peso ,
-          //       totale_balle_turno_2: item.totale_balle ,
-          //     });
-          //     // column_tmp = ['F', 'G'];
-          //   } else {
-          //     row = worksheet.addRow({
-          //       totale_peso_turno_3: item.totale_peso ,
-          //       totale_balle_turno_3: item.totale_balle,
-          //     });
-          //     // column_tmp = ['H', 'I'];
-          //   }
-          //   return;  
-          // } else {
-          //   row = worksheet.addRow({
-          //     desc: item.desc,
-          //     code: item.code,
-          //     totale_peso_turno_1: item.totale_peso,
-          //     totale_balle_turno_1: item.totale_balle || 0, 
-          //   });
-          //   seenCodes.add(item.code);
-          // }
-
-          //  switch (reportType) {
-          //    case 'impianto-a': // GIOR. IMPIANTO A
-          //      worksheet.getCell(`A${row.number}`).value = 'A';
-      
-          //      break;
-          //    case 'impianto-a-tempi': // GIOR. TEMPI IMP A
-          //      worksheet.getCell(`A${row.number}`).value = 'A';
-          //      break;
-          //    case 'impianto-b': // GIOR. IMPIANTO B
-          //      worksheet.getCell(`A${row.number}`).value = 'B';  
-          //      break;
-          //    case 'impianto-b-tempi': // GIOR. TEMPI IMP B
-          //      worksheet.getCell(`A${row.number}`).value = 'B';  
-          //      break;
-          //    case 'impianto-ab': // GIOR. IMPIANTO A e B
-          //      worksheet.getCell(`A${row.number}`).value = 'AB';
-          //      break;
-          //    case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
-          //      worksheet.getCell(`A${row.number}`).value = 'AB';
-          //      break;
-          //   default:
-          //     console.error('Unknown report type:', reportType);
-          //     return;
-          //  }
-
-          // worksheet.getCell(`A${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
-          // worksheet.getCell(`B${row.number}`).alignment = { vertical: 'middle', horizontal: 'center' };
-          // Ogni volta che si esegue l'iterazione, imposta il valore per la colonna determinata dinamicamente
-          // worksheet.getCell(`${column_tmp[0]}${row.number}`).value = item.totale_peso || "Nullo";
-          // worksheet.getCell(`${column_tmp[1]}${row.number}`).value = item.totale_balle || "Nullo";
-        // });
       } else {
         console.error(`No items found or items is not an array in report ${index}`);
       }
-
     });
-
+    
     var row = null;
     Object.keys(prova_array).forEach((index) => {
       console.log(prova_array[index], typeof prova_array[index].totale_peso_1, prova_array[index].totale_peso_1);
@@ -252,7 +178,72 @@ const ExportReport = ({ btnPressed }) => {
         totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
       });
     });
-    // console.log(prova_array);
+    
+    // Totale Balle / Chili
+    reportData.forEach((report) => {
+      report.forEach((item, rowIndex) => {
+        const rowNum = rowIndex + 5; 
+    
+        worksheet.getCell(`J${rowNum}`).value = { formula: `SUM(E${rowNum},G${rowNum},I${rowNum})` };
+        worksheet.getCell(`K${rowNum}`).value = { formula: `SUM(D${rowNum},F${rowNum},H${rowNum})` };
+      });
+    });
+
+    switch (reportType) {
+      case 'impianto-a': // GIOR. IMPIANTO A
+    
+        
+        for (let i = 5; i <= 28; i++) {
+          worksheet.getCell(`A${i}`).value = 'A'; // Set the cell value to 'A' as a string
+          worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+          worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        }
+        break;
+    
+      case 'impianto-a-tempi': // GIOR. TEMPI IMP A
+        for (let i = 5; i <= 28; i++) {
+          worksheet.getCell(`A${i}`).value = 'A'; // Set the cell value to 'A' as a string
+          worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+          worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        }
+        break;
+        
+      case 'impianto-b': // GIOR. IMPIANTO B
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
+        break;
+    
+      case 'impianto-b-tempi': // GIOR. TEMPI IMP B
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
+        break;
+    
+      case 'impianto-ab': // GIOR. IMPIANTO A e B
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
+        break;
+    
+      case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
+        break;
+    
+      default:
+        console.error('Unknown report type:', reportType);
+        return;
+    }
 
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
@@ -307,116 +298,28 @@ const ExportReport = ({ btnPressed }) => {
     worksheet.getColumn('B').font = { bold: true, name: 'Calibri' };
     worksheet.getColumn('C').font = { bold: true, name: 'Calibri' };
 
-    for (let row = 4; row <= 29; row++) {
-      worksheet.getCell(`A${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 29; row++) {
-      worksheet.getCell(`B${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`C${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`D${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`E${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`F${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`G${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`H${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`I${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    for (let row = 4; row <= 31; row++) {
-      worksheet.getCell(`J${row}:J${row}`).border = {
-        top: {style: 'thin'},
-        left: {style: 'thin'},
-        bottom: {style: 'thin'},
-        right: {style: 'thin'}
-      };
-    }
-
-    worksheet.getCell('D3').border = {
-      top: {style: 'thin'},
-      left: {style: 'thin'},
-      bottom: {style: 'thin'},
-      right: {style: 'thin'}
+    const applyBorders = (range) => {
+      for (let row = range.start; row <= range.end; row++) {
+        worksheet.getCell(`${range.col}${row}`).border = {
+          top: {style: 'thin'},
+          left: {style: 'thin'},
+          bottom: {style: 'thin'},
+          right: {style: 'thin'}
+        };
+      }
     };
-
-    worksheet.getCell('F3').border = {
-      top: {style: 'thin'},
-      left: {style: 'thin'},
-      bottom: {style: 'thin'},
-      right: {style: 'thin'}
-    };
-
-    worksheet.getCell('H3').border = {
-      top: {style: 'thin'},
-      left: {style: 'thin'},
-      bottom: {style: 'thin'},
-      right: {style: 'thin'}
-    };
+    
+    applyBorders({col: 'A', start: 4, end: 28});
+    applyBorders({col: 'B', start: 4, end: 28});
+    applyBorders({col: 'C', start: 4, end: 31});
+    applyBorders({col: 'D', start: 3, end: 31});
+    applyBorders({col: 'E', start: 4, end: 31});
+    applyBorders({col: 'F', start: 3, end: 31});
+    applyBorders({col: 'G', start: 4, end: 31});
+    applyBorders({col: 'H', start: 3, end: 31});
+    applyBorders({col: 'I', start: 4, end: 31});
+    applyBorders({col: 'J', start: 4, end: 28});
+    applyBorders({col: 'K', start: 4, end: 28});
 
     const calculateTotals = () => {
       worksheet.getCell(`D${worksheet.rowCount}`).value = { formula: `SUM(D5:D28)` };
@@ -426,10 +329,8 @@ const ExportReport = ({ btnPressed }) => {
       worksheet.getCell(`H${worksheet.rowCount}`).value = { formula: `SUM(H5:H28)` };
       worksheet.getCell(`I${worksheet.rowCount}`).value = { formula: `SUM(I5:I28)` };
     };
-    
+
     calculateTotals();
-    
-    
 
     workbook.xlsx.writeBuffer().then((buffer) => {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -438,12 +339,11 @@ const ExportReport = ({ btnPressed }) => {
   };
 
   useEffect(() => {
-    if (reportData) {
-      handleDownload(btnPressed);  // Trigger the download once the reportData is available
+    if (reportData && btnPressed) {
+      // Make sure the download happens only once and when appropriate
+      handleDownload(btnPressed);
     }
-  }, [btnPressed]);  // This effect depends on reportData and btnPressed
-
-  
+  }, [reportData]);
 };
 
 export default ExportReport;

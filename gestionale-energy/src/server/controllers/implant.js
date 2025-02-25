@@ -39,6 +39,24 @@ class Implant extends Common {
         }
     }
 
+    // async getById(req, res){
+    //     try {
+    //         console.info(req.body)
+    //         const [select] = await this.db.query(
+    //             "SELECT * FROM implants WHERE implants.name LIKE \"%?%\"",
+    //         );
+    //         if (select && select.length > 0) {
+    //             // console.info(select)
+    //             res.json({ code: 0, data: select })
+    //         } else {
+    //             res.json({ code: 1, message: "No data fetched" })
+    //         }
+    //     } catch (error) {
+    //         console.error(error)
+    //         res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+    //     }
+    // }
+
     /**
      * Set a new bale condition
      * 
