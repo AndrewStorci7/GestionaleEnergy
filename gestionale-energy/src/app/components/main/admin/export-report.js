@@ -21,69 +21,53 @@ const ExportReport = ({ btnPressed }) => {
   
   const [reportData, setReportData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
+  const [combinedData, setCombinedData] = useState([]);
 
   useEffect(() => {
     const fetchReportData = async () => {
       try {
-        
-        const implant = (btnPressed == 'impianto-a') ? [2] : (btnPressed == 'impianto-b') ? [1] :(btnPressed == 'impianto-ab') ? [1,2] : 0;
+        const implant = (btnPressed === 'impianto-a') ? [2] : 
+        (btnPressed === 'impianto-b') ? [1] : 
+        (btnPressed === 'impianto-ab') ? [1, 2] : 0;
+    
         const url = getServerRoute("report-daily");
+    
+        if (implant === 0) {
+          console.log("Impianto type is invalid.");
+          return;
+        }
+    
+        for (const i in implant) {
+          console.log("Fetching data for Impianto:", implant[i]);
+    
+          const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ implant: implant[i] })
+          });
 
-        {/*if (implant === 0) {
-          console.log("errore");
-        } else {
-          for ( const i in implant ) {
-            console.log("Impianto ", implant[i]);
-            const resp = await fetch(url, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ implant: implant[i] })
+          const data = await resp.json();
+          console.log("Server Response:", data);
+    
+          if (data.code === 0) {
+            setReportData(prevReportData => {
+              const updatedData = [...(prevReportData || []), data.data];
+              console.log('Updated Report Data:', updatedData);
+              return updatedData;
             });
-    
-            const data = await resp.json();
-    
-            if (data.code === 0) {
-              // if (i === 0) {
-              //   setReportData(data.data || null); // Set report data or null
-              // } else {
-              //   setReportData([ ...reportData, data.data ]);
-              // }
-              setReportData(prevReportData => {
-                const updatedData = [...(prevReportData || []), data.data];
-                console.log('Updated Report Data:', updatedData);
-                return updatedData;
-              });
-            } else {
-              setEmpty(true); // Set empty state if no data is returned
-            }
+          } else {
+            setEmpty(true);
           }
-        }*/}
-
-         const resp = await fetch(url, {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ implant })
-         });
-
-         const data = await resp.json();
-
-         if (data.code === 0) {
-           setReportData(data.data || null); // Set report data or null
-          
-           setEmpty(false); // Reset empty state
-         } else {
-           setEmpty(true); // Set empty state if no data is returned
-         }
+        }
       } catch (error) {
         console.error("Error Fetching Data:", error);
-        setEmpty(true); // Set empty state on error
+        setEmpty(true);
       }
     };
-
+    
     if (btnPressed) {
       fetchReportData();
     }
-    
   }, [btnPressed]);
 
   const handleDownload = (reportType) => {
@@ -189,6 +173,8 @@ const ExportReport = ({ btnPressed }) => {
         totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
       });
     });
+
+    
     
     // Totale Balle / Chili
     reportData.forEach((report) => {
@@ -231,7 +217,23 @@ const ExportReport = ({ btnPressed }) => {
         worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
       }
         break;
-        
+
+      case 'impianto-ab': // GIOR. IMPIANTO A/B
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'A/B'; // Set the cell value to 'A/B' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
+        break;
+
+      case 'impianto-ab-tempi': // GIOR. TEMPI IMP A/B
+      for (let i = 5; i <= 28; i++) {
+        worksheet.getCell(`A${i}`).value = 'A/B'; // Set the cell value to 'A/B' as a string
+        worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+        worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
+      }
+        break;
+
       default:
         console.error('Unknown report type:', reportType);
         return;
@@ -343,7 +345,6 @@ const ExportReport = ({ btnPressed }) => {
 
   useEffect(() => {
     if (reportData && btnPressed) {
-      // Make sure the download happens only once and when appropriate
       handleDownload(btnPressed);
     }
   }, [reportData]);
