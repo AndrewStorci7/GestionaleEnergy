@@ -94,7 +94,7 @@ class Report extends Common {
             );
 
             if (select && select.length > 0) {
-                console.info(data)
+                console.info(select)
                 res.json({ code: 0, data: select })
             } else {
                 res.json({ code: 1, message: "No data fetched" })

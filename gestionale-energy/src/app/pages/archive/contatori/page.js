@@ -1,24 +1,27 @@
 'use client';
 
-import React, { useState, useEffect, useTransition } from "react";
-import ExcelJS from "exceljs";
+import React, { useState, useEffect } from "react";
+
 import { saveAs } from "file-saver";
-import { getSrvUrl } from '@@/config';
+import { getServerRoute, getSrvUrl } from '@@/config';
 import Cookies from 'js-cookie';
 import CheckCookie from "@/app/components/main/check-cookie";
 
 import RenderCounters from "./renderCounter/render-counters";
 
 import { WebSocketProvider, useWebSocket } from "@/app/components/main/ws/use-web-socket";
+import { refreshPage, getBgColor } from '@/app/config';
 
 const srvurl = getSrvUrl();
 
 const cookie = JSON.parse(Cookies.get('user-info'));
 
-export default function Contatori() {
 
-    const [something, setSomething] = useState(null);
-    // const { ws, message } = useWebSocket();
+
+export default function Contatori() {
+    
+    const [something, setSomething] = useState(false);
+    const { ws, message } = useWebSocket(); 
 
     const [user, setUser] = useState(cookie.username);
     const [name, setName] = useState(cookie.name);
@@ -31,38 +34,35 @@ export default function Contatori() {
     const [dataTotalB, setDataTotalB] = useState(null);
     const [error, setError] = useState(null);
 
-    // const getIdImplant = () => {
-    //     const cookieValue = JSON.parse(Cookies.get('user-info'));
-    //     setImplant(cookieValue.id_implant);
-    //     // setUser(cookieValue.username);
-    //     // setName(cookieValue.name);
-    //     // setSurname(cookieValue.surname);
-    //     return cookieValue.id_implant;
-    // };
-
+    // Use useEffect to automatically call handleAddChange whenever the 'something' state changes
     useEffect(() => {
+
+         
+        
         const fetchData = async () => {
             try {
-                // const id_implant = getIdImplant();
-                const resp = await fetch(srvurl + "/contatori", {
+                const url2 = getServerRoute("report-balletotali");
+                const url = getServerRoute("report-live");
+
+                const resp = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ implant: 1 }),
                 });
 
-                const resp2 = await fetch(srvurl + "/contatori", {
+                const resp2 = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ implant: 2 }),
                 });
 
-                const totbal = await fetch(srvurl + "/tot-balle", {
+                const totbal = await fetch(url2, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ implant: 1 }),
                 });
 
-                const totbal2 = await fetch(srvurl + "/tot-balle", {
+                const totbal2 = await fetch(url2, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ implant: 2 }),
@@ -71,29 +71,41 @@ export default function Contatori() {
                 const res = await resp.json();
                 const res2 = await resp2.json();
                 const restotbal = await totbal.json();
-                const restotbal2 =await totbal2.json();
+                const restotbal2 = await totbal2.json();
 
                 if (res.code === 0 && res2.code === 0 && restotbal.code === 0 && restotbal2.code === 0) {
-                    console.log(res.data)
-                    console.log(res2.data)
-                    console.log(restotbal.data)
-                    console.log(restotbal2.data)
-                    setDataA(res.data);  // Store data
-                    setDataB(res2.data);  // Store data
+                    setDataA(res.data);
+                    setDataB(res2.data);
                     setDataTotalA(restotbal.data);
                     setDataTotalB(restotbal2.data);
                 } else {
                     setError("No data fetched");
-                    console.error(res.message);
                 }
             } catch (error) {
                 setError("Error occurred while fetching the data");
-                console.error(error);
             }
         };
 
         fetchData();
-    }, [something]);
+    }, [something, message]); 
+
+    useEffect(() => {
+        if (ws && dataTotalA && dataTotalB && dataImplantA && dataImplantB) {
+            handleAddChange(ws, setSomething); 
+        }
+        console.log(ws);
+    }, [ws, dataTotalA, dataTotalB, dataImplantA, dataImplantB]);
+
+    
+    const handleAddChange = async (ws, setSomething) => {
+        if (ws) {
+            refreshPage(ws); 
+        }
+    
+        if (setSomething) {
+            setSomething(prev => !prev); // Toggling the state to trigger a re-fetch or UI
+        }
+    }
 
     const renderSection = (title, items, option = "") => {
         return (
@@ -113,10 +125,9 @@ export default function Contatori() {
     return (
         <WebSocketProvider user={{ user, name, surname }}>
             <CheckCookie />
-            <RenderCounters handler={() => setSomething} />
-            <div className="">
+            <div>
                 <h1 className="font-bold text-3xl">Contatori</h1>
-                <div className="">
+                <div>
                     {error && <div className="error-message">{error}</div>}
                     <div className="grid grid-cols-7 bg-red-200">
                         <h2 className="font-bold text-2xl">Impianto A</h2>
