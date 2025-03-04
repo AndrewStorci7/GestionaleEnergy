@@ -50,6 +50,8 @@ export default function BtnPresser({
         try {
             const f_id = (typeof id === 'object') ? id[0] : id;
 
+            console.log(f_id);
+
             const url = await getServerRoute('delete-bale');
             const check = await fetch(url, {
                 method: 'POST',
