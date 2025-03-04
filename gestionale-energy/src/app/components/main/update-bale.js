@@ -93,18 +93,32 @@ export default function UpdateValuesBale({
     const handleClick = async () => {
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
-            const body = {
-                id_presser: cookie.id_user,
-                id_plastic: plastic,
-                id_rei: rei,
-                id_cpb: cdbp,
-                id_sb: selected_b,
-                note: note,
-                where: idBale,
-            };
+            var body = null, url = "";
+            if ( type === 'presser') {
+                body = {
+                    id_presser: cookie.id_user,
+                    id_plastic: plastic,
+                    id_rei: rei,
+                    id_cpb: cdbp,
+                    id_sb: selected_b,
+                    note: note,
+                    where: idBale,
+                };
+                url = await getServerRoute("update-presser-bale");
+            } else {
+                body = {
+                    id_wheelman: cookie.id_user,
+                    id_cwb: cdbc,
+                    id_rnt: reason,
+                    id_wd: dest_wh,
+                    note: note,
+                    weight: weight,
+                    where: idBale,
+                };
+                url = await getServerRoute("update-wheelman-bale");
+            }
 
             const body2 = { status: -1, where: idBale };
-            const url = await getServerRoute("update-presser-bale");
             const resp = await fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
