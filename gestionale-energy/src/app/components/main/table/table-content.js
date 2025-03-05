@@ -95,10 +95,10 @@ export default function TableContent({
     
     useEffect(() => { fetchData(); }, [message]);
 
-    const handleRowClick = id => {
+    const handleRowClick = (id, idUnique) => {
         const newSelectedBaleId = selectedBaleId === id ? null : id;
         selectedBaleIdRef.current = newSelectedBaleId;
-        handleSelect(newSelectedBaleId);
+        handleSelect(newSelectedBaleId, idUnique);
     };
 
     return (
@@ -120,7 +120,7 @@ export default function TableContent({
                             <>
                                 <td>
                                     {useFor === 'regular' && (
-                                        <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id)} />
+                                        <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
                                     )}
                                 </td>
                                 <td className="font-bold">{idUnique}</td>

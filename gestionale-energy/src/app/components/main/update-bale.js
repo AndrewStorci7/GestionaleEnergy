@@ -150,7 +150,7 @@ export default function UpdateValuesBale({
                                 setPlastic(e.target.value); 
                                 // setPlastic2(code);
                             } else {
-                                setCdbc(e.target.value)
+                                setCdbc(e.target.value);
                             }
                         }} 
                         fixedW 
@@ -163,8 +163,8 @@ export default function UpdateValuesBale({
                         value={(type === 'presser') ? rei : reason}
                         onChange={(e) => {
                             if (type === 'presser')
-                                setRei(e.target.value)
-                            else setReason(e.target.value)
+                                setRei(e.target.value);
+                            else setReason(e.target.value);
                         }} 
                         fixedW 
                     />
