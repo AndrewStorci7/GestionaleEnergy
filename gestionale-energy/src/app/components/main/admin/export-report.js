@@ -26,49 +26,62 @@ const ExportReport = ({ btnPressed }) => {
   useEffect(() => {
     const fetchReportData = async () => {
       try {
+        setReportData([]);
+        
+        // Definisci gli impianti da considerare in base al pulsante premuto
         const implant = (btnPressed === 'impianto-a') ? [2] : 
-        (btnPressed === 'impianto-b') ? [1] : 
-        (btnPressed === 'impianto-ab') ? [1, 2] : 0;
-    
+                        (btnPressed === 'impianto-b') ? [1] : 
+                        (btnPressed === 'impianto-ab') ? [1, 2] : 0;
+      
         const url = getServerRoute("report-daily");
-    
+      
         if (implant === 0) {
           console.log("Impianto type is invalid.");
           return;
         }
-    
+      
+        let allData = [];
+  
         for (const i in implant) {
           console.log("Fetching data for Impianto:", implant[i]);
-    
           const resp = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ implant: implant[i] })
           });
-
+  
           const data = await resp.json();
           console.log("Server Response:", data);
-    
+  
           if (data.code === 0) {
-            setReportData(prevReportData => {
-              const updatedData = [...(prevReportData || []), data.data];
-              console.log('Updated Report Data:', updatedData);
-              return updatedData;
-            });
+            allData.push(data.data);
           } else {
             setEmpty(true);
           }
         }
+  
+        if (allData.length > 0) {
+          // Combina i dati degli impianti A e B se btnPressed è 'impianto-ab'
+          if (btnPressed === 'impianto-ab') {
+            const mergedData = [...allData[0], ...allData[1]];  // Unisce i dati dei due impianti
+            setReportData(mergedData);
+          } else {
+            setReportData(allData[0]);  // Impianto singolo
+          }
+        }
+  
       } catch (error) {
         console.error("Error Fetching Data:", error);
         setEmpty(true);
       }
     };
-    
+  
     if (btnPressed) {
       fetchReportData();
     }
   }, [btnPressed]);
+  
+  
 
   const handleDownload = (reportType) => {
     if (!reportData || reportData.length === 0) {
@@ -132,32 +145,52 @@ const ExportReport = ({ btnPressed }) => {
   setCell('J4', 'TOT.TURNO');
   setCell('K4', 'TOT.CHILI');
 
-    const prova_array = new Array(); // All'interno i dati sono disposti correttmanete
-    // This gives the current row number
-    reportData.forEach((report, index) => {
-      
-      if (typeof report === 'object' && report !== null) {
-        
-        report.forEach((item, itemIndex) => {
-   
-          if (index === 0) {
-            prova_array[item.code] = { "codice": item.desc, "totale_balle_1": item.totale_balle, "totale_peso_1": item.totale_peso }
-          } else if (index === 1) {
-            Object.assign(prova_array[item.code], { 
-              "totale_balle_2": item.totale_balle, 
-              "totale_peso_2": item.totale_peso 
-            });
-          } else {
-            Object.assign(prova_array[item.code], { 
-              "totale_balle_3": item.totale_balle, 
-              "totale_peso_3": item.totale_peso 
-            });
-          }
-        });
-      } else {
-        console.error(`No items found or items is not an array in report ${index}`);
+  const prova_array = {}; // All'interno i dati sono disposti correttamente
+
+  // Unisci i dati da entrambi gli impianti
+  reportData.forEach((report, index) => {
+    report.forEach((item) => {
+      const productCode = item.code;
+  
+      if (!prova_array[productCode]) {
+        prova_array[productCode] = {
+          codice: item.desc,
+          totale_balle_1: 0,
+          totale_peso_1: 0,
+          totale_balle_2: 0,
+          totale_peso_2: 0,
+          totale_balle_3: 0,
+          totale_peso_3: 0
+        };
       }
+  
+      if (index === 0) {
+        if (btnPressed === 'impianto-ab'){
+          prova_array[productCode].totale_balle_3 += item.totale_balle;
+          prova_array[productCode].totale_peso_3 += item.totale_peso;
+        }
+        else if (btnPressed === 'impianto-a' || btnPressed === 'impianto-b'){
+        prova_array[productCode].totale_balle_1 += item.totale_balle;
+        prova_array[productCode].totale_peso_1 += item.totale_peso;
+        }
+        
+      } else if (index === 1) {
+        prova_array[productCode].totale_balle_2 += item.totale_balle;
+        prova_array[productCode].totale_peso_2 += item.totale_peso;
+      } else {
+        if (btnPressed === 'impianto-ab'){
+          prova_array[productCode].totale_balle_1 += item.totale_balle;
+          prova_array[productCode].totale_peso_1 += item.totale_peso;
+        }
+        else if (btnPressed === 'impianto-a' || btnPressed === 'impianto-b'){
+          prova_array[productCode].totale_balle_3 += item.totale_balle;
+          prova_array[productCode].totale_peso_3 += item.totale_peso;
+        }
+      } 
     });
+  });
+
+  
     
     var row = null;
     Object.keys(prova_array).forEach((index) => {
@@ -174,8 +207,6 @@ const ExportReport = ({ btnPressed }) => {
       });
     });
 
-    
-    
     // Totale Balle / Chili
     reportData.forEach((report) => {
       report.forEach((item, rowIndex) => {
@@ -219,6 +250,8 @@ const ExportReport = ({ btnPressed }) => {
         break;
 
       case 'impianto-ab': // GIOR. IMPIANTO A/B
+
+      
       for (let i = 5; i <= 28; i++) {
         worksheet.getCell(`A${i}`).value = 'A/B'; // Set the cell value to 'A/B' as a string
         worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
