@@ -1,7 +1,7 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';;
 
-const console = new Console("Wheelman", 1);
+const console = new Console("Wheelman");
 
 /**
  * 

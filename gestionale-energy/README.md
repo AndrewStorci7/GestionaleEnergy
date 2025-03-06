@@ -1,5 +1,13 @@
-# GestionaleEnergy
+# GestionaleEnergy Versione 1.1 ::
 Gestionale per l'automazione dell'inserimento e gestione degl'imballaggi 
+
+## Versione 1.1
+
+Comando per esguire la build (nella root del progetto)
+```sh
+npm run build
+npm run start
+```
 
 ## Comando per eseguire il backup del DB
 
