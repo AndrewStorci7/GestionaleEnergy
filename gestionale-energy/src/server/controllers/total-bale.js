@@ -111,12 +111,14 @@ class TotalBale extends Common {
             const { body } = req.body;
             const id_implant = body.id_implant;
             const useFor = body.useFor;
-            var cond_status = 'pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
+            var cond_status = 'OR pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
+            var prova = 'OR pb_wb.status != 1';
 
             // console.info(id_implant); // test
 
             if (useFor === 'specific') {
-                cond_status = 'pb_wb.status = 1';
+                cond_status = 'AND pb_wb.status = 1';
+                prova = '';
             }
             if (id_implant == 0) {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
@@ -147,12 +149,11 @@ class TotalBale extends Common {
                 WHERE 
                     ${this.table}.id_implant = ?
                     ${_params.condition}
-                    AND ${cond_status}
+                    ${cond_status}
                 ORDER BY 
                     ${this.table}.id DESC,
                     TIME(presser_bale.data_ins) DESC, 
-                    TIME(wheelman_bale.data_ins) DESC 
-                LIMIT 100`,
+                    TIME(wheelman_bale.data_ins) DESC`,
                 _params.params
             );
 
@@ -223,7 +224,7 @@ class TotalBale extends Common {
                 ON ${this.table}.id_pb = presser_bale.id 
                 AND ${this.table}.id_wb = wheelman_bale.id 
                 AND ${this.table}.id_implant = implants.id
-                WHERE ${this.table}.id_implant = ? ORDER BY presser_bale.data_ins DESC LIMIT 100`,
+                WHERE ${this.table}.id_implant = ? ORDER BY presser_bale.data_ins DESC`,
                 [id_implant]
             );
         
