@@ -43,7 +43,8 @@ export default function Table({ type, implant, idUser }) {
     // const [ids, setResp] = useState([]);
     const [msgEmpty, setMsg] = useState("");
     const [isEmpty, setEmpty] = useState(false);
-    const [isSelected, setSelected] = useState(null)
+    const [isSelected, setSelected] = useState(null);
+    const [idUnique, setIdUnique] = useState(null);
     const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
     const add = { 
         state: addWasClicked, 
@@ -63,8 +64,9 @@ export default function Table({ type, implant, idUser }) {
         setSelectedType(type);
     };
 
-    const handleSelect = (select) => {
+    const handleSelect = (select, idUnique) => {
         setSelected(select);
+        setIdUnique(idUnique);
     }
 
     const handleDownloadClick = (reportType) => {
@@ -91,7 +93,7 @@ export default function Table({ type, implant, idUser }) {
                             {/* BALLE IN LAVORAZIONE */}
                             <TableContent 
                                 type={"presser"} 
-                                handleSelect={(e) => handleSelect(e)}
+                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
                                 selectedBaleId={isSelected}
                                 add={add}  
                                 noData={(e) => noData(e)} 
@@ -101,7 +103,7 @@ export default function Table({ type, implant, idUser }) {
                             {/* BALLE COMPLETATE */}
                             <TableContent 
                                 type={"presser"} 
-                                handleSelect={(e) => handleSelect(e)}
+                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
                                 selectedBaleId={isSelected} 
                                 useFor={"specific"}
                                 noData={(e) => noData(e)} 
@@ -125,6 +127,7 @@ export default function Table({ type, implant, idUser }) {
                         idUser={idUser}
                         clickAddHandle={() => handleAddPressed()}
                         idSelect={isSelected}
+                        idUnique={idUnique}
                     />
 
                     {(!addWasClicked) ? (
@@ -148,7 +151,7 @@ export default function Table({ type, implant, idUser }) {
                             {/* BALLE IN LAVORAZIONE */}
                             <TableContent 
                                 type={"wheelman"} 
-                                handleSelect={(e) => handleSelect(e)}
+                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
                                 selectedBaleId={isSelected}
                                 add={add}
                                 noData={(e) => noData(e)} 
@@ -158,7 +161,7 @@ export default function Table({ type, implant, idUser }) {
                             {/* BALLE COMPLETATE */}
                             <TableContent 
                                 type={"wheelman"} 
-                                handleSelect={(e) => handleSelect(e)}
+                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
                                 selectedBaleId={isSelected}
                                 useFor={"specific"}
                                 noData={(e) => noData(e)} 

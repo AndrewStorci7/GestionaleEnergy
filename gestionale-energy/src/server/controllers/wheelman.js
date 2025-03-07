@@ -14,69 +14,6 @@ class WheelmanBale extends Bale {
         super(db, table);
     }
 
-    // async handleWheelmanData(req) {
-    //     const { id } = req.body;
-        
-    //     if (!id) {
-    //         throw new Error('Missing required parameter: id');
-    //     }
-
-    //     const query = `
-    //         SELECT 
-    //             ${this.table}.id AS 'id',
-    //             cond_${this.table}.type AS 'condition',
-    //             ${this.table}.id_cwb AS '_idCwb',
-    //             reas_not_tying.name AS 'reason',
-    //             ${this.table}.id_rnt AS '_idRnt',
-    //             ${this.table}.weight AS 'weight',
-    //             warehouse_dest.name AS 'warehouse',
-    //             ${this.table}.id_wd AS '_idWd',
-    //             ${this.table}.note AS 'notes',
-    //             ${this.table}.printed AS 'is_printed',
-    //             ${this.table}.data_ins AS 'data_ins'
-    //         FROM ${this.table}
-    //         JOIN reas_not_tying 
-    //         JOIN cond_${this.table}
-    //         JOIN warehouse_dest 
-    //         ON ${this.table}.id_cwb = cond_${this.table}.id 
-    //         AND ${this.table}.id_rnt = reas_not_tying.id 
-    //         AND ${this.table}.id_wd = warehouse_dest.id
-    //         WHERE ${this.table}.id = ?
-    //         LIMIT 1`;
-
-    //     try {
-    //         const [rows] = await this.db.query(query, [id]);
-            
-    //         if (rows && rows.length > 0) {
-    //             return {
-    //                 code: 0,
-    //                 data: rows[0] // Return single object instead of array
-    //             };
-    //         } else {
-    //             return {
-    //                 code: 1,
-    //                 message: "Nessuna balla trovata"
-    //             };
-    //         }
-    //     } catch (error) {
-    //         console.error('Database query error:', error);
-    //         throw error;
-    //     }
-    // }
-
-    // async get(req, res) {
-    //     try {
-    //         const result = await this.handleWheelmanData(req);
-    //         res.json(result.data);
-    //     } catch (error) {
-    //         console.error('Error in wheelman get:', error);
-    //         res.status(500).json({
-    //             code: 1,
-    //             message: `Errore durante l'esecuzione della query: ${error.message}`
-    //         });
-    //     }
-    // }
-
     handleWheelmanData = async (req) => {
         
         const {id} = req.body;

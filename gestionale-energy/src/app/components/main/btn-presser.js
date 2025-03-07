@@ -11,7 +11,10 @@ import React, { useEffect, useState } from "react";
  * @param {object}   idSelect        {
  *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
  *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
+ *  `idUnique`<number>    Indica l'ID unico della balla totale
  * }
+ * 
+ * @param {int}
  * 
  * @param {int}      implant         Id dell'impianto che serve per aggiungere una nuova balla
  * 
@@ -23,10 +26,13 @@ import React, { useEffect, useState } from "react";
  */
 export default function BtnPresser({ 
     idSelect,
+    idUnique,
     implant, 
     idUser, 
     clickAddHandle
 }) {
+
+    const default_message = `Balla numero ${idUnique} eliminata correttamente!`;
 
     const [idBale, setIdBale] = useState(0);
     const [showAlert, setShowAlert] = useState(false);
@@ -50,6 +56,8 @@ export default function BtnPresser({
         try {
             const f_id = (typeof id === 'object') ? id[0] : id;
 
+            // console.log(f_id);
+
             const url = await getServerRoute('delete-bale');
             const check = await fetch(url, {
                 method: 'POST',
@@ -62,7 +70,7 @@ export default function BtnPresser({
             if (resp.code < 0) {
                 handleAlert(resp.message);
             } else {
-                handleAlert(resp.message, 'confirmed');
+                handleAlert(default_message, 'confirmed');
             } 
         } catch (error) {
             handleAlert(error);

@@ -47,185 +47,112 @@ export default function TableContent({
     // WebSocket instance
     const { ws, message } = useWebSocket();
 
-    const _CMNSTYLE_TBODY = (primary) ? "text-black" : "bg-gray-200 text-black opacity-50";
-    const _CMNSTYLE_TD = "border border-slate-400 h-[40px] ";
-    const _CMN_CURSOR = (primary) ? "cursor-auto" : "cursor-no-drop";
-
-    // const [changeFromAdd, setChangeFromAdd] = useState(false) 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false);
-    const [openNotes, setOpenNotes] = useState({}); // Track open notes by their ID
-    const [noteMessage, setNoteMessage] = useState(""); // state to hold note message
+    const [openNotes, setOpenNotes] = useState({}); 
+    const [noteMessage, setNoteMessage] = useState("");
+
+    const selectedBaleIdRef = useRef([]);
 
     const handleNoteClick = (id, note) => {
-        // Impostare il messaggio della nota
         setNoteMessage(note);
-    
-        // Aggiornare lo stato di openNotes in modo idempotente
-        setOpenNotes(prev => {
-            // Non modificare se lo stato è già aggiornato come previsto
-            const newState = { ...prev, [id]: !prev[id] };
-            return newState;
-        });
+        setOpenNotes(prev => ({ ...prev, [id]: !prev[id] }));
     };
 
-    const handleCloseNote = (id) => {
-        setOpenNotes(prev => ({ ...prev, [id]: false })); // Imposta su false per chiudere
-    };
+    const handleCloseNote = id => setOpenNotes(prev => ({ ...prev, [id]: false }));
 
     const handleAddChange = async () => {
         refreshPage(ws);
         add.setAdd();
-    } 
+    };
     
-    useEffect(() =>  {
-        const fetchData = async () => {
-            try {
-                const cookies = await JSON.parse(Cookies.get('user-info'));
-                const body = {
-                    id_implant: cookies.id_implant,
-                    useFor, // prendo solo le balle ancora in lavorazione
-                };
-                const url = getServerRoute("bale");
-                
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body }),
-                });
+    const fetchData = async () => {
+        try {
+            const cookies = JSON.parse(Cookies.get('user-info'));
+            const body = { id_implant: cookies.id_implant, useFor };
+            const url = getServerRoute("bale");
+            
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ body }),
+            });
 
-                if (!resp.ok) {
-                    throw new Error("Network response was not ok");
-                }
+            if (!resp.ok) throw new Error("Network response was not ok");
 
-                const data = await resp.json();
-                console.log(data);
-
-                if (data.code === 0) {
-                    setEmpty(false);
-                    if (type === "presser") setContent(data.presser);
-                    else if (type === "wheelman") setContent(data.wheelman);
-                    else setContent([]);
-                } else {
-                    setEmpty(true);
-                    if (noData) noData(data.message);
-                }
-            } catch (error) {
-                console.log(error);
+            const data = await resp.json();
+            if (data.code === 0) {
+                setEmpty(false);
+                setContent(type === "presser" ? data.presser : type === "wheelman" ? data.wheelman : []);
+            } else {
+                setEmpty(true);
+                noData && noData(data.message);
             }
+        } catch (error) {
+            console.error(error);
         }
-
-        fetchData();
-    }, [message]);
-
-    const selectedBaleIdRef = useRef([]);
-
-    const handleRowClick = (id) => {
-        // Ensure selectedBaleIdRef.current is initialized as an array
-        if (!Array.isArray(selectedBaleIdRef.current))
-            selectedBaleIdRef.current = [];
+    };
     
-        // Check if the id is already in the selectedBaleIdRef array
-        let newSelectedBaleId = [id];  // Replace the array with just the current selected ID
-        newSelectedBaleId = selectedBaleId === id ? null : id;  // Toggle or set the new ID
-        selectedBaleIdRef.current = newSelectedBaleId;  // Update the ref to reflect the new selection
-        handleSelect(newSelectedBaleId);
+    useEffect(() => { fetchData(); }, [message]);
+
+    const handleRowClick = (id, idUnique) => {
+        const newSelectedBaleId = selectedBaleId === id ? null : id;
+        selectedBaleIdRef.current = newSelectedBaleId;
+        handleSelect(newSelectedBaleId, idUnique);
     };
 
     return (
-        <tbody className={`${_CMNSTYLE_TBODY} ${_CMN_CURSOR} ${_CMNSTYLE_TD} ${getBgColor(type)}`}>
-            {(useFor === 'regular' && add.state) && ( 
-                <InsertNewBale
-                    type={type}
-                    mod={primary}
-                    primary={primary}
-                    confirmHandle={handleAddChange}
-                />
+        <tbody className={`text-black ${primary ? "cursor-auto" : "cursor-no-drop"} ${getBgColor(type)}`}>            
+            {useFor === 'regular' && add.state && (
+                <InsertNewBale type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
 
-            {(!isEmpty) ? (
-                content.map((_m, _i) => {
+            {!isEmpty && content.map((bale, index) => {
+                const id = bale.id;
+                const idUnique = bale.idUnique;
+                const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+                const hour = bale.data_ins?.substr(11, 8) || "";
+                const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
 
-                    // Variabili locali
-                    let date = "";
-                    let hour = "";
-                    let id = 0;
-                    let idUnique = 0;
-                    var status = "";
-
-                    Object.keys(_m).map((key, __i) => {
-                        if (key === "id") {
-                            id = _m[key]
-                        } else if (key === "data_ins") {
-                            date = _m[key].substr(0, 10).replaceAll('-', '/');
-                            hour = _m[key].substr(11, 8);
-                        } else if (key === "status") {
-                            //Se il valore è 0, Lavorazione(working), Se il valore è 1, Stampato(completed), Se il valore è -1 (warning)
-                            if (_m[key] === 0) status = "working";
-                            else if (_m[key] === 1) status = "completed";
-                            else status = "warning";
-                        } else if (key === "idUnique") {
-                            idUnique = _m[key];
-                        }
-                    })
-
-                    return (
-                        <tr className={`${_CMNSTYLE_TD} `} key={_i} data-bale-id={id}> 
-                            {(primary) && (
-                                <>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"check_btn" + _i}>
-                                        {(useFor === 'regular') && <CheckButton 
-                                        isSelected={(selectedBaleId === id)}
-                                        handleClick={() => handleRowClick(id)} />}
-                                    </td>
-                                    <td className={`${_CMNSTYLE_TD} font-bold`} key={"idUnique" + _i}>
-                                        {idUnique}
-                                    </td>
-                                    <td className={`${_CMNSTYLE_TD}`} key={"status" + _i}>
-                                        <Icon type={status} />
-                                    </td>
-                                </>
-                            )}
-                            {Object.keys(_m).map((key, __i) => (
-                                (key.startsWith("_") || key == "id" || key == "status" || key == "idUnique" ) ? (
-                                    null
-                                ) : (key === "notes") ? (
-                                    (_m[key] !== "" && _m[key] !== null) ?
-                                    <td>
-                                        <button className="w-auto p-[6px] mx-[10%] w-[80%]" key={key + _i +__i} onClick={() => handleNoteClick(id, _m[key])}>
-                                            <Icon type="info"/> 
-                                        </button>
-                                    </td> 
-                                    : <td></td>
-                                ) : (key === "is_printed") ? (
-                                    <td className={`${_CMNSTYLE_TD} font-bold`} key={key + _i + __i} value={_m[key]}>
-                                        {(_m[key] == 0) ? "Da stamp." : "Stampato"}
-                                    </td>
-                                ) : (key !== "data_ins") ? (
-                                    <td className={`${_CMNSTYLE_TD}`} key={key + _i + __i} value={_m[key]}>{_m[key]}</td>
-                                ) : null
-                            ))}
-                            {(primary) && (
-                                <td className={`${_CMNSTYLE_TD} relative`} key={"confirm" + _i}>
-                                    <button 
-                                    className='on-btn-confirm'
-                                    onClick={() => console.log("TODO")}
-                                    >
-                                        OK
-                                    </button>
-                                    {openNotes[id] && (
-                                    <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />
-                                )}
+                return (
+                    <tr key={index} data-bale-id={id} className="border border-slate-400 h-[40px]">
+                        {primary && (
+                            <>
+                                <td>
+                                    {useFor === 'regular' && (
+                                        <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
+                                    )}
                                 </td>
-                            )}
-                            {/* Data */}
-                            <td className={`${_CMNSTYLE_TD}`} key={"data" + _i}>{date}</td>
-                            {/* Ore */}
-                            <td className={`${_CMNSTYLE_TD}`} key={"hour" + _i}>{hour}</td>
-                        </tr>
-                    )
-                })
-            ) : null }
+                                <td className="font-bold">{idUnique}</td>
+                                <td><Icon type={status} /></td>
+                            </>
+                        )}
+                        {Object.entries(bale).map(([key, value]) => (
+                            key.startsWith("_") || ["id", "status", "idUnique"].includes(key) ? null : (
+                                key === "notes" && value ? (
+                                    <td key={key}>
+                                        <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
+                                            <Icon type="info" /> 
+                                        </button>
+                                    </td>
+                                ) : key === "is_printed" ? (
+                                    <td key={key} className="font-bold">{value == 0 ? "Da stamp." : "Stampato"}</td>
+                                ) : key !== "data_ins" ? (
+                                    <td key={key}>{value}</td>
+                                ) : null
+                            )
+                        ))}
+                        {primary && (
+                            <td className="relative">
+                                {/* <button className='on-btn-confirm' onClick={() => console.log("TODO")}>OK</button> */}
+                                {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
+                            </td>
+                        )}
+                        <td>{date}</td> {/* DATA */}
+                        <td>{hour}</td> {/* ORA */}
+                    </tr>
+                );
+            })}
         </tbody>
-    )
+    );
 }

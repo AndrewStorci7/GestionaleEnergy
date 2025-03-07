@@ -15,121 +15,6 @@ class TotalBale extends Common {
         this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}`;
     }
 
-/// ------------------------------------------------------------------------------------------------------------
-/// Prova gestione Promise generata da Claude
-/// ------------------------------------------------------------------------------------------------------------
-    // async get(req, res) {
-    //     try {
-    //         const { id_implant } = req.body;
-    //         if (!id_implant) {
-    //             return res.status(400).json({ 
-    //                 code: 1, 
-    //                 message: "Missing id_implant parameter" 
-    //             });
-    //         }
-
-    //         const _params = this.checkConditionForTurn(id_implant);
-    //         const select = await this.fetchBaleData(_params);
-            
-    //         if (!select || select.length === 0) {
-    //             return res.json({ 
-    //                 code: 1, 
-    //                 message: "Nessuna balla trovata" 
-    //             });
-    //         }
-
-    //         const results = await this.processResults(select);
-            
-    //         return res.json({ 
-    //             code: 0, 
-    //             presser: results.presserResult, 
-    //             wheelman: results.wheelmanResult 
-    //         });
-    //     } catch (error) {
-    //         console.error('Queue processing error:', error);
-    //         return res.status(500).json({ 
-    //             code: 1, 
-    //             message: `Error processing request: ${error.message}` 
-    //         });
-    //     }
-    // }
-
-    // async fetchBaleData(_params) {
-    //     const [select] = await this.db.query(
-    //         `SELECT ${this.table}.id_pb, ${this.table}.id_wb, ${this.table}.status, ${this.table}.id 
-    //         FROM ${this.table} 
-    //         JOIN presser_bale 
-    //         JOIN wheelman_bale 
-    //         JOIN implants 
-    //         ON ${this.table}.id_pb = presser_bale.id 
-    //         AND ${this.table}.id_wb = wheelman_bale.id 
-    //         AND ${this.table}.id_implant = implants.id 
-    //         WHERE ${this.table}.id_implant = ? ${_params.condition} 
-    //         ORDER BY ${this.table}.status ASC, 
-    //         TIME(presser_bale.data_ins) DESC, 
-    //         TIME(wheelman_bale.data_ins) DESC 
-    //         LIMIT 100`,
-    //         _params.params
-    //     );
-    //     return select;
-    // }
-
-    // async fetchEntityData(endpoint, id) {
-    //     try {
-    //         const response = await fetch(`${this.internalUrl}/${endpoint}`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //                 'Accept': 'application/json'
-    //             },
-    //             body: JSON.stringify({ id })
-    //         });
-
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! status: ${response.status}`);
-    //         }
-
-    //         return await response.json();
-    //     } catch (error) {
-    //         console.error(`Error fetching ${endpoint} data:`, error);
-    //         throw error;
-    //     }
-    // }
-
-    // async processResults(select) {
-    //     const presserResult = [];
-    //     const wheelmanResult = [];
-
-    //     for (const item of select) {
-    //         try {
-    //             const [presserData, wheelmanData] = await Promise.all([
-    //                 this.fetchEntityData('presser', item.id_pb),
-    //                 this.fetchEntityData('wheelman', item.id_wb)
-    //             ]);
-
-    //             console.info("[Presser data]: ", presserData);
-    //             console.info("[Wheelman data]: ", wheelmanData);
-
-    //             presserData.status = item.status;
-    //             presserData.idUnique = item.id;
-    //             wheelmanData.status = item.status;
-    //             wheelmanData.idUnique = item.id;
-
-    //             presserResult.push(presserData);
-    //             wheelmanResult.push(wheelmanData);
-    //         } catch (error) {
-    //             console.error('Error processing item:', error);
-    //             continue;
-    //         }
-    //     }
-
-    //     return { presserResult, wheelmanResult };
-    // }    
-
-/// ------------------------------------------------------------------------------------------------------------
-/// FINE Prova gestione Promise generata da Claude
-/// ------------------------------------------------------------------------------------------------------------
-
     /**
      * Add Bale on DB
      * 
@@ -232,6 +117,9 @@ class TotalBale extends Common {
 
             if (useFor === 'specific') {
                 cond_status = 'pb_wb.status = 1';
+            }
+            if (id_implant == 0) {
+                res.json({ code: 1, message: "Nessuna balla trovata" });
             }
 
             const presserResult = [];
@@ -381,6 +269,10 @@ class TotalBale extends Common {
     async balleTotali(req, res) {
         try {
             const { implant } = req.body;
+
+            if (implant == 0 || implant == undefined ) {
+                res.json({ code: 1, message: "Nessuna balla trovata" });
+            }
 
             const _params = super.checkConditionForTurn(implant);
             

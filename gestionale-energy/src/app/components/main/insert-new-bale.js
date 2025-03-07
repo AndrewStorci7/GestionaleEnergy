@@ -38,7 +38,9 @@ export default function InsertNewBale({
 
     const { ws, message } = useWebSocket();
 
-    const _CMNSTYLE_TD = "on-table-td";
+    // const _CMNSTYLE_TD = "on-table-td";
+    const _CMNSTYLE_TD = "h-[40px]";
+    const _CMNSTYLE_TR = "on-table-td";
 
     // Dati Pressista
     const [plastic, setPlastic] = useState(""); // Id plastica
@@ -128,7 +130,7 @@ export default function InsertNewBale({
         case "presser": {
             return (
                 // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`}>
-                <tr className={`${_CMNSTYLE_TD}`}>
+                <tr className={`${_CMNSTYLE_TD} ${_CMNSTYLE_TR}`}>
                     {(primary) ? (
                         <>
                             <td className={`${_CMNSTYLE_TD}`} >
@@ -272,7 +274,9 @@ export default function InsertNewBale({
                         stato
                     </td>
                     {(primary) ? (
-                        <td className={`${_CMNSTYLE_TD}`} >
+                        <td 
+                        // className={`${_CMNSTYLE_TD}`} 
+                        >
                             <button 
                             className='on-btn-confirm'
                             onClick={() => { 

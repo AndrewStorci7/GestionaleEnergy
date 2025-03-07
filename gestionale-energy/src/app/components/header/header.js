@@ -79,10 +79,10 @@ export default function Header({
                 setTurn("Turno 1");
             else if (_hour >= 14 && _hour < 22)
                 setTurn("Turno 2");
-            else if (_hour >= 22 && _hour < 6)
+            else if (_hour >= 22 && _hour <= 23 || _hour >= 0 && _hour < 6)
                 setTurn("Turno 3");
             else
-                setTurn("Turno ciao");
+                setTurn("Turno 1");
 
         }, 1000);
 

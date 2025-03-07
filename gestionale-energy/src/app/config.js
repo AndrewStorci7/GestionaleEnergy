@@ -197,6 +197,12 @@ const getServerRoute = (route) => {
         case "report-balletotali": 
             return getSrvUrl() + "/report/total-bale";
         
+        case "report-contatori": 
+        // case "report-daily": 
+            return getSrvUrl() + "/report/contatori";
+        case "report-total-bale": 
+        // case "report-daily": 
+            return getSrvUrl() + "/report/total-bale";
         // case "aggiungi-balla": case "add-bale": return getSrvUrl() + "/bale/add";
         // case "rimuovi-balla": case "delete-bale": return getSrvUrl() + "/bale/delete";
         // case "aggiorna-stato-balla": case "update-status-bale": return getSrvUrl() + "/bale/status/update";
