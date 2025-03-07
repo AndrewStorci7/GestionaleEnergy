@@ -152,7 +152,7 @@ class TotalBale extends Common {
                     ${this.table}.id DESC,
                     TIME(presser_bale.data_ins) DESC, 
                     TIME(wheelman_bale.data_ins) DESC 
-                LIMIT 100`,
+                LIMIT 300`,
                 _params.params
             );
 
@@ -223,7 +223,7 @@ class TotalBale extends Common {
                 ON ${this.table}.id_pb = presser_bale.id 
                 AND ${this.table}.id_wb = wheelman_bale.id 
                 AND ${this.table}.id_implant = implants.id
-                WHERE ${this.table}.id_implant = ? ORDER BY presser_bale.data_ins DESC LIMIT 100`,
+                WHERE ${this.table}.id_implant = ? ORDER BY presser_bale.data_ins DESC LIMIT 300`,
                 [id_implant]
             );
         

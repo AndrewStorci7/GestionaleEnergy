@@ -49,6 +49,7 @@ export default function TableHeader({ type, primary = false }) {
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Stato</th>}
+                            <th className={`${_CMNSTYLE_TD}`}>Plastica</th>
                             <th className={`${_CMNSTYLE_TD}`}>Condiz. Balla Carrel.</th>
                             <th className={`${_CMNSTYLE_TD}`}>Motivaz.</th>
                             <th className={`${_CMNSTYLE_TD}`}>Peso (Kg)</th>
