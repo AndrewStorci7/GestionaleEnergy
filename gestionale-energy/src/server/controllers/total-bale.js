@@ -118,6 +118,9 @@ class TotalBale extends Common {
             if (useFor === 'specific') {
                 cond_status = 'pb_wb.status = 1';
             }
+            if (id_implant == 0) {
+                res.json({ code: 1, message: "Nessuna balla trovata" });
+            }
 
             const presserResult = [];
             const wheelmanResult = [];
@@ -266,6 +269,10 @@ class TotalBale extends Common {
     async balleTotali(req, res) {
         try {
             const { implant } = req.body;
+
+            if (implant == 0 || implant == undefined ) {
+                res.json({ code: 1, message: "Nessuna balla trovata" });
+            }
 
             const _params = super.checkConditionForTurn(implant);
             
