@@ -149,12 +149,15 @@ class TotalBale extends Common {
                     ${_params.condition}
                     AND ${cond_status}
                 ORDER BY 
-                    ${this.table}.id DESC,
-                    TIME(presser_bale.data_ins) DESC, 
-                    TIME(wheelman_bale.data_ins) DESC 
+                    ${this.table}.status DESC, 
+                    ${this.table}.id ${_params.status === 1 ? 'ASC' : 'DESC'},
+                    TIME(presser_bale.data_ins) ${_params.status === 1 ? 'ASC' : 'DESC'},
+                    TIME(wheelman_bale.data_ins) ${_params.status === 1 ? 'ASC' : 'DESC'}
                 LIMIT 300`,
                 _params.params
             );
+            
+            
 
             if (select !== 'undefined' || select !== null) {
 

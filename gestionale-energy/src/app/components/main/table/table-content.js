@@ -113,11 +113,12 @@ export default function TableContent({
                 const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
                 const hour = bale.data_ins?.substr(11, 8) || "";
                 const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
-
+                
                 return (
                     <tr key={index} data-bale-id={id} className="border border-slate-400 h-[40px]">
                         {primary && (
                             <>
+                                
                                 <td>
                                     {useFor === 'regular' && (
                                         <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
@@ -125,6 +126,7 @@ export default function TableContent({
                                 </td>
                                 <td className="font-bold">{idUnique}</td>
                                 <td><Icon type={status} /></td>
+                                
                             </>
                         )}
                         {Object.entries(bale).map(([key, value]) => (
@@ -148,6 +150,7 @@ export default function TableContent({
                                 {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                             </td>
                         )}
+                        
                         <td>{date}</td> {/* DATA */}
                         <td>{hour}</td> {/* ORA */}
                     </tr>

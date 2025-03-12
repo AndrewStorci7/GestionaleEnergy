@@ -92,9 +92,15 @@ export default function UpdateValuesBale({
      */
     const handleClick = async () => {
         try {
+            // Verifica se una balla è stata selezionata
+            if ((type === 'presser' && !selected_b) || (type !== 'presser' && weight <= 0)) {
+                alert("Devi selezionare una balla valida!");
+                return; // Interrompe l'esecuzione se non è selezionato nulla
+            }
+    
             const cookie = JSON.parse(Cookies.get('user-info'));
             var body = null, url = "";
-            if ( type === 'presser') {
+            if (type === 'presser') {
                 body = {
                     id_presser: cookie.id_user,
                     id_plastic: plastic,
@@ -117,21 +123,20 @@ export default function UpdateValuesBale({
                 };
                 url = await getServerRoute("update-wheelman-bale");
             }
-
+    
             const body2 = { status: -1, where: idBale };
             const resp = await fetch(url, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ body })
             });
-
+    
             // Aggiorna lo stato della balla totale
             await updateStatusTotalbale(body2);
             // Gestisco la conferma e ri-renderizzo la componente padre
             handlerConfirm();
-
+    
         } catch (error) {
-            // <Alert msg={error} />
             console.log("Errore", error);
         }
     }
@@ -226,10 +231,11 @@ export default function UpdateValuesBale({
                     Annulla
                 </button>
                 <button 
-                className='border bg-blue-400 col-span-2'
-                onClick={() => handleClick()}
+                    className='border bg-blue-400 col-span-2'
+                    onClick={() => handleClick()}
+                    disabled={(type === 'presser' && !selected_b) || (type !== 'presser' && weight <= 0)}
                 >
-                    OK
+                OK
                 </button>
             </div>
         </>
