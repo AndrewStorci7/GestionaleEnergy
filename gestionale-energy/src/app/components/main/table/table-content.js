@@ -126,7 +126,7 @@ export default function TableContent({
                                 </td>
                                 <td className="font-bold">{idUnique}</td>
                                 <td><Icon type={status} /></td>
-                                
+                                <td></td>
                             </>
                         )}
                         {Object.entries(bale).map(([key, value]) => (
