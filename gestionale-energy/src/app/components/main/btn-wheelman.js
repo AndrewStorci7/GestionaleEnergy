@@ -24,11 +24,13 @@ import React, { useEffect, useState } from "react";
 
 export default function BtnWheelman({ 
     idSelect,
+    idUnique,
     implant, 
     idUser, 
     clickAddHandle
 }) {
 
+    const confirm_message = `Sei sicuro di voler stampare la balla ${idUnique} ?`;
     const [idBale, setIdBale] = useState(0)
 
     useEffect(() => {
@@ -66,13 +68,19 @@ export default function BtnWheelman({
         setShowAlert(prev => !prev);
     };
 
-    // Funzione per chiudere l'alert
-    const closeAlert = () => {
+    /**
+     * Funzione per chiudere l'alert
+     * @param {boolean} isConfirmed 
+     */
+    const closeAlert = (isConfirmed = false) => {
+        if (isConfirmed)
+            handleStampa();
         setShowAlert(prev => !prev);
     }
 
-    const handleStampa = async (msg = "I dati sono stati stampati correttamente", scope = "confirmed") => {
-        if (idSelect !== null && idSelect) {
+    const handleStampa = async () => {
+        handleAlert(confirm_message, "confirmed");
+        /*if (idSelect !== null && idSelect) {
             try {
 
                 const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
@@ -113,7 +121,7 @@ export default function BtnWheelman({
             setShowAlert(prev => !prev);
         } else {
             handleAlert("Nessuna balla selezionata!");
-        }
+        }*/
     }
     
     return(

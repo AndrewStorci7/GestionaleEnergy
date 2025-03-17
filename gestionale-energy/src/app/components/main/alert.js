@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react";
 import UpdateValuesBale from "./update-bale";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
-import { refreshPage } from "@/app/config";
-import md5 from "md5";
+import { refreshPage, getServerRoute } from "@/app/config";
 
 /**
 * @author Daniele Zeraschi from Oppimittinetworking
@@ -33,24 +32,57 @@ export default function Alert({
   
   const { ws } = useWebSocket();
 
-  const _CMNSTYLE_TD = "on-table-td";
-  const [sanitize_alertFor, setSanitize] = useState("")
-  const [showAlert, setShowAlert] = useState(true);
+  const [sanitize_alertFor, setSanitize] = useState("");
+  const [message, setMessage] = useState(""); 
   
-  const closeAlert = () => {
-    setShowAlert(false);
-    handleClose();
-  };
-  
-  const handleConfirmedClose = () => {
-    closeAlert();
-    window.location.reload();
+  /**
+   * Elimina una balla 
+   * @param {number}      id 
+   * @param {Function}    handleAlert
+   */
+  const handleDelete = async (id) => {
+    try {
+      const f_id = (typeof id === 'object') ? id[0] : id;
+
+      const url = await getServerRoute('delete-bale');
+      const check = await fetch(url, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json' },
+          body: JSON.stringify({ id_bale: f_id }),
+      });
+
+      const resp = await check.json();
+
+      if (resp.code < 0) {
+        // handleAlert(resp.message);
+        setMessage(resp.message);
+        alertFor = 'error';
+      } else {
+        // handleAlert(default_message, 'confirmed');
+        setMessage("Balla selezionata eliminata correttamente!");
+        alertFor = 'confirmed-successfull';
+        closeAlert();
+      } 
+    } catch (error) {
+      // handleAlert(error);
+      alertFor = 'error';
+      setMessage(error);
+    }
+  }
+
+  /**
+   * @param {boolean} isConfirmed
+   */
+  const closeAlert = (isConfirmed = false) => {
+    handleClose(isConfirmed);
+    refreshPage(ws);
   };
   
   const handleConfirm = () => {
     try {
-      closeAlert();
-      refreshPage(ws);
+      handleDelete(idBale);
+      // closeAlert();
+      // refreshPage(ws);
     } catch (error) {
       alertFor = "error";
       msg = error;
@@ -59,7 +91,8 @@ export default function Alert({
 
   useEffect(() => {
     setSanitize(alertFor.startsWith('update') ? 'update' : alertFor);
-  }, [alertFor]);
+    msg = message;
+  }, [alertFor, msg, message]);
   
   switch(sanitize_alertFor) {
     case "error": {
@@ -79,7 +112,7 @@ export default function Alert({
             zIndex: 999,
             textAlign: "center",
           }}> 
-            <p>Errore: {msg}</p>
+            <p>Errore: {msg ? msg : message}</p>
             <button
             onClick={() => closeAlert()}
             style={{
@@ -116,7 +149,7 @@ export default function Alert({
               zIndex: 999,
               textAlign: "center",
             }}> 
-              <p>{msg}</p>
+              <p>{msg ? msg : message}</p>
               <button
               onClick={() => closeAlert()}
               style={{
@@ -155,7 +188,7 @@ export default function Alert({
               textAlign: "center",
             }}
             > 
-              <p>{msg ? msg : "I dati sono stati inseriti correttamente!"}</p>
+              <p>{msg ? msg : message}</p>
               <button
               onClick={() => handleConfirm()}
               style={{
@@ -168,11 +201,64 @@ export default function Alert({
                 marginTop: "10px",
               }}
               >
-                OK
+                Si
+              </button>
+              <button
+              onClick={() => closeAlert()}
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "seagreen",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "10px",
+                marginRight: "10px" , 
+              }}>
+                No
               </button>
             </div>
           </div>
         </div>
+      )
+    }
+    case 'confirmed-successfull':{
+      return(
+        <div>
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+          <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            padding: "20px",
+            backgroundColor: "rgb(5, 181, 61)",
+            color: "white",
+            borderRadius: "5px",
+            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+            zIndex: 1,
+            textAlign: "center",
+          }}
+          > 
+            <p>I dati sono stati inseriti correttamente!</p>
+            <button
+            onClick={() => closeAlert()}
+            style={{
+              padding: "5px 10px",
+              backgroundColor: "seagreen",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              marginTop: "10px",
+            }}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      </div>
       )
     }
     case 'update': {

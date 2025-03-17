@@ -33,6 +33,7 @@ export default function BtnPresser({
 }) {
 
     const default_message = `Balla numero ${idUnique} eliminata correttamente!`;
+    const confirm_message = `Sei sicuro di voler eleminare la balla ${idUnique} ?`;
 
     const [idBale, setIdBale] = useState(0);
     const [showAlert, setShowAlert] = useState(false);
@@ -52,29 +53,30 @@ export default function BtnPresser({
         }
     }
 
-    const handleDelete = async (id) => {
-        try {
-            const f_id = (typeof id === 'object') ? id[0] : id;
+    const handleDelete = (id) => {
+        handleAlert(confirm_message, "confirmed");
+        // try {
+        //     const f_id = (typeof id === 'object') ? id[0] : id;
 
-            // console.log(f_id);
+        //     // console.log(f_id);
 
-            const url = await getServerRoute('delete-bale');
-            const check = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_bale: f_id }),
-            });
+        //     const url = await getServerRoute('delete-bale');
+        //     const check = await fetch(url, {
+        //         method: 'POST',
+        //         headers: {'Content-Type': 'application/json' },
+        //         body: JSON.stringify({ id_bale: f_id }),
+        //     });
     
-            const resp = await check.json();
+        //     const resp = await check.json();
     
-            if (resp.code < 0) {
-                handleAlert(resp.message);
-            } else {
-                handleAlert(default_message, 'confirmed');
-            } 
-        } catch (error) {
-            handleAlert(error);
-        }
+        //     if (resp.code < 0) {
+        //         handleAlert(resp.message);
+        //     } else {
+        //         handleAlert(default_message, 'confirmed');
+        //     } 
+        // } catch (error) {
+        //     handleAlert(error);
+        // }
     }
 
     const handleUpdate = async (id) => {
