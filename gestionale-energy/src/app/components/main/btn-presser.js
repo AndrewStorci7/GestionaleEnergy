@@ -93,6 +93,7 @@ export default function BtnPresser({
         } else {
             handleAlert("Nessuna balla selezionata!");
         }
+        idSelect = null;
     }
 
     /**

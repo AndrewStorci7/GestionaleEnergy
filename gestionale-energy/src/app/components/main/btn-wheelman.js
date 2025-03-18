@@ -11,10 +11,19 @@ import React, { useEffect, useState } from "react";
  *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
  *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
  * }
+ *
+ * @param {string}   alertFor     Il tipo di alert: [ 'error' | 'note' | 'confirmed' | 'update-p' | 'update-w' ]
+ *                                 error: Errore
+ *                               confirmed: Conferma operazione generica
+ *                               note: Visuaizzazione note
+ *                               update-p: Alert per modifica dati balla pressista
+ *                               update-w: Alert per modificare dati balla carrellista
  * 
- * @param {int}      implant         Id dell'impianto che serve per aggiungere una nuova balla
+ * @param {number}   idUnique        Id univoco della balla intera
  * 
- * @param {int}      idUser          Id dell'utente che serve per aggiungere una nuova balla
+ * @param {number}   implant         Id dell'impianto che serve per aggiungere una nuova balla
+ * 
+ * @param {number}   idUser          Id dell'utente che serve per aggiungere una nuova balla
  *  
  * @param {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
  *                                   passa i dati ricevuti
@@ -50,8 +59,8 @@ export default function BtnWheelman({
         } else {
             handleAlert("Nessuna balla selezionata!");
         }
+        idSelect = null;
     }
-    
 
     const [showAlert, setShowAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -74,55 +83,59 @@ export default function BtnWheelman({
      */
     const closeAlert = (isConfirmed = false) => {
         if (isConfirmed)
-            handleStampa();
+            handleStampa(true);
         setShowAlert(prev => !prev);
     }
 
-    const handleStampa = async () => {
-        handleAlert(confirm_message, "confirmed");
-        /*if (idSelect !== null && idSelect) {
-            try {
-
-                const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
-                const body2 = { status: 1, where: idSelect }; // Body per l'update dello stato della balla totale
-                const url_update_wheelman = await getServerRoute("update-wheelman-bale");
-                const url_update_status = await getServerRoute("update-status-bale");
-
-                // Invia la richiesta per aggiornare lo stato della balla
-                const response = await fetch(url_update_wheelman, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body }),
-                });
-
-                // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
-                const response2 = await fetch(url_update_status, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body: body2 }),
-                });
+    const handleStampa = async (execute = false) => {
+        
+        if (idSelect !== null && idSelect) {
+            if (execute) {
+                try {
     
-                const result = await response.json();
-                const result2 = await response2.json();
-
-                if (result.code === 0 && result2.code === 0) {
-                    // Se la risposta è positiva, mostra un messaggio di conferma
-                    setScope(scope);
-                    setErrorMessage(msg);
-                } else {
-                    // Se c'è un errore, mostra un messaggio di errore
-                    setScope("error");
-                    setErrorMessage(result.message);
+                    const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
+                    const body2 = { status: 1, where: idSelect }; // Body per l'update dello stato della balla totale
+                    const url_update_wheelman = await getServerRoute("update-wheelman-bale");
+                    const url_update_status = await getServerRoute("update-status-bale");
+    
+                    // Invia la richiesta per aggiornare lo stato della balla
+                    const response = await fetch(url_update_wheelman, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ body }),
+                    });
+    
+                    // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
+                    const response2 = await fetch(url_update_status, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ body: body2 }),
+                    });
+        
+                    const result = await response.json();
+                    const result2 = await response2.json();
+    
+                    if (result.code === 0 && result2.code === 0) {
+                        // Se la risposta è positiva, mostra un messaggio di conferma
+                        handleAlert('Balla stampata correttamente', 'confirmed-successfull');
+                    } else {
+                        // Se c'è un errore, mostra un messaggio di errore
+                        handleAlert(result.message);
+                    }
+                } catch (error) {
+                    handleAlert(error);
                 }
-            } catch (error) {
-                setScope("error");
-                setErrorMessage("Si è verificato un errore durante l'aggiornamento.");
+                // setShowAlert(prev => !prev);
+            } else {
+                handleAlert(confirm_message, 'confirmed-print');
             }
-            setShowAlert(prev => !prev);
         } else {
-            handleAlert("Nessuna balla selezionata!");
-        }*/
-    }
+            // If no bale is selected, show an error alert
+            handleAlert('Nessuna Balla selezionata');
+        }
+        idSelect = null;
+    };
+            
     
     return(
         <>

@@ -12,10 +12,10 @@ import { refreshPage, getServerRoute } from "@/app/config";
 * 
 * @param {string}    alertFor     Il tipo di alert: [ 'error' | 'note' | 'confirmed' | 'update-p' | 'update-w' ]
 *                                 error: Errore
-  *                               confirmed: Conferma operazione generica
-  *                               note: Visuaizzazione note
-  *                               update-p: Alert per modifica dati balla pressista
-  *                               update-w: Alert per modificare dati balla carrellista
+*                               confirmed: Conferma operazione generica
+*                               note: Visuaizzazione note
+*                               update-p: Alert per modifica dati balla pressista
+*                               update-w: Alert per modificare dati balla carrellista
 * 
 * @param {function}  handleClose  Funzione che gestisce la chiusura dell'alert
 * 
@@ -31,28 +31,28 @@ export default function Alert({
 }) {
   
   const { ws } = useWebSocket();
-
+  
   const [sanitize_alertFor, setSanitize] = useState("");
   const [message, setMessage] = useState(""); 
   
   /**
-   * Elimina una balla 
-   * @param {number}      id 
-   * @param {Function}    handleAlert
-   */
+  * Elimina una balla 
+  * @param {number}      id 
+  * @param {Function}    handleAlert
+  */
   const handleDelete = async (id) => {
     try {
       const f_id = (typeof id === 'object') ? id[0] : id;
-
+      
       const url = await getServerRoute('delete-bale');
       const check = await fetch(url, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json' },
-          body: JSON.stringify({ id_bale: f_id }),
+        method: 'POST',
+        headers: {'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_bale: f_id }),
       });
-
+      
       const resp = await check.json();
-
+      
       if (resp.code < 0) {
         // handleAlert(resp.message);
         setMessage(resp.message);
@@ -69,10 +69,50 @@ export default function Alert({
       setMessage(error);
     }
   }
-
+  
+  const handleStampa = async () => {
+    try {
+      const body = { printed: true, where: idBale }; // Data for updating wheelman bale
+      const body2 = { status: 1, where: idBale }; // Data for updating total bale status
+      
+      const url_update_wheelman = await getServerRoute("update-wheelman-bale");
+      const url_update_status = await getServerRoute("update-status-bale");
+      
+      const response = await fetch(url_update_wheelman, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body }),
+      });
+      
+      const response2 = await fetch(url_update_status, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ body: body2 }),
+      });
+      
+      const result = await response.json();
+      const result2 = await response2.json();
+      
+      if (result.code === 0 && result2.code === 0) {
+        // If both responses are successful, show a confirmation message
+        // setErrorMessage('Operation completed successfully!');
+        setMessage('Operation completed successfully!');
+        alertFor
+      } else {
+        // If there's an error, display the error message
+        // setErrorMessage(result.message || result2.message || 'Unknown error');
+        setMessage(result.message || result2.message || 'Unknown error');
+      }
+    } catch (error) {
+      // Handle any unexpected errors that occur during the fetch operations
+      // setErrorMessage('An error occurred during the update.');
+      setMessage('An error occurred during the update.');
+    }
+  }
+  
   /**
-   * @param {boolean} isConfirmed
-   */
+  * @param {boolean} isConfirmed
+  */
   const closeAlert = (isConfirmed = false) => {
     handleClose(isConfirmed);
     refreshPage(ws);
@@ -88,7 +128,7 @@ export default function Alert({
       msg = error;
     }
   }
-
+  
   useEffect(() => {
     setSanitize(alertFor.startsWith('update') ? 'update' : alertFor);
     msg = message;
@@ -98,73 +138,73 @@ export default function Alert({
     case "error": {
       return(
         <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-3">
-          <div className=""
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            padding: "20px",
-            backgroundColor: "rgba(255, 0, 0, 1)",
-            color: "white",
-            borderRadius: "5px",
-            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-            zIndex: 999,
-            textAlign: "center",
-          }}> 
-            <p>Errore: {msg ? msg : message}</p>
-            <button
-            onClick={() => closeAlert()}
-            style={{
-              padding: "5px 10px",
-              backgroundColor: "darkred",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              marginTop: "10px",
-            }}
-            >
-              Chiudi
-            </button>
-          </div>
+        <div className=""
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "20px",
+          backgroundColor: "rgba(255, 0, 0, 1)",
+          color: "white",
+          borderRadius: "5px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          zIndex: 999,
+          textAlign: "center",
+        }}> 
+        <p>Errore: {msg ? msg : message}</p>
+        <button
+        onClick={() => closeAlert()}
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "darkred",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+        >
+        Chiudi
+        </button>
+        </div>
         </div>
       );
     }        
     case "note" : {
       return (
         <div>
-          <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-            <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              padding: "20px",
-              backgroundColor: "rgb(255, 238, 84)",
-              color: "white",
-              borderRadius: "5px",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-              zIndex: 999,
-              textAlign: "center",
-            }}> 
-              <p>{msg ? msg : message}</p>
-              <button
-              onClick={() => closeAlert()}
-              style={{
-                padding: "5px 10px",
-                backgroundColor: "orange",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                marginTop: "10px",
-              }}>
-                Chiudi
-              </button>
-            </div>
-          </div>
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+        <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "20px",
+          backgroundColor: "rgb(255, 238, 84)",
+          color: "white",
+          borderRadius: "5px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          zIndex: 999,
+          textAlign: "center",
+        }}> 
+        <p>{msg ? msg : message}</p>
+        <button
+        onClick={() => closeAlert()}
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "orange",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}>
+        Chiudi
+        </button>
+        </div>
+        </div>
         </div>
       );
     }
@@ -172,53 +212,106 @@ export default function Alert({
     case "confirmed" : {
       return(
         <div>
-          <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-            <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              padding: "20px",
-              backgroundColor: "rgb(5, 181, 61)",
-              color: "white",
-              borderRadius: "5px",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-              zIndex: 1,
-              textAlign: "center",
-            }}
-            > 
-              <p>{msg ? msg : message}</p>
-              <button
-              onClick={() => handleConfirm()}
-              style={{
-                padding: "5px 10px",
-                backgroundColor: "seagreen",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                marginTop: "10px",
-              }}
-              >
-                Si
-              </button>
-              <button
-              onClick={() => closeAlert()}
-              style={{
-                padding: "5px 10px",
-                backgroundColor: "seagreen",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                marginTop: "10px",
-                marginRight: "10px" , 
-              }}>
-                No
-              </button>
-            </div>
-          </div>
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+        <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "20px",
+          backgroundColor: "rgb(5, 181, 61)",
+          color: "white",
+          borderRadius: "5px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          zIndex: 1,
+          textAlign: "center",
+        }}
+        > 
+        <p>{msg ? msg : message}</p>
+        <button
+        onClick={() => handleConfirm()}
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "seagreen",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+        >
+        Si
+        </button>
+        <button
+        onClick={() => closeAlert()}
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "seagreen",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+          marginRight: "10px" , 
+        }}>
+        No
+        </button>
+        </div>
+        </div>
+        </div>
+      )
+    }
+    case "confirmed-print" : {
+      return(
+        <div>
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+        <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "20px",
+          backgroundColor: "rgb(5, 181, 61)",
+          color: "white",
+          borderRadius: "5px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          zIndex: 1,
+          textAlign: "center",
+        }}
+        > 
+        <p>{msg ? msg : message}</p>
+        <button
+        onClick={() => closeAlert(true)}
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "seagreen",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+        >
+        Si
+        </button>
+        <button
+        onClick={() => closeAlert()}
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "seagreen",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+          marginRight: "10px" , 
+        }}>
+        No
+        </button>
+        </div>
+        </div>
         </div>
       )
     }
@@ -226,68 +319,69 @@ export default function Alert({
       return(
         <div>
         <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-          <div
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            padding: "20px",
-            backgroundColor: "rgb(5, 181, 61)",
-            color: "white",
-            borderRadius: "5px",
-            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-            zIndex: 1,
-            textAlign: "center",
-          }}
-          > 
-            <p>I dati sono stati inseriti correttamente!</p>
-            <button
-            onClick={() => closeAlert()}
-            style={{
-              padding: "5px 10px",
-              backgroundColor: "seagreen",
-              color: "white",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              marginTop: "10px",
-            }}
-            >
-              OK
-            </button>
-          </div>
+        <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "20px",
+          backgroundColor: "rgb(5, 181, 61)",
+          color: "white",
+          borderRadius: "5px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          zIndex: 1,
+          textAlign: "center",
+        }}
+        > 
+        <p>I dati sono stati inseriti correttamente!</p>
+        <button
+        onClick={() => closeAlert()}
+        style={{
+          padding: "5px 10px",
+          backgroundColor: "seagreen",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+          marginTop: "10px",
+        }}
+        >
+        OK
+        </button>
         </div>
-      </div>
+        </div>
+        </div>
       )
     }
     case 'update': {
       return (
         <div>
-          <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-            <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              padding: "20px",
-              paddingTop: "50px",
-              backgroundColor: "rgb(5, 181, 61)",
-              color: "white",
-              borderRadius: "5px",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-              zIndex: 1,
-              textAlign: "center",
-            }}
-            > 
-              <UpdateValuesBale 
-                type={(alertFor === "update-p") ? "presser" : "wheelman"}
-                idBale={idBale}
-                handlerConfirm={handleConfirm}
-              />
-            </div>
-          </div>
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+        <div
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          padding: "20px",
+          paddingTop: "50px",
+          backgroundColor: "rgb(5, 181, 61)",
+          color: "white",
+          borderRadius: "5px",
+          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+          zIndex: 1,
+          textAlign: "center",
+        }}
+        > 
+        <UpdateValuesBale 
+        type={(alertFor === "update-p") ? "presser" : "wheelman"}
+        idBale={idBale}
+        // handlerConfirm={handleConfirm}
+        handlerConfirm={closeAlert}
+        />
+        </div>
+        </div>
         </div>
       )
     }
