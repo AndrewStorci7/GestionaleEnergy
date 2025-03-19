@@ -27,7 +27,8 @@ export default function Alert({
   msg, 
   alertFor,
   handleClose,
-  idBale
+  idBale,
+  updateBale
 }) {
   
   const { ws } = useWebSocket();
@@ -63,51 +64,13 @@ export default function Alert({
         alertFor = 'confirmed-successfull';
         closeAlert();
       } 
+
     } catch (error) {
       // handleAlert(error);
       alertFor = 'error';
       setMessage(error);
     }
-  }
-  
-  const handleStampa = async () => {
-    try {
-      const body = { printed: true, where: idBale }; // Data for updating wheelman bale
-      const body2 = { status: 1, where: idBale }; // Data for updating total bale status
-      
-      const url_update_wheelman = await getServerRoute("update-wheelman-bale");
-      const url_update_status = await getServerRoute("update-status-bale");
-      
-      const response = await fetch(url_update_wheelman, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body }),
-      });
-      
-      const response2 = await fetch(url_update_status, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ body: body2 }),
-      });
-      
-      const result = await response.json();
-      const result2 = await response2.json();
-      
-      if (result.code === 0 && result2.code === 0) {
-        // If both responses are successful, show a confirmation message
-        // setErrorMessage('Operation completed successfully!');
-        setMessage('Operation completed successfully!');
-        alertFor
-      } else {
-        // If there's an error, display the error message
-        // setErrorMessage(result.message || result2.message || 'Unknown error');
-        setMessage(result.message || result2.message || 'Unknown error');
-      }
-    } catch (error) {
-      // Handle any unexpected errors that occur during the fetch operations
-      // setErrorMessage('An error occurred during the update.');
-      setMessage('An error occurred during the update.');
-    }
+    updateBale(null, null);
   }
   
   /**

@@ -26,7 +26,7 @@ export default function TableHeader({ type, primary = false }) {
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Stato</th>}
-                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>Plastica</th>}
+                            <th className={`${_CMNSTYLE_TD}`}>Plastica</th>
                             <th className={`${_CMNSTYLE_TD}`}>Codice</th>
                             <th className={`${_CMNSTYLE_TD}`}>Utiliz. REI</th>
                             <th className={`${_CMNSTYLE_TD}`}>Condiz. Balla Pressa</th>
@@ -49,14 +49,14 @@ export default function TableHeader({ type, primary = false }) {
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Stato</th>}
-                            
+                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>Plastica</th>}
                             <th className={`${_CMNSTYLE_TD}`}>Condiz. Balla Carrel.</th>
                             <th className={`${_CMNSTYLE_TD}`}>Motivaz.</th>
                             <th className={`${_CMNSTYLE_TD}`}>Peso (Kg)</th>
                             <th className={`${_CMNSTYLE_TD}`}>Magaz. Destinazione</th>
                             <th className={`${_CMNSTYLE_TD}`}>Note</th>
                             <th className={`${_CMNSTYLE_TD}`}>Stato stampa</th>
-                            {(primary) && <th className={`${_CMNSTYLE_TD}`}></th>}
+                            {(primary) && <th className={`${_CMNSTYLE_TD} w-[40px]`}></th>}
                             <th className={`${_CMNSTYLE_TD}`}>Data</th>
                             <th className={`${_CMNSTYLE_TD}`}>Ora</th>
                         </tr>
