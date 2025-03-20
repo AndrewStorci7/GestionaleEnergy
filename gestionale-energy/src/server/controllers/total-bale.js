@@ -1,7 +1,7 @@
 import Console from '../inc/console.js';
 import Common from './main/common.js';
 
-const console = new Console("TotalBale", 1);
+const console = new Console("TotalBale");
 
 /**
  * Total Bale data: get the data from presser and wheelman
@@ -29,11 +29,17 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
+            // console.info(data);
+
             if (data === null) {
                 res.status(500).send("Non sono stati ricevuti i dati: body vuoto");
             }
 
+            // Controllo se il valore REI è = a 5 (ovvero, REI Altro Mag.), in quel caso
+            // vado a modificare l'impianto essendo che viene gestita dall'impianto di provenienza
             const id_implant = data.implant;
+            // dato che gestisce la provenienza di una balla da un magazzino diverso
+            const gam = (data.body.id_rei == 5) ? JSON.stringify({ is_rei_altro_mag: true, id_implant: data.implant == 1 ? 2 : 1 }) : JSON.stringify({ is_rei_altro_mag: false, id_implant: null });
             var id_new_presser_bale = 0;
             var id_new_wheelman_bale = 0;
 
@@ -56,8 +62,8 @@ class TotalBale extends Common {
             id_new_wheelman_bale = data_wheelman_resolved.message.id_new_bale;
 
             const check_ins_pbwb = await this.db.query(
-                `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status) VALUES(?, ?, ?, ?)`,
-                [id_new_presser_bale, id_new_wheelman_bale, id_implant, 0]
+                `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status, gam) VALUES(?, ?, ?, ?, ?)`,
+                [id_new_presser_bale, id_new_wheelman_bale, id_implant, 0, gam]
             );
 
             if (check_ins_pbwb && check_ins_pbwb[0].serverStatus === 2) {
@@ -101,6 +107,12 @@ class TotalBale extends Common {
      * and the information of the bale added by wheelman
      * 
      * @param {object} req
+     * @param {number} req.id_implant   ID dell'impianto
+     * @param {string} req.useFor       [
+     *                                      `regular`  => farà visualizzare le balle ancora in lavorazione
+     *                                      `specific` => farà visualizzare solamente le balle completate
+     *                                      `reverse`  => stamperà le balle al contrario (ordine ascendente) [default: discendente]
+     *                                  ]
      * @param {object} res
      */
     async get(req, res) {
@@ -111,15 +123,17 @@ class TotalBale extends Common {
             const { body } = req.body;
             const id_implant = body.id_implant;
             const useFor = body.useFor;
-            var cond_status = 'OR pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
-            var prova = 'OR pb_wb.status != 1';
-
+            var cond_status = 'AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
+            var order_by = 'DESC';
             // console.info(id_implant); // test
 
+            
             if (useFor === 'specific') {
                 cond_status = 'AND pb_wb.status = 1';
-                prova = '';
+            } else if (useFor === 'reverse') {
+                order_by = 'ASC';
             }
+
             if (id_implant == 0) {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
@@ -151,9 +165,9 @@ class TotalBale extends Common {
                     ${_params.condition}
                     ${cond_status}
                 ORDER BY 
-                    ${this.table}.id DESC,
-                    TIME(presser_bale.data_ins) DESC, 
-                    TIME(wheelman_bale.data_ins) DESC`,
+                    ${this.table}.id ${order_by},
+                    TIME(presser_bale.data_ins) ${order_by}, 
+                    TIME(wheelman_bale.data_ins) ${order_by}`,
                 _params.params
             );
 
@@ -263,9 +277,13 @@ class TotalBale extends Common {
     }
 
     /**
-     * Aggiornamento del conteggio delle balle in tempo reale
+     * Aggiornamento del conteggio delle balle TOTALI PER TURNO in tempo reale
+     * Comprende il conteggio delle balle reimballate
+     * 
      * @param {object} req 
      * @param {object} res 
+     * 
+     * @returns 
      */
     async balleTotali(req, res) {
         try {
@@ -276,10 +294,11 @@ class TotalBale extends Common {
             }
 
             const _params = super.checkConditionForTurn(implant);
+            // this.updateIdImplant(_params.params, implant);
             
-            const [select] = await this.db.query(
+            const [countBalleMagazzino] = await this.db.query(
                 `SELECT 
-                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                    COUNT(pb_wb.id_pb) AS "totale_magazzino_turno"
                 FROM 
                     code_plastic
                 LEFT JOIN presser_bale 
@@ -289,16 +308,36 @@ class TotalBale extends Common {
                 LEFT JOIN wheelman_bale
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                    pb_wb.id_implant = ?
-                    AND presser_bale.id_rei = 1
+                    ${this.cond_for_cplastic}
                     ${_params.condition}`,
                 _params.params
             );
 
-            // console.info(select[0].totale_balle)
+            const [countBalleLavorate] = await this.db.query(
+                `SELECT 
+                    COUNT(pb_wb.id_pb) AS "totale_balle_lavorate"
+                FROM 
+                    code_plastic
+                LEFT JOIN presser_bale 
+                    ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb 
+                    ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                    ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    ${this.cond_for_idimplant}
+                    ${_params.condition}`,
+                _params.params
+            );
 
-            if (select && select.length > 0) {
-                res.json({ code: 0, message: select[0].totale_balle });
+            // console.info(select[0].totale_balle);
+
+            if (countBalleMagazzino && countBalleMagazzino.length > 0 || countBalleLavorate && countBalleLavorate.length > 0) {
+                res.json({ 
+                    code: 0, 
+                    message: countBalleMagazzino[0].totale_magazzino_turno, 
+                    message2: countBalleLavorate[0].totale_balle_lavorate
+                });
             } else {
                 res.json({ code: 1, message: "Nessun balla" });
             }

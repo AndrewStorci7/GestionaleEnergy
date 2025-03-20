@@ -77,14 +77,6 @@ class WheelmanBale extends Bale {
         }
     }
 
-    async getBaleDone(req, res) {
-        try {
-
-        } catch (error) {
-
-        }
-    }
-
     async set(req, res) {
         try {
             const check_ins_pb = await this.db.query(

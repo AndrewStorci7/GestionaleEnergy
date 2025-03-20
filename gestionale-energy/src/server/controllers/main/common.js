@@ -1,4 +1,9 @@
 import Console from '../../inc/console.js';
+import { 
+    COND_ID_IMPLANT,
+    COND_GET_TOTAL_BALE, 
+    COND_GET_COUNT_PLASTIC_REPORT,
+} from '../../inc/config.js';
 
 const console = new Console("Common");
 
@@ -15,6 +20,9 @@ class Common {
     constructor(db, table) {
         this.db = db;
         this.table = table;
+        this.cond_for_idimplant = COND_ID_IMPLANT; // condizione per la selezion delle balle per un certo impianto
+        this.cond_for_totbale = COND_GET_TOTAL_BALE; // condizione per selezionare tutte le balle (visualizzare)
+        this.cond_for_cplastic = COND_GET_COUNT_PLASTIC_REPORT; // condizione per il conteggiare delle balle (report)  
     }
 
     /**
@@ -33,18 +41,18 @@ class Common {
             if (turn != 1 && turn != 2 && turn != 3) {
                 throw "errore: parametro turn non valido: deve essere uno tra questi valori {1, 2, 3}";
             } else {
-                if (turn == 1) _hour = 6;
-                else if (turn == 2) _hour = 14;
-                else _hour = 22;
+                // if (turn == 1) _hour = 6;
+                // else if (turn == 2) _hour = 14;
+                // else _hour = 22;
+                _hour = (turn === 1) ? 7 : (turn === 2) ? 15 : (turn === 3) ? 23 : rangeTime.getHours();
             } 
-            // _hour = (turn === 1) ? 7 : (turn === 2) ? 15 : (turn === 3) ? 23 : rangeTime.getHours();
         }
 
         if (_hour >= 6 && _hour < 14)
             return ['07:00:00', '14:59:59', 0];
         else if (_hour >= 14 && _hour < 22)
             return ['15:00:00', '22:59:59', 0];
-        else if ((_hour >= 22 && _hour <= 24) || (_hour >=24 && _hour < 6))
+        else if ((_hour >= 22 && _hour <= 24) || (_hour >= 24 && _hour < 6))
             return ['23:00:00', '23:59:59', '00:00:00', '06:59:59', 1];
     }
 
@@ -133,8 +141,8 @@ class Common {
      * Questa funzione serve per settare la corretta condizione di ricerca basata sull'orario (per turni)
      * Ritorna un oggetto utilizzabile per l'esecuzione di una query.
      * return {
-     *      "condition": condizione del where
-     *      "params": array con parametri per la query
+     *      `condition`: condizione del where
+     *      `params`: array con parametri per la query
      * }
      * 
      * @param {number} id_implant   Id dell'impianto
@@ -146,14 +154,17 @@ class Common {
     checkConditionForTurn(id_implant, type = null, turnIndex = 0) {
         const turn = this.checkTurn(turnIndex);
 
-        var condition = `AND DATE(presser_bale.data_ins) = CURDATE() AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ? AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
+        var condition = `AND DATE(presser_bale.data_ins) = CURDATE() 
+        AND DATE(wheelman_bale.data_ins) = CURDATE() 
+        AND TIME(presser_bale.data_ins) BETWEEN ? AND ? 
+        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
         var params = [id_implant, turn[0], turn[1], turn[0], turn[1]];
 
         // Diffrenzio il ritrono della funzioni per tipo di chiamata
         // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
         if (type === "report") {
             condition = {
-                first: `AND (presser_bale.id_rei = 1 OR presser_bale.id_rei IS NULL) `,
+                first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) AND wheelman_bale.id_cwb = 1 `,
                 second: `AND DATE(presser_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
                 third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) `,
                 fourth: `AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `,
@@ -169,7 +180,7 @@ class Common {
             // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
             if (type === "report") {
                 condition = {
-                    first: `AND (presser_bale.id_rei = 1 OR presser_bale.id_rei IS NULL) `,
+                    first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) AND wheelman_bale.id_cwb = 1 `,
                     second: `AND ((DATE(presser_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ?) OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )) `,
                     third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL)`,
                     fourth: `AND ((DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ) OR (DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )) `,
@@ -181,15 +192,36 @@ class Common {
         return { condition, params };
     }
 
+    /**
+     * ----------------------------------------------------------------------------------------
+     *                          VERRA' UTILIZZATA PIU' AVANTI 
+     * ----------------------------------------------------------------------------------------
+     * Aggiorna l'id dell'impianto nel caso in cui ci sia una balla con `REI Altro Mag`
+     * Al momento se l'ID dell'impianto di lavorazione è 1 (Impianto A) verrà convertito in 2 (Impianto B) e viceverse
+     * 
+     * @param {any}     params      Array con i parametri per la query
+     * @param {number}  id_implant  ID dell'impianto di lavorazione
+     */
+    updateIdImplant(params, id_implant) {
+        if (params !== null && id_implant !== 0) {
+            // aggiorno l'id
+            const updated_idImplant = id_implant == 1 ? 2 : 1;
+            // lo aggiungo in seconda posizione 
+            params.splice(1, 0, updated_idImplant);
+        } else {
+            throw new Error("Parametri non definiti {`params` e `id_implant`}"); 
+        }
+    }
+
     async prova(req, res) {
         try {
-            const {body} = req.body 
-            console.info(`stringa normale: ${body}`)
-            const stringa = this.convertSpecialCharsToHex(body)
-            console.info(`stringa convertita: ${stringa}`)
+            const {body} = req.body;
+            console.info(`stringa normale: ${body}`);
+            const stringa = this.convertSpecialCharsToHex(body);
+            console.info(`stringa convertita: ${stringa}`);
         } catch (error) {
-            console.error(error)
-            res.status(500)
+            console.error(error);
+            res.status(500);
         }
     }
 }
