@@ -115,41 +115,40 @@ export default function TableContent({
                 const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
 
                 return (
-                    <tr key={index} data-bale-id={id} className="border border-slate-400 h-[40px]">
+                    <tr key={idUnique} data-bale-id={id} className="border border-slate-400 h-[40px]">
                         {primary && (
                             <>
-                                <td>
+                                <td key={idUnique + "_checkbtn"}>
                                     {useFor === 'regular' && (
                                         <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
                                     )}
                                 </td>
-                                <td className="font-bold">{idUnique}</td>
-                                <td><Icon type={status} /></td>
+                                <td className="font-bold" key={idUnique + "_idunique"}>{idUnique}</td>
+                                <td key={idUnique + "_status"}><Icon type={status} /></td>
                             </>
                         )}
                         {Object.entries(bale).map(([key, value]) => (
                             key.startsWith("_") || ["id", "status", "idUnique"].includes(key) ? null : (
                                 key === "notes" && value ? (
-                                    <td key={key}>
+                                    <td key={idUnique + key}>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
                                         </button>
                                     </td>
                                 ) : key === "is_printed" ? (
-                                    <td key={key} className="font-bold">{value == 0 ? "Da stamp." : "Stampato"}</td>
+                                    <td key={idUnique + key} className="font-bold">{value == 0 ? "Da stamp." : "Stampato"}</td>
                                 ) : key !== "data_ins" ? (
-                                    <td key={key}>{value}</td>
+                                    <td key={idUnique + key}>{value}</td>
                                 ) : null
                             )
                         ))}
                         {primary && (
-                            <td className="relative">
-                                {/* <button className='on-btn-confirm' onClick={() => console.log("TODO")}>OK</button> */}
+                            <td className="relative" key={idUnique + "_note"}>
                                 {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                             </td>
                         )}
-                        <td>{date}</td> {/* DATA */}
-                        <td>{hour}</td> {/* ORA */}
+                        <td key={idUnique + "_date"}>{date}</td>
+                        <td key={idUnique + "_hour"}>{hour}</td>
                     </tr>
                 );
             })}

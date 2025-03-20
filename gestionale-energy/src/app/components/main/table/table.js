@@ -155,6 +155,7 @@ export default function Table({ type, implant, idUser }) {
                                 selectedBaleId={isSelected}
                                 add={add}
                                 noData={(e) => noData(e)} 
+                                useFor={"reverse"}
                                 primary 
                             />
 
@@ -176,7 +177,7 @@ export default function Table({ type, implant, idUser }) {
                             <TableHeader type={"presser"} />
 
                             {/* BALLE IN LAVORAZIONE */}
-                            <TableContent type={"presser"} add={add}  />
+                            <TableContent type={"presser"} useFor={"reverse"} add={add}  />
 
                             {/* BALLE COMPLETATE */}
                             <TableContent type={"presser"} useFor={"specific"} />
@@ -228,7 +229,7 @@ export default function Table({ type, implant, idUser }) {
                         <div className={`shadow-lg  h-[60vh] overflow-y-scroll`}>
                             <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                                 <TableHeader type={"presser"} />
-                                <TableContent type={"presser"}/>
+                                <TableContent type={"presser"} />
                             </table>
                         </div>
                     )}
