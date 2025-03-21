@@ -39,21 +39,38 @@ export default function Table({ type, implant, idUser }) {
     const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
 
     const [selectedType, setSelectedType] = useState("general");
-    const [addWasClicked, setAddClick] = useState(false)
-    // const [ids, setResp] = useState([]);
+    const [addWasClicked, setAddClick] = useState(false); // gestisce il click del bottone "aggiungi"
+    const [confirmedAdd, setConfirmedAdd] = useState(true); // gestisce il click della conferma dell'inserimento
+
     const [msgEmpty, setMsg] = useState("");
     const [isEmpty, setEmpty] = useState(false);
     const [isSelected, setSelected] = useState(null);
     const [idUnique, setIdUnique] = useState(null);
-    const [btnPressed, setBtnPressed] = useState(null); // Track which button was presse
-    const add = { 
-        state: addWasClicked, 
-        setAdd: setAddClick 
-    }
-
+    // const [btnPressed, setBtnPressed] = useState(null); // Track which button was pressed
+    
+    // const handleUpdateClickConfirmed = () => {
+    //     setConfirmedAdd(true);
+    //     setAddClick(false);
+    // }
     const handleAddPressed = () => {
+        setConfirmedAdd(prev => !prev);
         setAddClick(prev => !prev);
+        console.log(confirmedAdd);
     }
+    
+    // Oggetto per gestire l'id della balla selezionata
+    const objIdBale = {
+        idUnique: idUnique,
+        idBale: isSelected,
+        setIdBale: setSelected
+    }
+    // Oggetto per gestire l'aggiunta di una nuova balla
+    const objAdd = { 
+        state: addWasClicked, 
+        setAdd: setAddClick,
+        changeAddBtn: handleAddPressed,
+    }
+    
 
     const noData = (msg) =>  {
         setEmpty(false);
@@ -69,9 +86,9 @@ export default function Table({ type, implant, idUser }) {
         setIdUnique(idUnique);
     }
 
-    const handleDownloadClick = (reportType) => {
-        setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
-    }
+    // const handleDownloadClick = (reportType) => {
+    //     setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
+    // }
 
     switch (type) {
         case "admin": {
@@ -95,7 +112,7 @@ export default function Table({ type, implant, idUser }) {
                                 type={"presser"} 
                                 handleSelect={(sel, idU) => handleSelect(sel, idU)}
                                 selectedBaleId={isSelected}
-                                add={add}  
+                                add={objAdd}  
                                 noData={(e) => noData(e)} 
                                 primary 
                             />
@@ -115,7 +132,7 @@ export default function Table({ type, implant, idUser }) {
                             <TableHeader type={"wheelman"}/>
 
                             {/* BALLE IN LAVORAZIONE */}
-                            <TableContent type={"wheelman"} add={add} />
+                            <TableContent type={"wheelman"} add={objAdd} />
                             
                             {/* BALLE COMPLETATE */}
                             <TableContent type={"wheelman"} useFor={"specific"} />
@@ -125,9 +142,9 @@ export default function Table({ type, implant, idUser }) {
                     <BtnPresser 
                         implant={implant}
                         idUser={idUser}
-                        clickAddHandle={() => handleAddPressed()}
-                        idSelect={isSelected}
-                        idUnique={idUnique}
+                        clickAddHandle={handleAddPressed}
+                        handleConfirmAdd={confirmedAdd}
+                        idSelect={objIdBale}
                     />
 
                     {(!addWasClicked) ? (
@@ -153,7 +170,7 @@ export default function Table({ type, implant, idUser }) {
                                 type={"wheelman"} 
                                 handleSelect={(sel, idU) => handleSelect(sel, idU)}
                                 selectedBaleId={isSelected}
-                                add={add}
+                                add={objAdd}
                                 noData={(e) => noData(e)} 
                                 useFor={"reverse"}
                                 primary 
@@ -177,7 +194,7 @@ export default function Table({ type, implant, idUser }) {
                             <TableHeader type={"presser"} />
 
                             {/* BALLE IN LAVORAZIONE */}
-                            <TableContent type={"presser"} useFor={"reverse"} add={add}  />
+                            <TableContent type={"presser"} useFor={"reverse"} add={objAdd}  />
 
                             {/* BALLE COMPLETATE */}
                             <TableContent type={"presser"} useFor={"specific"} />
@@ -187,7 +204,7 @@ export default function Table({ type, implant, idUser }) {
                     <BtnWheelman 
                         implant={implant}
                         idUser={idUser}
-                        idSelect={isSelected}
+                        idSelect={objIdBale}
                     />
 
                     {(!addWasClicked) ? (

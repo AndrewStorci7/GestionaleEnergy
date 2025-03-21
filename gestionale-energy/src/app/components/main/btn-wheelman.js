@@ -7,10 +7,7 @@ import React, { useEffect, useState } from "react";
  * Button for wheelman
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
- * @param {object}   idSelect        {
- *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
- *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
- * }
+ * @param {object}   idSelect        Oggetto composto dai seguenti attributi: { `idBale`(number): id della balla, `setIdBale`(function): gancio per aggiornare l'id in caso di elimina }
  * 
  * @param {int}      implant         Id dell'impianto che serve per aggiungere una nuova balla
  * 
@@ -32,24 +29,22 @@ export default function BtnWheelman({
     const [idBale, setIdBale] = useState(0)
 
     useEffect(() => {
-        setIdBale(idSelect)
+        setIdBale(idSelect.idBale)
     }, [idSelect]);
 
     const handleUpdate = async (id) => {
-        const f_id = (typeof id === 'object') ? id[0] : id;
-        setIdBale(f_id);
+        setIdBale(id);
         handleAlert("", 'update-w');
     }
 
     const handleClick = (f) => {
         // Check if idSelect is not null and has a length property
-        if (idSelect !== null && idSelect) {
-            handleUpdate(idSelect);
+        if (idSelect && idSelect.idBale !== null) {
+            handleUpdate(idSelect.idBale);
         } else {
             handleAlert("Nessuna balla selezionata!");
         }
     }
-    
 
     const [showAlert, setShowAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
@@ -72,13 +67,13 @@ export default function BtnWheelman({
     }
 
     const handleStampa = async (msg = "I dati sono stati stampati correttamente", scope = "confirmed") => {
-        if (idSelect !== null && idSelect) {
+        if (idSelect && idSelect.idBale !== null) {
             try {
 
-                const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
-                const body2 = { status: 1, where: idSelect }; // Body per l'update dello stato della balla totale
-                const url_update_wheelman = await getServerRoute("update-wheelman-bale");
-                const url_update_status = await getServerRoute("update-status-bale");
+                const body = { printed: true, where: idSelect.idBale }; // Body per l'update della balla del carrellista
+                const body2 = { status: 1, where: idSelect.idBale }; // Body per l'update dello stato della balla totale
+                const url_update_wheelman = getServerRoute("update-wheelman-bale");
+                const url_update_status = getServerRoute("update-status-bale");
 
                 // Invia la richiesta per aggiornare lo stato della balla
                 const response = await fetch(url_update_wheelman, {

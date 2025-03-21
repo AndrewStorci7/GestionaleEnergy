@@ -18,9 +18,10 @@ import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
  *                              [ `true` | `false` ]
  *                              True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
- * @param {Object}      useFor  [ `regular` | `specific` ]
+ * @param {Object}      useFor  [ `regular` | `specific` | `reverse` ]
  *                              Di default è impostato su `regolar`, ovvero, che stampa tutte le alle ancora in lavorazione.
- *                              Se invece viene impostato su `specific`, allora stamperà le balle completate. 
+ *                              Se invece viene impostato su `specific`, allora stamperà le balle completate.
+ *                              Se impostato su `reverse` verranno stampate le balle al contrario.
  * 
  * @param {Function}    noData  Funzione che aggiorna lo stato della variabile noData.
  *                              Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
@@ -63,7 +64,8 @@ export default function TableContent({
 
     const handleAddChange = async () => {
         refreshPage(ws);
-        add.setAdd();
+        // add.setAdd();
+        add.changeAddBtn();
     };
     
     const fetchData = async () => {
@@ -119,7 +121,7 @@ export default function TableContent({
                         {primary && (
                             <>
                                 <td key={idUnique + "_checkbtn"}>
-                                    {useFor === 'regular' && (
+                                    {(useFor === 'regular' || useFor === 'reverse') && (
                                         <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
                                     )}
                                 </td>
@@ -128,16 +130,16 @@ export default function TableContent({
                             </>
                         )}
                         {Object.entries(bale).map(([key, value]) => (
-                            key.startsWith("_") || ["id", "status", "idUnique"].includes(key) ? null : (
-                                key === "notes" && value ? (
+                            (key.startsWith("_") || ["id", "status", "idUnique"].includes(key)) ? null : (
+                                (key === "notes" && value) ? (
                                     <td key={idUnique + key}>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
                                         </button>
                                     </td>
-                                ) : key === "is_printed" ? (
+                                ) : (key === "is_printed") ? (
                                     <td key={idUnique + key} className="font-bold">{value == 0 ? "Da stamp." : "Stampato"}</td>
-                                ) : key !== "data_ins" ? (
+                                ) : (key !== "data_ins") ? (
                                     <td key={idUnique + key}>{value}</td>
                                 ) : null
                             )

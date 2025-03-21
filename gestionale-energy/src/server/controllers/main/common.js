@@ -155,9 +155,9 @@ class Common {
         const turn = this.checkTurn(turnIndex);
 
         var condition = `AND DATE(presser_bale.data_ins) = CURDATE() 
-        AND DATE(wheelman_bale.data_ins) = CURDATE() 
-        AND TIME(presser_bale.data_ins) BETWEEN ? AND ? 
-        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
+                        AND DATE(wheelman_bale.data_ins) = CURDATE() 
+                        AND TIME(presser_bale.data_ins) BETWEEN ? AND ? 
+                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
         var params = [id_implant, turn[0], turn[1], turn[0], turn[1]];
 
         // Diffrenzio il ritrono della funzioni per tipo di chiamata

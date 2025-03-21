@@ -8,44 +8,42 @@ import React, { useEffect, useState } from "react";
  * 
  * @author Andrea Storci from Oppimittinetworking
  * 
- * @param {object}   idSelect        {
- *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
- *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
- *  `idUnique`<number>    Indica l'ID unico della balla totale
- * }
+ * @param {object}   idSelect         Oggetto composto dai seguenti attributi: { `idBale`(number): id della balla, `setIdBale`(function): gancio per aggiornare l'id in caso di elimina }
  * 
- * @param {int}
+ * @param {boolean}  handleConfirmAdd Tiene traccia del fatto che il bottone di conferma inserimento sia stato cliccato
  * 
- * @param {int}      implant         Id dell'impianto che serve per aggiungere una nuova balla
+ * @param {int}      idUnique         Id contatore della balla totale
  * 
- * @param {int}      idUser          Id dell'utente che serve per aggiungere una nuova balla
+ * @param {int}      implant          Id dell'impianto che serve per aggiungere una nuova balla
+ * 
+ * @param {int}      idUser           Id dell'utente che serve per aggiungere una nuova balla
  *  
- * @param {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
- *                                   passa i dati ricevuti
+ * @param {function} clickAddHandle   Funzione che gestisce il funzionamento del click del bottone, 
+ *                                    passa i dati ricevuti
  * @param {function} handleSelect
  */
 export default function BtnPresser({ 
     idSelect,
-    idUnique,
-    implant, 
-    idUser, 
+    handleConfirmAdd = false, 
     clickAddHandle
 }) {
 
-    const default_message = `Balla numero ${idUnique} eliminata correttamente!`;
+    const default_message = `Balla numero ${idSelect.idUnique} eliminata correttamente!`;
 
-    const [idBale, setIdBale] = useState(0);
+    const [idBale, setIdBale] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
+    const [addWasClicked, setAddWasClicked] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [scope, setScope] = useState('');
 
     useEffect(() => {
-        setIdBale(idSelect);
+        setIdBale(idSelect.idBale);
     }, [idSelect]);
 
     const addNewBale = () => {
         try {
             // console.log("First step ADD, calling 'clickAddHandle()'");
+            setAddWasClicked(prev => !prev);
             clickAddHandle();
         } catch (error) {
             handleAlert(error);
@@ -54,15 +52,12 @@ export default function BtnPresser({
 
     const handleDelete = async (id) => {
         try {
-            const f_id = (typeof id === 'object') ? id[0] : id;
-
-            // console.log(f_id);
-
-            const url = await getServerRoute('delete-bale');
+            // const f_id = (typeof id === 'object') ? id[0] : id;
+            const url = getServerRoute('delete-bale');
             const check = await fetch(url, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_bale: f_id }),
+                body: JSON.stringify({ id_bale: id }),
             });
     
             const resp = await check.json();
@@ -75,19 +70,19 @@ export default function BtnPresser({
         } catch (error) {
             handleAlert(error);
         }
+        idSelect.setIdBale(null);
     }
 
     const handleUpdate = async (id) => {
-        const f_id = (typeof id === 'object') ? id[0] : id;
-        setIdBale(f_id);
+        // const f_id = (typeof id === 'object') ? id[0] : id;
+        setIdBale(id);
         handleAlert("", 'update-p');
     }
 
     const handleClick = (f) => {
-        if (idSelect !== null || idSelect) {
-            if (f)
-                handleUpdate(idSelect);
-            else handleDelete(idSelect);
+        if (idSelect && idSelect.idBale !== null) {
+            if (f) handleUpdate(idSelect.idBale);
+            else handleDelete(idSelect.idBale);
         } else {
             handleAlert("Nessuna balla selezionata!");
         }
@@ -124,9 +119,9 @@ export default function BtnPresser({
                         Modifica
                     </button>
                     <button 
-                    className="on-btn-presser" 
+                    className={`on-btn-presser ${(addWasClicked && !handleConfirmAdd) && "bg-red-400 text-neutral-50"}`} 
                     onClick={addNewBale}>
-                        Aggiungi
+                        {(addWasClicked && !handleConfirmAdd) ? "Annulla" : "Aggiungi"}
                     </button>
                 </div>
             </div>

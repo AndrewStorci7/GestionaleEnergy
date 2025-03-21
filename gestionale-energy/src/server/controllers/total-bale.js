@@ -29,8 +29,6 @@ class TotalBale extends Common {
         try {
             const { data } = req.body;
 
-            // console.info(data);
-
             if (data === null) {
                 res.status(500).send("Non sono stati ricevuti i dati: body vuoto");
             }
@@ -116,18 +114,13 @@ class TotalBale extends Common {
      * @param {object} res
      */
     async get(req, res) {
-        
-        // console.info("Get Total bale called", "yellow");
-
         try {
             const { body } = req.body;
             const id_implant = body.id_implant;
             const useFor = body.useFor;
             var cond_status = 'AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
             var order_by = 'DESC';
-            // console.info(id_implant); // test
 
-            
             if (useFor === 'specific') {
                 cond_status = 'AND pb_wb.status = 1';
             } else if (useFor === 'reverse') {
@@ -172,9 +165,6 @@ class TotalBale extends Common {
             );
 
             if (select !== 'undefined' || select !== null) {
-
-                // console.info(select); // test
-
                 for (const e of select) {
                     var id_presser = e.id_pb;
                     var id_wheelman = e.id_wb;
@@ -188,7 +178,6 @@ class TotalBale extends Common {
                         body: JSON.stringify({ id: id_presser })
                     });
                     const data_presser = await res_presser.json();
-                    // console.info(data_presser);
                     data_presser.status = status;
                     data_presser.idUnique = id;
 
@@ -199,7 +188,6 @@ class TotalBale extends Common {
                         body: JSON.stringify({ id: id_wheelman })
                     });
                     const data_wheelman = await res_wheelman.json();
-                    // console.info(data_wheelman);
                     data_wheelman.status = status;
                     data_wheelman.idUnique = id;
 
@@ -234,11 +222,22 @@ class TotalBale extends Common {
                     ${this.table}.id_pb, ${this.table}.id_wb, 
                     presser_bale.data_ins AS presser_data, 
                     wheelman_bale.data_ins AS wheelman_data
-                FROM ${this.table} JOIN presser_bale JOIN wheelman_bale JOIN implants 
-                ON ${this.table}.id_pb = presser_bale.id 
-                AND ${this.table}.id_wb = wheelman_bale.id 
-                AND ${this.table}.id_implant = implants.id
-                WHERE ${this.table}.id_implant = ? ORDER BY presser_bale.data_ins DESC`,
+                FROM 
+                    ${this.table} 
+                JOIN 
+                    presser_bale 
+                JOIN 
+                    wheelman_bale 
+                JOIN 
+                    implants 
+                ON 
+                    ${this.table}.id_pb = presser_bale.id 
+                    AND ${this.table}.id_wb = wheelman_bale.id 
+                    AND ${this.table}.id_implant = implants.id
+                WHERE 
+                    ${this.table}.id_implant = ? 
+                ORDER BY 
+                    presser_bale.data_ins DESC`,
                 [id_implant]
             );
         
@@ -330,8 +329,6 @@ class TotalBale extends Common {
                 _params.params
             );
 
-            // console.info(select[0].totale_balle);
-
             if (countBalleMagazzino && countBalleMagazzino.length > 0 || countBalleLavorate && countBalleLavorate.length > 0) {
                 res.json({ 
                     code: 0, 
@@ -352,12 +349,12 @@ class TotalBale extends Common {
         const [select] = await this.db.query(
             `SELECT * FROM ${this.table} WHERE id_pb=?`,
             [id]
-        )
+        );
 
         if (select) {
-            return select
+            return select;
         } else {
-            throw new Error("Errore durante la selezione della balla")
+            throw new Error("Errore durante la selezione della balla");
         }
     }
 
