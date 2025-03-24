@@ -99,255 +99,114 @@ export default function Alert({
   
   switch(sanitize_alertFor) {
     case "error": {
-      return(
-        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-3">
-          <div className=""
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              padding: "20px",
-              backgroundColor: "rgba(255, 0, 0, 1)",
-              color: "white",
-              borderRadius: "5px",
-              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-              zIndex: 999,
-              textAlign: "center",
-            }}> 
+      return (
+        <div className="overlay">
+          <div className="alert-box error">
             <p>Errore: {msg ? msg : message}</p>
             <button
               onClick={() => closeAlert()}
-              style={{
-                padding: "5px 10px",
-                backgroundColor: "darkred",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                marginTop: "10px",
-              }}
+              className="alert-button error-button"
             >
               Chiudi
             </button>
           </div>
         </div>
       );
-    }        
-    case "note" : {
+    }
+  
+    case "note": {
       return (
-        <div>
-        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-        <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          padding: "20px",
-          backgroundColor: "rgb(255, 238, 84)",
-          color: "white",
-          borderRadius: "5px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          zIndex: 999,
-          textAlign: "center",
-        }}> 
-        <p>{msg ? msg : message}</p>
-        <button
-        onClick={() => closeAlert()}
-        style={{
-          padding: "5px 10px",
-          backgroundColor: "orange",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-        }}>
-        Chiudi
-        </button>
-        </div>
-        </div>
+        <div className="overlay">
+          <div className="alert-box note">
+            <p className="text-left font-bold">Nota del Pressista:</p>
+            <br />
+            <p className="text-left">{msg ? msg : message}</p>
+            <br />
+            <button
+              onClick={() => closeAlert()}
+              className="alert-button note-button"
+            >
+              Chiudi
+            </button>
+          </div>
         </div>
       );
     }
-    // Altri case per "error" e "confirmed" rimangono invariati
-    case "confirmed" : {
-      return(
-        <div>
-        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-        <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          padding: "20px",
-          backgroundColor: "rgb(5, 181, 61)",
-          color: "white",
-          borderRadius: "5px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          zIndex: 1,
-          textAlign: "center",
-        }}
-        > 
-        <p>{msg ? msg : message}</p>
-        <button
-        onClick={() => handleConfirm()}
-        style={{
-          padding: "5px 10px",
-          backgroundColor: "seagreen",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-        }}
-        >
-        Si
-        </button>
-        <button
-        onClick={() => closeAlert()}
-        style={{
-          padding: "5px 10px",
-          backgroundColor: "seagreen",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-          marginRight: "10px" , 
-        }}>
-        No
-        </button>
+  
+    case "confirmed": {
+      return (
+        <div className="overlay">
+          <div className="alert-box confirmed">
+            <p>{msg ? msg : message}</p>
+            <button
+              onClick={() => handleConfirm()}
+              className="alert-button confirmed-button"
+            >
+              Si
+            </button>
+            <button
+              onClick={() => closeAlert()}
+              className="alert-button confirmed-button"
+              style={{ marginRight: "10px" }}
+            >
+              No
+            </button>
+          </div>
         </div>
-        </div>
-        </div>
-      )
+      );
     }
-    case "confirmed-print" : {
-      return(
-        <div>
-        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-        <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          padding: "20px",
-          backgroundColor: "rgb(5, 181, 61)",
-          color: "white",
-          borderRadius: "5px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          zIndex: 1,
-          textAlign: "center",
-        }}
-        > 
-        <p>{msg ? msg : message}</p>
-        <button
-        onClick={() => closeAlert(true)}
-        style={{
-          padding: "5px 10px",
-          backgroundColor: "seagreen",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-        }}
-        >
-        Si
-        </button>
-        <button
-        onClick={() => closeAlert()}
-        style={{
-          padding: "5px 10px",
-          backgroundColor: "seagreen",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-          marginRight: "10px" , 
-        }}>
-        No
-        </button>
+  
+    case "confirmed-print": {
+      return (
+        <div className="overlay">
+          <div className="alert-box confirmed-print">
+            <p>{msg ? msg : message}</p>
+            <button
+              onClick={() => closeAlert(true)}
+              className="alert-button confirmed-button"
+            >
+              Si
+            </button>
+            <button
+              onClick={() => closeAlert()}
+              className="alert-button confirmed-button"
+              style={{ marginRight: "10px" }}
+            >
+              No
+            </button>
+          </div>
         </div>
-        </div>
-        </div>
-      )
+      );
     }
-    case 'confirmed-successfull':{
-      return(
-        <div>
-        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-        <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          padding: "20px",
-          backgroundColor: "rgb(5, 181, 61)",
-          color: "white",
-          borderRadius: "5px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          zIndex: 1,
-          textAlign: "center",
-        }}
-        > 
-        <p>I dati sono stati inseriti correttamente!</p>
-        <button
-        onClick={() => closeAlert()}
-        style={{
-          padding: "5px 10px",
-          backgroundColor: "seagreen",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "10px",
-        }}
-        >
-        OK
-        </button>
+  
+    case 'confirmed-successfull': {
+      return (
+        <div className="overlay">
+          <div className="alert-box confirmed">
+            <p>I dati sono stati inseriti correttamente!</p>
+            <button
+              onClick={() => closeAlert()}
+              className="alert-button confirmed-button"
+            >
+              OK
+            </button>
+          </div>
         </div>
-        </div>
-        </div>
-      )
+      );
     }
+  
     case 'update': {
       return (
-        <div>
-        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-        <div
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          padding: "20px",
-          paddingTop: "50px",
-          backgroundColor: "rgb(5, 181, 61)",
-          color: "white",
-          borderRadius: "5px",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-          zIndex: 1,
-          textAlign: "center",
-        }}
-        > 
-        <UpdateValuesBale 
-        type={(alertFor === "update-p") ? "presser" : "wheelman"}
-        idBale={idBale}
-        // handlerConfirm={handleConfirm}
-        handlerConfirm={closeAlert}
-        />
+        <div className="overlay">
+          <div className="alert-box update">
+            <UpdateValuesBale
+              type={alertFor === "update-p" ? "presser" : "wheelman"}
+              idBale={idBale}
+              handlerConfirm={closeAlert}
+            />
+          </div>
         </div>
-        </div>
-        </div>
-      )
+      );
     }
   }
-  
 }

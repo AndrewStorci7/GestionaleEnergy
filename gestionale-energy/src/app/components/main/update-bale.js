@@ -224,16 +224,17 @@ export default function UpdateValuesBale({
                 </div>
             </div>
             <div className='grid grid-cols-4 m-[10px] mt-[20px]'>
+                <div className='col-span-2'></div>
                 <button 
-                className='col-span-2 border bg-primary'
+                className='border bg-primary mr-4'
                 onClick={handlerConfirm}
                 >
                     Annulla
                 </button>
                 <button 
-                    className='border bg-blue-400 col-span-2'
+                    className='border bg-blue-400 ml-4'
                     onClick={() => handleClick()}
-                    disabled={(type === 'presser' && !selected_b) || (type !== 'presser' && weight <= 0)}
+                    disabled={(type === 'presser' && !selected_b)}
                 >
                 OK
                 </button>
