@@ -199,6 +199,7 @@ export default function Alert({
       return (
         <div className="overlay">
           <div className="alert-box update">
+            <p className="mb-10 font-bold">Modifica dei dati della balla: </p>
             <UpdateValuesBale
               type={alertFor === "update-p" ? "presser" : "wheelman"}
               idBale={idBale}
