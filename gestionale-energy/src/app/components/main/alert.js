@@ -3,94 +3,108 @@
 import React, { useEffect, useState } from "react";
 import UpdateValuesBale from "./update-bale";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
-import { refreshPage } from "@/app/config";
-import md5 from "md5";
+import { refreshPage, getServerRoute, handleDelete } from "@/app/config";
 
 /**
-* @author Daniele Zeraschi from Oppimittinetworking
-* 
-* @param {string}    msg          Stringa dell'errore da stampare
-* 
-* @param {string}    alertFor     Il tipo di alert: [ 'error' | 'note' | 'confirmed' | 'update-p' | 'update-w' ]
-*                                 error: Errore
-  *                               confirmed: Conferma operazione generica
-  *                               note: Visuaizzazione note
-  *                               update-p: Alert per modifica dati balla pressista
-  *                               update-w: Alert per modificare dati balla carrellista
-* 
-* @param {function}  handleClose  Funzione che gestisce la chiusura dell'alert
-* 
-* @param {int}       idBale       Id della balla da modificare
-*
-* @param {Function}  handlerMessage Funzione che gestisce l'aggiornamento 
-**/
+  * @author Daniele Zeraschi from Oppimittinetworking
+  * 
+  * @param {string}    msg            Stringa dell'errore da stampare
+  * 
+  * @param {string}    alertFor       Il tipo di alert: [ 'error' | 'note' | 'confirmed' | 'update-p' | 'update-w' ]
+  *                                   error: Errore
+  *                                   confirmed: Conferma operazione generica
+  *                                   note: Visuaizzazione note
+  *                                   update-p: Alert per modifica dati balla pressista
+  *                                   update-w: Alert per modificare dati balla carrellista
+  * 
+  * @param {function}  handleClose    Funzione che gestisce la chiusura dell'alert
+  * 
+  * @param {int}       baleObj        Oggetto composto dai seguenti attributi: { `idBale`(number): id della balla, `setIdBale`(function): gancio per aggiornare l'id in caso di elimina }
+  *
+  * @param {Function}  handlerMessage Funzione che gestisce l'aggiornamento 
+  **/
 export default function Alert({
   msg, 
   alertFor,
   handleClose,
-  idBale
+  baleObj
 }) {
+
+  console.log(baleObj);
   
   const { ws } = useWebSocket();
+  
+  const [sanitize_alertFor, setSanitize] = useState("");
+  const [message, setMessage] = useState(""); 
+  
+  /**
+  * @param {boolean} isConfirmed
+  */
+  const closeAlert = (isConfirmed = false) => {
+    baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
+    handleClose(isConfirmed); 
+    refreshPage(ws);
+  };
 
-  const _CMNSTYLE_TD = "on-table-td";
-  const [sanitize_alertFor, setSanitize] = useState("")
-  const [showAlert, setShowAlert] = useState(true);
+  /**
+   * Gestisce l'aggiornamento della componente
+   * @param {string} msg   Messaggio per l'alert 
+   * @param {string} scope Tipo di alert 
+   */
+  const handleDeleteSuccess = (msg, scope) => {
+    setSanitize(scope);
+    setMessage(msg);
+  }
   
-  const closeAlert = () => {
-    setShowAlert(false);
-    handleClose();
-  };
-  
-  const handleConfirmedClose = () => {
-    closeAlert();
-    window.location.reload();
-  };
-  
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     try {
+      console.log("ID BALLA DENTRO ALERT => " + baleObj.idBale);
+      console.log("conferma elimina cliccato");
+      await handleDelete(baleObj.idBale, handleDeleteSuccess);
       closeAlert();
-      refreshPage(ws);
     } catch (error) {
-      alertFor = "error";
-      msg = error;
+      setSanitize("error");
+      if (typeof error === 'object') setMessage(error.message);
+      else setMessage(error);
     }
   }
-
+  
   useEffect(() => {
     setSanitize(alertFor.startsWith('update') ? 'update' : alertFor);
-  }, [alertFor]);
+    setMessage(msg);
+  }, [alertFor, msg]);
   
   switch(sanitize_alertFor) {
     case "error": {
       return(
         <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-3">
-          <div className=""
-          style={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            padding: "20px",
-            backgroundColor: "rgba(255, 0, 0, 1)",
-            color: "white",
-            borderRadius: "5px",
-            boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-            zIndex: 999,
-            textAlign: "center",
-          }}> 
-            <p>Errore: {msg}</p>
-            <button
-            onClick={() => closeAlert()}
+          <div
             style={{
-              padding: "5px 10px",
-              backgroundColor: "darkred",
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              padding: "20px",
+              backgroundColor: "rgba(255, 0, 0, 1)",
               color: "white",
-              border: "none",
               borderRadius: "5px",
-              cursor: "pointer",
-              marginTop: "10px",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              zIndex: 999,
+              textAlign: "center",
             }}
+          > 
+            <p>Errore: {message}</p>
+            <button
+              onClick={() => closeAlert()}
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "darkred",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "10px",
+              }}
             >
               Chiudi
             </button>
@@ -100,9 +114,8 @@ export default function Alert({
     }        
     case "note" : {
       return (
-        <div>
-          <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-            <div
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+          <div
             style={{
               position: "fixed",
               top: "50%",
@@ -115,9 +128,10 @@ export default function Alert({
               boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
               zIndex: 999,
               textAlign: "center",
-            }}> 
-              <p>{msg}</p>
-              <button
+            }}
+          > 
+            <p>{message}</p>
+            <button
               onClick={() => closeAlert()}
               style={{
                 padding: "5px 10px",
@@ -127,20 +141,18 @@ export default function Alert({
                 borderRadius: "5px",
                 cursor: "pointer",
                 marginTop: "10px",
-              }}>
-                Chiudi
-              </button>
-            </div>
+              }}
+            >
+              Chiudi
+            </button>
           </div>
         </div>
       );
     }
-    // Altri case per "error" e "confirmed" rimangono invariati
-    case "confirmed" : {
+    case "delete-confirm" : {
       return(
-        <div>
-          <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-            <div
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+          <div
             style={{
               position: "fixed",
               top: "50%",
@@ -154,9 +166,9 @@ export default function Alert({
               zIndex: 1,
               textAlign: "center",
             }}
-            > 
-              <p>{msg ? msg : "I dati sono stati inseriti correttamente!"}</p>
-              <button
+          > 
+            <p>{message}</p>
+            <button
               onClick={() => handleConfirm()}
               style={{
                 padding: "5px 10px",
@@ -167,19 +179,121 @@ export default function Alert({
                 cursor: "pointer",
                 marginTop: "10px",
               }}
-              >
-                OK
-              </button>
-            </div>
+            >
+              Si
+            </button>
+            <button
+              onClick={() => closeAlert()}
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "seagreen",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "10px",
+                marginRight: "10px" , 
+              }}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )
+    }
+    case "confirmed-print" : {
+      return(
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+          <div
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              padding: "20px",
+              backgroundColor: "rgb(5, 181, 61)",
+              color: "white",
+              borderRadius: "5px",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              zIndex: 1,
+              textAlign: "center",
+            }}
+          > 
+            <p>{message}</p>
+            <button
+              onClick={() => closeAlert(true)}
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "seagreen",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "10px",
+              }}
+            >
+              Si
+            </button>
+            <button
+              onClick={() => closeAlert()}
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "seagreen",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "10px",
+                marginRight: "10px" , 
+              }}
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )
+    }
+    case 'confirmed-successfull':{
+      return(
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+          <div
+            style={{
+              position: "fixed",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              padding: "20px",
+              backgroundColor: "rgb(5, 181, 61)",
+              color: "white",
+              borderRadius: "5px",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              zIndex: 1,
+              textAlign: "center",
+            }}
+          > 
+            <p>I dati sono stati inseriti correttamente!</p>
+            <button
+              onClick={() => closeAlert()}
+              style={{
+                padding: "5px 10px",
+                backgroundColor: "seagreen",
+                color: "white",
+                border: "none",
+                borderRadius: "5px",
+                cursor: "pointer",
+                marginTop: "10px",
+              }}
+            >
+              OK
+            </button>
           </div>
         </div>
       )
     }
     case 'update': {
       return (
-        <div>
-          <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
-            <div
+        <div className="bg-neutral-200/50 w-screen h-screen fixed top-0 left-0 z-40">
+          <div
             style={{
               position: "fixed",
               top: "50%",
@@ -194,13 +308,13 @@ export default function Alert({
               zIndex: 1,
               textAlign: "center",
             }}
-            > 
-              <UpdateValuesBale 
-                type={(alertFor === "update-p") ? "presser" : "wheelman"}
-                idBale={idBale}
-                handlerConfirm={handleConfirm}
-              />
-            </div>
+          > 
+            <UpdateValuesBale 
+              type={(alertFor === "update-p") ? "presser" : "wheelman"}
+              idBale={baleObj.idBale}
+              // handlerConfirm={handleConfirm}
+              handlerConfirm={closeAlert}
+            />
           </div>
         </div>
       )

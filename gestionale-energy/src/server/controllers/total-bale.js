@@ -160,9 +160,12 @@ class TotalBale extends Common {
                 ORDER BY 
                     ${this.table}.id ${order_by},
                     TIME(presser_bale.data_ins) ${order_by}, 
-                    TIME(wheelman_bale.data_ins) ${order_by}`,
+                    TIME(wheelman_bale.data_ins) ${order_by}
+                LIMIT 300`,
                 _params.params
             );
+            
+            
 
             if (select !== 'undefined' || select !== null) {
                 for (const e of select) {
@@ -237,7 +240,8 @@ class TotalBale extends Common {
                 WHERE 
                     ${this.table}.id_implant = ? 
                 ORDER BY 
-                    presser_bale.data_ins DESC`,
+                    presser_bale.data_ins DESC
+                LIMIT 300`,
                 [id_implant]
             );
         

@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
  * 
  * @author Andrea Storci from Oppimittinetworking
  * 
- * @param {object}   idSelect         Oggetto composto dai seguenti attributi: { `idBale`(number): id della balla, `setIdBale`(function): gancio per aggiornare l'id in caso di elimina }
+ * @param {object}   baleObj          Oggetto composto dai seguenti attributi: { `idBale`(number): id della balla, `setIdBale`(function): gancio per aggiornare l'id in caso di elimina }
  * 
  * @param {boolean}  handleConfirmAdd Tiene traccia del fatto che il bottone di conferma inserimento sia stato cliccato
  * 
@@ -23,12 +23,15 @@ import React, { useEffect, useState } from "react";
  * @param {function} handleSelect
  */
 export default function BtnPresser({ 
-    idSelect,
+    baleObj,
     handleConfirmAdd = false, 
     clickAddHandle
 }) {
 
-    const default_message = `Balla numero ${idSelect.idUnique} eliminata correttamente!`;
+    console.log(baleObj);
+
+    const default_message = `Balla numero ${baleObj.idUnique} eliminata correttamente!`;
+    const confirm_message = `Sei sicuro di voler eliminare la balla ${baleObj.idUnique} ?`;
 
     const [idBale, setIdBale] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
@@ -37,12 +40,22 @@ export default function BtnPresser({
     const [scope, setScope] = useState('');
 
     useEffect(() => {
-        setIdBale(idSelect.idBale);
-    }, [idSelect]);
+        setIdBale(baleObj.idBale);
+    }, [baleObj]);
+    
+    const handleAlert = async (msg, scope = "error") => {
+        setScope(scope);
+        setErrorMessage(msg);
+        setShowAlert(prev => !prev);
+    };
+
+    const closeAlert = () => {
+        setShowAlert(prev => !prev);
+        baleObj.setIdBale(null);
+    };
 
     const addNewBale = () => {
         try {
-            // console.log("First step ADD, calling 'clickAddHandle()'");
             setAddWasClicked(prev => !prev);
             clickAddHandle();
         } catch (error) {
@@ -50,59 +63,14 @@ export default function BtnPresser({
         }
     }
 
-    const handleDelete = async (id) => {
-        try {
-            // const f_id = (typeof id === 'object') ? id[0] : id;
-            const url = getServerRoute('delete-bale');
-            const check = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_bale: id }),
-            });
-    
-            const resp = await check.json();
-    
-            if (resp.code < 0) {
-                handleAlert(resp.message);
-            } else {
-                handleAlert(default_message, 'confirmed');
-            } 
-        } catch (error) {
-            handleAlert(error);
-        }
-        idSelect.setIdBale(null);
-    }
-
-    const handleUpdate = async (id) => {
-        // const f_id = (typeof id === 'object') ? id[0] : id;
-        setIdBale(id);
-        handleAlert("", 'update-p');
-    }
-
     const handleClick = (f) => {
-        if (idSelect && idSelect.idBale !== null) {
-            if (f) handleUpdate(idSelect.idBale);
-            else handleDelete(idSelect.idBale);
+        if (baleObj && baleObj.idBale !== null) {
+            if (f) handleAlert("", 'update-p');
+            else handleAlert(confirm_message, "delete-confirm");
         } else {
             handleAlert("Nessuna balla selezionata!");
         }
     }
-
-    /**
-     * Handle the error when no bale is selected
-     * 
-     * @param {string} msg Message to display
-     */
-    const handleAlert = (msg, scope = "error") => {
-        setScope(scope);
-        setErrorMessage(msg);
-        setShowAlert(prev => !prev);
-    };
-
-    // Funzione per chiudere l'alert
-    const closeAlert = () => {
-        setShowAlert(prev => !prev);
-    };
 
     return (
         <>
@@ -131,7 +99,7 @@ export default function BtnPresser({
                     handleClose={closeAlert}
                     alertFor={scope}
                     msg={errorMessage}
-                    idBale={idBale}
+                    baleObj={baleObj}
                 />
             }
         </>

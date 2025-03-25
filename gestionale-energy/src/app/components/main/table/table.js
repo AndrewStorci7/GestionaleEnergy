@@ -144,7 +144,7 @@ export default function Table({ type, implant, idUser }) {
                         idUser={idUser}
                         clickAddHandle={handleAddPressed}
                         handleConfirmAdd={confirmedAdd}
-                        idSelect={objIdBale}
+                        baleObj={objIdBale}
                     />
 
                     {(!addWasClicked) ? (
@@ -204,7 +204,7 @@ export default function Table({ type, implant, idUser }) {
                     <BtnWheelman 
                         implant={implant}
                         idUser={idUser}
-                        idSelect={objIdBale}
+                        baleObj={objIdBale}
                     />
 
                     {(!addWasClicked) ? (

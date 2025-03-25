@@ -21,72 +21,69 @@ const ExportReport = ({ btnPressed }) => {
   
   const [reportData, setReportData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
+  const [combinedData, setCombinedData] = useState([]);
 
   useEffect(() => {
     const fetchReportData = async () => {
       try {
+        setReportData([]);
         
-        const implant = (btnPressed == 'impianto-a') ? [2] : (btnPressed == 'impianto-b') ? [1] :(btnPressed == 'impianto-ab') ? [1,2] : 0;
+        // Definisci gli impianti da considerare in base al pulsante premuto
+        const implant = (btnPressed === 'impianto-a') ? [2] : 
+                        (btnPressed === 'impianto-b') ? [1] : 
+                        (btnPressed === 'impianto-ab') ? [1, 2] : 0;
+      
         const url = getServerRoute("report-daily");
-
+      
         if (implant === 0) {
-          console.log("errore");
-        } else {
-          for ( const i in implant ) {
-            console.log("Impianto ", implant[i]);
-            const resp = await fetch(url, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ implant: implant[i] })
-            });
-    
-            const data = await resp.json();
-    
-            if (data.code === 0) {
-              // if (i === 0) {
-              //   setReportData(data.data || null); // Set report data or null
-              // } else {
-              //   setReportData([ ...reportData, data.data ]);
-              // }
-              setReportData( prevReportData => [...(prevReportData || []), data.data] );
-              
-              setEmpty(false); // Reset empty state
-              console.log(reportData);
-            } else {
-              setEmpty(true); // Set empty state if no data is returned
-            }
+          console.log("Impianto type is invalid.");
+          return;
+        }
+      
+        let allData = [];
+  
+        for (const i in implant) {
+          console.log("Fetching data for Impianto:", implant[i]);
+          const resp = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ implant: implant[i] })
+          });
+  
+          const data = await resp.json();
+          console.log("Server Response:", data);
+  
+          if (data.code === 0) {
+            allData.push(data.data);
+          } else {
+            setEmpty(true);
           }
         }
-
-        // const resp = await fetch(url, {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ implant })
-        // });
-
-        // const data = await resp.json();
-
-        // if (data.code === 0) {
-        //   setReportData(data.data || null); // Set report data or null
-          
-        //   setEmpty(false); // Reset empty state
-        // } else {
-        //   setEmpty(true); // Set empty state if no data is returned
-        // }
+  
+        if (allData.length > 0) {
+          // Combina i dati degli impianti A e B se btnPressed è 'impianto-ab'
+          if (btnPressed === 'impianto-ab') {
+            const mergedData = [...allData[0], ...allData[1]];  // Unisce i dati dei due impianti
+            setReportData(mergedData);
+          } else {
+            setReportData(allData[0]);  // Impianto singolo
+          }
+        }
+  
       } catch (error) {
         console.error("Error Fetching Data:", error);
-        setEmpty(true); // Set empty state on error
+        setEmpty(true);
       }
     };
-
+  
     if (btnPressed) {
       fetchReportData();
     }
-    
   }, [btnPressed]);
+  
+  
 
   const handleDownload = (reportType) => {
-
     if (!reportData || reportData.length === 0) {
       console.log("No report data available for download.");
       return; // Return early if no data
@@ -95,7 +92,6 @@ const ExportReport = ({ btnPressed }) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('IMPIANTO');
 
-    // Define columns
     worksheet.columns = [
       { header: "IMPIANTO", key: "", width: 10 },
       { header: "CODICE", key: "desc", width: 10 },
@@ -118,71 +114,83 @@ const ExportReport = ({ btnPressed }) => {
       right: { style: 'thin' }
     };
 
-    // Customizing headers and alignment
-    worksheet.getCell('F1').value = new Date();
-    worksheet.getCell('F1').font = { bold: true, name: 'Arial' };
-    worksheet.getCell('A4').value = 'IMPIANTO';
-    worksheet.getCell('A4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('B4').value = 'COD.';
-    worksheet.getCell('B4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('C4').value = 'PRODOTTO';
-    worksheet.getCell('C4').alignment = { vertical: 'middle'};
-    worksheet.getCell('D3').value = '1° TURNO';
-    worksheet.mergeCells('D3:E3');
-    worksheet.getCell('D3:E3').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('D4').value = 'KG';
-    worksheet.getCell('D4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('E4').value = 'N° BALLE';
-    worksheet.getCell('E4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('F3').value = '2° TURNO';
-    worksheet.mergeCells('F3:G3');
-    worksheet.getCell('F3:G3').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('F4').value = 'KG';
-    worksheet.getCell('F4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('G4').value = 'N° BALLE';
-    worksheet.getCell('G4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('H3').value = '3° TURNO';
-    worksheet.mergeCells('H3:I3');
-    worksheet.getCell('H3:I3').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('H4').value = 'KG';
-    worksheet.getCell('H4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('I4').value = 'N° BALLE';
-    worksheet.getCell('I4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('J4').value = 'TOT.TURNO';
-    worksheet.getCell('J4').alignment = { vertical: 'middle', horizontal: 'center' };
-    worksheet.getCell('K4').value = 'TOT.CHILI';
-    worksheet.getCell('K4').alignment = { vertical: 'middle', horizontal: 'center' };
+  const setCell = (cell, value, alignment = { vertical: 'middle', horizontal: 'center' }, font = null) => {
+      worksheet.getCell(cell).value = value;
+      worksheet.getCell(cell).alignment = alignment;
+      if (font) worksheet.getCell(cell).font = font;
+  };
+  
+  // Setting the cell 'F1' with date and font style
+  setCell('F1', new Date(), { vertical: 'middle', horizontal: 'center' }, { bold: true, name: 'Arial' });
+  
+  // Setting values and alignments for header rows
+  setCell('A4', 'IMPIANTO');
+  setCell('B4', 'COD.');
+  setCell('C4', 'PRODOTTO');
+  setCell('D3', '1° TURNO');
+  worksheet.mergeCells('D3:E3');
+  setCell('D4', 'KG');
+  setCell('E4', 'N° BALLE');
+  
+  setCell('F3', '2° TURNO');
+  worksheet.mergeCells('F3:G3');
+  setCell('F4', 'KG');
+  setCell('G4', 'N° BALLE');
+  
+  setCell('H3', '3° TURNO');
+  worksheet.mergeCells('H3:I3');
+  setCell('H4', 'KG');
+  setCell('I4', 'N° BALLE');
+  
+  setCell('J4', 'TOT.TURNO');
+  setCell('K4', 'TOT.CHILI');
 
-    // console.log("reportData:", reportData);
+  const prova_array = {}; // All'interno i dati sono disposti correttamente
 
-    const prova_array = new Array(); // All'interno i dati sono disposti correttmanete
-    // This gives the current row number
-
-   
-    reportData.forEach((report, index) => {
-      
-      if (typeof report === 'object' && report !== null) {
-        
-        report.forEach((item, itemIndex) => {
-   
-          if (index === 0) {
-            prova_array[item.code] = { "codice": item.desc, "totale_balle_1": item.totale_balle, "totale_peso_1": item.totale_peso }
-          } else if (index === 1) {
-            Object.assign(prova_array[item.code], { 
-              "totale_balle_2": item.totale_balle, 
-              "totale_peso_2": item.totale_peso 
-            });
-          } else {
-            Object.assign(prova_array[item.code], { 
-              "totale_balle_3": item.totale_balle, 
-              "totale_peso_3": item.totale_peso 
-            });
-          }
-        });
-      } else {
-        console.error(`No items found or items is not an array in report ${index}`);
+  // Unisci i dati da entrambi gli impianti
+  reportData.forEach((report, index) => {
+    report.forEach((item) => {
+      const productCode = item.code;
+  
+      if (!prova_array[productCode]) {
+        prova_array[productCode] = {
+          codice: item.desc,
+          totale_balle_1: 0,
+          totale_peso_1: 0,
+          totale_balle_2: 0,
+          totale_peso_2: 0,
+          totale_balle_3: 0,
+          totale_peso_3: 0
+        };
       }
+  
+      if (index === 0) {
+        if (btnPressed === 'impianto-ab'){
+          prova_array[productCode].totale_balle_3 += item.totale_balle;
+          prova_array[productCode].totale_peso_3 += item.totale_peso;
+        }
+        else if (btnPressed === 'impianto-a' || btnPressed === 'impianto-b'){
+        prova_array[productCode].totale_balle_1 += item.totale_balle;
+        prova_array[productCode].totale_peso_1 += item.totale_peso;
+        }
+        
+      } else if (index === 1) {
+        prova_array[productCode].totale_balle_2 += item.totale_balle;
+        prova_array[productCode].totale_peso_2 += item.totale_peso;
+      } else {
+        if (btnPressed === 'impianto-ab'){
+          prova_array[productCode].totale_balle_1 += item.totale_balle;
+          prova_array[productCode].totale_peso_1 += item.totale_peso;
+        }
+        else if (btnPressed === 'impianto-a' || btnPressed === 'impianto-b'){
+          prova_array[productCode].totale_balle_3 += item.totale_balle;
+          prova_array[productCode].totale_peso_3 += item.totale_peso;
+        }
+      } 
     });
+  });
+
+  
     
     var row = null;
     Object.keys(prova_array).forEach((index) => {
@@ -198,12 +206,11 @@ const ExportReport = ({ btnPressed }) => {
         totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
       });
     });
-    
+
     // Totale Balle / Chili
     reportData.forEach((report) => {
       report.forEach((item, rowIndex) => {
         const rowNum = rowIndex + 5; 
-    
         worksheet.getCell(`J${rowNum}`).value = { formula: `SUM(E${rowNum},G${rowNum},I${rowNum})` };
         worksheet.getCell(`K${rowNum}`).value = { formula: `SUM(D${rowNum},F${rowNum},H${rowNum})` };
       });
@@ -211,8 +218,6 @@ const ExportReport = ({ btnPressed }) => {
 
     switch (reportType) {
       case 'impianto-a': // GIOR. IMPIANTO A
-    
-        
         for (let i = 5; i <= 28; i++) {
           worksheet.getCell(`A${i}`).value = 'A'; // Set the cell value to 'A' as a string
           worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
@@ -243,23 +248,25 @@ const ExportReport = ({ btnPressed }) => {
         worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
       }
         break;
-    
-      case 'impianto-ab': // GIOR. IMPIANTO A e B
+
+      case 'impianto-ab': // GIOR. IMPIANTO A/B
+
+      
       for (let i = 5; i <= 28; i++) {
-        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).value = 'A/B'; // Set the cell value to 'A/B' as a string
         worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
         worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
       }
         break;
-    
-      case 'impianto-ab-tempi': // GIOR. TEMPI IMP A e B
+
+      case 'impianto-ab-tempi': // GIOR. TEMPI IMP A/B
       for (let i = 5; i <= 28; i++) {
-        worksheet.getCell(`A${i}`).value = 'B'; // Set the cell value to 'A' as a string
+        worksheet.getCell(`A${i}`).value = 'A/B'; // Set the cell value to 'A/B' as a string
         worksheet.getCell(`A${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
         worksheet.getCell(`B${i}`).alignment = { vertical: 'middle', horizontal: 'center' };
       }
         break;
-    
+
       default:
         console.error('Unknown report type:', reportType);
         return;
@@ -352,6 +359,17 @@ const ExportReport = ({ btnPressed }) => {
 
     calculateTotals();
 
+    const applyBoldToNonZeroValues = (worksheet) => {
+      worksheet.eachRow((row, rowNumber) => {
+        row.eachCell((cell, colNumber) => {
+          if (cell.value !== 0) {
+            cell.font = { name: 'Calibri', bold: true }; // Applica il grassetto se il valore è diverso da 0
+          }
+        });
+      });
+    };
+    applyBoldToNonZeroValues(worksheet);
+
     workbook.xlsx.writeBuffer().then((buffer) => {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       saveAs(blob, `${reportType}.xlsx`);
@@ -360,7 +378,6 @@ const ExportReport = ({ btnPressed }) => {
 
   useEffect(() => {
     if (reportData && btnPressed) {
-      // Make sure the download happens only once and when appropriate
       handleDownload(btnPressed);
     }
   }, [reportData]);
