@@ -150,7 +150,7 @@ export default function TableContent({
                                 ) : key === "is_printed" ? (
                                     <td key={key} className="font-bold">{value == 0 ? "Da stamp." : "Stampato"}</td>
                                 ) : key !== "data_ins" ? (
-                                    <td className="truncate" key={key}>{value}</td>
+                                    <td  key={key}><p className="truncate">{value}</p></td>
                                 ) : null
                             )
                         ))}

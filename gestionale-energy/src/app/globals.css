@@ -123,7 +123,7 @@ body {
 
 .truncate { 
   white-space: nowrap; 
-  width: 100px; 
+  width: 80px; 
   overflow: hidden;
   text-overflow: ellipsis;
 }
