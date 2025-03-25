@@ -11,7 +11,8 @@ const _CMN_TEXT_ERROR = ""
 /**
  * @param {number} level    { 
  *      1 => Debug, 
- *      2 => No Info, only errors 
+ *      2 => No Info, only errors
+ *      3 => Info
  * }
  */
 class Console {
@@ -92,7 +93,7 @@ class Console {
     error(str) {
         var date = new Date()
         var callerInfo = this.getCallerInfo();
-        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_red} ${'Error'.padEnd(3)} ${_reset}][${callerInfo}]: `;
+        var ret = (this.level !== 3) ? `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_red} ${'Error'.padEnd(3)} ${_reset}][${callerInfo}]: ` : `[${_red} ${'Error'.padEnd(3)} ${_reset}]: `;
         let msg = "Generic error"
         if (str != "undefined" || str != null || str != "") {
             msg = `${_red}\n${str}${_reset}`;
@@ -109,9 +110,9 @@ class Console {
     info(str, color = "") {
         if (this.level !== 2) {
             const fontColor = this.getColor(color);
-            const date = new Date()
+            const date = new Date();
             const callerInfo = this.getCallerInfo();
-            const ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} ${'Info'.padEnd(3)} ${_reset}][${callerInfo}]: ${fontColor}`;
+            const ret = (this.level !== 3) ? `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} ${'Info'.padEnd(3)} ${_reset}][${callerInfo}]: ${fontColor}` : `[${_cyan} ${'Info'.padEnd(3)} ${_reset}]: `;
             let msg = "Generic Info" + _reset;
             if (str != "undefined" || str != null) {
                 if (typeof str === "object")

@@ -7,7 +7,17 @@
 // Configuring .env file
 import dotenv from 'dotenv';
 import fs from 'fs';
-dotenv.config();
+const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
+dotenv.config({ path: envFile });
+
+import Console from './inc/console.js';
+const console = new Console("MainApp", 3);
+// Verifica se il file esiste
+if (!fs.existsSync(envFile)) {
+    console.error(`Il file ${envFile} non è stato trovato!`);
+} else {
+    console.info(`Caricando il file di configurazione: ${envFile}`);
+}
 
 import express from 'express';
 import cors from 'cors';
@@ -33,7 +43,7 @@ import reportRouter from './routes/report.js';
 
 // Istanza app Express 
 const app = express();
-const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS_DEV;
+const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS;
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
 // const CERT_PATH = process.env.NEXT_PUBLIC_APP_CERT_PATH;
@@ -72,5 +82,5 @@ app.use(implantRouter(db, "implants"));
 app.use(reportRouter(db));
 
 server.listen(PORT, ADDRESS, () => {
-    console.log(`Server running on ${URL}:${PORT}`);
+    console.info(`Server running on ${URL}:${PORT}`);
 });
