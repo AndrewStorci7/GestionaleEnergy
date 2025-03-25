@@ -1,11 +1,12 @@
-import Common from './main/common.js';;
-import Console from '../inc/console.js';;
+import Common from './main/common.js';
+import Console from '../inc/console.js';
 
 const console = new Console("Report");
 
 /**
+ * Classe per la gestione dei report
  * 
- * 
+ * @author Andrea Storci from Oppimittinetworking
  * @author Daniele Zeraschi from Oppimittinetworking
  */
 class Report extends Common {
@@ -88,8 +89,7 @@ class Report extends Common {
                 LEFT JOIN wheelman_bale
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                    pb_wb.id_implant = ?
-                    AND presser_bale.id_rei = 1`,
+                    ${this.cond_for_cplastic}`,
                 params
             );
 
@@ -124,8 +124,7 @@ class Report extends Common {
                 LEFT JOIN wheelman_bale
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                    pb_wb.id_implant = ?
-                    AND presser_bale.id_rei = 1
+                    ${this.cond_for_cplastic}
                 GROUP BY 
                     code_plastic.code
                 LIMIT 100`,
@@ -161,11 +160,11 @@ class Report extends Common {
                 FROM 
                     rei
                 LEFT JOIN presser_bale 
-                ON presser_bale.id_rei = rei.id
+                    ON presser_bale.id_rei = rei.id
                 LEFT JOIN pb_wb 
-                ON pb_wb.id_pb = presser_bale.id
+                    ON pb_wb.id_pb = presser_bale.id
                 LEFT JOIN wheelman_bale
-                ON pb_wb.id_wb = wheelman_bale.id
+                    ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -183,9 +182,9 @@ class Report extends Common {
                 FROM 
                     cond_presser_bale
                 LEFT JOIN presser_bale 
-                ON presser_bale.id_cpb= cond_presser_bale.id
+                    ON presser_bale.id_cpb= cond_presser_bale.id
                 LEFT JOIN pb_wb 
-                ON pb_wb.id_pb = presser_bale.id
+                    ON pb_wb.id_pb = presser_bale.id
                 LEFT JOIN wheelman_bale
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
@@ -205,11 +204,11 @@ class Report extends Common {
                 FROM 
                     cond_wheelman_bale
                 LEFT JOIN wheelman_bale 
-                ON wheelman_bale.id_cwb = cond_wheelman_bale.id
+                    ON wheelman_bale.id_cwb = cond_wheelman_bale.id
                 LEFT JOIN pb_wb 
-                ON pb_wb.id_wb = wheelman_bale.id
+                    ON pb_wb.id_wb = wheelman_bale.id
                 LEFT JOIN presser_bale
-                ON pb_wb.id_pb = presser_bale.id
+                    ON pb_wb.id_pb = presser_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -227,13 +226,13 @@ class Report extends Common {
                 FROM 
                     selected_bale
                 LEFT JOIN presser_bale 
-                ON presser_bale.id_sb = selected_bale.id
+                    ON presser_bale.id_sb = selected_bale.id
                 LEFT JOIN pb_wb 
-                ON pb_wb.id_pb = presser_bale.id
+                    ON pb_wb.id_pb = presser_bale.id
                 LEFT JOIN wheelman_bale
-                ON pb_wb.id_wb = wheelman_bale.id
+                    ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                pb_wb.id_implant = ?
+                    pb_wb.id_implant = ?
                 GROUP BY 
                     selected_bale.id
                 ORDER BY
@@ -249,13 +248,13 @@ class Report extends Common {
                 FROM 
                     warehouse_dest
                 LEFT JOIN wheelman_bale 
-                ON wheelman_bale.id_wd = warehouse_dest.id
+                    ON wheelman_bale.id_wd = warehouse_dest.id
                 LEFT JOIN pb_wb 
-                ON pb_wb.id_wb = wheelman_bale.id
+                    ON pb_wb.id_wb = wheelman_bale.id
                 LEFT JOIN presser_bale
-                ON pb_wb.id_pb = wheelman_bale.id
+                    ON pb_wb.id_pb = wheelman_bale.id
                 WHERE 
-                pb_wb.id_implant = ?
+                    pb_wb.id_implant = ?
                 GROUP BY 
                     warehouse_dest.id
                 ORDER BY
@@ -271,11 +270,11 @@ class Report extends Common {
                 FROM 
                     reas_not_tying
                 LEFT JOIN wheelman_bale 
-                ON wheelman_bale.id_wd = reas_not_tying.id
+                    ON wheelman_bale.id_wd = reas_not_tying.id
                 LEFT JOIN pb_wb 
-                ON pb_wb.id_wb = wheelman_bale.id
+                    ON pb_wb.id_wb = wheelman_bale.id
                 LEFT JOIN presser_bale
-                ON pb_wb.id_pb = presser_bale.id
+                    ON pb_wb.id_pb = presser_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -307,12 +306,10 @@ class Report extends Common {
      * 
      * SELECT * FROM ${body.nome_tabella}
      */
-
     async reportDinamico(req, res) {
         try {
             const { implant } = req.body;
-    
-            // Parametro per la query
+
             const param = implant;
     
             // Query SQL per ottenere il totale delle balle per ogni tipo di plastica
@@ -329,8 +326,7 @@ class Report extends Common {
                 LEFT JOIN wheelman_bale
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                    pb_wb.id_implant = ?  
-                    AND presser_bale.id_rei = 1
+                    ${this.cond_for_cplastic}
                 GROUP BY 
                     code_plastic.code`, 
                 [param]

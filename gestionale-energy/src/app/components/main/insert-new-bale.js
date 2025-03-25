@@ -79,7 +79,6 @@ export default function InsertNewBale({
 
             const url = getServerRoute("add-bale");
 
-            // console.log(url);
             const implant = cookie.id_implant;
             const body = {
                 id_presser: cookie.id_user,
@@ -133,13 +132,9 @@ export default function InsertNewBale({
                 <tr className={`${_CMNSTYLE_TD} ${_CMNSTYLE_TR}`}>
                     {(primary) ? (
                         <>
-                            <td className={`${_CMNSTYLE_TD}`} >
-                                <CheckButton />
-                            </td>
+                            <td className={`${_CMNSTYLE_TD}`} ></td>
                             <td></td>
-                            <td className={`${_CMNSTYLE_TD}`} >
-                                <Icon type={status} />
-                            </td>
+                            <td className={`${_CMNSTYLE_TD}`} ></td>
                         </>
                     ) : null }
                     <td className={`${_CMNSTYLE_TD}`}>

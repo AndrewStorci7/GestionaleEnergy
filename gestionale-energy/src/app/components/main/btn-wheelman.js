@@ -7,17 +7,7 @@ import React, { useEffect, useState } from "react";
  * Button for wheelman
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
- * @param {object}   idSelect        {
- *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
- *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
- * }
- *
- * @param {string}   alertFor     Il tipo di alert: [ 'error' | 'note' | 'confirmed' | 'update-p' | 'update-w' ]
- *                                 error: Errore
- *                               confirmed: Conferma operazione generica
- *                               note: Visuaizzazione note
- *                               update-p: Alert per modifica dati balla pressista
- *                               update-w: Alert per modificare dati balla carrellista
+ * @param {object}   baleObj         Oggetto composto dai seguenti attributi: { `idBale`(number): id della balla, `setIdBale`(function): gancio per aggiornare l'id in caso di elimina }
  * 
  * @param {number}   idUnique        Id univoco della balla intera
  * 
@@ -32,40 +22,25 @@ import React, { useEffect, useState } from "react";
  */
 
 export default function BtnWheelman({ 
-    idSelect,
-    idUnique,
+    baleObj,
     implant, 
     idUser, 
     clickAddHandle
 }) {
 
-    const confirm_message = `Sei sicuro di voler stampare la balla ${idUnique} ?`;
-    const [idBale, setIdBale] = useState(0)
+    console.log(baleObj);
 
-    useEffect(() => {
-        setIdBale(idSelect)
-    }, [idSelect]);
-
-    const handleUpdate = async (id) => {
-        const f_id = (typeof id === 'object') ? id[0] : id;
-        setIdBale(f_id);
-        handleAlert("", 'update-w');
-    }
-
-    const handleClick = (f) => {
-        // Check if idSelect is not null and has a length property
-        if (idSelect !== null && idSelect) {
-            handleUpdate(idSelect);
-        } else {
-            handleAlert("Nessuna balla selezionata!");
-        }
-        idSelect = null;
-    }
-
+    const confirm_message = `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`;
+    // const [idBale, setIdBale] = useState(0);
+    
     const [showAlert, setShowAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [scope, setScope] = useState("");
 
+    // useEffect(() => {
+    //     setIdBale(baleObj);
+    // }, [baleObj]);
+    
     /**
      * Handle the error when no bale is selected
      * 
@@ -87,16 +62,30 @@ export default function BtnWheelman({
         setShowAlert(prev => !prev);
     }
 
+    const handleUpdate = async (id) => {
+        // setIdBale(id);
+        handleAlert("", 'update-w');
+    }
+
+    const handleClick = (f) => {
+        // Check if idSelect is not null and has a length property
+        if (baleObj && baleObj.idBale !== null) {
+            handleUpdate(baleObj.idBale);
+        } else {
+            handleAlert("Nessuna balla selezionata!");
+        }
+        // baleObj.setIdBale(null);
+    }
+
     const handleStampa = async (execute = false) => {
         
-        if (idSelect !== null && idSelect) {
+        if (baleObj) {
             if (execute) {
                 try {
-    
-                    const body = { printed: true, where: idSelect }; // Body per l'update della balla del carrellista
-                    const body2 = { status: 1, where: idSelect }; // Body per l'update dello stato della balla totale
-                    const url_update_wheelman = await getServerRoute("update-wheelman-bale");
-                    const url_update_status = await getServerRoute("update-status-bale");
+                    const body = { printed: true, where: baleObj.idBale }; // Body per l'update della balla del carrellista
+                    const body2 = { status: 1, where: baleObj.idBale }; // Body per l'update dello stato della balla totale
+                    const url_update_wheelman = getServerRoute("update-wheelman-bale");
+                    const url_update_status = getServerRoute("update-status-bale");
     
                     // Invia la richiesta per aggiornare lo stato della balla
                     const response = await fetch(url_update_wheelman, {
@@ -133,7 +122,7 @@ export default function BtnWheelman({
             // If no bale is selected, show an error alert
             handleAlert('Nessuna Balla selezionata');
         }
-        idSelect = null;
+        // baleObj.setIdBale(null);
     };
     
     return(
@@ -154,12 +143,10 @@ export default function BtnWheelman({
                     handleClose={closeAlert} 
                     alertFor={scope} 
                     msg={errorMessage}
-                    idBale={idBale}
+                    baleObj={baleObj}
                 />
             }
         </>
-        
     )
-       
 }
 
