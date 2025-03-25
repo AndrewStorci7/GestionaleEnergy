@@ -41,3 +41,81 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 40;
+}
+
+/* Alert Box Styles */
+.alert-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 999;
+}
+
+/* Specific Alert Types */
+.error {
+  background-color: rgba(255, 0, 0, 1);
+  color: white;
+}
+
+.note {
+  background-color: rgb(227, 242, 240);
+  color: black;
+}
+
+.confirmed {
+  background-color: rgb(5, 181, 61);
+  color: white;
+}
+
+.confirmed-print {
+  background-color: rgb(5, 181, 61);
+  color: white;
+}
+
+.update {
+  background-color: rgb(225, 229, 242);
+  color: white;
+}
+
+/* Button Styles */
+.alert-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.error-button {
+  background-color: darkred;
+  color: white;
+}
+
+.note-button {
+  background-color: rgb(149, 224, 216);
+  color: white;
+}
+
+.confirmed-button {
+  background-color: seagreen;
+  color: white;
+}
+
+.update-button {
+  background-color: seagreen;
+  color: white;
+}

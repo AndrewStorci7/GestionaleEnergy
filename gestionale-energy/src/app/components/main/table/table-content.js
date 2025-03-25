@@ -71,18 +71,27 @@ export default function TableContent({
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
             const url = getServerRoute("bale");
-            
+    
             const resp = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ body }),
             });
-
+    
             if (!resp.ok) throw new Error("Network response was not ok");
-
+    
             const data = await resp.json();
             if (data.code === 0) {
                 setEmpty(false);
+    
+                // Assicurati di assegnare i dati da presser a wheelman
+                if (data.presser && Array.isArray(data.presser) && data.presser.length > 0) {
+                    data.presser.map((bale, index) => {
+                        data.wheelman[index].plasticPresser = bale.plastic; 
+                    });
+                }
+    
+                // Popola il contenuto con i dati appropriati
                 setContent(type === "presser" ? data.presser : type === "wheelman" ? data.wheelman : []);
             } else {
                 setEmpty(true);
@@ -92,6 +101,7 @@ export default function TableContent({
             console.error(error);
         }
     };
+    
     
     useEffect(() => { fetchData(); }, [message]);
 
@@ -108,12 +118,13 @@ export default function TableContent({
             )}
 
             {!isEmpty && content.map((bale, index) => {
+                const plastic = bale.plasticPresser;
                 const id = bale.id;
                 const idUnique = bale.idUnique;
                 const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
                 const hour = bale.data_ins?.substr(11, 8) || "";
                 const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
-
+                
                 return (
                     <tr key={index} data-bale-id={id} className="border border-slate-400 h-[40px]">
                         {primary && (
@@ -125,10 +136,11 @@ export default function TableContent({
                                 </td>
                                 <td className="font-bold">{idUnique}</td>
                                 <td><Icon type={status} /></td>
+                                {type === 'wheelman' ? <td>{plastic}</td> : <></>}
                             </>
                         )}
                         {Object.entries(bale).map(([key, value]) => (
-                            key.startsWith("_") || ["id", "status", "idUnique"].includes(key) ? null : (
+                            key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
                                 key === "notes" && value ? (
                                     <td key={key}>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
@@ -148,6 +160,7 @@ export default function TableContent({
                                 {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                             </td>
                         )}
+                        
                         <td>{date}</td> {/* DATA */}
                         <td>{hour}</td> {/* ORA */}
                     </tr>

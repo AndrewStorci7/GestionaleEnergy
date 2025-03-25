@@ -29,10 +29,12 @@ export default function BtnPresser({
     idUnique,
     implant, 
     idUser, 
-    clickAddHandle
+    clickAddHandle,
+    updateIdSelect // Funzione di callback per aggiornare `idSelect` nel genitore
 }) {
 
     const default_message = `Balla numero ${idUnique} eliminata correttamente!`;
+    const confirm_message = `Sei sicuro di voler eliminare la balla ${idUnique} ?`;
 
     const [idBale, setIdBale] = useState(0);
     const [showAlert, setShowAlert] = useState(false);
@@ -45,7 +47,6 @@ export default function BtnPresser({
 
     const addNewBale = () => {
         try {
-            // console.log("First step ADD, calling 'clickAddHandle()'");
             clickAddHandle();
         } catch (error) {
             handleAlert(error);
@@ -53,10 +54,10 @@ export default function BtnPresser({
     }
 
     const handleDelete = async (id) => {
+        handleAlert(confirm_message, "confirmed");
+
         try {
             const f_id = (typeof id === 'object') ? id[0] : id;
-
-            // console.log(f_id);
 
             const url = await getServerRoute('delete-bale');
             const check = await fetch(url, {
@@ -64,14 +65,14 @@ export default function BtnPresser({
                 headers: {'Content-Type': 'application/json' },
                 body: JSON.stringify({ id_bale: f_id }),
             });
-    
+
             const resp = await check.json();
-    
+
             if (resp.code < 0) {
                 handleAlert(resp.message);
             } else {
-                handleAlert(default_message, 'confirmed');
-            } 
+                handleAlert(default_message, 'confirmed', );
+            }
         } catch (error) {
             handleAlert(error);
         }
@@ -81,6 +82,7 @@ export default function BtnPresser({
         const f_id = (typeof id === 'object') ? id[0] : id;
         setIdBale(f_id);
         handleAlert("", 'update-p');
+        // updateIdSelect(null, null);
     }
 
     const handleClick = (f) => {
@@ -93,18 +95,12 @@ export default function BtnPresser({
         }
     }
 
-    /**
-     * Handle the error when no bale is selected
-     * 
-     * @param {string} msg Message to display
-     */
-    const handleAlert = (msg, scope = "error") => {
+    const handleAlert = (msg, scope = "error", resetIdBale = updateIdSelect) => {
         setScope(scope);
         setErrorMessage(msg);
         setShowAlert(prev => !prev);
     };
 
-    // Funzione per chiudere l'alert
     const closeAlert = () => {
         setShowAlert(prev => !prev);
     };
@@ -137,6 +133,7 @@ export default function BtnPresser({
                     alertFor={scope}
                     msg={errorMessage}
                     idBale={idBale}
+                    updateBale={updateIdSelect}
                 />
             }
         </>

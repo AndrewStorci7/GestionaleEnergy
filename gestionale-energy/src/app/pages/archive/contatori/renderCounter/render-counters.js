@@ -91,9 +91,9 @@ export default function RenderCounters({ handler }) {
             <h1 className="font-bold text-3xl">Contatori</h1>
             <div className="">
                 {error && <div className="error-message">{error}</div>}
-                <div className="grid grid-cols-7 bg-red-200">
+                <div className="grid grid-cols-8 bg-red-200">
                     <h2 className="font-bold text-2xl">Impianto A</h2>
-                    <div className="col-span-7">
+                    <div className="col-span-8">
                         {dataTotalB && (
                             <>
                                 {renderSection('Balle Totali Impianto A', dataTotalB, "total-bale")}
@@ -110,13 +110,14 @@ export default function RenderCounters({ handler }) {
                             {renderSection('Cond. Pressista', dataImplantB.cond_pres[0])}
                             {renderSection('Utiliz. REI', dataImplantB.utiliz_rei[0])}
                             {renderSection('Codice Plastica', dataImplantB.cont_plastic[0])}
+                            {renderSection('Codice Plastica Completata', dataImplantB.cont_plastic_comp[0])}
                         </>
                     )}
                 </div>
 
-                <div className="grid grid-cols-7 bg-green-200">
+                <div className="grid grid-cols-8 bg-green-200">
                     <h2 className="font-bold text-2xl">Impianto B</h2>
-                    <div className="col-span-7">
+                    <div className="col-span-8">
                         {dataTotalA && (
                             <>
                                 {renderSection('Balle Totali Impianto B', dataTotalA, "total-bale")}
@@ -133,6 +134,7 @@ export default function RenderCounters({ handler }) {
                             {renderSection('Cond. Pressista', dataImplantA.cond_pres[0])}
                             {renderSection('Utiliz. REI', dataImplantA.utiliz_rei[0])}
                             {renderSection('Codice Plastica', dataImplantA.cont_plastic[0])}
+                            {renderSection('Codice Plastica Completata', dataImplantA.cont_plastic_comp[0])}
                         </>
                     )}
                     {!(dataTotalA && dataTotalB && dataImplantA && dataImplantB) && (

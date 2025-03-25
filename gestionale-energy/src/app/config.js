@@ -190,6 +190,13 @@ const getServerRoute = (route) => {
         case "report-giornaliero": 
         case "report-daily": 
             return getSrvUrl() + "/report/daily";
+
+        case "report-live": 
+            return getSrvUrl() + "/report/contatori";
+
+        case "report-balletotali": 
+            return getSrvUrl() + "/report/total-bale";
+        
         case "report-contatori": 
         // case "report-daily": 
             return getSrvUrl() + "/report/contatori";
@@ -224,6 +231,36 @@ const updateStatusTotalbale = async (body, method = 'POST', url = getServerRoute
     }
 }
 
+/**
+ * Elimina una balla 
+ * @param {number}      id 
+ * @param {Function}    handleAlert
+ */
+const handleDelete = async (id, handleAlert) => {
+    try {
+        const f_id = (typeof id === 'object') ? id[0] : id;
+
+        // console.log(f_id);
+
+        const url = await getServerRoute('delete-bale');
+        const check = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json' },
+            body: JSON.stringify({ id_bale: f_id }),
+        });
+
+        const resp = await check.json();
+
+        if (resp.code < 0) {
+            handleAlert(resp.message);
+        } else {
+            handleAlert(default_message, 'confirmed');
+        } 
+    } catch (error) {
+        handleAlert(error);
+    }
+}
+
 export { 
     getEnv, 
     getSrvUrl, 
@@ -232,5 +269,6 @@ export {
     refreshPage,
     isWebSocketConnected,
     getServerRoute,
-    updateStatusTotalbale
+    updateStatusTotalbale,
+    handleDelete
 };

@@ -186,6 +186,7 @@ export default function Table({ type, implant, idUser }) {
                     <BtnWheelman 
                         implant={implant}
                         idUser={idUser}
+                        idUnique={idUnique}
                         idSelect={isSelected}
                     />
 

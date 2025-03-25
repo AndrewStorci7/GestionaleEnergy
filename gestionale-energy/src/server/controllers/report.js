@@ -24,8 +24,6 @@ class Report extends Common {
         try {
             const { implant } = req.body;
 
-            co
-
             const data = new Array(3);
 
             for (let i = 1; i < 4; ++i) {
@@ -133,6 +131,28 @@ class Report extends Common {
                 LIMIT 100`,
                 param
             );
+
+            const cont_plastic_comp = await this.db.query(
+                `SELECT 
+                    code_plastic.code AS 'name', 
+                    COUNT(pb_wb.id_pb) AS "totale_balle"
+                FROM 
+                    code_plastic
+                LEFT JOIN presser_bale 
+                    ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb 
+                    ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale
+                    ON pb_wb.id_wb = wheelman_bale.id
+                WHERE 
+                    pb_wb.id_implant = ?
+                    AND presser_bale.id_rei = 1
+                    AND pb_wb.status = 1
+                GROUP BY 
+                    code_plastic.code
+                LIMIT 100`,
+                param
+            );            
 
             const utiliz_rei = await this.db.query(
                 `SELECT 
@@ -266,8 +286,8 @@ class Report extends Common {
                 param
             );
 
-            if (motivation && sel_warehouse && sel_bale && cond_wheel && cond_pres && utiliz_rei && cont_plastic) {
-                res.json({ code: 0, data: { motivation, sel_warehouse, sel_bale, cond_wheel, cond_pres, utiliz_rei, cont_plastic } })
+            if (motivation && sel_warehouse && sel_bale && cond_wheel && cond_pres && utiliz_rei && cont_plastic && cont_plastic_comp) {
+                res.json({ code: 0, data: { motivation, sel_warehouse, sel_bale, cond_wheel, cond_pres, utiliz_rei, cont_plastic, cont_plastic_comp } })
             } else {
                 res.json({ code: 1, message:"something went wrong" })
             }
