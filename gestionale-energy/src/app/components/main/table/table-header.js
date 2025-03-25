@@ -11,7 +11,7 @@ import { getBgColor } from "@@/config";
 export default function TableHeader({ type, primary = false }) {
 
     // const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
-    const _CMNSTYLE_TD = "border border-slate-400";
+    const _CMNSTYLE_TD = "border border-slate-400 ";
     const _MAX_HEIGHT = "h-[50px]";
     const bg_style = (primary) ? getBgColor(type, "theader") : 'bg-thirdary opacity-50';
     const text_color = (primary) ? 'text-white' : 'text-black';
