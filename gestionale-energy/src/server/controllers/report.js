@@ -144,9 +144,7 @@ class Report extends Common {
                 LEFT JOIN wheelman_bale
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
-                    pb_wb.id_implant = ?
-                    AND presser_bale.id_rei = 1
-                    AND pb_wb.status = 1
+                    ${this.cond_for_cplastic}
                 GROUP BY 
                     code_plastic.code
                 LIMIT 100`,
@@ -288,7 +286,7 @@ class Report extends Common {
             if (motivation && sel_warehouse && sel_bale && cond_wheel && cond_pres && utiliz_rei && cont_plastic && cont_plastic_comp) {
                 res.json({ code: 0, data: { motivation, sel_warehouse, sel_bale, cond_wheel, cond_pres, utiliz_rei, cont_plastic, cont_plastic_comp } })
             } else {
-                res.json({ code: 1, message:"something went wrong" })
+                res.json({ code: 1, message: "something went wrong" })
             }
 
         } catch (error) {

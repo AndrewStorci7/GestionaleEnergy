@@ -47,7 +47,7 @@ export default function RenderCounters({ handler }) {
                 const res = await resp.json();
                 const res2 = await resp2.json();
                 const restotbal = await totbal.json();
-                const restotbal2 =await totbal2.json();
+                const restotbal2 = await totbal2.json();
 
                 if (res.code === 0 && res2.code === 0 && restotbal.code === 0 && restotbal2.code === 0) {
                     console.log(res.data)
@@ -74,11 +74,11 @@ export default function RenderCounters({ handler }) {
     const renderSection = (title, items, option = "") => {
         return (
             <div>
-                <h3 className="font-semibold text-md">{title}</h3>
-                <ul>
+                <h3 className="font-semibold text-md ml-[5px]">{title}</h3>
+                <ul style={{ margin: '5px' }}>
                     {items.map((item, index) => (
-                        <li key={index}>
-                            <strong>{(option === "") ? item.name : ""}</strong>: {(option === "total-weight") ? item.totale_peso : item.totale_balle}
+                        <li key={index} style={{ borderWidth: 2, borderTopWidth: 1, borderBottomWidth: 1, borderColor: 'black' }}>
+                            <strong>{(option === "total-bale" && !item.name) ? "Totale" : item.name}</strong>: {(option === "total-weight") ? item.totale_peso : item.totale_balle}
                         </li>
                     ))}
                 </ul>
@@ -96,20 +96,20 @@ export default function RenderCounters({ handler }) {
                     <div className="col-span-8">
                         {dataTotalB && (
                             <>
-                                {renderSection('Balle Totali Impianto A', dataTotalB, "total-bale")}
-                                {renderSection('Peso balle totali Impianto A', dataTotalB, "total-weight")}
+                                {renderSection('Balle Totali COMPLETATE Impianto A', dataTotalB, "total-bale")}
+                                {/* {renderSection('Peso balle totali Impianto A', dataTotalB, "total-weight")} */}
                             </>
                         )}
                     </div>
                     {dataImplantB && (
                         <>
-                            {renderSection('Motivazioni', dataImplantB.motivation[0])}
-                            {renderSection('Magazzino Selezionato', dataImplantB.sel_warehouse[0])}
+                            {renderSection('Cond. Pressista', dataImplantB.cond_pres[0])}
+                            {renderSection('Codice Plastica', dataImplantB.cont_plastic[0])}
+                            {renderSection('Utiliz. REI', dataImplantB.utiliz_rei[0])}
                             {renderSection('Balla Selezionata', dataImplantB.sel_bale[0])}
                             {renderSection('Cond. Carrellista', dataImplantB.cond_wheel[0])}
-                            {renderSection('Cond. Pressista', dataImplantB.cond_pres[0])}
-                            {renderSection('Utiliz. REI', dataImplantB.utiliz_rei[0])}
-                            {renderSection('Codice Plastica', dataImplantB.cont_plastic[0])}
+                            {renderSection('Motivazioni', dataImplantB.motivation[0])}
+                            {renderSection('Magazzino Di Dest.', dataImplantB.sel_warehouse[0])}
                             {renderSection('Codice Plastica Completata', dataImplantB.cont_plastic_comp[0])}
                         </>
                     )}
@@ -121,19 +121,19 @@ export default function RenderCounters({ handler }) {
                         {dataTotalA && (
                             <>
                                 {renderSection('Balle Totali Impianto B', dataTotalA, "total-bale")}
-                                {renderSection('Peso balle totali Impianto B', dataTotalA, "total-weight")}
+                                {/* {renderSection('Peso balle totali Impianto B', dataTotalA, "total-weight")} */}
                             </>
                         )}
                     </div>
                     {dataImplantA && (
                         <>
-                            {renderSection('Motivazioni', dataImplantA.motivation[0])}
-                            {renderSection('Magazzino Selezionato', dataImplantA.sel_warehouse[0])}
+                            {renderSection('Cond. Pressista', dataImplantA.cond_pres[0])}
+                            {renderSection('Codice Plastica', dataImplantA.cont_plastic[0])}
+                            {renderSection('Utiliz. REI', dataImplantA.utiliz_rei[0])}
                             {renderSection('Balla Selezionata', dataImplantA.sel_bale[0])}
                             {renderSection('Cond. Carrellista', dataImplantA.cond_wheel[0])}
-                            {renderSection('Cond. Pressista', dataImplantA.cond_pres[0])}
-                            {renderSection('Utiliz. REI', dataImplantA.utiliz_rei[0])}
-                            {renderSection('Codice Plastica', dataImplantA.cont_plastic[0])}
+                            {renderSection('Motivazioni', dataImplantA.motivation[0])}
+                            {renderSection('Magazzino di Dest.', dataImplantA.sel_warehouse[0])}
                             {renderSection('Codice Plastica Completata', dataImplantA.cont_plastic_comp[0])}
                         </>
                     )}

@@ -29,8 +29,6 @@ export default function Alert({
   handleClose,
   baleObj
 }) {
-
-  console.log(baleObj);
   
   const { ws } = useWebSocket();
   
@@ -103,6 +101,27 @@ export default function Alert({
               className="alert-button note-button"
             >
               Chiudi
+            </button>
+          </div>
+        </div>
+      );
+    }
+    case "delete-confirm": {
+      return (
+        <div className="overlay">
+          <div className="alert-box confirmed">
+            <p>{message}</p>
+            <button
+              onClick={() => handleConfirm()}
+              className="alert-button confirmed-button"
+            >
+              Si
+            </button>
+            <button
+              onClick={() => closeAlert()}
+              className="alert-button confirmed-button mr-[10px]"
+            >
+              No
             </button>
           </div>
         </div>
