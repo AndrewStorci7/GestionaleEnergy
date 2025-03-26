@@ -1,7 +1,13 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, { 
+    createContext, 
+    useContext, 
+    useEffect, 
+    useRef, 
+    useState 
+} from 'react';
 import { getWsUrl } from '@/app/config';
 
-const wsurl = await getWsUrl();
+const wsurl = getWsUrl();
 const WebSocketContext = createContext();
 
 /**
@@ -16,22 +22,50 @@ export const WebSocketProvider = ({ user, children }) => {
     const ws = useRef(null);
     const [message, setMessage] = useState(null);
 
+    /**
+     * 
+     * @returns oggetto contenente le informazioni del dispositivo e del browser 
+     */
+    async function getUserDeviceInfo() {
+        let userInfo = {
+            user: user,
+            userAgent: navigator.userAgent, // Info generali
+            language: navigator.language,  // Lingua del browser
+        };
+    
+        if (navigator.userAgentData) {
+            const userAgentData = await navigator.userAgentData.getHighEntropyValues([
+                "platform",
+                "model",
+                "uaFullVersion"
+            ]);
+    
+            userInfo.platform = userAgentData.platform; // OS
+            userInfo.device = userAgentData.model || "Unknown"; // Modello dispositivo (solo mobile)
+            userInfo.browserVersion = userAgentData.uaFullVersion;
+        }
+        return userInfo;
+    }
+
     useEffect(() => {
 
         ws.current = new WebSocket(wsurl);
 
-        ws.current.onopen = () => {
-            console.log('WebSocket connection opened');
-            ws.current.send(JSON.stringify({ type: "new-conncetion", data: user }));
+        ws.current.onopen = async () => {
+            // console.log('WebSocket connection opened');
+
+            const userInfo = await getUserDeviceInfo();
+
+            ws.current.send( JSON.stringify({ type: "new-connection", data: userInfo }));
         };
 
         ws.current.onmessage = (event) => {
-            console.log('Message from server:', event.data);
+            // console.log('Message from server:', event.data);
             setMessage(event.data);
         };
 
         ws.current.onclose = () => {
-            console.log('WebSocket connection closed');
+            // console.log('WebSocket connection closed');
         };
 
         return () => ws.current.close();

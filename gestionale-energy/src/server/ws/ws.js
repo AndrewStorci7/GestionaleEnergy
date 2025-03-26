@@ -1,7 +1,6 @@
 import Console from '../inc/console.js';
-// const WebSocket = require('ws')
+import * as UAParser from 'ua-parser-js';
 import WebSocket from 'ws';
-// const md5 = require('md5')
 import md5 from 'md5'; 
 
 const console = new Console("WebSocketApp");
@@ -19,22 +18,19 @@ class WebSocketApp {
     }
 
     onConnection() {
-        this.ws.on('connection', (_ws) => {
-            
-            console.ws("New User Connected to the server!");
+        this.ws.on('connection', (_ws, req) => {
+            const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+            console.ws("New User Connected to the server! ", `[IP: ${ip}]`);
 
             _ws.send("Welcome to the server!");
             
             _ws.on('message', (message) => {
-                
-                // console.wsMessage(message)
-
                 try {
                     const parsedMessage = JSON.parse(message);
-
+                    // console.info(parsedMessage);
                     switch (parsedMessage.type) {
                         case "reload": {
-                            console.info("Realod websocket type called")
+                            // console.info("Realod websocket type called")
                             this.ws.clients.forEach((client) => {
                                 if (client.readyState === WebSocket.OPEN && parsedMessage.data == "___update___") {
                                     client.send(JSON.stringify({ code: 1001, message: md5(Math.floor(Math.random() * (1000 - 0 + 1)) + 0) }));
@@ -42,14 +38,26 @@ class WebSocketApp {
                             });
                             break;
                         } 
-                        case "new-conncetion": {
-                            console.info("New Connection websocket type called")
-                            console.ws(`User connected: ${parsedMessage.data.user} (${parsedMessage.data.name} ${parsedMessage.data.surname})`);
+                        case "new-connection": {
+                            // console.info(parsedMessage);
+                            if (parsedMessage.data.user) {
+                                const parser = new UAParser.UAParser(parsedMessage.data.userAgent);
+                                const deviceInfo = {
+                                    browser: parser.getBrowser().name || "Unknown",
+                                    browserVersion: parsedMessage.data.browserVersion || "Unknown",
+                                    os: parsedMessage.data.platform || parser.getOS().name || "Unknown",
+                                    device: parsedMessage.data.device || parser.getDevice().model || "Unknown",
+                                };
+
+                                const strInfo = `\n*BROWSER*: ${deviceInfo.browser}\n*BROWSER VERSION*: ${deviceInfo.browserVersion}\n*OPERATING SYSTEM*: ${deviceInfo.os}\n*DEVICE NAME*: ${deviceInfo.device}`;
+                                console.conn(`\nUser connected: ${parsedMessage.data.user.user} (${parsedMessage.data.user.name} ${parsedMessage.data.user.surname}) ${strInfo}`);
+                            }
+
                             break;
                         }
                     }
                 } catch (error) {
-                    console.error("Error parsing message", error);
+                    console.error("Error parsing message: " + error);
                 }
             })
         })

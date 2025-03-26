@@ -60,12 +60,46 @@ class Console {
      * 
      * @param {string} str 
      */
-    ws(str) {
+    ws(str, ip) {
+        var date = new Date();
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_green} ${'Connection'.padEnd(3)} ${_reset}]: `;
+        let msg = "new user connected to the server";
+        let ip_str = "";
+        
+        if (typeof ip === 'string' && ip)
+            ip_str = `${_cyan}${ip}${_reset}`;
+
+        if (str != "undefined" || str != null || str != "") {
+            // msg = `${_green}${str}${_reset}`;
+            msg = str + ip_str;
+            console.log(ret + msg);
+        }
+    }
+    
+    /**
+     * 
+     * @param {string} str 
+     */
+    conn(str) {
         var date = new Date()
         var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_green} ${'Connection'.padEnd(3)} ${_reset}]: `;
-        let msg = "new user connected to the server"
+        let msg = "New user connected to the server"
+
         if (str != "undefined" || str != null || str != "") {
-            msg = `${_green}${str}${_reset}`;
+            let count = 0;
+            let stringInterpreted;
+            for ( let i = 0; i < str.length; ++i ) {
+                if (str[i] === '*' && count === 0) {
+                    stringInterpreted += _cyan;
+                    ++count;
+                } else if (str[i] === '*' && count === 1) {
+                    stringInterpreted += _reset;
+                    count = 0;
+                } else {
+                    stringInterpreted += str[i];
+                }
+            }
+            msg = `${_reset}${stringInterpreted}${_reset}`;
         }
 
         console.log(ret + msg);
