@@ -227,37 +227,38 @@ const updateStatusTotalbale = async (body, method = 'POST', url = getServerRoute
             body: JSON.stringify({ body })
         });
     } catch (error) {
-        throw error;
+        throw new Error(error);
     }
 }
 
 /**
  * Elimina una balla 
  * @param {number}      id 
- * @param {Function}    handleAlert
+ * @param {function}    handleAlertChange
  */
-const handleDelete = async (id, handleAlert) => {
+const handleDelete = async (id, handleAlertChange, msg) => {
+
+    if (typeof handleAlertChange !== "function") {
+        throw new Error("Errore: `handleAlert` must be a function hook");
+    }
+
     try {
-        const f_id = (typeof id === 'object') ? id[0] : id;
-
-        // console.log(f_id);
-
-        const url = await getServerRoute('delete-bale');
+        console.log("entrato nel try/catch di `handleDelete`: id balla => " + id);
+        const url = getServerRoute('delete-bale');
         const check = await fetch(url, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_bale: f_id }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id_bale: id }),
         });
 
         const resp = await check.json();
 
         if (resp.code < 0) {
-            handleAlert(resp.message);
-        } else {
-            handleAlert(default_message, 'confirmed');
+            console.log("risposta ottenuta da `handleDelete`: " + resp.message);
+            throw new Error(resp.message);
         } 
     } catch (error) {
-        handleAlert(error);
+        throw new Error(error);
     }
 }
 

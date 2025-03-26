@@ -18,9 +18,10 @@ import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
  *                              [ `true` | `false` ]
  *                              True se il bottone di aggiunta è stato premuto, altrimenti false
  * 
- * @param {Object}      useFor  [ `regular` | `specific` ]
+ * @param {Object}      useFor  [ `regular` | `specific` | `reverse` ]
  *                              Di default è impostato su `regolar`, ovvero, che stampa tutte le alle ancora in lavorazione.
- *                              Se invece viene impostato su `specific`, allora stamperà le balle completate. 
+ *                              Se invece viene impostato su `specific`, allora stamperà le balle completate.
+ *                              Se impostato su `reverse` verranno stampate le balle al contrario.
  * 
  * @param {Function}    noData  Funzione che aggiorna lo stato della variabile noData.
  *                              Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
@@ -63,7 +64,8 @@ export default function TableContent({
 
     const handleAddChange = async () => {
         refreshPage(ws);
-        add.setAdd();
+        // add.setAdd();
+        add.changeAddBtn();
     };
     
     const fetchData = async () => {
@@ -126,11 +128,11 @@ export default function TableContent({
                 const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
                 
                 return (
-                    <tr key={index} data-bale-id={id} className="border border-slate-400 h-[40px]">
+                    <tr key={idUnique} data-bale-id={id} className="border border-slate-400 h-[40px]">
                         {primary && (
                             <>
-                                <td>
-                                    {useFor === 'regular' && (
+                                <td key={idUnique + "_checkbtn"}>
+                                    {(useFor === 'regular' || useFor === 'reverse') && (
                                         <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
                                     )}
                                 </td>
@@ -142,7 +144,7 @@ export default function TableContent({
                         {Object.entries(bale).map(([key, value]) => (
                             key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
                                 key === "notes" && value ? (
-                                    <td key={key}>
+                                    <td key={idUnique + key}>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
                                         </button>
@@ -155,14 +157,12 @@ export default function TableContent({
                             )
                         ))}
                         {primary && (
-                            <td className="relative">
-                                {/* <button className='on-btn-confirm' onClick={() => console.log("TODO")}>OK</button> */}
+                            <td className="relative" key={idUnique + "_note"}>
                                 {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                             </td>
                         )}
-                        
-                        <td>{date}</td> {/* DATA */}
-                        <td>{hour}</td> {/* ORA */}
+                        <td>{date}</td>
+                        <td>{hour}</td>
                     </tr>
                 );
             })}

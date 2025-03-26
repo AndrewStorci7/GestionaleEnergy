@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import SelectInput from './search/select';
 import { updateStatusTotalbale, getServerRoute } from '@@/config';
-import Alert from '@@/components/main/alert'
 import Cookies from 'js-cookie';
 
 /**
@@ -32,13 +31,6 @@ export default function UpdateValuesBale({
 
     const [note, setNote] = useState(""); // Note (sia carrellista che pressista)
 
-    /*
-    Dati da prelevare lato carrellista:
-        _idCwb --> Condizione balla carrellista
-        _idRnt --> Motivazione
-        weight --> Peso
-        _idWd  --> magazzino destinazione
-    */
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -110,7 +102,7 @@ export default function UpdateValuesBale({
                     note: note,
                     where: idBale,
                 };
-                url = await getServerRoute("update-presser-bale");
+                url = getServerRoute("update-presser-bale");
             } else {
                 body = {
                     id_wheelman: cookie.id_user,
@@ -121,7 +113,7 @@ export default function UpdateValuesBale({
                     weight: weight,
                     where: idBale,
                 };
-                url = await getServerRoute("update-wheelman-bale");
+                url = getServerRoute("update-wheelman-bale");
             }
     
             const body2 = { status: -1, where: idBale };

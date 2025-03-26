@@ -27,7 +27,10 @@ export default function Header({
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
     const [turn, setTurn] = useState("Turno 1");
+    // conteggio balle totali che verranno conteggiate in magazzino nel turno corrente 
     const [totalbales, setTotalBales] = useState(0);
+    // conteggio delle balle lavorate dal pressista
+    const [totalbalesLavorate, setTotalBalesLavorate] = useState(0);
 
     /**
      * Logout handler
@@ -63,9 +66,10 @@ export default function Header({
 
                 if (data.code == 0) {
                     setTotalBales(data.message);
+                    setTotalBalesLavorate(data.message2);
                 }
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
         } 
 
@@ -92,7 +96,7 @@ export default function Header({
 
     return (
         <header className="on-header on-fix-index">
-            <div className="grid grid-cols-8 gap-4">
+            <div className="grid grid-cols-9 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">
                     <Image
@@ -105,8 +109,9 @@ export default function Header({
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {implant}
                 </div> {/* end implant */}
-                <div className={`${_CMN_PLACE_CENTER}`}>
-                    Balle totali: {totalbales}
+                <div className={`${_CMN_PLACE_CENTER} col-span-2`}>
+                    Balle totali a mag.: {totalbales}<br/>
+                    Balle totali lavorate: {totalbalesLavorate}
                 </div> {/* end total bale */}
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {turn}
