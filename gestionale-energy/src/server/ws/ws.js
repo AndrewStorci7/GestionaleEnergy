@@ -65,4 +65,4 @@ class WebSocketApp {
 
 }
 
-export default WebSocketApp
+export default WebSocketApp;
