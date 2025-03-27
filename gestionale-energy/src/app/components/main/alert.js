@@ -40,8 +40,8 @@ export default function Alert({
   /**
   * @param {boolean} isConfirmed
   */
-  const closeAlert = (isConfirmed = false) => {
-    baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
+  const closeAlert = (isConfirmed = true) => {
+    // if (isConfirmed) baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
     handleClose(isConfirmed); 
     refreshPage(ws);
   };
@@ -100,7 +100,7 @@ export default function Alert({
             <p className="text-left">{message}</p>
             <br />
             <button
-              onClick={() => closeAlert()}
+              onClick={() => closeAlert(false)}
               className="alert-button note-button"
             >
               Chiudi
@@ -110,7 +110,7 @@ export default function Alert({
       );
     }
   
-    case "confirmed": {
+    case "delete": {
       return (
         <div className="overlay">
           <div className="alert-box confirmed">

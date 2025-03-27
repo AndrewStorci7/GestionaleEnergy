@@ -42,6 +42,7 @@ export default function TableContent({
     handleSelect,
     primary = false, 
     tableChange = false,
+    handleError,
     selectedBaleId
     
 }) {
@@ -62,10 +63,19 @@ export default function TableContent({
 
     const handleCloseNote = id => setOpenNotes(prev => ({ ...prev, [id]: false }));
 
-    const handleAddChange = async () => {
-        refreshPage(ws);
-        // add.setAdd();
-        add.changeAddBtn();
+    /**
+     * 
+     * @param {boolean} valid Se il parametro è true allora ricarica la pagina altrminet 
+     */
+    const handleAddChange = async (valid = true) => {
+        if (valid) {
+            refreshPage(ws);
+            // add.setAdd();
+            add.changeAddBtn();
+        } else {
+            // fai visualizzare l'alert con errore plastica vuota
+            handleError();
+        }
     };
     
     const fetchData = async () => {
@@ -149,10 +159,10 @@ export default function TableContent({
                                             <Icon type="info" /> 
                                         </button>
                                     </td>
-                                ) : key === "is_printed" ? (
-                                    <td key={key} className="font-bold">{value == 0 ? "Da stamp." : "Stampato"}</td>
-                                ) : key !== "data_ins" ? (
-                                    <td  key={key}><p className="truncate">{value}</p></td>
+                                ) : (key === "is_printed") ? (
+                                    <td key={idUnique + key} className="font-bold">{value == 0 ? "Da stamp." : "Stampato"}</td>
+                                ) : (key !== "data_ins") ? (
+                                    <td key={idUnique + key}>{value}</td>
                                 ) : null
                             )
                         ))}

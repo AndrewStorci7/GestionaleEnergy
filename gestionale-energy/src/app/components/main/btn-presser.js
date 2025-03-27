@@ -42,6 +42,14 @@ export default function BtnPresser({
     useEffect(() => {
         setIdBale(baleObj.idBale);
     }, [baleObj]);
+
+    useEffect(() => {
+        if(handleConfirmAdd) {
+            setAddWasClicked(false)
+        } else {
+            setAddWasClicked(true)
+        }
+    },[handleConfirmAdd]);
     
     const handleAlert = async (msg, scope = "error") => {
         setScope(scope);
@@ -49,15 +57,15 @@ export default function BtnPresser({
         setShowAlert(prev => !prev);
     };
 
-    const closeAlert = () => {
+    const closeAlert = (val = true) => {
         setShowAlert(prev => !prev);
-        baleObj.setIdBale(null);
+        if (val) baleObj.setIdBale(null);
     };
 
     const addNewBale = () => {
         try {
             setAddWasClicked(prev => !prev);
-            clickAddHandle();
+            clickAddHandle(prev => !prev);
         } catch (error) {
             handleAlert(error);
         }
@@ -66,7 +74,7 @@ export default function BtnPresser({
     const handleClick = (f) => {
         if (baleObj && baleObj.idBale !== null) {
             if (f) handleAlert("", 'update-p');
-            else handleAlert(confirm_message, "delete-confirm");
+            else handleAlert(confirm_message, "delete");
         } else {
             handleAlert("Nessuna balla selezionata!");
         }

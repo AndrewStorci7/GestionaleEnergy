@@ -55,7 +55,7 @@ export default function Table({ type, implant, idUser }) {
     const handleAddPressed = () => {
         setConfirmedAdd(prev => !prev);
         setAddClick(prev => !prev);
-        console.log(confirmedAdd);
+        console.log("STATO BOTTONE OK AGGIUNTA: " + confirmedAdd);
     }
     
     // Oggetto per gestire l'id della balla selezionata
@@ -71,7 +71,6 @@ export default function Table({ type, implant, idUser }) {
         changeAddBtn: handleAddPressed,
     }
     
-
     const noData = (msg) =>  {
         setEmpty(false);
         setMsg(msg);

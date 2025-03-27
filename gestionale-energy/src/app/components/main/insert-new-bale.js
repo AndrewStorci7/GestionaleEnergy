@@ -74,8 +74,10 @@ export default function InsertNewBale({
 
             const cookie = JSON.parse(Cookies.get('user-info'));
 
-            if (!plastic || plastic === null || plastic == "undefined" || plastic == "")
-                console.log("Plastica non selezionata"); 
+            if (!plastic || plastic === null || plastic == "undefined" || plastic == "") {
+                console.error("Plastica non selezionata"); 
+                return;
+            }
 
             const url = getServerRoute("add-bale");
 
@@ -114,16 +116,16 @@ export default function InsertNewBale({
         setShowConfirm(prev => !prev);
     };
 
-    /**
-     * Handle view Alert
-     * 
-     * @param {string} msg Message to display
-     */
-    const handleAlert = (msg, scope = "error") => {
-        setScope(scope);
-        setErrorMessage(msg);
-        setShowAlert(prev => !prev);
-    };
+    // /**
+    //  * Handle view Alert
+    //  * 
+    //  * @param {string} msg Message to display
+    //  */
+    // const handleAlert = (msg, scope = "error") => {
+    //     setScope(scope);
+    //     setErrorMessage(msg);
+    //     setShowAlert(prev => !prev);
+    // };
 
     switch (type) {
         case "presser": {
@@ -192,6 +194,7 @@ export default function InsertNewBale({
                             onClick={() => { 
                                 handleClick(true);
                                 handleConfirmed();
+                                
                             }}>
                                 OK
                             </button>
