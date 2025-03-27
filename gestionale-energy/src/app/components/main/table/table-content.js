@@ -166,13 +166,15 @@ export default function TableContent({
                                 ) : null
                             )
                         ))}
-                        {primary && (
+                        
+                        {(
                             <td className="relative" key={idUnique + "_note"}>
                                 {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                             </td>
                         )}
                         <td>{date}</td>
                         <td>{hour}</td>
+                        
                     </tr>
                 );
             })}

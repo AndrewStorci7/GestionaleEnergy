@@ -117,14 +117,14 @@ export default function Alert({
             <p>{message}</p>
             <button
               onClick={() => handleConfirm()}
-              className="alert-button confirmed-button"
+              className="alert-button confirmed-button mr-2"
             >
               Si
             </button>
             <button
               onClick={() => closeAlert()}
-              className="alert-button confirmed-button"
-              style={{ marginRight: "10px" }}
+              className="alert-button confirmed-button "
+              
             >
               No
             </button>

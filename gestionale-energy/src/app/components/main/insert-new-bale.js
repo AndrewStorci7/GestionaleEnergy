@@ -61,6 +61,8 @@ export default function InsertNewBale({
 
     const [showConfirm, setShowConfirm] = useState(false);
 
+
+    
     /**
      * Handle Click function
      * Questa funzione gestisce i dati per l'inserimetno di una nuova balla
@@ -76,6 +78,7 @@ export default function InsertNewBale({
 
             if (!plastic || plastic === null || plastic == "undefined" || plastic == "") {
                 console.error("Plastica non selezionata"); 
+
                 return;
             }
 
@@ -127,21 +130,24 @@ export default function InsertNewBale({
     //     setShowAlert(prev => !prev);
     // };
 
-    switch (type) {
-        case "presser": {
-            return (
-                // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`}>
-                <tr className={`${_CMNSTYLE_TD} ${_CMNSTYLE_TR}`}>
-                    {(primary) ? (
-                        <>
-                            <td className={`${_CMNSTYLE_TD}`} ></td>
-                            <td></td>
-                            <td className={`${_CMNSTYLE_TD}`} ></td>
-                        </>
-                    ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
+    // Calcoliamo se il bottone deve essere disabilitato
+const isPlasticValid = plastic && plastic !== "undefined" && plastic !== "";
+
+// Includiamo la logica per i bottoni OK
+switch (type) {
+    case "presser": {
+        return (
+            <tr className={`${_CMNSTYLE_TD} ${_CMNSTYLE_TR}`}>
+                {(primary) ? (
+                    <>
+                        <td className={`${_CMNSTYLE_TD}`} ></td>
+                        <td></td>
+                        <td className={`${_CMNSTYLE_TD}`} ></td>
+                    </>
+                ) : null }
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && 
+                    <SelectInput 
                         searchFor={"plastic"}
                         value={plastic}
                         onChange={(e) => { 
@@ -150,151 +156,150 @@ export default function InsertNewBale({
                             setPlastic2(code);
                         }} 
                         fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && plastic2}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && plastic2}
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && 
+                    <SelectInput 
                         searchFor={"rei"} 
                         value={rei}
                         onChange={(e) => setRei(e.target.value)} 
                         fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && 
+                    <SelectInput 
                         searchFor={"cdbp"} 
                         value={cdbp}
                         onChange={(e) => setCdbp(e.target.value)}  
                         fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) &&
-                        <SelectInput 
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) &&
+                    <SelectInput 
                         searchFor={"selected-b"} 
                         value={selected_b}
                         onChange={(e) => setSelectedBale(e.target.value)} 
                         fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && <input 
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && <input 
                         type="text"
                         id="note-pressista"
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="Inserisci note"
-                        />}
-                    </td>
-                    {(primary) ? (
-                        <td className={`${_CMNSTYLE_TD}`} >
-                            <button 
-                            className='on-btn-confirm'
+                    />}
+                </td>
+                {(primary) ? (
+                    <td className={`${_CMNSTYLE_TD}`} >
+                        <button 
+                            className={`on-btn-confirm ${!isPlasticValid ? 'disabled:opacity-45 cursor-no-drop' : ''}`}
                             onClick={() => { 
-                                handleClick(true);
-                                handleConfirmed();
-                                
-                            }}>
-                                OK
-                            </button>
-                            {/* showConfirm && <Alert alertFor="confirmed" handleClose={() => handleConfirmed()} /> */}
+                                if (isPlasticValid) {
+                                    handleClick(true);
+                                    handleConfirmed();
+                                }
+                            }}
+                            disabled={!isPlasticValid} // Disabilita il bottone se la plastica non è valida
+                        >
+                            OK
+                        </button>
+                    </td>
+                ) : null}
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {/* DATA */}
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {/* ORA */}
+                </td>
+            </tr>
+        );
+    }
+    case "wheelman": {
+        return (
+            <tr className={`${_CMNSTYLE_TD}`}>
+                {(primary) ? (
+                    <>
+                        <td className={`${_CMNSTYLE_TD}`} >
+                            <CheckButton />
                         </td>
-                    ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* DATA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* ORA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
-                </tr>
-            )
-        }
-        case "wheelman": {
-            return (
-                // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`} >
-                <tr className={`${_CMNSTYLE_TD}`} >
-                    {(primary) ? (
-                        <>
-                            <td className={`${_CMNSTYLE_TD}`} >
-                                <CheckButton />
-                            </td>
-                            <td className={`${_CMNSTYLE_TD}`} >
-                                <Icon type={status} />
-                            </td>
-                        </>
-                    ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
+                        <td className={`${_CMNSTYLE_TD}`} >
+                            <Icon type={status} />
+                        </td>
+                    </>
+                ) : null }
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && 
+                    <SelectInput 
                         searchFor={"cdbc"} 
                         value={cdbc}
                         onChange={(e) => setCdbc(e.target.value)} 
                         fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && 
+                    <SelectInput 
                         searchFor={"reason"} 
                         value={reason}
                         onChange={(e) => setReason(e.target.value)} 
                         fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && <input 
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && <input 
                         type="number"
                         id="peso-pressista"
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
                         placeholder="Inserisci peso"
-                        />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && 
-                        <SelectInput 
+                    />}
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && 
+                    <SelectInput 
                         searchFor={"dest-wh"} 
                         value={dest_wh}
                         onChange={(e) => setDestWh(e.target.value)} 
                         fixedW />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {(mod) && <input 
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {(mod) && <input 
                         type="text"
                         id="note-carrellista"
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="Inserisci note"
-                        />}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`} >
-                        stato
-                    </td>
-                    {(primary) ? (
-                        <td 
-                        // className={`${_CMNSTYLE_TD}`} 
-                        >
-                            <button 
-                            className='on-btn-confirm'
+                    />}
+                </td>
+                <td className={`${_CMNSTYLE_TD}`} >
+                    stato
+                </td>
+                {(primary) ? (
+                    <td>
+                        <button 
+                            className={`on-btn-confirm ${!isPlasticValid ? 'disabled:opacity-45 cursor-no-drop' : ''}`}
                             onClick={() => { 
-                                handleClick(false);
-                                handleConfirmed();
-                            }}>
-                                OK
-                            </button>
-                        </td>
-                    ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* DATA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
+                                if (isPlasticValid) {
+                                    handleClick(false);
+                                    handleConfirmed();
+                                }
+                            }}
+                            disabled={!isPlasticValid}
+                        >
+                            OK
+                        </button>
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* ORA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
-                </tr>
-            )
-        }
+                ) : null}
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {/* DATA */}
+                </td>
+                <td className={`${_CMNSTYLE_TD}`}>
+                    {/* ORA */}
+                </td>
+            </tr>
+        );
     }
+}
 }
