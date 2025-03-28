@@ -13,7 +13,7 @@
   }
 
   .on-header {
-    @apply w-full bg-white text-thirdary font-bold text-xl mb-[5px];
+    @apply w-full bg-white text-thirdary font-bold text-lg mb-[5px];
   }
 
   .on-btn-confirm {
@@ -84,11 +84,13 @@ body {
 }
 
 .note {
+  border-color: rgb(144, 250, 236);
   background-color: rgb(227, 242, 240);
   color: black;
 }
 
 .confirmed {
+  border-color: #9eb3f8;
   background-color: #E1E5F2;
   color: rgb(0, 0, 0);
 }
@@ -118,7 +120,7 @@ body {
 }
 
 .note-button {
-  background-color: rgb(149, 224, 216);
+  background-color: rgb(102, 150, 145);
   color: white;
 }
 

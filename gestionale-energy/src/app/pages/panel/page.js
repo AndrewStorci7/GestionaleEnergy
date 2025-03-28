@@ -60,7 +60,7 @@ export default function Admin() {
 
     return(
         <WebSocketProvider user={{ user, name, surname }}>
-            <div className="w-[98%] m-[1%] overflow-hidden">
+            <div className="w-[99%] m-[0.5%] overflow-hidden">
                 <CheckCookie/>
                 <Header 
                     implant={implant}

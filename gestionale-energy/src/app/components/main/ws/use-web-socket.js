@@ -56,7 +56,16 @@ export const WebSocketProvider = ({ user, children }) => {
 
             const userInfo = await getUserDeviceInfo();
 
-            ws.current.send( JSON.stringify({ type: "new-connection", data: userInfo }));
+            if (ws.current.readyState === WebSocket.OPEN) {
+                ws.current.send(JSON.stringify({ type: "new-connection", data: userInfo }));
+            } else {
+                console.warn("WebSocket is not open yet. Retrying...");
+                setTimeout(() => {
+                    if (ws.current.readyState === WebSocket.OPEN) {
+                        ws.current.send(JSON.stringify({ type: "new-connection", data: userInfo }));
+                    }
+                }, 300);
+            }
         };
 
         ws.current.onmessage = (event) => {

@@ -165,8 +165,8 @@ export default function TableContent({
                                     <td key={idUnique + key} className={_CMNSTYLE_TD}>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
+                                            {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                                         </button>
-                                        {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                                     </td>
                                 ) : (key === "is_printed") ? (
                                     <td key={idUnique + key} className={`font-bold ${_CMNSTYLE_TD}`}>{value == 0 ? "Da stamp." : "Stampato"}</td>

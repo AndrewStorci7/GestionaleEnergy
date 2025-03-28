@@ -95,7 +95,7 @@ export default function Header({
     }, [message]);
 
     return (
-        <header className=" on-header on-fix-index p-4 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-xl">
+        <header className="on-header on-fix-index p-4 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-xl">
             <div className="grid grid-cols-9 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">

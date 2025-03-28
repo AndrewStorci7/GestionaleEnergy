@@ -97,8 +97,8 @@ export default function Alert({
     case "note": {
       return (
         <div className="overlay">
-          <div className="alert-box note">
-            <p className="text-left font-bold">Nota del Pressista:</p>
+          <div className="alert-box on-border note">
+            <h1 className="title-alert text-left" style={{ color: 'black' }}>Nota del Pressista:</h1>
             <br />
             <p className="text-left">{message}</p>
             <br />
