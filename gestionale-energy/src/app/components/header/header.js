@@ -95,7 +95,7 @@ export default function Header({
     }, [message]);
 
     return (
-        <header className="on-header on-fix-index">
+        <header className="on-header on-fix-index border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-xl">
             <div className="grid grid-cols-9 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">
@@ -122,22 +122,21 @@ export default function Header({
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {time}
                 </div> {/* end time */}
-                <div className="realtive">
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type, "header")} w-full px-[10px] rounded-t-md text-white`}>
-                        {username}
-                    </div>
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)} w-full px-[10px]`}>
-                        <span className="w-fit">{name} {surname}</span>
-                    </div>
-                    <div className={`flex justify-end ${getBgColor(type)} w-full p-[10px] rounded-b-md`}>
-                        <button
-                        className="rounded-md bg-gray-300 px-[5px]"
-                        onClick={logout} >
-                            Logout
-                        </button>
-                    </div>
-
-                </div> {/* end user */}
+                <div className={`${_CMN_PLACE_CENTER}`}>
+                    {username}
+                    {/* <span className="w-fit">{name} {surname}</span> */}
+                    <button
+                        className="rounded-full bg-red-500 p-2 ml-10" 
+                        onClick={logout}
+                    >
+                        <img 
+                            src="/spegni2.png" 
+                            alt="Logout"
+                            className="w-6 h-6" 
+                        />
+                    </button>
+                </div>
+                
             </div>
         </header>
     );

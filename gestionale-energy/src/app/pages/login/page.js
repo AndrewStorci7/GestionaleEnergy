@@ -79,7 +79,7 @@ export default function LoginPage() {
 
     return (
         <div className={styles.container}>
-            <div className="w-full">
+            <div className="w-full ">
                 <Image 
                     src="/logo-oe.webp"
                     width={400}
