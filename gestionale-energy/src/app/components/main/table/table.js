@@ -1,7 +1,8 @@
 'use client'
 
-import TableHeader from "./table-header";
+import TableWrapper from "./tableWrapper";
 import TableContent from "./table-content";
+import TableHeader from "./table-header";
 import DownloadReport from "../admin/btn-report"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
@@ -33,7 +34,8 @@ export default function Table({ type, implant, idUser }) {
     const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
     const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
-    const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
+    // const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
+    const _CMNSTYLE_TABLE = "border-collapse table-auto w-full text-sm";
     const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
     const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
     const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
@@ -90,6 +92,8 @@ export default function Table({ type, implant, idUser }) {
     //     setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
     // }
 
+
+
     switch (type) {
         case "admin": {
             return (
@@ -102,41 +106,18 @@ export default function Table({ type, implant, idUser }) {
         case "presser": {
             return (
                 <>
-                    <div className={`${_CMNSTYLE_DIV} shadow-lg`}>
-                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary `}>Pressista</label>
-                        <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"presser"} primary />
-                            
-                            {/* BALLE IN LAVORAZIONE */}
-                            <TableContent 
-                                type={"presser"} 
-                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
-                                selectedBaleId={isSelected}
-                                add={objAdd}  
-                                noData={(e) => noData(e)} 
-                                primary 
-                            />
-
-                            {/* BALLE COMPLETATE */}
-                            <TableContent 
-                                type={"presser"} 
-                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
-                                selectedBaleId={isSelected} 
-                                useFor={"specific"}
-                                noData={(e) => noData(e)} 
-                                primary 
-                            />
-                        </table>
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
-                        <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"wheelman"}/>
-
-                            {/* BALLE IN LAVORAZIONE */}
-                            <TableContent type={"wheelman"} add={objAdd} />
-                            
-                            {/* BALLE COMPLETATE */}
-                            <TableContent type={"wheelman"} useFor={"specific"} />
-                        </table>
+                    <div className="grid grid-cols-2 gap-2 pt-[10px] relative h-[60vh] overflow-y-scroll">
+                        <TableWrapper 
+                            type={"presser"}
+                            tableContent={{
+                                handleSelect: (i, y) => handleSelect(i, y),
+                                selectedBaleId: isSelected,
+                                objAdd: objAdd,
+                                noData: (e) => noData(e)
+                            }}
+                            primary
+                        />
+                        <TableWrapper type={"wheelman"} tableContent={{ objAdd: objAdd }} />
                     </div>
 
                     <BtnPresser 

@@ -11,8 +11,9 @@ import { getBgColor } from "@@/config";
 export default function TableHeader({ type, primary = false }) {
 
     // const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
-    const _CMNSTYLE_TD = "border border-slate-400";
-    const _MAX_HEIGHT = "h-[50px]";
+    // const _CMNSTYLE_TD = "border border-slate-400";
+    const _CMNSTYLE_TD = "border-b dark:border-slate-600 font-medium p-4 pt-0 pb-3 text-slate-400 dark:text-slate-200 text-left";
+    const _MAX_HEIGHT = "h-[52px]";
     const bg_style = (primary) ? getBgColor(type, "theader") : 'bg-thirdary opacity-50';
     const text_color = (primary) ? 'text-white' : 'text-black';
 
@@ -21,7 +22,10 @@ export default function TableHeader({ type, primary = false }) {
             return (
                 <>
                     {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Pressista</label>*/}
-                    <thead className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}>
+                    <thead 
+                    // className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}
+                    className={_MAX_HEIGHT}
+                    >
                         <tr>
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>}
@@ -44,7 +48,10 @@ export default function TableHeader({ type, primary = false }) {
             return (
                 <>
                     {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Carrellista</label>*/}
-                    <thead className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}>
+                    <thead 
+                    // className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}
+                    className={_MAX_HEIGHT}
+                    >
                         <tr>
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>Sel.</th>}
                             {(primary) && <th className={`${_CMNSTYLE_TD}`}>N°</th>}

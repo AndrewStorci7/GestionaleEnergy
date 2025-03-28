@@ -33,7 +33,8 @@ export default function InsertNewBale({
     ids, 
     primary, 
     confirmHandle,
-    visible = false
+    visible = false,
+    style,
 }) {
 
     const { ws, message } = useWebSocket();
@@ -129,15 +130,15 @@ export default function InsertNewBale({
         case "presser": {
             return (
                 // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`}>
-                <tr className={`${_CMNSTYLE_TD} ${_CMNSTYLE_TR}`}>
+                <tr className='bg-red/100' >
                     {(primary) ? (
                         <>
-                            <td className={`${_CMNSTYLE_TD}`} ></td>
+                            <td className={style} ></td>
                             <td></td>
-                            <td className={`${_CMNSTYLE_TD}`} ></td>
+                            <td className={style} ></td>
                         </>
                     ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && 
                         <SelectInput 
                         searchFor={"plastic"}
@@ -149,10 +150,10 @@ export default function InsertNewBale({
                         }} 
                         fixedW />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && plastic2}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && 
                         <SelectInput 
                         searchFor={"rei"} 
@@ -160,7 +161,7 @@ export default function InsertNewBale({
                         onChange={(e) => setRei(e.target.value)} 
                         fixedW />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && 
                         <SelectInput 
                         searchFor={"cdbp"} 
@@ -168,7 +169,7 @@ export default function InsertNewBale({
                         onChange={(e) => setCdbp(e.target.value)}  
                         fixedW />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) &&
                         <SelectInput 
                         searchFor={"selected-b"} 
@@ -176,7 +177,7 @@ export default function InsertNewBale({
                         onChange={(e) => setSelectedBale(e.target.value)} 
                         fixedW />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && <input 
                         type="text"
                         id="note-pressista"
@@ -186,7 +187,7 @@ export default function InsertNewBale({
                         />}
                     </td>
                     {(primary) ? (
-                        <td className={`${_CMNSTYLE_TD}`} >
+                        <td className={style} >
                             <button 
                             className='on-btn-confirm'
                             onClick={() => { 
@@ -198,32 +199,27 @@ export default function InsertNewBale({
                             {/* showConfirm && <Alert alertFor="confirmed" handleClose={() => handleConfirmed()} /> */}
                         </td>
                     ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* DATA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
+                    <td className={style}>
+
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* ORA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
+                    <td className={style}></td>
                 </tr>
             )
         }
         case "wheelman": {
             return (
-                // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`} >
-                <tr className={`${_CMNSTYLE_TD}`} >
+                <tr className={style} >
                     {(primary) ? (
                         <>
-                            <td className={`${_CMNSTYLE_TD}`} >
+                            <td className={style} >
                                 <CheckButton />
                             </td>
-                            <td className={`${_CMNSTYLE_TD}`} >
+                            <td className={style} >
                                 <Icon type={status} />
                             </td>
                         </>
                     ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && 
                         <SelectInput 
                         searchFor={"cdbc"} 
@@ -231,7 +227,7 @@ export default function InsertNewBale({
                         onChange={(e) => setCdbc(e.target.value)} 
                         fixedW />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && 
                         <SelectInput 
                         searchFor={"reason"} 
@@ -239,7 +235,7 @@ export default function InsertNewBale({
                         onChange={(e) => setReason(e.target.value)} 
                         fixedW />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && <input 
                         type="number"
                         id="peso-pressista"
@@ -248,7 +244,7 @@ export default function InsertNewBale({
                         placeholder="Inserisci peso"
                         />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && 
                         <SelectInput 
                         searchFor={"dest-wh"} 
@@ -256,7 +252,7 @@ export default function InsertNewBale({
                         onChange={(e) => setDestWh(e.target.value)} 
                         fixedW />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
+                    <td className={style}>
                         {(mod) && <input 
                         type="text"
                         id="note-carrellista"
@@ -265,12 +261,12 @@ export default function InsertNewBale({
                         placeholder="Inserisci note"
                         />}
                     </td>
-                    <td className={`${_CMNSTYLE_TD}`} >
+                    <td className={style} >
                         stato
                     </td>
                     {(primary) ? (
                         <td 
-                        // className={`${_CMNSTYLE_TD}`} 
+                        // className={style} 
                         >
                             <button 
                             className='on-btn-confirm'
@@ -282,14 +278,8 @@ export default function InsertNewBale({
                             </button>
                         </td>
                     ) : null }
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* DATA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* ORA */}
-                        {/* (mod) && <SelectInput searchFor={"plastic"} fixedW /> */}
-                    </td>
+                    <td className={style}></td>
+                    <td className={style}></td>
                 </tr>
             )
         }

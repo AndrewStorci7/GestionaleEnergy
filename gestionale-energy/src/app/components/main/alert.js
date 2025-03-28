@@ -39,9 +39,13 @@ export default function Alert({
   * @param {boolean} isConfirmed
   */
   const closeAlert = (isConfirmed = false) => {
-    baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
-    handleClose(isConfirmed); 
-    refreshPage(ws);
+    try {
+      refreshPage(ws);
+      baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
+      handleClose(isConfirmed); 
+    } catch (error) {
+      
+    }
   };
 
   /**
@@ -193,7 +197,7 @@ export default function Alert({
             <UpdateValuesBale
               type={alertFor === "update-p" ? "presser" : "wheelman"}
               idBale={baleObj.idBale}
-              handlerConfirm={closeAlert}
+              handlerClose={closeAlert}
             />
           </div>
         </div>

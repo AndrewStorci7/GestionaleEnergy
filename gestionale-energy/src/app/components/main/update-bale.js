@@ -6,15 +6,18 @@ import Cookies from 'js-cookie';
 /**
  * @author Andrea Storci from Oppimittinetworking.com
  * 
- * @param {string}  type    Tipo della balla da modificare: [ 'presser' | 'wheelman' ]
- * @param {int}     idBale  Id numerico della balla da modificare 
- * @param {Function} handlerConfirm Funzione che gestisce il flusso dopo aver cliccato il bottone di Annulla o Conferma 
+ * @param {string}   type    Tipo della balla da modificare: [ 'presser' | 'wheelman' ]
+ * @param {int}      idBale  Id numerico della balla da modificare 
+ * @param {Function} handlerClose Funzione che gestisce il flusso dopo aver cliccato il bottone di Annulla o Conferma 
  */
 export default function UpdateValuesBale({ 
     type, 
     idBale, 
-    handlerConfirm 
+    handlerClose,
+    ...props
 }) {
+
+    const [canProceed, setCanProceed] = useState(false);
 
     // Dati Pressista
     const [plastic, setPlastic] = useState(""); // Id plastica
@@ -31,49 +34,50 @@ export default function UpdateValuesBale({
 
     const [note, setNote] = useState(""); // Note (sia carrellista che pressista)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (type === 'presser') {
-                    const url = await getServerRoute("presser");
-                    const resp = await fetch(url, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: idBale })
-                    });
-    
-                    const data = await resp.json();
+    /**
+     * 
+     */
+    const fetchData = async () => {
+        try {
+            if (type === 'presser') {
+                const url = getServerRoute("presser");
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: idBale })
+                });
 
-                    // console.log(data);
-    
-                    setPlastic(data.plastic);
-                    setRei(data._idRei);
-                    setCdbp(data._idCpb);
-                    setSelectedBale(data._idSb);
-                    setNote(data.notes);
-                } else {
-                    const url = await getServerRoute("wheelman");
-                    const resp = await fetch(url, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: idBale })
-                    });
-    
-                    const data = await resp.json();
+                const data = await resp.json();
 
-                    // console.log(data);
-    
-                    setCdbc(data._idCwb);
-                    setReason(data._idRnt);
-                    setWeight(data.weight);
-                    setDestWh(data._idWd);
-                    setNote(data.notes);
-                }
-            } catch (error) {
-                console.log(error);
+                setPlastic(data.plastic);
+                setRei(data._idRei);
+                setCdbp(data._idCpb);
+                setSelectedBale(data._idSb);
+                setNote(data.notes);
+                setCanProceed(data.plastic !== null || data.plastic !== undefined);
+            } else {
+                const url = getServerRoute("wheelman");
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: idBale })
+                });
+
+                const data = await resp.json();
+
+                setCdbc(data._idCwb);
+                setReason(data._idRnt);
+                setWeight(data.weight);
+                setDestWh(data._idWd);
+                setNote(data.notes);
+                setCanProceed(data.weight > 0);
             }
+        } catch (error) {
+            console.log(error);
         }
+    }
 
+    useEffect(() => {
         fetchData();
     }, [idBale]);
 
@@ -84,11 +88,11 @@ export default function UpdateValuesBale({
      */
     const handleClick = async () => {
         try {
-            // Verifica se una balla è stata selezionata
-            if ((type === 'presser' && !selected_b) || (type !== 'presser' && weight <= 0)) {
-                alert("Devi selezionare una balla valida!");
-                return; // Interrompe l'esecuzione se non è selezionato nulla
-            }
+            // // Verifica se una balla è stata selezionata
+            // if ((type === 'presser' && !selected_b) || (type !== 'presser' && weight <= 0)) {
+            //     alert("Devi selezionare una balla valida!");
+            //     return; // Interrompe l'esecuzione se non è selezionato nulla
+            // }
     
             const cookie = JSON.parse(Cookies.get('user-info'));
             var body = null, url = "";
@@ -126,7 +130,7 @@ export default function UpdateValuesBale({
             // Aggiorna lo stato della balla totale
             await updateStatusTotalbale(body2);
             // Gestisco la conferma e ri-renderizzo la componente padre
-            handlerConfirm();
+            handlerClose();
     
         } catch (error) {
             console.log("Errore", error);
@@ -142,13 +146,8 @@ export default function UpdateValuesBale({
                         searchFor={(type === 'presser') ? "plastic" : "cdbc"}
                         value={(type === 'presser') ? plastic : cdbc}
                         onChange={(e) => { 
-                            if (type === 'presser') {
-                                let code = e.target.selectedOptions[0].getAttribute("data-code");
-                                setPlastic(e.target.value); 
-                                // setPlastic2(code);
-                            } else {
-                                setCdbc(e.target.value);
-                            }
+                            if (type === 'presser') setPlastic(e.target.value); 
+                            else setCdbc(e.target.value);
                         }} 
                         fixedW 
                     />
@@ -159,8 +158,7 @@ export default function UpdateValuesBale({
                         searchFor={(type === 'presser') ? "rei" : "reason"} 
                         value={(type === 'presser') ? rei : reason}
                         onChange={(e) => {
-                            if (type === 'presser')
-                                setRei(e.target.value);
+                            if (type === 'presser') setRei(e.target.value);
                             else setReason(e.target.value);
                         }} 
                         fixedW 
@@ -172,8 +170,7 @@ export default function UpdateValuesBale({
                         searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
                         value={(type === 'presser') ? cdbp : dest_wh}
                         onChange={(e) => {
-                            if (type === 'presser')
-                                setCdbp(e.target.value)
+                            if (type === 'presser') setCdbp(e.target.value)
                             else setDestWh(e.target.value)
                         }}  
                         fixedW 
@@ -197,7 +194,10 @@ export default function UpdateValuesBale({
                             type="number"
                             id="peso-carrellista"
                             value={weight}
-                            onChange={(e) => setWeight(e.target.value)}
+                            onChange={(e) => { 
+                                setWeight(e.target.value);
+                                setCanProceed(e.target.value > 0);
+                            }}
                             placeholder="Inserisci peso"
                         />
                     </div>
@@ -215,20 +215,19 @@ export default function UpdateValuesBale({
                     />
                 </div>
             </div>
-            <div className='grid grid-cols-4 m-[10px] mt-[20px]'>
-                <div className='col-span-2'></div>
+            <div className='flex flex-row-reverse m-[10px] mt-[20px]'>
                 <button 
-                className='border bg-primary mr-4'
-                onClick={handlerConfirm}
+                    className={`border px-[10px] py-[5px] rounded-md ml-4 bg-blue-400 ${!canProceed && 'disabled:opacity-45 cursor-no-drop'}`}
+                    onClick={() => handleClick()}
+                    disabled={!canProceed}
                 >
-                    Annulla
+                    OK
                 </button>
                 <button 
-                    className='border bg-blue-400 ml-4'
-                    onClick={() => handleClick()}
-                    disabled={(type === 'presser' && !selected_b)}
+                    className={'border px-[10px] py-[5px] rounded-md bg-primary mr-4'}
+                    onClick={() => handlerClose()}
                 >
-                OK
+                    Annulla
                 </button>
             </div>
         </>

@@ -60,6 +60,7 @@ export default function BtnWheelman({
         if (isConfirmed)
             handleStampa(true);
         setShowAlert(prev => !prev);
+        baleObj.setIdBale(null);
     }
 
     const handleUpdate = async (id) => {

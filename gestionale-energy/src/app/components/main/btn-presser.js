@@ -28,8 +28,6 @@ export default function BtnPresser({
     clickAddHandle
 }) {
 
-    console.log(baleObj);
-
     const default_message = `Balla numero ${baleObj.idUnique} eliminata correttamente!`;
     const confirm_message = `Sei sicuro di voler eliminare la balla ${baleObj.idUnique} ?`;
 
