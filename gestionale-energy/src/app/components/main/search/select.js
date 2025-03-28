@@ -34,7 +34,7 @@ export default function SelectInput({
 }) {
 
     const fixed_width = (fixedW) && "w-full";
-    const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black`;
+    const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black border-2 border-gray-300 p-1`;
 
     const [error, setError] = useState("");
     // Risposta ottenuta dal server
