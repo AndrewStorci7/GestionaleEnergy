@@ -217,26 +217,15 @@ export default function UpdateValuesBale({
             </div>
             <div className='flex flex-row-reverse m-[10px] mt-[20px]'>
                 <button 
-<<<<<<< HEAD
                     className={`border px-[10px] py-[5px] rounded-md ml-4 bg-blue-400 ${!canProceed && 'disabled:opacity-45 cursor-no-drop'}`}
                     onClick={() => handleClick()}
                     disabled={!canProceed}
-=======
-                className='border bg-primary mr-4 rounded md'
-                onClick={handlerConfirm}
->>>>>>> dev/bugfix
                 >
                     OK
                 </button>
                 <button 
-<<<<<<< HEAD
                     className={'border px-[10px] py-[5px] rounded-md bg-primary mr-4'}
                     onClick={() => handlerClose()}
-=======
-                    className='border bg-blue-400 ml-4 rounded-md'
-                    onClick={() => handleClick()}
-                    disabled={(type === 'presser' && !selected_b)}
->>>>>>> dev/bugfix
                 >
                     Annulla
                 </button>
