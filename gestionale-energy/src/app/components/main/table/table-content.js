@@ -42,6 +42,7 @@ export default function TableContent({
     handleSelect,
     primary = false, 
     tableChange = false,
+    handleError,
     selectedBaleId
     
 }) {
@@ -65,10 +66,19 @@ export default function TableContent({
 
     const handleCloseNote = id => setOpenNotes(prev => ({ ...prev, [id]: false }));
 
-    const handleAddChange = async () => {
-        refreshPage(ws);
-        // add.setAdd();
-        add.changeAddBtn();
+    /**
+     * 
+     * @param {boolean} valid Se il parametro è true allora ricarica la pagina altrminet 
+     */
+    const handleAddChange = async (valid = true) => {
+        if (valid) {
+            refreshPage(ws);
+            // add.setAdd();
+            add.changeAddBtn();
+        } else {
+            // fai visualizzare l'alert con errore plastica vuota
+            handleError();
+        }
     };
     
     const fetchData = async () => {
@@ -163,14 +173,13 @@ export default function TableContent({
                                     <td key={idUnique + key} className={_CMNSTYLE_TD}>{value}</td>
                                 ) : null
                             )
-                        ))}
-                        {primary && (
-                            <td className={`relative ${_CMNSTYLE_TD}`} key={idUnique + "_note"}>
-                                {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
-                            </td>
-                        )}
-                        <td className={`font-bold ${_CMNSTYLE_TD}`}>{date}</td>
-                        <td className={`font-bold ${_CMNSTYLE_TD}`}>{hour}</td>
+                        ))}   
+                        <td className="relative" key={idUnique + "_note"}>
+                            {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
+                        </td>
+                        <td>{date}</td>
+                        <td>{hour}</td>
+                        
                     </tr>
                 );
             })}

@@ -77,8 +77,8 @@ body {
 }
 
 .confirmed {
-  background-color: rgb(5, 181, 61);
-  color: white;
+  background-color: #E1E5F2;
+  color: rgb(0, 0, 0);
 }
 
 .confirmed-print {
@@ -111,11 +111,19 @@ body {
 }
 
 .confirmed-button {
-  background-color: seagreen;
-  color: white;
+  background-color: #c9cedf;
+  color: rgb(255, 255, 255);
 }
 
 .update-button {
   background-color: seagreen;
   color: white;
+}
+
+
+.truncate { 
+  white-space: nowrap; 
+  width: 80px; 
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

@@ -62,6 +62,8 @@ export default function InsertNewBale({
 
     const [showConfirm, setShowConfirm] = useState(false);
 
+
+    
     /**
      * Handle Click function
      * Questa funzione gestisce i dati per l'inserimetno di una nuova balla
@@ -75,8 +77,11 @@ export default function InsertNewBale({
 
             const cookie = JSON.parse(Cookies.get('user-info'));
 
-            if (!plastic || plastic === null || plastic == "undefined" || plastic == "")
-                console.log("Plastica non selezionata"); 
+            if (!plastic || plastic === null || plastic == "undefined" || plastic == "") {
+                console.error("Plastica non selezionata"); 
+
+                return;
+            }
 
             const url = getServerRoute("add-bale");
 
@@ -115,16 +120,16 @@ export default function InsertNewBale({
         setShowConfirm(prev => !prev);
     };
 
-    /**
-     * Handle view Alert
-     * 
-     * @param {string} msg Message to display
-     */
-    const handleAlert = (msg, scope = "error") => {
-        setScope(scope);
-        setErrorMessage(msg);
-        setShowAlert(prev => !prev);
-    };
+    // /**
+    //  * Handle view Alert
+    //  * 
+    //  * @param {string} msg Message to display
+    //  */
+    // const handleAlert = (msg, scope = "error") => {
+    //     setScope(scope);
+    //     setErrorMessage(msg);
+    //     setShowAlert(prev => !prev);
+    // };
 
     switch (type) {
         case "presser": {
@@ -191,21 +196,27 @@ export default function InsertNewBale({
                             <button 
                             className='on-btn-confirm'
                             onClick={() => { 
-                                handleClick(true);
-                                handleConfirmed();
-                            }}>
-                                OK
-                            </button>
-                            {/* showConfirm && <Alert alertFor="confirmed" handleClose={() => handleConfirmed()} /> */}
+                                if (isPlasticValid) {
+                                    handleClick(true);
+                                    handleConfirmed();
+                                }
+                            }}
+                            disabled={!isPlasticValid} // Disabilita il bottone se la plastica non è valida
+                        >
+                            OK
+                        </button>
                         </td>
-                    ) : null }
-                    <td className={style}>
-
+                    ) : null}
+                    <td className={`${_CMNSTYLE_TD}`}>
+                        {/* DATA */}
                     </td>
-                    <td className={style}></td>
+                    <td className={`${_CMNSTYLE_TD}`}>
+                        {/* ORA */}
+                    </td>
                 </tr>
-            )
+            );
         }
+
         case "wheelman": {
             return (
                 <tr className={style} >

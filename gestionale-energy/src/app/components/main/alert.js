@@ -44,7 +44,8 @@ export default function Alert({
       baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
       handleClose(isConfirmed); 
     } catch (error) {
-      
+      setSanitize("error");
+      setMessage(error);
     }
   };
 
@@ -101,7 +102,7 @@ export default function Alert({
             <p className="text-left">{message}</p>
             <br />
             <button
-              onClick={() => closeAlert()}
+              onClick={() => closeAlert(false)}
               className="alert-button note-button"
             >
               Chiudi
@@ -110,14 +111,15 @@ export default function Alert({
         </div>
       );
     }
-    case "delete-confirm": {
+  
+    case "delete": {
       return (
         <div className="overlay">
           <div className="alert-box confirmed">
             <p>{message}</p>
             <button
               onClick={() => handleConfirm()}
-              className="alert-button confirmed-button"
+              className="alert-button confirmed-button mr-2"
             >
               Si
             </button>
@@ -131,27 +133,7 @@ export default function Alert({
         </div>
       );
     }
-    case "confirmed": {
-      return (
-        <div className="overlay">
-          <div className="alert-box confirmed">
-            <p>{message}</p>
-            <button
-              onClick={() => handleConfirm()}
-              className="alert-button confirmed-button"
-            >
-              Si
-            </button>
-            <button
-              onClick={() => closeAlert()}
-              className="alert-button confirmed-button mr-[10px]"
-            >
-              No
-            </button>
-          </div>
-        </div>
-      );
-    }
+
     case "confirmed-print": {
       return (
         <div className="overlay">
@@ -173,6 +155,7 @@ export default function Alert({
         </div>
       );
     }
+    
     case 'confirmed-successfull': {
       return (
         <div className="overlay">
@@ -193,7 +176,7 @@ export default function Alert({
       return (
         <div className="overlay">
           <div className="alert-box update">
-            <p className="mb-10 font-bold">Modifica dei dati della balla: </p>
+            <p className="text-black mb-10 font-bold text-2xl text-left">Modifica dei dati della balla: </p>
             <UpdateValuesBale
               type={alertFor === "update-p" ? "presser" : "wheelman"}
               idBale={baleObj.idBale}

@@ -7,7 +7,6 @@ import { useEffect } from 'react';
  * @author Daniele Zeraschi from Oppimittinetworking
  * 
  */
-
 const CheckCookie = () => {
   const router = useRouter();
 

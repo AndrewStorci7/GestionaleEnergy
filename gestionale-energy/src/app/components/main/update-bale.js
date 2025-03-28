@@ -141,7 +141,7 @@ export default function UpdateValuesBale({
         <>
             <div className='grid grid-cols-5'>
                 <div className='relative px-[5px]'>
-                    <label className='absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Codice Plastica" : "Cond. Balla Carrel."}</label>
+                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Codice Plastica" : "Cond. Balla Carrel."}</label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "plastic" : "cdbc"}
                         value={(type === 'presser') ? plastic : cdbc}
@@ -153,7 +153,7 @@ export default function UpdateValuesBale({
                     />
                 </div>
                 <div className='relative px-[5px]'>
-                    <label className='absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Utiliz. REI" : "Motivaz."}</label>
+                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Utiliz. REI" : "Motivaz."}</label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "rei" : "reason"} 
                         value={(type === 'presser') ? rei : reason}
@@ -165,7 +165,7 @@ export default function UpdateValuesBale({
                     />
                 </div>
                 <div className='relative px-[5px]'>
-                    <label className='absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}</label>
+                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}</label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
                         value={(type === 'presser') ? cdbp : dest_wh}
@@ -178,7 +178,7 @@ export default function UpdateValuesBale({
                 </div>
                 {(type === 'presser') ? (
                     <div className='relative px-[5px]'>
-                        <label className='absolute top-[-30px] left-[5px] font-bold'>Balla Selez.</label>
+                        <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Balla Selez.</label>
                         <SelectInput 
                             searchFor={"selected-b"} 
                             value={selected_b}
@@ -188,7 +188,7 @@ export default function UpdateValuesBale({
                     </div>
                 ) : (
                     <div className='relative px-[5px]'>
-                        <label className='absolute top-[-30px] left-[5px] font-bold'>Peso (kg)</label>
+                        <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Peso (kg)</label>
                         <input 
                             className='text-black w-full'
                             type="number"
@@ -203,7 +203,7 @@ export default function UpdateValuesBale({
                     </div>
                 )}
                 <div className='relative px-[5px]'>
-                    <label className='absolute top-[-30px] left-[5px] font-bold'>Note</label>
+                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Note</label>
                     <input 
                         className='text-black w-full'
                         type="text"
@@ -217,15 +217,26 @@ export default function UpdateValuesBale({
             </div>
             <div className='flex flex-row-reverse m-[10px] mt-[20px]'>
                 <button 
+<<<<<<< HEAD
                     className={`border px-[10px] py-[5px] rounded-md ml-4 bg-blue-400 ${!canProceed && 'disabled:opacity-45 cursor-no-drop'}`}
                     onClick={() => handleClick()}
                     disabled={!canProceed}
+=======
+                className='border bg-primary mr-4 rounded md'
+                onClick={handlerConfirm}
+>>>>>>> dev/bugfix
                 >
                     OK
                 </button>
                 <button 
+<<<<<<< HEAD
                     className={'border px-[10px] py-[5px] rounded-md bg-primary mr-4'}
                     onClick={() => handlerClose()}
+=======
+                    className='border bg-blue-400 ml-4 rounded-md'
+                    onClick={() => handleClick()}
+                    disabled={(type === 'presser' && !selected_b)}
+>>>>>>> dev/bugfix
                 >
                     Annulla
                 </button>
