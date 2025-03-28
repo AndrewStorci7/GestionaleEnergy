@@ -52,8 +52,6 @@ export const WebSocketProvider = ({ user, children }) => {
         ws.current = new WebSocket(wsurl);
 
         ws.current.onopen = async () => {
-            // console.log('WebSocket connection opened');
-
             const userInfo = await getUserDeviceInfo();
 
             if (ws.current.readyState === WebSocket.OPEN) {
@@ -69,7 +67,6 @@ export const WebSocketProvider = ({ user, children }) => {
         };
 
         ws.current.onmessage = (event) => {
-            // console.log('Message from server:', event.data);
             setMessage(event.data);
         };
 
