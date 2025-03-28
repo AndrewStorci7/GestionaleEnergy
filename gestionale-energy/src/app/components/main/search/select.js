@@ -80,7 +80,7 @@ export default function SelectInput({
             value={value}
             onChange={onChange}
         >
-            {isForSearch && <option value={""}>-</option>}
+            {(isForSearch || searchFor === "plastic") && <option value={""}>-</option>}
 
             {/* Iterate the content data */}
             {content.map((_m, _i) => {

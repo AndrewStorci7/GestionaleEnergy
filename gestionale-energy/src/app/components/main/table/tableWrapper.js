@@ -1,17 +1,14 @@
 'use client';
-
-import { useEffect, useState, useRef } from 'react';
-import Cookies from 'js-cookie';
-import CheckButton from "../select-button";
-import Icon from "../get-icon";
-import InsertNewBale from '../insert-new-bale';
-import Alert from '../alert';
-
-import { useWebSocket } from "@@/components/main/ws/use-web-socket";
-import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
+import { useEffect, useState } from 'react';
 import TableContent from './table-content';
 import TableHeader from './table-header';
 
+/**
+ * Table Wrapper
+ * @author Andrea Storci form Oppimittinetworking.com
+ * @param {*} param0 
+ * @returns 
+ */
 const TableWrapper = ({
     tableHeader = null,
     tableContent = null,
@@ -34,7 +31,7 @@ const TableWrapper = ({
 
     return (
         <div>
-            <div className={`not-prose relative rounded-xl overflow-hidden ${backgroundColor}`}>
+            <div className={`not-prose shadow-sm relative rounded-xl overflow-hidden ${backgroundColor} mt-[5px]`}>
                 <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
                     <h2 className='font-bold text-xl px-4 pt-[5px]'>
                         Dati inseriti dal  {(innerType === 'presser') ? 'Pressista' : (innerType === 'wheelman') ? 'Carrellista' : ''}

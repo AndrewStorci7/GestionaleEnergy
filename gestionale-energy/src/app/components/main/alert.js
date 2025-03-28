@@ -81,7 +81,8 @@ export default function Alert({
     case "error": {
       return (
         <div className="overlay">
-          <div className="alert-box error">
+          <div className="alert-box on-border error">
+            <h1 className="title-alert" style={{ color: 'red' }}>Errore</h1>
             <p>Errore: {message}</p>
             <button
               onClick={() => closeAlert()}

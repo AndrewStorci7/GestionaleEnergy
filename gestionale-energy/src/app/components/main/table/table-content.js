@@ -50,7 +50,7 @@ export default function TableContent({
     const { ws, message } = useWebSocket();
 
     const _CMNSTYLE_TBODY = "bg-white dark:bg-slate-800";
-    const _CMNSTYLE_TD = "border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400";
+    const _CMNSTYLE_TD = "border-b border-slate-100 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400";
 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false);
@@ -166,6 +166,7 @@ export default function TableContent({
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
                                         </button>
+                                        {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                                     </td>
                                 ) : (key === "is_printed") ? (
                                     <td key={idUnique + key} className={`font-bold ${_CMNSTYLE_TD}`}>{value == 0 ? "Da stamp." : "Stampato"}</td>
@@ -173,13 +174,10 @@ export default function TableContent({
                                     <td key={idUnique + key} className={_CMNSTYLE_TD}>{value}</td>
                                 ) : null
                             )
-                        ))}   
-                        <td className="relative" key={idUnique + "_note"}>
-                            {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
-                        </td>
-                        <td>{date}</td>
-                        <td>{hour}</td>
-                        
+                        ))}
+                        {primary && <td></td>}  
+                        <td className={`font-bold ${_CMNSTYLE_TD}`}>{date}</td>
+                        <td className={`font-bold ${_CMNSTYLE_TD}`}>{hour}</td>
                     </tr>
                 );
             })}

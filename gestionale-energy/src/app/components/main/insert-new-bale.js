@@ -1,32 +1,10 @@
 'use-client';
 import { getServerRoute, refreshPage, isWebSocketConnected } from '@/app/config';
 import React, { useState } from 'react';
-import CheckButton from "./select-button";
-import Icon from './get-icon';
 import SelectInput from './search/select';
 import Cookies from 'js-cookie';
-import Alert from './alert';
-
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 
-/**
- * Compoent used only by type 'presser' and 'wheelman'
- * 
- * @author Andrea Storci from Oppimittinetworking
- * 
- * @param {string}  type    [ 'presser' | 'wheelman' ]
- * 
- * @param {boolean} mod     [ true | false]
- *                          True se è possibile modificare i dati, altrimenti false
- * 
- * @param {object}  ids     Oggetto contenente gli ID delle nuove balle create
- *                          L.oggetto sarà diverso da null quando il bottone aggiungi verrà cliccato
- * 
- * @param {boolean} primary [ true | false ]
- *                          True se è primario (mostrerà alcune opzioni aggiuntive) 
- * 
- * @prop {function} confirmHandle Funzione che gestisce la conferma dell'aggiunta
- */
 export default function InsertNewBale({ 
     type, 
     mod, 
@@ -36,263 +14,116 @@ export default function InsertNewBale({
     visible = false,
     style,
 }) {
+    const { ws } = useWebSocket();
 
-    const { ws, message } = useWebSocket();
-
-    // const _CMNSTYLE_TD = "on-table-td";
-    const _CMNSTYLE_TD = "h-[40px]";
-    const _CMNSTYLE_TR = "on-table-td";
-
-    // Dati Pressista
-    const [plastic, setPlastic] = useState(""); // Id plastica
-    const [plastic2, setPlastic2] = useState(""); // Codice plastica   
-    const [rei, setRei] = useState(""); // Stato se balla reimballata
-    const [cdbp, setCdbp] = useState(""); // Condizione balla pressista
-    const [selected_b, setSelectedBale] = useState(""); // Balla selezionata
-    
-    // Dati carrellista
-    const [cdbc, setCdbc] = useState(""); // Condizione balla carrellista
-    const [reason, setReason] = useState(""); // Motivazione
-    const [weight, setWeight] = useState(0); // Peso
-    const [dest_wh, setDestWh] = useState(""); // magazzino destinazione
-
-    const [note, setNote] = useState(""); // Note (sia carrellista che pressista)
-
-    const [status, setStatus] = useState("working"); // Stato lavorazione
-
+    // Stati condivisi
+    const [note, setNote] = useState("");
+    const [status, setStatus] = useState("working");
     const [showConfirm, setShowConfirm] = useState(false);
 
+    // Stati Pressista
+    const [plastic, setPlastic] = useState("");
+    const [plastic2, setPlastic2] = useState("");
+    const [rei, setRei] = useState("");
+    const [cdbp, setCdbp] = useState("");
+    const [selectedBale, setSelectedBale] = useState("");
+    const [isPlasticValid, setPlasticValid] = useState(false);
 
-    
+    // Stati Carrellista
+    const [cdbc, setCdbc] = useState("");
+    const [reason, setReason] = useState("");
+    const [weight, setWeight] = useState(0);
+    const [destWh, setDestWh] = useState("");
+
     /**
-     * Handle Click function
-     * Questa funzione gestisce i dati per l'inserimetno di una nuova balla
-     * 
-     * @param {boolean} f 
+     * Gestisce il click per inserire una nuova balla
      */
     const handleClick = async () => {
         try {
-            if (!isWebSocketConnected(ws))
+            if (!isWebSocketConnected(ws)) {
                 console.error("WebSocket is not connected");
+                return;
+            }
 
             const cookie = JSON.parse(Cookies.get('user-info'));
-
-            if (!plastic || plastic === null || plastic == "undefined" || plastic == "") {
+            if (!plastic) {
                 console.error("Plastica non selezionata"); 
-
                 return;
             }
 
             const url = getServerRoute("add-bale");
-
-            const implant = cookie.id_implant;
             const body = {
                 id_presser: cookie.id_user,
                 id_plastic: plastic,
                 id_rei: rei || 1,
                 id_cpb: cdbp || 1,
-                id_sb: selected_b || 1,
-                note: note,
+                id_sb: selectedBale || 1,
+                note
             };
 
             const resp = await fetch(url, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ data: { implant, body } })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ data: { implant: cookie.id_implant, body } })
             });
 
-            if (!resp.ok) {
-                // console.error(resp.json)
-                console.log("error occurred while adding a new bale");
-            } else {
+            if (resp.ok) {
                 confirmHandle();
                 refreshPage(ws);
+            } else {
+                console.log("Errore durante l'aggiunta della balla");
             }
-
         } catch (error) {
-            // TOFIX
-            // <Alert msg={error} />
-            console.log(error);
+            console.error(error);
         }
     };
 
-    const handleConfirmed = () =>{
-        setShowConfirm(prev => !prev);
-    };
+    const handleConfirmed = () => setShowConfirm(prev => !prev);
 
-    // /**
-    //  * Handle view Alert
-    //  * 
-    //  * @param {string} msg Message to display
-    //  */
-    // const handleAlert = (msg, scope = "error") => {
-    //     setScope(scope);
-    //     setErrorMessage(msg);
-    //     setShowAlert(prev => !prev);
-    // };
+    /**
+     * Renderizza la tabella per il Pressista
+     */
+    const renderPresserRow = () => (
+        <tr className='bg-zinc-200 max-h-[52px]'>
+            {primary && (<><td className={style} /><td /><td className={style} /></>)}
+            <td className={style}>
+                {mod && <SelectInput searchFor="plastic" value={plastic} onChange={(e) => {
+                    const code = e.target.selectedOptions[0].getAttribute("data-code");
+                    setPlastic(e.target.value);
+                    setPlastic2(code);
+                    setPlasticValid(!!code);
+                }} fixedW />}
+            </td>
+            <td className={style}>{mod && plastic2}</td>
+            <td className={style}>{mod && <SelectInput searchFor="rei" value={rei} onChange={(e) => setRei(e.target.value)} fixedW />}</td>
+            <td className={style}>{mod && <SelectInput searchFor="cdbp" value={cdbp} onChange={(e) => setCdbp(e.target.value)} fixedW />}</td>
+            <td className={style}>{mod && <SelectInput searchFor="selected-b" value={selectedBale} onChange={(e) => setSelectedBale(e.target.value)} fixedW />}</td>
+            <td className={style}>{mod && <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Inserisci note" />}</td>
+            {primary && (
+                <td className={style}>
+                    <button className={`border-b text-white font-bold px-[6px] py-[3px] rounded-xl bg-blue-500 ${!isPlasticValid && 'disabled:opacity-45 cursor-no-drop'}`} onClick={handleClick} disabled={!isPlasticValid}>OK</button>
+                </td>
+            )}
+            <td></td>
+            <td></td>
+        </tr>
+    );
 
-    switch (type) {
-        case "presser": {
-            return (
-                // <tr className={`${_CMNSTYLE_TD} ${!visible && "hidden"}`}>
-                <tr className='bg-red/100' >
-                    {(primary) ? (
-                        <>
-                            <td className={style} ></td>
-                            <td></td>
-                            <td className={style} ></td>
-                        </>
-                    ) : null }
-                    <td className={style}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"plastic"}
-                        value={plastic}
-                        onChange={(e) => { 
-                            let code = e.target.selectedOptions[0].getAttribute("data-code");
-                            setPlastic(e.target.value); 
-                            setPlastic2(code);
-                        }} 
-                        fixedW />}
-                    </td>
-                    <td className={style}>
-                        {(mod) && plastic2}
-                    </td>
-                    <td className={style}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"rei"} 
-                        value={rei}
-                        onChange={(e) => setRei(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={style}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"cdbp"} 
-                        value={cdbp}
-                        onChange={(e) => setCdbp(e.target.value)}  
-                        fixedW />}
-                    </td>
-                    <td className={style}>
-                        {(mod) &&
-                        <SelectInput 
-                        searchFor={"selected-b"} 
-                        value={selected_b}
-                        onChange={(e) => setSelectedBale(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={style}>
-                        {(mod) && <input 
-                        type="text"
-                        id="note-pressista"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        placeholder="Inserisci note"
-                        />}
-                    </td>
-                    {(primary) ? (
-                        <td className={style} >
-                            <button 
-                            className='on-btn-confirm'
-                            onClick={() => { 
-                                if (isPlasticValid) {
-                                    handleClick(true);
-                                    handleConfirmed();
-                                }
-                            }}
-                            disabled={!isPlasticValid} // Disabilita il bottone se la plastica non è valida
-                        >
-                            OK
-                        </button>
-                        </td>
-                    ) : null}
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* DATA */}
-                    </td>
-                    <td className={`${_CMNSTYLE_TD}`}>
-                        {/* ORA */}
-                    </td>
-                </tr>
-            );
-        }
+    /**
+     * Renderizza la tabella per il Carrellista
+     */
+    const renderWheelmanRow = () => (
+        <tr className='bg-zinc-200 h-[52px]'>
+            <td className={style}>{mod && <SelectInput searchFor="cdbc" value={cdbc} onChange={(e) => setCdbc(e.target.value)} fixedW />}</td>
+            <td className={style}>{mod && <SelectInput searchFor="reason" value={reason} onChange={(e) => setReason(e.target.value)} fixedW />}</td>
+            <td className={style}>{mod && <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Inserisci peso" />}</td>
+            <td className={style}>{mod && <SelectInput searchFor="dest-wh" value={destWh} onChange={(e) => setDestWh(e.target.value)} fixedW />}</td>
+            <td className={style}>{mod && <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Inserisci note" />}</td>
+            <td className={style}></td>
+            <td></td>
+            <td></td>
+        </tr>
+    );
 
-        case "wheelman": {
-            return (
-                <tr className={style} >
-                    {(primary) ? (
-                        <>
-                            <td className={style} >
-                                <CheckButton />
-                            </td>
-                            <td className={style} >
-                                <Icon type={status} />
-                            </td>
-                        </>
-                    ) : null }
-                    <td className={style}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"cdbc"} 
-                        value={cdbc}
-                        onChange={(e) => setCdbc(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={style}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"reason"} 
-                        value={reason}
-                        onChange={(e) => setReason(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={style}>
-                        {(mod) && <input 
-                        type="number"
-                        id="peso-pressista"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                        placeholder="Inserisci peso"
-                        />}
-                    </td>
-                    <td className={style}>
-                        {(mod) && 
-                        <SelectInput 
-                        searchFor={"dest-wh"} 
-                        value={dest_wh}
-                        onChange={(e) => setDestWh(e.target.value)} 
-                        fixedW />}
-                    </td>
-                    <td className={style}>
-                        {(mod) && <input 
-                        type="text"
-                        id="note-carrellista"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        placeholder="Inserisci note"
-                        />}
-                    </td>
-                    <td className={style} >
-                        stato
-                    </td>
-                    {(primary) ? (
-                        <td 
-                        // className={style} 
-                        >
-                            <button 
-                            className='on-btn-confirm'
-                            onClick={() => { 
-                                handleClick(false);
-                                handleConfirmed();
-                            }}>
-                                OK
-                            </button>
-                        </td>
-                    ) : null }
-                    <td className={style}></td>
-                    <td className={style}></td>
-                </tr>
-            )
-        }
-    }
+    return type === "presser" ? renderPresserRow() : renderWheelmanRow();
 }

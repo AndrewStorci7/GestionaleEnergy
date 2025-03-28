@@ -3,12 +3,17 @@
 @tailwind utilities;
 
 @layer components {
+
+  .on-border {
+    @apply border-b border-slate-100 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400 shadow-sm relative rounded-xl overflow-hidden;
+  }
+
   .on-fix-index {
     @apply relative z-[2];
   }
 
   .on-header {
-    @apply w-full bg-white text-thirdary font-bold text-2xl rounded-[5px] mb-[5px];
+    @apply w-full bg-white text-thirdary font-bold text-xl mb-[5px];
   }
 
   .on-btn-confirm {
@@ -59,16 +64,23 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px;
-  border-radius: 5px;
+  border-width: 0.5;
+  /* border-radius: 5px; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
   z-index: 999;
 }
 
+.title-alert {
+  font-size: 1.4em;
+
+}
+
 /* Specific Alert Types */
 .error {
-  background-color: rgba(255, 0, 0, 1);
-  color: white;
+  border-color: rgb(255, 128, 128);
+  background-color: rgb(226, 200, 200);
+  color: black;
 }
 
 .note {
@@ -101,7 +113,7 @@ body {
 }
 
 .error-button {
-  background-color: darkred;
+  background-color: rgb(214, 70, 70);
   color: white;
 }
 
