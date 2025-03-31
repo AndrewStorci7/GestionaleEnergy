@@ -21,7 +21,8 @@ const TableWrapper = ({
     const [innerType, setInnerType] = useState("");
 
     useEffect(() => {
-        setBgColor(type === 'presser' ? "bg-red-50 dark:bg-red-800/25" : "bg-green-50 dark:bg-green-800/25")
+        // setBgColor(type === 'presser' ? "backgroundProva dark:bg-red-800/25" : "backgroundProva2 dark:bg-green-800/25");
+        setBgColor(type === 'presser' ? "bgPresser dark:bg-red-800/25" : "bgWheelman dark:bg-green-800/25");
         setInnerType(type);
         
         if (!tableHeader && !tableContent) {
@@ -33,7 +34,7 @@ const TableWrapper = ({
         <div>
             <div className={`not-prose shadow-sm relative rounded-xl overflow-hidden ${backgroundColor} mt-[5px]`}>
                 <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
-                    <h2 className='font-bold text-xl px-4 pt-[5px]'>
+                    <h2 className='font-bold text-xl px-4 pt-[5px] text-white'>
                         Dati inseriti dal  {(innerType === 'presser') ? 'Pressista' : (innerType === 'wheelman') ? 'Carrellista' : ''}
                     </h2>
                 </div>
@@ -42,7 +43,11 @@ const TableWrapper = ({
                         <table 
                         id="gest-on-table" 
                         className="border-collapse table-auto w-full text-sm">
-                            <TableHeader type={innerType} primary={primary} />
+                            <TableHeader 
+                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
+                                type={innerType} 
+                                primary={primary} 
+                            />
                             
                             {/* BALLE IN LAVORAZIONE */}
                             {primary ? (
@@ -52,10 +57,15 @@ const TableWrapper = ({
                                     selectedBaleId={tableContent.selectedBaleId}
                                     add={tableContent.objAdd}  
                                     noData={(e) => tableContent.noData(e)} 
-                                    primary={primary} 
+                                    primary={primary}
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400" 
                                 />
                             ) : (
-                                <TableContent type={innerType} add={tableContent.objAdd} />
+                                <TableContent 
+                                    type={innerType} 
+                                    add={tableContent.objAdd} 
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
+                                />
                             )}
 
                             {/* BALLE COMPLETATE */}
@@ -67,9 +77,14 @@ const TableWrapper = ({
                                     useFor={"specific"}
                                     noData={(e) => tableContent.noData(e)} 
                                     primary={primary}
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
                                 />
                             ) : (
-                                <TableContent type={innerType} useFor={"specific"} />
+                                <TableContent 
+                                    type={innerType} 
+                                    useFor={"specific"} 
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
+                                />
                             )}          
                         </table>
                     </div>

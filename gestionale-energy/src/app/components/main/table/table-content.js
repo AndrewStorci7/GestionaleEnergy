@@ -43,14 +43,12 @@ export default function TableContent({
     primary = false, 
     tableChange = false,
     handleError,
-    selectedBaleId
-    
+    selectedBaleId,
+    style,
+    ...props
 }) {
     // WebSocket instance
     const { ws, message } = useWebSocket();
-
-    const _CMNSTYLE_TBODY = "bg-white dark:bg-slate-800";
-    const _CMNSTYLE_TD = "border-b border-slate-100 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400";
 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false);
@@ -127,12 +125,9 @@ export default function TableContent({
     };
 
     return (
-        <tbody 
-        className="bg-white dark:bg-slate-800 overflow-y-scroll"
-        // className={`text-black ${primary ? "cursor-auto" : "cursor-no-drop"} ${getBgColor(type)}`}
-        >            
+        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll">            
             {useFor === 'regular' && add.state && (
-                <InsertNewBale style={_CMNSTYLE_TD} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
+                <InsertNewBale style={style} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
 
             {!isEmpty && content.map((bale, index) => {
@@ -144,40 +139,38 @@ export default function TableContent({
                 const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
                 
                 return (
-                    <tr key={idUnique} data-bale-id={id} 
-                    // className="border border-slate-400 h-[40px]"
-                    >
+                    <tr key={idUnique} data-bale-id={id} className='h-[41px]'>
                         {primary && (
                             <>
-                                <td key={idUnique + "_checkbtn"} className={_CMNSTYLE_TD}>
+                                <td key={idUnique + "_checkbtn"} className={style}>
                                     {(useFor === 'regular' || useFor === 'reverse') && (
                                         <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
                                     )}
                                 </td>
-                                <td className={`font-bold ${_CMNSTYLE_TD}`} >{idUnique}</td>
-                                <td><Icon type={status} /></td>
-                                {type === 'wheelman' ? <td className={_CMNSTYLE_TD}>{plastic}</td> : <></>}
+                                <td className={style + " font-bold"} >{idUnique}</td>
+                                <td className={style}><Icon type={status} /></td>
+                                {type === 'wheelman' ? <td className={style}>{plastic}</td> : <></>}
                             </>
                         )}
                         {Object.entries(bale).map(([key, value]) => (
                             key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
                                 key === "notes" && value ? (
-                                    <td key={idUnique + key} className={_CMNSTYLE_TD}>
+                                    <td key={idUnique + key} className={style}>
                                         <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
                                             {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                                         </button>
                                     </td>
                                 ) : (key === "is_printed") ? (
-                                    <td key={idUnique + key} className={`font-bold ${_CMNSTYLE_TD}`}>{value == 0 ? "Da stamp." : "Stampato"}</td>
+                                    <td key={idUnique + key} className={style + " font-bold"}>{value == 0 ? "Da stamp." : "Stampato"}</td>
                                 ) : (key !== "data_ins") ? (
-                                    <td key={idUnique + key} className={_CMNSTYLE_TD}>{value}</td>
+                                    <td key={idUnique + key} className={style}>{value}</td>
                                 ) : null
                             )
                         ))}
-                        {primary && <td></td>}  
-                        <td className={`font-bold ${_CMNSTYLE_TD}`}>{date}</td>
-                        <td className={`font-bold ${_CMNSTYLE_TD}`}>{hour}</td>
+                        {primary && <td className={style}></td>}  
+                        <td className={style + " font-bold"}>{date}</td>
+                        <td className={style + " font-bold"}>{hour}</td>
                     </tr>
                 );
             })}

@@ -1,7 +1,8 @@
 'use client'
 import Alert from '@@/components/main/alert';
 import { getServerRoute } from '@@/config';
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import Image from 'next/image';
 
 /**
  * Button for wheelman
@@ -23,23 +24,16 @@ import React, { useEffect, useState } from "react";
 
 export default function BtnWheelman({ 
     baleObj,
-    implant, 
-    idUser, 
-    clickAddHandle
+    ...props
 }) {
 
     console.log(baleObj);
 
     const confirm_message = `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`;
-    // const [idBale, setIdBale] = useState(0);
     
     const [showAlert, setShowAlert] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [scope, setScope] = useState("");
-
-    // useEffect(() => {
-    //     setIdBale(baleObj);
-    // }, [baleObj]);
     
     /**
      * Handle the error when no bale is selected
@@ -63,10 +57,7 @@ export default function BtnWheelman({
         baleObj.setIdBale(null);
     }
 
-    const handleUpdate = async (id) => {
-        // setIdBale(id);
-        handleAlert("", 'update-w');
-    }
+    const handleUpdate = async (id) => handleAlert("", 'update-w');
 
     const handleClick = (f) => {
         // Check if idSelect is not null and has a length property
@@ -75,12 +66,11 @@ export default function BtnWheelman({
         } else {
             handleAlert("Nessuna balla selezionata!");
         }
-        // baleObj.setIdBale(null);
     }
 
     const handleStampa = async (execute = false) => {
         
-        if (baleObj) {
+        if (baleObj.idBale) {
             if (execute) {
                 try {
                     const body = { printed: true, where: baleObj.idBale }; // Body per l'update della balla del carrellista
@@ -123,18 +113,35 @@ export default function BtnWheelman({
             // If no bale is selected, show an error alert
             handleAlert('Nessuna Balla selezionata');
         }
-        // baleObj.setIdBale(null);
     };
     
     return(
         <>
-            <div className="w-1/2 font-bold">
+            <div className="w-1/2 font-bold on-fix-index">
                 <div className="flex flex-row-reverse px-11">
-                    <button className="m-[10px] rounded-md bg-gray-300 p-[5px]" onClick={() => handleClick()}>
-                        Modifica
+                    <button className="on-btn-wheelman" onClick={() => handleClick()}>
+                        <div className="flex items-center p-1">
+                            <Image 
+                                src={"/modifica-nero.png"}
+                                width={25}
+                                height={25}
+                                alt="Aggiungi icona"
+                                className={"mr-2"}
+                            />
+                            Modifica
+                        </div>
                     </button>
-                    <button className="m-[10px] rounded-md bg-gray-300 p-[5px] mr-[30px]" onClick = {() => handleStampa()}>
-                        Stampa Etich.
+                    <button className="on-btn-wheelman" onClick={() => handleStampa()}>
+                        <div className="flex items-center p-1">
+                            <Image 
+                                src={"/icons8-stampa-100.png"}
+                                width={25}
+                                height={25}
+                                alt="Aggiungi icona"
+                                className="mr-2"
+                            />
+                            Stampa etich.
+                        </div>
                     </button>
                 </div>
             </div>

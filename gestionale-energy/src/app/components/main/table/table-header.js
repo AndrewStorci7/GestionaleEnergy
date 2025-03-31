@@ -8,38 +8,35 @@ import { getBgColor } from "@@/config";
  *  
  * @returns 
  */
-export default function TableHeader({ type, primary = false }) {
-
-    // const _COMMONSTYLE = "absolute top-[0px] font-bold text-2xl px-[15px] rounded-t-[5px]";
-    // const _CMNSTYLE_TD = "border border-slate-400";
-    const _CMNSTYLE_TD = "border-b dark:border-slate-600 font-medium p-3 pt-0 text-slate-400 dark:text-slate-200 text-left";
-    const _MAX_HEIGHT = "h-[52px]";
-    const bg_style = (primary) ? getBgColor(type, "theader") : 'bg-thirdary opacity-50';
-    const text_color = (primary) ? 'text-white' : 'text-black';
-    const fixPadding = "p-2"
+export default function TableHeader({ 
+    type, 
+    primary = false,
+    style, 
+    ...props 
+}) {
+    
+    // const fixColor = type === "presser" ? " !text-white" : " testoProva";
+    const fixColor = " !text-white"; 
+    const fixStyle = " !text-left";
 
     switch (type) {
         case 'presser': {
             return (
                 <>
-                    {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Pressista</label>*/}
-                    <thead 
-                    // className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}
-                    className={_MAX_HEIGHT}
-                    >
+                    <thead className="h-[52px]">
                         <tr>
-                            {(primary) && <th className={_CMNSTYLE_TD + fixPadding + "pl-3"}>Sel.</th>}
-                            {(primary) && <th className={_CMNSTYLE_TD + fixPadding}>N°</th>}
-                            {(primary) && <th className={_CMNSTYLE_TD + fixPadding}>Stato</th>}
-                            <th className={`${_CMNSTYLE_TD}`}>Plastica</th>
-                            <th className={`${_CMNSTYLE_TD}`}>Codice</th>
-                            <th className={`${_CMNSTYLE_TD}`}><p className="truncate">Utiliz. REI</p></th>
-                            <th className={`${_CMNSTYLE_TD}`}><p className="truncate">Condiz. Balla Pressa</p></th>
-                            <th className={`${_CMNSTYLE_TD}`}><p className="truncate">Balla Selez.</p></th>
-                            <th className={`${_CMNSTYLE_TD}`}>Note</th>
-                            {(primary) && <th className={`${_CMNSTYLE_TD} w-[40px]`}></th>}
-                            <th className={`${_CMNSTYLE_TD}`}>Data</th>
-                            <th className={`${_CMNSTYLE_TD}`}>Ora</th>
+                            {(primary) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
+                            {(primary) && <th className={style + fixColor}>N°</th>}
+                            {(primary) && <th className={style + fixColor}>Stato</th>}
+                            <th className={style + fixStyle + fixColor}>Plastica</th>
+                            <th className={style + fixStyle + fixColor}>Codice</th>
+                            <th className={style + fixStyle + fixColor}><p className="truncate">Utiliz. REI</p></th>
+                            <th className={style + fixStyle + fixColor}><p className="truncate">Condiz. Balla Pressa</p></th>
+                            <th className={style + fixStyle + fixColor}><p className="truncate">Balla Selez.</p></th>
+                            <th className={style + fixStyle + fixColor}>Note</th>
+                            {(primary) && <th className={style + fixStyle + fixColor + " w-[40px]"}></th>}
+                            <th className={style + fixStyle + fixColor}>Data</th>
+                            <th className={style + fixStyle + fixColor}>Ora</th>
                         </tr>
                     </thead>
                 </>
@@ -48,26 +45,21 @@ export default function TableHeader({ type, primary = false }) {
         case 'wheelman': {
             return (
                 <>
-                    {/*<label htmlFor="gest-on-table2" className={`${_COMMONSTYLE} ${bg_style}`}>Carrellista</label>*/}
-                    <thead 
-                    // className={`${bg_style} ${text_color} ${_MAX_HEIGHT}`}
-                    className={_MAX_HEIGHT}
-                    >
+                    <thead className="h-[52px]">
                         <tr>
-                            {(primary) && <th className={_CMNSTYLE_TD + fixPadding + "pl-3"}>Sel.</th>}
-                            {(primary) && <th className={_CMNSTYLE_TD + fixPadding}>N°</th>}
-                            {(primary) && <th className={_CMNSTYLE_TD + fixPadding}>Stato</th>}
-                            {(primary) && <th className={`${_CMNSTYLE_TD}`}>Plastica</th>}
-                            <th className={`${_CMNSTYLE_TD}`}><p className="truncate">Condiz. Balla Carrel.</p></th>
-                            <th className={`${_CMNSTYLE_TD}`}>Motivaz.</th>
-                            <th className={`${_CMNSTYLE_TD}`}>Peso (Kg)</th>
-                            <th className={`${_CMNSTYLE_TD}`}><p className="truncate">Magaz. Destinazione</p></th>
-                            <th className={`${_CMNSTYLE_TD}`}>Note</th>
-                            <th className={`${_CMNSTYLE_TD}`}><p className="truncate">Stato stampa</p></th>
-                            {(primary) && <th className={`${_CMNSTYLE_TD} w-[40px]`}></th>}
-                            <th className={`${_CMNSTYLE_TD}`}>Data</th>
-                            <th className={`${_CMNSTYLE_TD}`}>Ora</th>
-                            
+                            {(primary) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
+                            {(primary) && <th className={style + fixColor}>N°</th>}
+                            {(primary) && <th className={style + fixColor}>Stato</th>}
+                            {(primary) && <th className={style + fixStyle + fixColor}>Plastica</th>}
+                            <th className={style + fixStyle + fixColor + fixStyle}><p className="truncate">Condiz. Balla Carrel.</p></th>
+                            <th className={style + fixStyle + fixColor}>Motivaz.</th>
+                            <th className={style + fixStyle + fixColor}>Peso (Kg)</th>
+                            <th className={style + fixStyle + fixColor}><p className="truncate">Magaz. Destinazione</p></th>
+                            <th className={style + fixStyle + fixColor}>Note</th>
+                            <th className={style + fixStyle + fixColor}><p className="truncate">Stato stampa</p></th>
+                            {(primary) && <th className={style + fixStyle + fixColor + "w-[40px]"}></th>}
+                            <th className={style + fixStyle + fixColor}>Data</th>
+                            <th className={style + fixStyle + fixColor}>Ora</th>
                         </tr>
                     </thead>
                 </>

@@ -1,7 +1,7 @@
 'use client'
-import Alert from '@@/components/main/alert';
-import { getServerRoute } from '@@/config';
 import React, { useEffect, useState } from "react";
+import Alert from '@@/components/main/alert';
+import Image from "next/image";
 
 /**
  * Custom component for adding, updating or erase a bale 
@@ -31,15 +31,10 @@ export default function BtnPresser({
     const default_message = `Balla numero ${baleObj.idUnique} eliminata correttamente!`;
     const confirm_message = `Sei sicuro di voler eliminare la balla ${baleObj.idUnique} ?`;
 
-    const [idBale, setIdBale] = useState(null);
     const [showAlert, setShowAlert] = useState(false);
     const [addWasClicked, setAddWasClicked] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [scope, setScope] = useState('');
-
-    useEffect(() => {
-        setIdBale(baleObj.idBale);
-    }, [baleObj]);
 
     useEffect(() => {
         if(handleConfirmAdd) {
@@ -85,17 +80,48 @@ export default function BtnPresser({
                     <button 
                     className="on-btn-presser" 
                     onClick={() => handleClick(false)}>
-                        Elimina
+                        <div className="flex items-center p-1">
+                            <Image 
+                                src={"/icons8-elimina-100.png"}
+                                width={25}
+                                height={25}
+                                alt="Aggiungi icona"
+                                className={"mr-2"}
+                            />
+                            Elimina
+                        </div>
                     </button>
                     <button 
                     className="on-btn-presser mr-[50px]" 
                     onClick={() => handleClick(true)}>
-                        Modifica
+                        <div className="flex items-center p-1">
+                            <Image 
+                                src={"/icons8-modifica-file-100.png"}
+                                width={25}
+                                height={25}
+                                alt="Aggiungi icona"
+                                className={"mr-2"}
+                            />
+                            Modifica
+                        </div>
                     </button>
                     <button 
                     className={`on-btn-presser ${(addWasClicked && !handleConfirmAdd) && "bg-red-400 text-neutral-50"}`} 
                     onClick={addNewBale}>
-                        {(addWasClicked && !handleConfirmAdd) ? "Annulla" : "Aggiungi"}
+                        {(addWasClicked && !handleConfirmAdd) ? 
+                            "Annulla" 
+                        : (
+                            <div className="flex items-center p-1">
+                                <Image 
+                                    src={"/icons8-aggiungi-100.png"}
+                                    width={25}
+                                    height={25}
+                                    alt="Aggiungi icona"
+                                    className={"mr-2"}
+                                />
+                                Aggiungi
+                            </div>
+                        )}
                     </button>
                 </div>
             </div>

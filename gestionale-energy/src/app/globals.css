@@ -20,8 +20,16 @@
     @apply w-auto bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%];
   }
 
+  .on-btn {
+    @apply m-[10px] text-white rounded-xl border border-zinc-400 p-[5px];
+  }
+
   .on-btn-presser {
-    @apply m-[10px] rounded-md bg-gray-300 p-[5px];
+    @apply on-btn bgPresser300;
+  }
+
+  .on-btn-wheelman {
+    @apply on-btn bgWheelman300 !border-sky-100;
   }
 
   .on-table-td {
@@ -36,8 +44,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #171717;
+    --foreground: #EEEEEE;
   }
 }
 
@@ -45,6 +53,30 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.bgPresser {
+  background-color: #23558A;
+}
+
+.bgPresser300 {
+  background-color: #23558ad2;
+}
+
+.bgWheelman {
+  background-color: #007aa7a6;
+}
+
+.bgWheelman300 {
+  background-color: #007aa7b9;
+}
+
+.testoProva {
+  color: rgba(62, 86, 95, 1) !important;
+}
+
+.backgroundProva2 {
+  background-color: rgba(36, 135, 148, 0.5);
 }
 
 .overlay {
@@ -73,7 +105,6 @@ body {
 
 .title-alert {
   font-size: 1.4em;
-
 }
 
 /* Specific Alert Types */

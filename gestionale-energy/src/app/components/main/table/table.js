@@ -140,45 +140,18 @@ export default function Table({ type, implant, idUser }) {
         case "wheelman": {
             return (
                 <>
-                    <div className={`${_CMNSTYLE_DIV} shadow-lg`}>
-                        <label htmlFor="gest-on-table"  className={`${_CMNSTYLE_LABEL} text-white bg-secondary`} >Carrellista</label>
-                        <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"wheelman"} primary />
-                            
-                            {/* BALLE IN LAVORAZIONE */}
-                            <TableContent 
-                                type={"wheelman"} 
-                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
-                                selectedBaleId={isSelected}
-                                add={objAdd}
-                                noData={(e) => noData(e)} 
-                                useFor={"reverse"}
-                                primary 
-                            />
-
-                            {/* BALLE COMPLETATE */}
-                            <TableContent 
-                                type={"wheelman"} 
-                                handleSelect={(sel, idU) => handleSelect(sel, idU)}
-                                selectedBaleId={isSelected}
-                                useFor={"specific"}
-                                noData={(e) => noData(e)} 
-                                primary 
-                            />
-                        </table>
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>
-                            Pressista
-                            {_CMN_ONLY_VIEW} 
-                        </label>
-                        <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"presser"} />
-
-                            {/* BALLE IN LAVORAZIONE */}
-                            <TableContent type={"presser"} useFor={"reverse"} add={objAdd}  />
-
-                            {/* BALLE COMPLETATE */}
-                            <TableContent type={"presser"} useFor={"specific"} />
-                        </table>
+                    <div className="grid grid-cols-2 gap-2 pt-[10px] relative h-[60vh] overflow-y-scroll">
+                        <TableWrapper 
+                            type={"wheelman"}
+                            tableContent={{
+                                handleSelect: (i, y) => handleSelect(i, y),
+                                selectedBaleId: isSelected,
+                                objAdd: objAdd,
+                                noData: (e) => noData(e)
+                            }}
+                            primary
+                        />
+                        <TableWrapper type={"presser"} tableContent={{ objAdd: objAdd }} />
                     </div>
 
                     <BtnWheelman 
