@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SelectInput from "./select";
 
 /**
@@ -10,7 +10,7 @@ import SelectInput from "./select";
  * 
  * @returns SearchInput
  */
-export default function SearchInput({ type }) {
+function SearchInput({ type }) {
 
     const _CMNSTYLE_LABEL = "block font-bold  "
     const _CMNSTYLE_DIV = "grid content-center font-bold "
@@ -105,3 +105,5 @@ export default function SearchInput({ type }) {
         </div>
     );
 }
+
+export default React.memo(SearchInput);

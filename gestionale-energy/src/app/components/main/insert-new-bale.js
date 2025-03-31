@@ -84,9 +84,9 @@ export default function InsertNewBale({
      * Renderizza la tabella per il Pressista
      */
     const renderPresserRow = () => (
-        <tr className='bg-zinc-200 max-h-[52px]'>
-            {primary && (<><td className={style} /><td /><td className={style} /></>)}
-            <td className={style}>
+        <tr className='bg-zinc-200 h-[47px]'>
+            {primary && (<><td className={style + " !p-2"} /><td /><td className={style + " !p-2"} /></>)}
+            <td className={style + " !p-2"}>
                 {mod && <SelectInput searchFor="plastic" value={plastic} onChange={(e) => {
                     const code = e.target.selectedOptions[0].getAttribute("data-code");
                     setPlastic(e.target.value);
@@ -94,18 +94,18 @@ export default function InsertNewBale({
                     setPlasticValid(!!code);
                 }} fixedW />}
             </td>
-            <td className={style}>{mod && plastic2}</td>
-            <td className={style}>{mod && <SelectInput searchFor="rei" value={rei} onChange={(e) => setRei(e.target.value)} fixedW />}</td>
-            <td className={style}>{mod && <SelectInput searchFor="cdbp" value={cdbp} onChange={(e) => setCdbp(e.target.value)} fixedW />}</td>
-            <td className={style}>{mod && <SelectInput searchFor="selected-b" value={selectedBale} onChange={(e) => setSelectedBale(e.target.value)} fixedW />}</td>
-            <td className={style}>{mod && <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Inserisci note" />}</td>
+            <td className={style + " !p-2"}>{mod && plastic2}</td>
+            <td className={style + " !p-2"}>{mod && <SelectInput searchFor="rei" value={rei} onChange={(e) => setRei(e.target.value)} fixedW />}</td>
+            <td className={style + " !p-2"}>{mod && <SelectInput searchFor="cdbp" value={cdbp} onChange={(e) => setCdbp(e.target.value)} fixedW />}</td>
+            <td className={style + " !p-2"}>{mod && <SelectInput searchFor="selected-b" value={selectedBale} onChange={(e) => setSelectedBale(e.target.value)} fixedW />}</td>
+            <td className={style + " !p-2"}>{mod && <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Inserisci note" />}</td>
             {primary && (
-                <td className={style}>
+                <td className={style + " !p-2"}>
                     <button className={`border-b text-white font-bold px-[6px] py-[3px] rounded-xl bg-blue-500 ${!isPlasticValid && 'disabled:opacity-45 cursor-no-drop'}`} onClick={handleClick} disabled={!isPlasticValid}>OK</button>
                 </td>
             )}
-            <td></td>
-            <td></td>
+            <td className={style + " !p-2"}></td>
+            <td className={style + " !p-2"}></td>
         </tr>
     );
 
@@ -113,15 +113,15 @@ export default function InsertNewBale({
      * Renderizza la tabella per il Carrellista
      */
     const renderWheelmanRow = () => (
-        <tr className='bg-zinc-200 h-[52px]'>
-            <td className={style}>{mod && <SelectInput searchFor="cdbc" value={cdbc} onChange={(e) => setCdbc(e.target.value)} fixedW />}</td>
-            <td className={style}>{mod && <SelectInput searchFor="reason" value={reason} onChange={(e) => setReason(e.target.value)} fixedW />}</td>
-            <td className={style}>{mod && <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Inserisci peso" />}</td>
-            <td className={style}>{mod && <SelectInput searchFor="dest-wh" value={destWh} onChange={(e) => setDestWh(e.target.value)} fixedW />}</td>
-            <td className={style}>{mod && <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Inserisci note" />}</td>
-            <td className={style}></td>
-            <td></td>
-            <td></td>
+        <tr className='bg-zinc-200 h-[47px]'>
+            <td className={style + " !p-2"}>{mod && <SelectInput searchFor="cdbc" value={cdbc} onChange={(e) => setCdbc(e.target.value)} fixedW />}</td>
+            <td className={style + " !p-2"}>{mod && <SelectInput searchFor="reason" value={reason} onChange={(e) => setReason(e.target.value)} fixedW />}</td>
+            <td className={style + " !p-2"}>{mod && <input type="number" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="Inserisci peso" />}</td>
+            <td className={style + " !p-2"}>{mod && <SelectInput searchFor="dest-wh" value={destWh} onChange={(e) => setDestWh(e.target.value)} fixedW />}</td>
+            <td className={style + " !p-2"}>{mod && <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Inserisci note" />}</td>
+            <td className={style + " !p-2"}></td>
+            <td className={style + " !p-2"}></td>
+            <td className={style + " !p-2"}></td>
         </tr>
     );
 

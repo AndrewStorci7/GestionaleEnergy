@@ -1,5 +1,5 @@
 import { getServerRoute } from "@/app/config";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 /**
  * 
@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
  *  
  * @returns 
  */
-export default function SelectInput({ 
+function SelectInput({ 
     searchFor, 
     id, 
     fixedW, 
@@ -117,3 +117,5 @@ export default function SelectInput({
         </select>
     );
 }
+
+export default React.memo(SelectInput);
