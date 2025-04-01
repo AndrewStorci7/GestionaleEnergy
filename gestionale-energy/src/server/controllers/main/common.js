@@ -41,19 +41,16 @@ class Common {
             if (turn != 1 && turn != 2 && turn != 3) {
                 throw "errore: parametro turn non valido: deve essere uno tra questi valori {1, 2, 3}";
             } else {
-                // if (turn == 1) _hour = 6;
-                // else if (turn == 2) _hour = 14;
-                // else _hour = 22;
                 _hour = (turn === 1) ? 7 : (turn === 2) ? 15 : (turn === 3) ? 23 : rangeTime.getHours();
             } 
         }
 
         if (_hour >= 6 && _hour < 14)
-            return ['07:00:00', '14:59:59', 0];
+            return ['06:00:00', '13:59:59', 0];
         else if (_hour >= 14 && _hour < 22)
-            return ['15:00:00', '22:59:59', 0];
+            return ['14:00:00', '22:59:59', 0];
         else if ((_hour >= 22 && _hour <= 24) || (_hour >= 24 && _hour < 6))
-            return ['23:00:00', '23:59:59', '00:00:00', '06:59:59', 1];
+            return ['23:00:00', '23:59:59', '00:00:00', '05:59:59', 1];
     }
 
     convertSpecialCharsToHex(inputString) {

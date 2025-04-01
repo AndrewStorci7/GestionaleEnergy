@@ -163,4 +163,4 @@ class PresserBale extends Bale {
 
 }
 
-export default PresserBale
+export default PresserBale;

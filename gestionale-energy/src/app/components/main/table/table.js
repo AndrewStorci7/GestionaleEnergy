@@ -105,8 +105,9 @@ export default function Table({ type, implant, idUser }) {
         case "presser": {
             return (
                 <>
-                    <div className="grid grid-cols-2 gap-2 pt-[10px] relative h-[60vh] overflow-y-scroll">
+                    <div className="grid grid-cols-9 gap-2 pt-[10px] relative h-[60vh] overflow-y-scroll">
                         <TableWrapper 
+                            className="col-span-5"
                             type={"presser"}
                             tableContent={{
                                 handleSelect: (i, y) => handleSelect(i, y),
@@ -116,7 +117,7 @@ export default function Table({ type, implant, idUser }) {
                             }}
                             primary
                         />
-                        <TableWrapper type={"wheelman"} tableContent={{ objAdd: objAdd }} />
+                        <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} />
                     </div>
 
                     <BtnPresser 

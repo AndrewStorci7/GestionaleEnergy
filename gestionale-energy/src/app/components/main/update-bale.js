@@ -88,12 +88,6 @@ export default function UpdateValuesBale({
      */
     const handleClick = async () => {
         try {
-            // // Verifica se una balla è stata selezionata
-            // if ((type === 'presser' && !selected_b) || (type !== 'presser' && weight <= 0)) {
-            //     alert("Devi selezionare una balla valida!");
-            //     return; // Interrompe l'esecuzione se non è selezionato nulla
-            // }
-    
             const cookie = JSON.parse(Cookies.get('user-info'));
             var body = null, url = "";
             if (type === 'presser') {
