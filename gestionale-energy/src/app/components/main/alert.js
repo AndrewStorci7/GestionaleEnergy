@@ -116,7 +116,7 @@ export default function Alert({
     case "delete": {
       return (
         <div className="overlay">
-          <div className="alert-box confirmed">
+          <div className="alert-box on-border confirmed">
             <p>{message}</p>
             <button
               onClick={() => handleConfirm()}
@@ -138,7 +138,7 @@ export default function Alert({
     case "confirmed-print": {
       return (
         <div className="overlay">
-          <div className="alert-box confirmed-print">
+          <div className="alert-box on-border confirmed-print">
             <p>{message}</p>
             <button
               onClick={() => closeAlert(true)}
@@ -160,7 +160,7 @@ export default function Alert({
     case 'confirmed-successfull': {
       return (
         <div className="overlay">
-          <div className="alert-box confirmed">
+          <div className="alert-box on-border confirmed">
             <p>I dati sono stati inseriti correttamente!</p>
             <button
               onClick={() => closeAlert()}
@@ -176,7 +176,7 @@ export default function Alert({
     case 'update': {
       return (
         <div className="overlay">
-          <div className="alert-box update">
+          <div className="alert-box on-border update">
             <p className="text-black mb-10 font-bold text-2xl text-left">Modifica dei dati della balla: </p>
             <UpdateValuesBale
               type={alertFor === "update-p" ? "presser" : "wheelman"}

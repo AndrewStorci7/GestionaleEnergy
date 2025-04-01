@@ -190,22 +190,23 @@ export default function UpdateValuesBale({
                     <div className='relative px-[5px]'>
                         <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Peso (kg)</label>
                         <input 
-                            className='text-black w-full'
+                            className='text-black w-full on-input'
                             type="number"
                             id="peso-carrellista"
                             value={weight}
                             onChange={(e) => { 
                                 setWeight(e.target.value);
-                                setCanProceed(e.target.value > 0);
+                                setCanProceed(e.target.value > 0 && e.target.value);
                             }}
                             placeholder="Inserisci peso"
                         />
                     </div>
                 )}
-                <div className='relative px-[5px]'>
+                <div>{/* spazziatore */}</div>
+                <div className='relative px-[5px] col-span-2 mt-9'>
                     <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Note</label>
                     <input 
-                        className='text-black w-full'
+                        className='text-black w-full on-input'
                         type="text"
                         id="note-carrellista"
                         value={note || ""}
@@ -217,14 +218,14 @@ export default function UpdateValuesBale({
             </div>
             <div className='flex flex-row-reverse m-[10px] mt-[20px]'>
                 <button 
-                    className={`border px-[10px] py-[5px] rounded-md ml-4 bg-blue-400 ${!canProceed && 'disabled:opacity-45 cursor-no-drop'}`}
+                    className={`border px-[10px] py-[5px] rounded-xl ml-4 bg-blue-500 ${!canProceed && 'disabled:opacity-45 cursor-no-drop'}`}
                     onClick={() => handleClick()}
                     disabled={!canProceed}
                 >
                     OK
                 </button>
                 <button 
-                    className={'border px-[10px] py-[5px] rounded-md bg-primary mr-4'}
+                    className={'border px-[10px] py-[5px] rounded-xl bg-primary mr-4'}
                     onClick={() => handlerClose()}
                 >
                     Annulla

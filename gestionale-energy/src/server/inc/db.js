@@ -22,6 +22,7 @@ const pool = mysql.createPool({
     password: DB_PW,
     database: DB_NAME,
     port: DB_PORT,
+    timezone: "Europe/Rome"
 });
 
 const originalQuery = pool.query.bind(pool);
