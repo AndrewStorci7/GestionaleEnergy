@@ -106,10 +106,10 @@ export default function Header({
                         alt="Oppimitti Energy Logo"
                     />
                 </div> {/* end logo */}
-                <div className={`${_CMN_PLACE_CENTER}`}>
-                    {implant}
-                </div> {/* end implant */}
                 <div className={`${_CMN_PLACE_CENTER} col-span-2`}>
+                    <div className="border w-fit py-1 px-2 rounded-xl bg-zinc-200 shadow-sm">
+                        {implant}
+                    </div>
                     Balle totali a mag.: {totalbales}<br/>
                     Balle totali lavorate: {totalbalesLavorate}
                 </div> {/* end total bale */}
@@ -122,15 +122,16 @@ export default function Header({
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {time}
                 </div> {/* end time */}
+                <div></div>
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {username}
                     {/* <span className="w-fit">{name} {surname}</span> */}
                     <button
-                        className="rounded-full bg-red-500 p-2 ml-10" 
+                        className="rounded-full bg-red-500 p-2 ml-2" 
                         onClick={logout}
                     >
                         <img 
-                            src="/spegni2.png" 
+                            src="/outlined/spegni2.png" 
                             alt="Logout"
                             className="w-6 h-6" 
                         />

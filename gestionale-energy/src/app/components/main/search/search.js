@@ -85,7 +85,7 @@ function SearchInput({ type }) {
                     <div className="flex items-center gap-4 justify-start col-span-2">
                         <button className="rounded-full bg-cyan-500 p-2 flex items-center pr-4">
                             <img 
-                                src="/ricerca1.png" 
+                                src="/outlined/ricerca1.png" 
                                 alt="Ricerca"
                                 className="w-6 h-6 mr-3" 
                             />
@@ -93,7 +93,7 @@ function SearchInput({ type }) {
                         </button>
                         <button className="rounded-full bg-cyan-950 p-2 flex items-center pr-4">
                             <img 
-                                src="/rimuovi1.png" 
+                                src="/outlined/rimuovi1.png" 
                                 alt="Rimuovi"
                                 className="w-6 h-6 mr-3" 
                             />

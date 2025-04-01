@@ -82,7 +82,7 @@ export default function BtnPresser({
                     onClick={() => handleClick(false)}>
                         <div className="flex items-center p-1">
                             <Image 
-                                src={"/icons8-elimina-100.png"}
+                                src={"/filled/elimina-bianco-filled.png"}
                                 width={25}
                                 height={25}
                                 alt="Aggiungi icona"
@@ -96,7 +96,7 @@ export default function BtnPresser({
                     onClick={() => handleClick(true)}>
                         <div className="flex items-center p-1">
                             <Image 
-                                src={"/icons8-modifica-file-100.png"}
+                                src={"/filled/modifica-bianco-filled.png"}
                                 width={25}
                                 height={25}
                                 alt="Aggiungi icona"
@@ -113,7 +113,7 @@ export default function BtnPresser({
                         : (
                             <div className="flex items-center p-1">
                                 <Image 
-                                    src={"/icons8-aggiungi-100.png"}
+                                    src={"/filled/aggiungi-bianco-filled.png"}
                                     width={25}
                                     height={25}
                                     alt="Aggiungi icona"
