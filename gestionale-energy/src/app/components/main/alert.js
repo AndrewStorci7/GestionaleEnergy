@@ -40,9 +40,9 @@ export default function Alert({
   */
   const closeAlert = (isConfirmed = false) => {
     try {
-      refreshPage(ws);
       baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
       handleClose(isConfirmed); 
+      refreshPage(ws);
     } catch (error) {
       setSanitize("error");
       setMessage(error);
@@ -138,19 +138,19 @@ export default function Alert({
     case "confirmed-print": {
       return (
         <div className="overlay">
-          <div className="alert-box on-border confirmed-print">
+          <div className="alert-box on-border bg-slate-100">
             <p>{message}</p>
             <button
               onClick={() => closeAlert(true)}
-              className="alert-button confirmed-button"
+              className="alert-button on-btn bg-blue-500"
             >
-              Si
+              Conferma
             </button>
             <button
               onClick={() => closeAlert()}
-              className="alert-button confirmed-button mr-[10px]"
+              className="alert-button on-btn bg-red-500 mr-[10px]"
             >
-              No
+              Annulla
             </button>
           </div>
         </div>
@@ -161,7 +161,7 @@ export default function Alert({
       return (
         <div className="overlay">
           <div className="alert-box on-border confirmed">
-            <p>I dati sono stati inseriti correttamente!</p>
+            <p>{message}</p>
             <button
               onClick={() => closeAlert()}
               className="alert-button confirmed-button"
@@ -176,7 +176,7 @@ export default function Alert({
     case 'update': {
       return (
         <div className="overlay">
-          <div className="alert-box on-border update">
+          <div className="alert-box on-border update !bg-slate-50">
             <p className="text-black mb-10 font-bold text-2xl text-left">Modifica dei dati della balla: </p>
             <UpdateValuesBale
               type={alertFor === "update-p" ? "presser" : "wheelman"}

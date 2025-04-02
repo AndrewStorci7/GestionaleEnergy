@@ -122,7 +122,7 @@ export default function BtnWheelman({
                     <button className="on-btn-wheelman" onClick={() => handleClick()}>
                         <div className="flex items-center p-1">
                             <Image 
-                                src={"/modifica-nero.png"}
+                                src={"/filled/modifica-bianco-filled.png"}
                                 width={25}
                                 height={25}
                                 alt="Aggiungi icona"
@@ -134,7 +134,7 @@ export default function BtnWheelman({
                     <button className="on-btn-wheelman" onClick={() => handleStampa()}>
                         <div className="flex items-center p-1">
                             <Image 
-                                src={"/icons8-stampa-100.png"}
+                                src={"/filled/stampa-bianco-filled.png"}
                                 width={25}
                                 height={25}
                                 alt="Aggiungi icona"

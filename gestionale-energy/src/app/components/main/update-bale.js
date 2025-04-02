@@ -142,6 +142,7 @@ export default function UpdateValuesBale({
                         onChange={(e) => { 
                             if (type === 'presser') setPlastic(e.target.value); 
                             else setCdbc(e.target.value);
+                            setCanProceed(e.target.value == 2);
                         }} 
                         fixedW 
                     />

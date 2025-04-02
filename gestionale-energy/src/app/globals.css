@@ -144,9 +144,8 @@ body {
 .alert-button {
   padding: 5px 10px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .error-button {

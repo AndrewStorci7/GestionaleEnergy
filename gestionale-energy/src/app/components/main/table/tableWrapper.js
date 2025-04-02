@@ -35,13 +35,13 @@ const TableWrapper = ({
         <div 
         {...props} 
         >
-            <div className={`not-prose shadow-sm relative rounded-xl overflow-hidden ${backgroundColor} mt-[5px]`}>
+            <div className={`not-prose shadow-sm relative rounded-xl overflow-hidden ${backgroundColor}`}>
                 <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
                     <h2 className='font-bold text-xl px-4 pt-[5px] text-white'>
                         Dati inseriti dal  {(innerType === 'presser') ? 'Pressista' : (innerType === 'wheelman') ? 'Carrellista' : ''}
                     </h2>
                 </div>
-                <div className="relative rounded-xl overflow-auto">
+                <div className="relative rounded-xl overflow-auto shadow-inner">
                     <div className="shadow-sm overflow-hidden my-8">
                         <table 
                         id="gest-on-table" 
@@ -59,6 +59,7 @@ const TableWrapper = ({
                                     handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
                                     selectedBaleId={tableContent.selectedBaleId}
                                     add={tableContent.objAdd}  
+                                    useFor={innerType === "wheelman" ? "reverse" : "regular"}
                                     noData={(e) => tableContent.noData(e)} 
                                     primary={primary}
                                     style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400" 
