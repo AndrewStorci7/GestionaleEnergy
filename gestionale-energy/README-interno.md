@@ -1,10 +1,24 @@
-# GestionaleEnergy Versione 1.1 ::
+# GestionaleEnergy Versione 1.5
 Gestionale per l'automazione dell'inserimento e gestione degl'imballaggi 
 
-## Versione 1.1
+## MySQL Time Zone
+
+Durante la configurazione di **MySQL Server 8.0** impostare sul file `my.ini` (se si è su **Windows**) il seguente codice:
+
+> :warning: il file `my.ini` si trova nella directory `C:\ProgramData\MySQL\MySQL Server 8.0`
+
+```sh
+[mysqld]
+default-time-zone='+01:00'
+```
+
+> :warning: fare attenzione al salvataggio del file `my.ini`, codifica **ANSI**
+
+## Versione 1.5
 
 Comando per esguire la build (nella root del progetto)
 ```sh
+npm run server-prod
 npm run build
 npm run start
 ```
