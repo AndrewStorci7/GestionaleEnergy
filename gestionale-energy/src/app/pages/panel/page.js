@@ -6,7 +6,6 @@ import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
-import Alert from "@/app/components/main/alert";
 import CheckCookie from "@/app/components/main/check-cookie";
 
 import { WebSocketProvider } from '@@/components/main/ws/use-web-socket';
@@ -27,9 +26,6 @@ export default function Admin() {
     const [surname, setSurname] = useState("");
     // Tipo utente [ 'admin' | 'presser' | 'wheelman' | 'both' ]
     const [type, setType] = useState("");
-
-    // istanza del Web Socket
-    // const [ws, setWs] = useState(null);
     
     useEffect(() => {
         async function fetchData() {
@@ -46,12 +42,8 @@ export default function Admin() {
                     setName(cookies.name);
                     setSurname(cookies.surname);
                 }  
-                // } else if (CheckCookie()) {
-
-                // }
             } catch (error) {
                 console.log(`Error: ${error}`);
-                // <Alert msg={error}/>
             }
         }
 
