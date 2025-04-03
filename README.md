@@ -1,66 +1,18 @@
-# GestionaleEnergy
-Gestionale per l'automazione dell'inserimento e gestione degl'imballaggi 
+# Gestionale Energy
+### Version 1.5 :label: 📢
+#### :calendar: 2025/03/27
 
-## Comando per eseguire il backup del DB
+## Main Features :sparkles:
 
-Se non è stata settata globalmente andare nella directory di **Mysql**: \
-`C:\Program Files\MySQL\MySQL Server 8.0\bin`
+#### 🔄 **Automazione Completa**  
+Il gestionale ora offre una **gestione completa delle balle**, garantendo un flusso di lavoro ancora più efficiente tra pressista e carrellista.  
 
-```bash
-mysqldump -u [nome_utente] -p -h [host] --port=[porta] [nome_database] > [path\to\backup\file.sql]
-```
+#### 📊 **Reportistica Immediata**  
+Grazie al nuovo sistema di reportistica avanzata, è possibile ottenere in **tempo reale** tutti i dati di produzione, migliorando il monitoraggio e l’analisi delle performance.  
 
-## Istruzioni per Dev
+🔹 **Pressista**: Inserimento delle caratteristiche del materiale da pressare.  
+🔹 **Carrellista**: Registrazione rapida e precisa delle balle all'uscita dalla pressa.  
 
-### Prima fase
+Questa versione introduce **maggior efficienza, precisione e visibilità sui dati** per ottimizzare la gestione della produzione.  
 
-Far partire il web hosting:
-- spostarsi nella cartella del progetto `/gestionale-energy`
-- far avviare il web hosting:
-```bash
-> npm run dev
-```
-
-### Seconda fase 
-
-Su un'altra finestra del terminale andare nella directory `.../gestionale-energy/src/server/` e digitare:
-```bash
-> node app.js
-```
-
-## Ricezione delle modifiche da remoto (se richiesto o per sicurezza)
-
-Eseguire il fetch e il pull delle modifiche di altri branch
-```bash
-> git fetch origin
-> git pull origin
-```
-
-## Istruzioni per inviare le modifiche
-
-> :warning: Fare le commit delle modifiche importanti e dopo (alla fine) eseguire la `push`
-
-
-### Primo fase
-
-Aggiungere tutti i file nello stash (importante: bisogna essere nella directory `/GestionaleEnergy`):
-```bash
-> git add .
-```
-
-> :bulb: Per vedere le modifiche: \
-> `git status`
-
-### Seconda fase
-
-Eseguire la commit:
-```bash
-> git commit -m "messaggio"
-```
-
-### Terza fase
-
-Una volta che si ha finito il lavoro o la giornata inviare le modifiche al server:
-```bash
-> git push origin
-```
+📌 **Aggiorna ora e scopri le nuove funzionalità!** 🎉
