@@ -1,11 +1,11 @@
-const express = require('express');
-const ReiController = require('../controllers/rei');
+import express from 'express';
+import Controller from '../controllers/rei.js';
 
-module.exports = (db) => {
+export default (db, table) => {
     const router = express.Router();
-    const reiCtrl = new ReiController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/rei', (req, res) => reiCtrl.get(req, res));
+    router.get('/rei/get', (req, res) => controller.get(req, res));
 
     return router;
 }

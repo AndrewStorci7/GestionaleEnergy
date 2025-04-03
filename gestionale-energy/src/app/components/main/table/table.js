@@ -1,13 +1,15 @@
 'use client'
 
-import TableHeader from "./table-header";
-import CheckButton from "../select-button";
-import Icon from "../get-icon";
+import TableWrapper from "./tableWrapper";
 import TableContent from "./table-content";
-import DownloadReport from "../download-btn"
+import TableHeader from "./table-header";
+import DownloadReport from "../admin/btn-report"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
-import AddBale from "../btn-presser";
+import ExportReport from "../admin/export-report";
+import BtnPresser from "../btn-presser";
+
+import { useWebSocket } from "../ws/use-web-socket";
 
 import { useEffect, useState } from "react";
 
@@ -25,49 +27,75 @@ import { useEffect, useState } from "react";
  */
 export default function Table({ type, implant, idUser }) {
 
+    // WebSocket instance
+    const { ws, message } = useWebSocket();
+    /// Common style
+    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
+    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
+    const _CMNSTYLE_TITLE = "text-3xl font-bold";
+    const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
+    // const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
+    const _CMNSTYLE_TABLE = "border-collapse table-auto w-full text-sm";
+    const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
+    const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
+    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
+
     const [selectedType, setSelectedType] = useState("general");
-    const [addWasClicked, setState] = useState(false)
-    const [ids, setResp] = useState([])
-    const [msgEmpty, setMsg] = useState("")
-    const [isEmpty, setEmpty] = useState(false)
-    const [isSelected, setSelected] = useState(null)
+    const [addWasClicked, setAddClick] = useState(false); // gestisce il click del bottone "aggiungi"
+    const [confirmedAdd, setConfirmedAdd] = useState(true); // gestisce il click della conferma dell'inserimento
 
-    const addHandle = (resp) => {
-        setState(!addWasClicked)
-        setResp(resp)
+    const [msgEmpty, setMsg] = useState("");
+    const [isEmpty, setEmpty] = useState(false);
+    const [isSelected, setSelected] = useState(null);
+    const [idUnique, setIdUnique] = useState(null);
+    // const [btnPressed, setBtnPressed] = useState(null); // Track which button was pressed
+    
+    // const handleUpdateClickConfirmed = () => {
+    //     setConfirmedAdd(true);
+    //     setAddClick(false);
+    // }
+    const handleAddPressed = () => {
+        setConfirmedAdd(prev => !prev);
+        setAddClick(prev => !prev);
+        console.log("STATO BOTTONE OK AGGIUNTA: " + confirmedAdd);
     }
-
+    
+    // Oggetto per gestire l'id della balla selezionata
+    const objIdBale = {
+        idUnique: idUnique,
+        idBale: isSelected,
+        setIdBale: setSelected
+    }
+    // Oggetto per gestire l'aggiunta di una nuova balla
+    const objAdd = { 
+        state: addWasClicked, 
+        setAdd: setAddClick,
+        changeAddBtn: handleAddPressed,
+    }
+    
     const noData = (msg) =>  {
-        setEmpty(!isEmpty)
-        setMsg(msg)
+        setEmpty(false);
+        setMsg(msg);
     }
 
     const handleTypeChange = (type) => {
         setSelectedType(type);
     };
 
-    const handleSelect = (select) => {
-        setSelected(select)
+    const handleSelect = (select, idUnique) => {
+        setSelected(select);
+        setIdUnique(idUnique);
     }
 
-    useEffect(() => {
-        handleSelect(isSelected)
-        console.log("Oggetto finale: " + isSelected)
-    }, [isSelected])
+    // const handleDownloadClick = (reportType) => {
+    //     setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
+    // }
 
-    /// Common style
-    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
-    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center"
-    const _CMNSTYLE_TITLE = "text-3xl font-bold";
-    const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
-    const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
-    const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
-    const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
-    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>
+
 
     switch (type) {
         case "admin": {
-            return(
+            return (
                 <>
                     <h1 className={_CMNSTYLE_TITLE}>Pagina Amminstratore Sviluppatore</h1>
                     <p>In fase di sviluppo</p>
@@ -75,34 +103,29 @@ export default function Table({ type, implant, idUser }) {
             );
         }
         case "presser": {
-            return(
+            return (
                 <>
-                    <div className={`${_CMNSTYLE_DIV} shadow-lg`}>
-                        <label htmlFor="gest-on-table" className={`${_CMNSTYLE_LABEL} text-white bg-primary `}>Pressista</label>
-                        <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"presser"} primary />
-                            <TableContent 
-                            type={"presser"} 
-                            handleSelect={handleSelect}
-                            selectedBaleId={isSelected}
-                            add={addWasClicked} 
-                            ids={ids} 
-                            noData={noData} 
-                            primary 
-                             />
-                        </table>
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>Carrellista</label>
-                        <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"wheelman"}/>
-                            <TableContent type={"wheelman"} add={addWasClicked} />
-                        </table>
+                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner">
+                        <TableWrapper 
+                            className="col-span-5"
+                            type={"presser"}
+                            tableContent={{
+                                handleSelect: (i, y) => handleSelect(i, y),
+                                selectedBaleId: isSelected,
+                                objAdd: objAdd,
+                                noData: (e) => noData(e)
+                            }}
+                            primary
+                        />
+                        <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} />
                     </div>
 
-                    <AddBale 
+                    <BtnPresser 
                         implant={implant}
                         idUser={idUser}
-                        clickAddHandle={addHandle}
-                        select={isSelected}
+                        clickAddHandle={handleAddPressed}
+                        handleConfirmAdd={confirmedAdd}
+                        baleObj={objIdBale}
                     />
 
                     {(!addWasClicked) ? (
@@ -116,25 +139,28 @@ export default function Table({ type, implant, idUser }) {
             );
         }
         case "wheelman": {
-            return(
+            return (
                 <>
-                    <div className={`${_CMNSTYLE_DIV} shadow-lg`}>
-                        <label htmlFor="gest-on-table"  className={`${_CMNSTYLE_LABEL} text-white bg-secondary`} >Carrellista</label>
-                        <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"wheelman"} primary />
-                            <TableContent type={"wheelman"} add={addWasClicked} ids={ids} noData={noData} primary />
-                        </table>
-                        <label htmlFor="gest-on-table2" className={`${_CMNSTYLE_LABEL} ${_CMNSTYLE_SECONDARY}`}>
-                            Pressista
-                            {_CMN_ONLY_VIEW} 
-                        </label>
-                        <table id="gest-on-table2" className={_CMNSTYLE_TABLE}>
-                            <TableHeader type={"presser"} />
-                            <TableContent type={"presser"} add={addWasClicked} />
-                        </table>
+                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner">
+                        <TableWrapper 
+                            className="col-span-5"
+                            type={"wheelman"}
+                            tableContent={{
+                                handleSelect: (i, y) => handleSelect(i, y),
+                                selectedBaleId: isSelected,
+                                objAdd: objAdd,
+                                noData: (e) => noData(e)
+                            }}
+                            primary
+                        />
+                        <TableWrapper className="col-span-4" type={"presser"} tableContent={{ objAdd: objAdd }} />
                     </div>
 
-                    <BtnWheelman/>
+                    <BtnWheelman 
+                        implant={implant}
+                        idUser={idUser}
+                        baleObj={objIdBale}
+                    />
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
@@ -175,7 +201,7 @@ export default function Table({ type, implant, idUser }) {
                         <div className={`shadow-lg  h-[60vh] overflow-y-scroll`}>
                             <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
                                 <TableHeader type={"presser"} />
-                                <TableContent type={"presser"}/>
+                                <TableContent type={"presser"} />
                             </table>
                         </div>
                     )}
@@ -191,45 +217,40 @@ export default function Table({ type, implant, idUser }) {
                     
                     {selectedType === "general" && (
                         <div className={`grid grid-cols-2 gap-2 relative  h-[60vh]`}>
-                        <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
-                        <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
-                        <div className="grid grid-cols-2 gap-1 mt-20">
-                            <DownloadReport downloadFor={"file1"}>GIOR. IMPIANTO A</DownloadReport>
-                            <DownloadReport downloadFor={"file2"}>GIOR. TEMPI IMP A</DownloadReport>
-                            <DownloadReport downloadFor={"file3"}>GIOR. IMPIANTO B</DownloadReport>
-                            <DownloadReport downloadFor={"file4"}>GIOR. TEMPI IMP B</DownloadReport>
-                            <DownloadReport downloadFor={"file5"}>GIOR. IMPIANTO A e B</DownloadReport>
-                            <DownloadReport downloadFor={"file6"}>GIOR. TEMPI IMP A e B</DownloadReport>
+                            <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
+                                <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
+                                <div className="grid grid-cols-2 gap-1 mt-20">
+                                    <DownloadReport />
+                                </div>
+
+                            </div>
+                            <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
+                                <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
+                                <div className="grid grid-cols-3 gap-1 mt-20">
+                                    <p className="ml-3 mb-1.5">PERIODO</p>
+                                    <input className=" mb-1.5" type="date"></input>
+                                    <input className=" mb-1.5" type="date"></input>
+                                    <p className="ml-3 mb-1.5">IMPIANTO</p>
+                                    <SelectInput id="search-input-implants" searchFor={"implants"} isForSearch />
+                                    <p></p>
+                                    <p className="ml-3 mb-1.5">TIPO PLASTICA</p>
+                                    <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
+                                    <p></p>
+                                    <p className="ml-3 mb-1.5">PESO</p>
+                                    <select name="peso" id="pesoid"> 
+                                        <option value="esempio_a">-</option>
+                                    </select>
+                                    <p></p>
+                                    <p className="ml-3 mb-1.5">TURNO</p>
+                                    <select name="turno" id="turnoid">
+                                        <option value="esempio_a">-</option>
+                                    </select>
+                                    <p></p>
+                                    <p></p>
+                                    <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
+                                </div>
+                            </div>
                         </div>
-                        </div>
-                        <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
-                        <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
-                        <div className="grid grid-cols-3 gap-1 mt-20">
-                            <p className="ml-3 mb-1.5">PERIODO</p>
-                            <input className=" mb-1.5" type="date"></input>
-                            <input className=" mb-1.5" type="date"></input>
-                            <p className="ml-3 mb-1.5">IMPIANTO</p>
-                            <SelectInput id="search-input-implants" searchFor={"implants"} />
-                            <p></p>
-                            <p className="ml-3 mb-1.5">TIPO PLASTICA</p>
-                            <SelectInput id="search-input-plastic" searchFor={"plastic"} />
-                            <p></p>
-                            <p className="ml-3 mb-1.5">PESO</p>
-                            <select name="peso" id="pesoid"> 
-                            <option value="esempio_a">-</option>
-                            </select>
-                        <p></p>
-                        <p className="ml-3 mb-1.5">TURNO</p>
-                        <select name="turno" id="turnoid">
-                            <option value="esempio_a">-</option>
-                        </select>
-                        <p></p>
-                        <p></p>
-                        <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
-                        <DownloadReport  downloadFor={"File_Scaricato"} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-5 ">SCARICA</DownloadReport>
-                        </div>
-                        </div>
-                    </div>
                     )}
                 </>
             );

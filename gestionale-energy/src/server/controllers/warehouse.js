@@ -1,5 +1,5 @@
-const Console = require('../inc/console')
-const Common = require('./main/common')
+import Console from '../inc/console.js';
+import Common from './main/common.js';
 
 const console = new Console("TotalBale")
 
@@ -11,9 +11,8 @@ const console = new Console("TotalBale")
  */
 class Warehouse extends Common {
 
-    constructor(db, id, name) {
-        super(db, id)
-        this.name = name;
+    constructor(db, table) {
+        super(db, table);
     }
 
     /**
@@ -45,4 +44,4 @@ class Warehouse extends Common {
     }
 }
 
-module.exports = Warehouse
+export default Warehouse

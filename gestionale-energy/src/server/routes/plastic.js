@@ -1,11 +1,11 @@
-const express = require('express');
-const PlasticController = require('../controllers/plastic');
+import express from 'express';
+import Controller from '../controllers/plastic.js';
 
-module.exports = (db) => {
+export default (db, table) => {
     const router = express.Router();
-    const plasticCtrl = new PlasticController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/plastic', (req, res) => plasticCtrl.get(req, res));
+    router.get('/plastic/get', (req, res) => controller.get(req, res));
 
     return router;
 }

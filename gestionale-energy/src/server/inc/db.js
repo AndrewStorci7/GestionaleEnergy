@@ -1,8 +1,12 @@
 // Configuring .env file
-require('dotenv').config();
+import dotenv from 'dotenv';
+const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
+dotenv.config({ path: envFile });
 
-const mysql = require('mysql2');
-const Console = require('./console');
+// const mysql = require('mysql2');
+import mysql from 'mysql2';
+// const Console = require('./console');
+import Console from './console.js';
 
 const console = new Console("Database");
 
@@ -18,6 +22,7 @@ const pool = mysql.createPool({
     password: DB_PW,
     database: DB_NAME,
     port: DB_PORT,
+    timezone: "Europe/Rome"
 });
 
 const originalQuery = pool.query.bind(pool);
@@ -34,4 +39,4 @@ pool.execute = (sql, params, callback) => {
     return originalExecute(sql, params, callback);
 };
 
-module.exports = pool.promise();
+export default pool.promise();

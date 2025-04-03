@@ -6,8 +6,9 @@ import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
 import MainContent from "@/app/components/main/main-content";
 import { useEffect, useState } from "react";
-import ErrorAlert from "@/app/components/main/error-alert";
 import CheckCookie from "@/app/components/main/check-cookie";
+
+import { WebSocketProvider } from '@@/components/main/ws/use-web-socket';
 
 export default function Admin() {
 
@@ -39,11 +40,10 @@ export default function Admin() {
                     setUser(cookies.username);
                     setType(cookies.type);
                     setName(cookies.name);
-                    setSurname(cookies.surname);  
-                }else(CheckCookie())
+                    setSurname(cookies.surname);
+                }  
             } catch (error) {
-                //console.log(`Error: ${_err}`);
-                <ErrorAlert msg={error}/>
+                console.log(`Error: ${error}`);
             }
         }
 
@@ -51,23 +51,23 @@ export default function Admin() {
     }, []);
 
     return(
-        
-        
-        <div className="w-[98%] m-[1%] overflow-hidden">
-            <CheckCookie/>
-            <Header 
-                implant={implant}
-                username={user}
-                type={type}
-                name={name}
-                surname={surname}
-            />
-            <MainContent 
-                type={type}
-                implant={idImplant}
-                idUser={idUser}
-            />
-            <Footer />
-        </div>
+        <WebSocketProvider user={{ user, name, surname }}>
+            <div className="w-[99%] m-[0.5%] overflow-hidden">
+                <CheckCookie/>
+                <Header 
+                    implant={implant}
+                    username={user}
+                    type={type}
+                    name={name}
+                    surname={surname}
+                />
+                <MainContent 
+                    type={type}
+                    implant={idImplant}
+                    idUser={idUser}
+                />
+                <Footer />
+            </div>
+        </WebSocketProvider>
     );
 }

@@ -1,39 +1,23 @@
 import React, { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { getSrvUrl } from '@@/config';
+import { getServerRoute } from '@@/config';
 import Cookies from 'js-cookie';
 
-const srvurl = getSrvUrl();
-
-const getUrl = () => {
-    return srvurl + '/bale'
-};
-
-const ExportExcel = ({ userData }) => {
+const ExportExcel = ({ combinedData }) => {
   const handleExport = async () => {
     // 1. Create a new workbook and worksheet
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("User Data");
 
-    // 2. Add columns based on the user data fields (you can adjust this based on the actual fields)
-   /* worksheet.columns = [
-        { header: "ID", key: "id", width: 10 },
-        { header: "Plastica", key: "plastic", width: 30 },
-        { header: "REI", key: "rei", width: 10 },
-        { header: "Condizione", key: "condition", width: 10 },
-        { header: "Data Inserimento", key: "data_ins", width: 10 },
-        { header: "Codice", key: "code", width: 10 },
-    ]; */
-
+    // 2. Add columns based on the user data fields
     worksheet.columns = [
       { header: "Impianto", key: "implant", width: 15 },
-      
-      { key: "code", width: 15},
-      { key: "plastic", width: 15},
-      { key: "kg", width: 15},
-      { key: "id", width: 15},
-  ];
+      { header: "Codice", key: "code", width: 15 },
+      { header: "Prodotto", key: "plastic", width: 15 },
+      { header: "Kg", key: "kg", width: 15 },
+      { header: "ID", key: "id", width: 15 }
+    ];
 
     worksheet.getCell('B1').value = new Date();
     worksheet.getCell('A4').value = 'IMPIANTO';
@@ -42,10 +26,15 @@ const ExportExcel = ({ userData }) => {
     worksheet.getCell('D4').value = 'KG';
     worksheet.getCell('E4').value = 'ID';
 
-  
-    // 3. Add rows from the user data
-    userData.forEach((user) => {
-      worksheet.addRow({implant: user.implant, code: user.code, plastic: user.plastic, kg: user.kg, id: user.id});
+    // 3. Add rows from the combined data
+    combinedData.forEach((user) => {
+      worksheet.addRow({
+        implant: user.implant,
+        code: user.code,
+        plastic: user.plastic,
+        kg: user.kg,
+        id: user.id
+      });
     });
 
     // 4. Add styling (optional)
@@ -59,13 +48,15 @@ const ExportExcel = ({ userData }) => {
 
   return (
     <div>
-      <button onClick={handleExport}>Export to Excel</button>
+      <button onClick={handleExport}>Export Presser & Wheelman Data</button>
     </div>
   );
 };
 
-const UserComponent = ({ type = "presser" }) => {
-  const [userData, setUserData] = useState([]);
+
+
+const UserComponent = () => {
+  const [combinedData, setCombinedData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
 
   useEffect(() => {
@@ -73,7 +64,7 @@ const UserComponent = ({ type = "presser" }) => {
       try {
         const cookies = await JSON.parse(Cookies.get('user-info'));
         const id_implant = cookies.id_implant;
-        const url = getUrl();
+        const url = await getServerRoute("bale");
         
         const resp = await fetch(url, {
           method: 'POST',
@@ -86,15 +77,11 @@ const UserComponent = ({ type = "presser" }) => {
         }
 
         const data = await resp.json();
-        console.log(data);
 
         if (data.code === 0) {
-          if (type === "presser")
-            setUserData(data.presser);
-          else if (type === "wheelman")
-            setUserData(data.wheelman);
-          else
-            setUserData([]);
+          const presserData = data.presser || [];
+          const wheelmanData = data.wheelman || [];
+          setCombinedData([...presserData, ...wheelmanData]); // Combine both data sets
         } else {
           setEmpty(true);
         }
@@ -104,18 +91,19 @@ const UserComponent = ({ type = "presser" }) => {
     };
 
     fetchData();
-  }, [type]);
+  }, []);
 
   return (
     <div>
       <h1>User Data</h1>
-      {userData.length > 0 ? (
-        <ExportExcel userData={userData} />
+      {combinedData.length > 0 ? (
+        <ExportExcel combinedData={combinedData} />
       ) : (
         <p>No data available</p>
       )}
     </div>
   );
 };
+
 
 export default UserComponent;

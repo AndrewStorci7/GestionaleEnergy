@@ -1,118 +1,138 @@
-import ErrorAlert from './error-alert';
-import { getSrvUrl } from '@@/config';
-import React, { useState } from "react";
-
-const srvurl = getSrvUrl()
+'use client'
+import React, { useEffect, useState } from "react";
+import Alert from '@@/components/main/alert';
+import Image from "next/image";
 
 /**
  * Custom component for adding, updating or erase a bale 
  * 
  * @author Andrea Storci from Oppimittinetworking
  * 
- * @param {object}   idSelect        {
- *  `status`<boolean>     Indica se una qualsiasi riga della tabella è stata selezioanta;
- *  `id`<number>          Indica l'id dela balla da modificare/eliminare (null di default)
- * }
+ * @param {object}   baleObj          Oggetto composto dai seguenti attributi: { `idBale`(number): id della balla, `setIdBale`(function): gancio per aggiornare l'id in caso di elimina }
  * 
- * @param {int}      implant         Id dell'impianto che serve per aggiungere una nuova balla
+ * @param {boolean}  handleConfirmAdd Tiene traccia del fatto che il bottone di conferma inserimento sia stato cliccato
  * 
- * @param {int}      idUser          Id dell'utente che serve per aggiungere una nuova balla
+ * @param {int}      idUnique         Id contatore della balla totale
+ * 
+ * @param {int}      implant          Id dell'impianto che serve per aggiungere una nuova balla
+ * 
+ * @param {int}      idUser           Id dell'utente che serve per aggiungere una nuova balla
  *  
- * @param {function} clickAddHandle  Funzione che gestisce il funzionamento del click del bottone, 
- *                                   passa i dati ricevuti
- * 
- * @param {int} newSelectedBaleId
+ * @param {function} clickAddHandle   Funzione che gestisce il funzionamento del click del bottone, 
+ *                                    passa i dati ricevuti
+ * @param {function} handleSelect
  */
-export default function AddBale({ 
-    idSelect,
-    implant, 
-    idUser, 
-    clickAddHandle,
-    
+export default function BtnPresser({ 
+    baleObj,
+    handleConfirmAdd = false, 
+    clickAddHandle
 }) {
-    //console.log(idSelect)
-    const [showErrorAlert, setShowErrorAlert] = useState(false);
-   
-    const addNewBale = async () =>  {
 
+    const default_message = `Balla numero ${baleObj.idUnique} eliminata correttamente!`;
+    const confirm_message = `Sei sicuro di voler eliminare la balla ${baleObj.idUnique} ?`;
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [addWasClicked, setAddWasClicked] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [scope, setScope] = useState('');
+
+    useEffect(() => {
+        if(handleConfirmAdd) {
+            setAddWasClicked(false)
+        } else {
+            setAddWasClicked(true)
+        }
+    },[handleConfirmAdd]);
+    
+    const handleAlert = async (msg, scope = "error") => {
+        setScope(scope);
+        setErrorMessage(msg);
+        setShowAlert(prev => !prev);
+    };
+
+    const closeAlert = (val = true) => {
+        setShowAlert(prev => !prev);
+        if (val) baleObj.setIdBale(null);
+    };
+
+    const addNewBale = () => {
         try {
-            const data = {
-                id_presser: idUser,
-                id_implant: implant
-            }
-    
-            const check = await fetch(srvurl + '/add-bale', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json' },
-                body: JSON.stringify({ data }),
-            })
-    
-            const resp = await check.json()
-    
-            if (!check.ok) {
-                // TODO insierire componente ErrorAlert
-                // console.log("Errore")
-                <ErrorAlert alertFor="error" />
-            } else {
-                clickAddHandle(resp.data)
-            }
+            setAddWasClicked(prev => !prev);
+            clickAddHandle(prev => !prev);
         } catch (error) {
-            <ErrorAlert alertFor="error" />
+            handleAlert(error);
         }
     }
 
-    const gestioneErrori = () => {
-        setShowErrorAlert(true);
-    };
-
-    const closeAlert = () => {
-        setShowErrorAlert(!showErrorAlert);
-    };
-
-    const handleDelete = (id) => {
-        console.log("Elimina" + id)
-    }
-
-    const handleUpdate = (id) => {
-        console.log("Modifica" + id)
-    }
-
     const handleClick = (f) => {
-        console.log(idSelect)
-        if (idSelect !== null) {
-            if (f)
-                handleUpdate(idSelect)
-            else handleDelete(idSelect)
+        if (baleObj && baleObj.idBale !== null) {
+            if (f) handleAlert("", 'update-p');
+            else handleAlert(confirm_message, "delete");
         } else {
-            setShowErrorAlert(!showErrorAlert)
+            handleAlert("Nessuna balla selezionata!");
         }
     }
 
     return (
         <>
-        
             <div className="w-1/2 font-bold on-fix-index">
                 <div className="flex flex-row-reverse">
                     <button 
                     className="on-btn-presser" 
                     onClick={() => handleClick(false)}>
-                        Elimina
+                        <div className="flex items-center p-1">
+                            <Image 
+                                src={"/filled/elimina-bianco-filled.png"}
+                                width={25}
+                                height={25}
+                                alt="Aggiungi icona"
+                                className={"mr-2"}
+                            />
+                            Elimina
+                        </div>
                     </button>
                     <button 
                     className="on-btn-presser mr-[50px]" 
                     onClick={() => handleClick(true)}>
-                        Modifica
+                        <div className="flex items-center p-1">
+                            <Image 
+                                src={"/filled/modifica-bianco-filled.png"}
+                                width={25}
+                                height={25}
+                                alt="Aggiungi icona"
+                                className={"mr-2"}
+                            />
+                            Modifica
+                        </div>
                     </button>
                     <button 
-                    className="on-btn-presser" 
+                    className={`on-btn-presser ${(addWasClicked && !handleConfirmAdd) && "bg-red-400 text-neutral-50"}`} 
                     onClick={addNewBale}>
-                        Aggiungi
+                        {(addWasClicked && !handleConfirmAdd) ? 
+                            "Annulla" 
+                        : (
+                            <div className="flex items-center p-1">
+                                <Image 
+                                    src={"/filled/aggiungi-bianco-filled.png"}
+                                    width={25}
+                                    height={25}
+                                    alt="Aggiungi icona"
+                                    className={"mr-2"}
+                                />
+                                Aggiungi
+                            </div>
+                        )}
                     </button>
                 </div>
             </div>
-            {showErrorAlert ? 
-                <ErrorAlert handleClose={closeAlert} alertFor="error" msg="Per modificare o eliminare bisogna prima selezionare una balla!" />
-                : null
+
+            {showAlert && 
+                <Alert
+                    handleClose={closeAlert}
+                    alertFor={scope}
+                    msg={errorMessage}
+                    baleObj={baleObj}
+                />
             }
         </>
     );

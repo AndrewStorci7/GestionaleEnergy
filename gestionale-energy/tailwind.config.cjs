@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       componets: {
         'on-fix-index': {
-          '@apply relative z-[2]': {},
+          '@apply relative': {},
         },
         'on-header': {
           '@apply w-full bg-white text-thirdary font-bold text-2xl rounded-[5px]': {},
@@ -18,7 +18,7 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primaryON: '#fd4e01',
+        primaryON: '#B6B6B6',
         secondaryON: '#154c63',
         primary: '#e01b26',
         primary_2: '#FDEDEE',

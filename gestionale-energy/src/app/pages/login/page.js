@@ -1,7 +1,3 @@
-/**
- * Login page
- * @author Andrea Storci
- */
 'use client';
 
 // import getEnv from '@/app/config';
@@ -10,12 +6,15 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
-import { getSrvUrl } from '@@/config';
+import { getServerRoute } from '@@/config';
 import md5 from 'md5';
 import SelectImplants from '@/app/components/main/select-implant';
 
-const srvurl = getSrvUrl()
-
+/**
+ * Login page
+ * 
+ * @author Andrea Storci from Oppimittinetworking
+ */
 export default function LoginPage() {
 
     // Router
@@ -42,14 +41,13 @@ export default function LoginPage() {
             let crypted_pw = md5(md5(password));
 
             try {
-                
-                const resp = await fetch(srvurl + '/login', {
+                const url = await getServerRoute("login");
+                const resp = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({username, password: crypted_pw}),
                 });
                 const res = await resp.json();
-                // console.log(res)
 
                 if (res.code) {
                     setError(`${res.message}`);
@@ -65,25 +63,23 @@ export default function LoginPage() {
                         last_a: res[0].last_access,
                     };
                     Cookies.set('user-info', JSON.stringify(json), { sameSite: 'Strict', path: '/', expires: 1 });
-                    router.push('/pages/panel')
+                    router.push('/pages/panel');
                 }
-                
             } catch (error) {
-                setError(`Errore: ${error}`)
+                setError(`Errore: ${error}`);
             }
         }
-    };
+    }
 
     const handleChange = () => {
         const value = selectRef.current.value;
         const text = selectRef.current.options[selectRef.current.selectedIndex].text;
-        console.log(value, text)
-        setImplant({id_implant: value, text_implant: text});
-    }; 
+        setImplant({ id_implant: value, text_implant: text });
+    }
 
     return (
         <div className={styles.container}>
-            <div className="w-full">
+            <div className="w-full ">
                 <Image 
                     src="/logo-oe.webp"
                     width={400}
@@ -96,10 +92,9 @@ export default function LoginPage() {
                 <div className={styles.inputGroup}>
                     <label className={styles.label} htmlFor="email">Impianto:</label>
                     <SelectImplants 
-                    ref={selectRef}
-                    onChange={handleChange}
-                    // className={styles.input}
-                    required
+                        ref={selectRef}
+                        onChange={handleChange}
+                        required
                     />
                 </div>
                 <div className={styles.inputGroup}>

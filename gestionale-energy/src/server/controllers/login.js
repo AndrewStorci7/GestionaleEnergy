@@ -1,5 +1,5 @@
-const Console = require('../inc/console');
-const Common = require('./main/common');
+import Console from '../inc/console.js';
+import Common from './main/common.js';
 
 const console = new Console("Login")
 
@@ -13,8 +13,8 @@ const console = new Console("Login")
  */
 class Login extends Common {
 
-    constructor(db, id, username, type) {
-        super(db, id)
+    constructor(db, table, username, type) {
+        super(db, table)
         this.username = username;
         this.type = type;
     }
@@ -24,7 +24,7 @@ class Login extends Common {
             const { username, password } = req.body;
             const [rows] = await this.db.query(`SELECT * FROM user WHERE user.username='${username}' AND user.password='${password}'`);
             if (rows && rows.length > 0) {
-                res.json(rows)
+                res.json(rows);
             } else {
                 res.json({ code: 1, message: "Credenziali errate" });
             }
@@ -78,4 +78,4 @@ class Login extends Common {
 
 }
 
-module.exports = Login;
+export default Login;

@@ -1,11 +1,11 @@
-const express = require('express');
-const ConditionWheelmanBaleController = require('../controllers/cdbc');
+import express from 'express';
+import Controller from '../controllers/cdbc.js';
 
-module.exports = (db) => {
+export default (db, table) => {
     const router = express.Router();
-    const cdbcCtrl = new ConditionWheelmanBaleController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/cdbp', (req, res) => cdbcCtrl.get(req, res));
+    router.get('/cdbc/get', (req, res) => controller.get(req, res));
 
     return router;
 }

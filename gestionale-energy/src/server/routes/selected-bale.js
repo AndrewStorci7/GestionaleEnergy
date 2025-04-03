@@ -1,11 +1,11 @@
-const express = require('express');
-const SelectedBaleController = require('../controllers/selected-bale');
+import express from 'express';
+import Controller from '../controllers/selected-bale.js';
 
-module.exports = (db) => {
+export default (db, table) => {
     const router = express.Router();
-    const selectedBaleCtrl = new SelectedBaleController(db);
+    const controller = new Controller(db, table);
 
-    router.get('/selected-b', (req, res) => selectedBaleCtrl.get(req, res));
+    router.get('/selected-b/get', (req, res) => controller.get(req, res));
 
     return router;
 }

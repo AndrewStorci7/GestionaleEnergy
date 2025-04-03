@@ -3,20 +3,37 @@
 @tailwind utilities;
 
 @layer components {
+
+  .on-border {
+    @apply border-b border-slate-100 dark:border-slate-700 p-3 text-slate-500 dark:text-slate-400 shadow-sm relative rounded-xl overflow-hidden;
+  }
+
+  .on-input {
+    @apply border rounded-md p-1 px-[8px] border-gray-300;
+  }
+
   .on-fix-index {
-    @apply relative z-[9998];
+    @apply relative z-[2];
   }
 
   .on-header {
-    @apply w-full bg-white text-thirdary font-bold text-2xl rounded-[5px] mb-[5px];
+    @apply w-full bg-white text-thirdary font-bold text-lg mb-[5px];
   }
 
   .on-btn-confirm {
     @apply w-auto bg-gray-300 font-bold p-[3px] mx-[10%] w-[80%];
   }
 
+  .on-btn {
+    @apply m-[10px] text-white rounded-xl border border-zinc-400 p-[5px];
+  }
+
   .on-btn-presser {
-    @apply m-[10px] rounded-md bg-gray-300 p-[5px];
+    @apply on-btn bgPresser300;
+  }
+
+  .on-btn-wheelman {
+    @apply on-btn bgWheelman300 !border-sky-100;
   }
 
   .on-table-td {
@@ -25,14 +42,14 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #EEEEEE;
   --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #171717;
+    --foreground: #EEEEEE;
   }
 }
 
@@ -40,4 +57,121 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.bgPresser {
+  background-color: #23558A;
+}
+
+.bgPresser300 {
+  background-color: #23558A;
+}
+
+.bgWheelman {
+  background-color: #4A90E2;
+}
+
+.bgWheelman300 {
+  background-color: #4A90E2;
+}
+
+.testoProva {
+  color: rgba(62, 86, 95, 1) !important;
+}
+
+.backgroundProva2 {
+  background-color: rgba(36, 135, 148, 0.5);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 40;
+}
+
+/* Alert Box Styles */
+.alert-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-width: 0.5;
+  /* border-radius: 5px; */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 999;
+}
+
+.title-alert {
+  font-size: 1.4em;
+}
+
+/* Specific Alert Types */
+.error {
+  border-color: rgb(255, 128, 128);
+  background-color: rgb(226, 200, 200);
+  color: black;
+}
+
+.note {
+  border-color: rgb(144, 250, 236);
+  background-color: rgb(227, 242, 240);
+  color: black;
+}
+
+.confirmed {
+  border-color: #9eb3f8;
+  background-color: #E1E5F2;
+  color: rgb(0, 0, 0);
+}
+
+.confirmed-print {
+  background-color: rgb(5, 181, 61);
+  color: white;
+}
+
+.update {
+  background-color: rgb(225, 229, 242);
+  color: white;
+}
+
+/* Button Styles */
+.alert-button {
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.error-button {
+  background-color: rgb(214, 70, 70);
+  color: white;
+}
+
+.note-button {
+  background-color: rgb(102, 150, 145);
+  color: white;
+}
+
+.confirmed-button {
+  background-color: #c9cedf;
+  color: rgb(255, 255, 255);
+}
+
+.update-button {
+  background-color: seagreen;
+  color: white;
+}
+
+
+.truncate { 
+  white-space: nowrap; 
+  width: 80px; 
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

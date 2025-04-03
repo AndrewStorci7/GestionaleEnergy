@@ -8,25 +8,20 @@ import BtnWheelman from "./btn-wheelman";
 import { useState } from "react";
 
 /**
+ * Main Content Component
+ * @author Andrea Storci from Oppimittinetworking
  * 
  * @param {string} type     [ 'presser' | 'wheelman' | 'both' | 'admin' ] 
- * @param {*} props 
- * @returns 
+ * 
+ * @param {*} props  
  */
 export default function MainContent({ type, implant, idUser, ...props}) {
 
     const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen"
     const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center"
 
-    const [isEmpty, setEmpty] = useState(false)
-    const [msgEmpty, setMsg] = useState("")
-    // const [addWasClicked, setState] = useState(false)
-    // const [response, setResp] = useState([])
-    
-    // const addHandle = (resp) => {
-    //     setState(true)
-    //     setResp(resp)
-    // }
+    const [isEmpty, setEmpty] = useState(false);
+    const [msgEmpty, setMsg] = useState("");
 
     const noData = (msg) =>  {
         setEmpty(!isEmpty)

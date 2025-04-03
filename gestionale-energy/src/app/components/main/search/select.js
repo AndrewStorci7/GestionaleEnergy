@@ -1,7 +1,5 @@
-import { getSrvUrl } from "@/app/config";
-import { useEffect, useState } from "react";
-
-const srvurl = getSrvUrl()
+import { getServerRoute } from "@/app/config";
+import React, { useEffect, useState } from "react";
 
 /**
  * 
@@ -24,87 +22,73 @@ const srvurl = getSrvUrl()
  *  
  * @returns 
  */
-export default function SelectInput({ searchFor, id, fixedW, value, onChange, type }, props) {
+function SelectInput({ 
+    searchFor, 
+    id, 
+    fixedW, 
+    value, 
+    onChange, 
+    isForSearch = false, 
+    type,
+    ...props 
+}) {
 
-    const fixed_width = (fixedW) && "w-full" 
-    const _CMNSTYLE_SELECT = `rounded-md ${fixed_width}`
+    const fixed_width = (fixedW) && "w-full";
+    const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black border-2 border-gray-300 p-1`;
 
-    // Rotta per server
-    const [error, setError] = useState("")
+    const [error, setError] = useState("");
     // Risposta ottenuta dal server
-    const [content, setContent] = useState([])
-
-    const getUrl = (searchFor) => {
-        switch (searchFor) {
-            case "status":
-                return -1
-            case "plastic":
-                return srvurl + "/plastic"
-            case "cdbc":
-                return srvurl + "/cdbc"
-            case "cdbp":
-                return srvurl + "/cdbp"
-            case "dest-wh":
-                return srvurl + "/dest-wh"
-            case "rei":
-                return srvurl + "/rei"
-            case "selected-b":
-                return srvurl + "/selected-b"
-            case "implants":
-                return  srvurl + "/implants"
-            case "reason":
-                return srvurl + "/reason"
-        }
-    }
+    const [content, setContent] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const url = getUrl(searchFor)
+                if (searchFor === undefined || searchFor === null)
+                    return;
+
+                const url = await getServerRoute(searchFor);
 
                 if (url != -1) {
                     const resp = await fetch(url, {
                         method: 'GET',
                         headers: {'Content-Type': 'application/json'},
-                    })
+                    });
         
                     if (!resp.ok) {
-                        throw new Error("Network response was not ok")
+                        throw new Error("Network response was not ok");
                     }
         
-                    const data = await resp.json()
+                    const data = await resp.json();
         
-                    if (data.code === 0) {
-                        setContent(data.data);
-                    } else {
-                        setError(data.message);
-                    }
+                    if (data.code === 0) setContent(data.data);
+                    else setError(data.message);
                 } else {
-                    setContent(["In lavorazione", "Cambiato", "Completato"])
+                    setContent(["In lavorazione", "Cambiato", "Completato"]);
                 }
-
             } catch (error) {
-                console.log(error)
+                console.log(error);
             }
         }
 
         fetchData();
-    }, [searchFor, value, onChange])
+    }, [searchFor]);
 
     return (
         <select
-        id={id}
-        className={`${_CMNSTYLE_SELECT}`}
-        value={value}
-        onChange={onChange}
+            id={id}
+            className={_CMNSTYLE_SELECT}
+            value={value}
+            onChange={onChange}
         >
-            <option value={""}>-</option>
+            {(isForSearch || searchFor === "plastic") && <option value={""}>-</option>}
+
+            {/* Iterate the content data */}
             {content.map((_m, _i) => {
                 if (typeof _m === "object" && _m !== null) {
 
                     // Variabili locali 
                     let code = "";
-                    let data = ""
+                    let data = "";
                     let str = "";
                     let tmp = "";
 
@@ -115,10 +99,7 @@ export default function SelectInput({ searchFor, id, fixedW, value, onChange, ty
                         data = (key === "desc") ? _m[key] : "";
                         tmp = (key === "desc") ? `\(${_m[key]}\)` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
                         str += tmp + " "; 
-
-                        // console.log("Actual value: " + _m[key] + "\nValue saved: " + code)
-                        // console.log("Value saved: ", code)
-                    })
+                    });
 
                     return ( 
                         <option key={"option-" + _i} value={code} data-code={data}>
@@ -136,3 +117,5 @@ export default function SelectInput({ searchFor, id, fixedW, value, onChange, ty
         </select>
     );
 }
+
+export default React.memo(SelectInput);

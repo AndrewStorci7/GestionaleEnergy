@@ -1,20 +1,18 @@
-/**
- * Select component that display the available implants
- * 
- * @author Andrea Storci from Oppimittinetworking
- */
-
 'use client';
 
-import { getSrvUrl } from '@/app/config';
+import { getServerRoute } from '@@/config';
 import React, { useEffect, useState } from 'react'
-import ErrorAlert from './error-alert';
 
-const srvurl = getSrvUrl();
-
+/**
+ * Select component that display the available implants
+ *  
+ * @author Andrea Storci from Oppimittinetworking.com
+ * 
+ * @param {Function}    onCHange 
+ * @param {Object}      ref
+ * @param {*}           props
+ */
 export default function SelectImplants({ onChange, ref }, props) {
-    
-    // const _CMNSTYLE_SELECT = "rounded-md"
 
     const [content, setContent] = useState([])
     const [error, setError] = useState("")
@@ -22,7 +20,8 @@ export default function SelectImplants({ onChange, ref }, props) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const resp = await fetch(srvurl + "/implants", {
+                const url = await getServerRoute("implants");
+                const resp = await fetch(url, {
                     method: 'GET',
                     headers: {'Content-Type': 'application/json'},
                 });
@@ -33,12 +32,12 @@ export default function SelectImplants({ onChange, ref }, props) {
                 } else {
                     // TODO da cambiare con alert
                     //setError(`Errore: ${error}`)
-                    <ErrorAlert msg={error}/>
+                    // <Alert msg={error}/>
                 }
             } catch (error) {
                 // TODO da cambiare con alert
                 //setError(`Errore: ${error}`)
-                <ErrorAlert msg={error}/>
+                // <Alert msg={error}/>
             }
         }
 
@@ -48,25 +47,24 @@ export default function SelectImplants({ onChange, ref }, props) {
     return (
         <select
             ref={ref}
+            // value={}
             onChange={onChange}
             {...props}
         >
             <option value={""}>Seleziona un&apos;impianto</option>
             {content.map((_m, _i) => {
                 let value = "", text = "";
-                // console.log()
                 
                 Object.keys(_m).map((key, __i) => {
                     if (key === "id")
-                        value = _m[key]
-                    else text = _m[key]
+                        value = _m[key];
+                    else text = _m[key];
                 })
                 
                 return ( 
                     <option
-                    key={value + text}
-                    // dataId={value}
-                    value={value}
+                        key={value + text}
+                        value={value}
                     >
                         {text}
                     </option>

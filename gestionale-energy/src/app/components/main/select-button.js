@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FaCheck, FaRegSquare } from 'react-icons/fa'; // FontAwesome icons
 
 /**
- * Check button per modifica ed elimina balla pressista
+ * Check button for selecting a bale
  * 
- * @prop {function} handleClick Funzione che gestisce lo stato del click 
+ * @param {boolean} isSelected Indicates if the current bale is selected
+ * @param {function} handleClick Function to handle click event and update selection
  */
-export default function CheckButton({ isSelected = false, handleClick }) {
-    const [isChecked, setIsChecked] = useState(false);
-
+export default function CheckButton({ 
+    isSelected = false, 
+    handleClick 
+}) {
     const handleToggle = () => {
-        setIsChecked(!isChecked);
-        handleClick(isChecked)
+        handleClick(); // Toggle selection from the parent component
     };
 
     return (
@@ -24,7 +25,7 @@ export default function CheckButton({ isSelected = false, handleClick }) {
                     cursor: 'pointer',
                 }}
             >
-            {(isChecked) ? <FaCheck className="bg-green-300" /> : <FaRegSquare />} {/* Icon changes based on state */}
+                {isSelected ? <FaCheck className="bg-green-300" /> : <FaRegSquare />} {/* Icon changes based on state */}
             </button>
         </div>
     );

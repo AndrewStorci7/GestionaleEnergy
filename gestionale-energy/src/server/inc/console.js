@@ -8,9 +8,16 @@ const _padEnd = 16;
 
 const _CMN_TEXT_ERROR = ""
 
+/**
+ * @param {number} level    { 
+ *      1 => Debug, 
+ *      2 => No Info, only errors
+ *      3 => Info
+ * }
+ */
 class Console {
 
-    constructor(fileName, lvl = 1) {
+    constructor(fileName, lvl = 2) {
         this.location = fileName;
         this.level = lvl;
     }
@@ -50,13 +57,77 @@ class Console {
     }
 
     /**
+     * 
+     * @param {string} str 
+     */
+    ws(str, ip) {
+        var date = new Date();
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_green} ${'Connection'.padEnd(3)} ${_reset}]: `;
+        let msg = "new user connected to the server";
+        let ip_str = "";
+        
+        if (typeof ip === 'string' && ip)
+            ip_str = `${_cyan}${ip}${_reset}`;
+
+        if (str != "undefined" || str != null || str != "") {
+            // msg = `${_green}${str}${_reset}`;
+            msg = str + ip_str;
+            console.log(ret + msg);
+        }
+    }
+    
+    /**
+     * 
+     * @param {string} str 
+     */
+    conn(str) {
+        var date = new Date()
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_green} ${'Connection'.padEnd(3)} ${_reset}]: `;
+        let msg = "New user connected to the server"
+
+        if (str != "undefined" || str != null || str != "") {
+            let count = 0;
+            let stringInterpreted;
+            for ( let i = 0; i < str.length; ++i ) {
+                if (str[i] === '*' && count === 0) {
+                    stringInterpreted += _cyan;
+                    ++count;
+                } else if (str[i] === '*' && count === 1) {
+                    stringInterpreted += _reset;
+                    count = 0;
+                } else {
+                    stringInterpreted += str[i];
+                }
+            }
+            msg = `${_reset}${stringInterpreted}${_reset}`;
+        }
+
+        console.log(ret + msg);
+    } 
+
+    /**
+     * 
+     * @param {string} str 
+     */
+    wsMessage(str) {
+        var date = new Date()
+        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'WS Message'.padEnd(3)} ${_reset}]: `;
+        let msg = "new user connected to the server"
+        if (str != "undefined" || str != null || str != "") {
+            msg = `${_blue}${str}${_reset}`;
+        }
+
+        console.log(ret + msg);
+    }
+
+    /**
      * Display Error
      * @param {any} str 
      */
     error(str) {
         var date = new Date()
         var callerInfo = this.getCallerInfo();
-        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_red} ${'Error'.padEnd(3)} ${_reset}][${callerInfo}]: `;
+        var ret = (this.level !== 3) ? `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_red} ${'Error'.padEnd(3)} ${_reset}][${callerInfo}]: ` : `[${_red} ${'Error'.padEnd(3)} ${_reset}]: `;
         let msg = "Generic error"
         if (str != "undefined" || str != null || str != "") {
             msg = `${_red}\n${str}${_reset}`;
@@ -67,20 +138,24 @@ class Console {
 
     /**
      * Dispaly Info
-     * @param {any} str 
+     * @param {any}     str 
+     * @param {string}  color
      */
-    info(str) {
-        var date = new Date()
-        var callerInfo = this.getCallerInfo();
-        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} ${'Info'.padEnd(3)} ${_reset}][${callerInfo}]: `;
-        let msg = "Generic Info"
-        if (str != "undefined" || str != null) {
-            if (typeof str === "object")
-                msg = `${this.safeStringify(str)}`;
-            else msg = `${str}`;
-        }
+    info(str, color = "") {
+        if (this.level !== 2) {
+            const fontColor = this.getColor(color);
+            const date = new Date();
+            const callerInfo = this.getCallerInfo();
+            const ret = (this.level !== 3) ? `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} ${'Info'.padEnd(3)} ${_reset}][${callerInfo}]: ${fontColor}` : `[${_cyan} ${'Info'.padEnd(3)} ${_reset}]: `;
+            let msg = "Generic Info" + _reset;
+            if (str != "undefined" || str != null) {
+                if (typeof str === "object")
+                    msg = `${this.safeStringify(str)} ${_reset}`;
+                else msg = `${str} ${_reset}`;
+            }
 
-        console.log(ret + msg);
+            console.log(ret + msg);
+        }
     }
 
     /**
@@ -106,9 +181,9 @@ class Console {
      * @param {any} str
      */
     delete(str) {
-        var date = new Date()
-        var callerInfo = this.getCallerInfo();
-        var ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'Success'.padEnd(3)} ${_reset}][${callerInfo}]: `;
+        const date = new Date()
+        const callerInfo = this.getCallerInfo();
+        const ret = `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_blue} ${'Delete'.padEnd(3)} ${_reset}][${callerInfo}]: `;
         let msg = `${_blue}Delete Info${_reset}: `
         if (str != "undefined" || str != null || str != "") {
             if (typeof str === "object")
@@ -119,6 +194,34 @@ class Console {
         console.log(ret + msg);
     }
 
+    /**
+     * Get color for text
+     * @param {string} color
+     * @return {string}
+     */
+    getColor(color = "") {
+        switch (color) {
+            case "blue" || "blu":
+                return _blue;
+            case "red" || "rosso":
+                return _red;
+            case "yellow" || "giallo":
+                return _yellow;
+            case "cyan" || "ciano":
+                return _cyan;
+            case "green" || "verde":
+                return _green;
+            default:
+                return _blue;
+        }
+    }
+
+    /// TODO
+    /// Create a funztion that colorize string [QUERY] and [PARAMS]
+    // databaseQuery(str) {
+
+    // }
+
 }
 
-module.exports = Console
+export default Console

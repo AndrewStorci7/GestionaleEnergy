@@ -2,40 +2,35 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getEnv } from "@/app/config";
+import { getEnv, getBgColor, getServerRoute } from "@/app/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 
-export default function Header({ implant, username, type, name, surname }) {
+/**
+ * 
+ */
+export default function Header({ 
+    implant, 
+    username, 
+    type, 
+    name, 
+    surname 
+}) {
 
+    const { ws, message } = useWebSocket();
+    
     const _CMN_PLACE_CENTER = "place-content-center";
-
+    
     const router = useRouter();
 
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
     const [turn, setTurn] = useState("Turno 1");
-
-    /**
-     * Get Background Color
-     * 
-     * @param {string} type 
-     * @returns 
-     */
-    const getBgColor = (type) => {
-        switch (type) {
-            case 'admin':
-                return "bg-primary"
-            case 'presser':
-                return "bg-primary"
-            case 'wheelman':
-                return "bg-secondary"
-            case 'both':
-                return "bg-thirdary_1"
-            default:
-                return "bg-primary"
-        }
-    }
+    // conteggio balle totali che verranno conteggiate in magazzino nel turno corrente 
+    const [totalbales, setTotalBales] = useState(0);
+    // conteggio delle balle lavorate dal pressista
+    const [totalbalesLavorate, setTotalBalesLavorate] = useState(0);
 
     /**
      * Logout handler
@@ -44,13 +39,40 @@ export default function Header({ implant, username, type, name, surname }) {
      */
     const logout = () => {
         Cookies.remove('user-info', { path: '/', domain: getEnv('NEXT_PUBLIC_APP_DOMAIN') })
-        router.push('/pages/login')
+        router.push('/pages/login');
     }
 
     /**
      * Update the time every second
      */
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const cookies = await JSON.parse(Cookies.get('user-info'));
+                const url = await getServerRoute("total-bale-count");
+                const implant = cookies.id_implant;
+                
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ implant }),
+                });
+
+                if (!resp.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                const data = await resp.json();
+
+                if (data.code == 0) {
+                    setTotalBales(data.message);
+                    setTotalBalesLavorate(data.message2);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        } 
+
         const interval = setInterval(() => {
             setTime(new Date().toLocaleTimeString());
             setDate(new Date().toLocaleDateString());
@@ -61,19 +83,20 @@ export default function Header({ implant, username, type, name, surname }) {
                 setTurn("Turno 1");
             else if (_hour >= 14 && _hour < 22)
                 setTurn("Turno 2");
-            else if (_hour >= 22 && _hour < 6)
+            else if (_hour >= 22 && _hour <= 23 || _hour >= 0 && _hour < 6)
                 setTurn("Turno 3");
             else
-                setTurn("Turno ciao");
+                setTurn("Turno 1");
 
         }, 1000);
 
+        fetchData();
         return () => clearInterval(interval);
-    });
+    }, [message]);
 
     return (
-        <header className="on-header on-fix-index">
-            <div className="grid grid-cols-7 gap-4">
+        <header className="on-header on-fix-index p-4 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-xl">
+            <div className="grid grid-cols-9 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">
                     <Image
@@ -83,9 +106,13 @@ export default function Header({ implant, username, type, name, surname }) {
                         alt="Oppimitti Energy Logo"
                     />
                 </div> {/* end logo */}
-                <div className={`${_CMN_PLACE_CENTER}`}>
-                    {implant}
-                </div> {/* end implant */}
+                <div className={`${_CMN_PLACE_CENTER} col-span-2`}>
+                    <div className="border w-fit py-1 px-2 rounded-xl bg-zinc-200 shadow-sm">
+                        {implant}
+                    </div>
+                    Balle totali a mag.: {totalbales}<br/>
+                    Balle totali lavorate: {totalbalesLavorate}
+                </div> {/* end total bale */}
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {turn}
                 </div> {/* end turns */}
@@ -95,23 +122,22 @@ export default function Header({ implant, username, type, name, surname }) {
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {time}
                 </div> {/* end time */}
-                <div className="realtive">
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)} w-full px-[10px] rounded-t-md text-white`}>
-                        {username}
-                    </div>
-                    <div className={`${_CMN_PLACE_CENTER} ${getBgColor(type)}_2 w-full px-[10px]`}>
-                        <span className="w-fit">{name} {surname}</span>
-                    </div>
-                    <div className={`flex justify-end ${getBgColor(type)}_2 w-full p-[10px] rounded-b-md`}>
-                        <button
-                        className="rounded-md bg-gray-300 px-[5px]"
+                <div></div>
+                <div className={`${_CMN_PLACE_CENTER}`}>
+                    {username}
+                    {/* <span className="w-fit">{name} {surname}</span> */}
+                    <button
+                        className="rounded-full bg-red-500 p-2 ml-2" 
                         onClick={logout}
-                        >
-                            Logout
-                        </button>
-                    </div>
-
-                </div> {/* end user */}
+                    >
+                        <img 
+                            src="/outlined/spegni2.png" 
+                            alt="Logout"
+                            className="w-6 h-6" 
+                        />
+                    </button>
+                </div>
+                
             </div>
         </header>
     );

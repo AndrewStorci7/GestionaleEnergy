@@ -1,64 +1,59 @@
-const Bale = require('./main/bale')
-const Console = require('../inc/console');
+import Bale from './main/bale.js';
+import Console from '../inc/console.js';;
 
 const console = new Console("Wheelman");
 
 /**
  * 
- * @param {datetime} 
- * @param {}
  * 
  * @author Andrea Storci form Oppimittinetworking
  */
 class WheelmanBale extends Bale {
 
-    constructor(db, id, idUser, plastic, rei, cpb, sb, note, datetime) {
-        super(db, id, datetime)
-        this.idUser = idUser;
-        this.plastic = plastic;
-        this.rei = rei;
-        this.cpb = cpb;
-        this.sb = sb;
-        this.note = note;
-    }
-
-    get info() {
-        return { 
-            id: this.id, 
-            idUser: this.idUser, 
-            plastic: this.plastic, 
-            rei: this.rei, 
-            cpb: this.cpb, 
-            sb: this.sb,
-            note: this.note,
-            datetime: this.datetime
-        }
+    constructor(db, table) {
+        super(db, table);
     }
 
     handleWheelmanData = async (req) => {
+        
         const {id} = req.body;
-        
-        console.info(`Id Presser received: ${id}`);
-        
+        // console.info(`Data received: ${id}`, "yellow");
+
         const [rows] = await this.db.query(
-            "SELECT wheelman_bale.id AS 'id', cond_wheelman_bale.type AS 'condition', " + 
-            "reas_not_tying.name AS 'reason', " +
-            "wheelman_bale.weight AS 'weight', " +
-            "warehouse_dest.name AS 'warehouse', " +
-            "wheelman_bale.note AS 'notes', " +
-            "wheelman_bale.printed AS 'is_printed', " +
-            "wheelman_bale.data_ins AS 'data_ins' " +
-            "FROM wheelman_bale JOIN reas_not_tying JOIN cond_wheelman_bale JOIN warehouse_dest " +
-            "ON wheelman_bale.id_cwb = cond_wheelman_bale.id AND " +
-            "wheelman_bale.id_rnt = reas_not_tying.id AND " +
-            "wheelman_bale.id_wd = warehouse_dest.id " +
-            "WHERE wheelman_bale.id = ? LIMIT 1",
-            [id]
+            `SELECT 
+                ${this.table}.id AS 'id', 
+                cond_${this.table}.type AS 'condition', 
+                ${this.table}.id_cwb AS '_idCwb', 
+                reas_not_tying.name AS 'reason', 
+                ${this.table}.id_rnt AS '_idRnt', 
+                ${this.table}.weight AS 'weight', 
+                warehouse_dest.name AS 'warehouse', 
+                ${this.table}.id_wd AS '_idWd', 
+                ${this.table}.note AS 'notes', 
+                ${this.table}.printed AS 'is_printed', 
+                ${this.table}.data_ins AS 'data_ins' 
+            FROM 
+                ${this.table} 
+            JOIN 
+                reas_not_tying 
+            JOIN 
+                cond_${this.table} 
+            JOIN 
+                warehouse_dest 
+            ON 
+                ${this.table}.id_cwb = cond_${this.table}.id 
+            AND 
+                ${this.table}.id_rnt = reas_not_tying.id 
+            AND 
+                ${this.table}.id_wd = warehouse_dest.id 
+            WHERE 
+                ${this.table}.id = ? LIMIT 1`,
+            id
         );
     
         if (rows && rows.length > 0) {
-            // console.info(rows) // test
-            return rows
+            console.info(rows) // test
+            return rows[0];
         } else {
             console.info({ code: 1, message: "Nessuna balla trovata" }) // test
             return { code: 1, message: "Nessuna balla trovata" }
@@ -69,34 +64,45 @@ class WheelmanBale extends Bale {
         try {
             const data = await this.handleWheelmanData(req);
             
-            // console.info(data) // test
+            console.info(data) // test
             
-            if (data.code !== 0) {
-                res.json(data)
-            } else {
-                res.json({ code: 0, data: data.rows })
+            if (data.code !== 0) { // Nel caso in cui non ottengo dati
+                res.json(data);
+            } else { // in caso contrario, invio i dati
+                res.json({ code: 0, data: data });
             }
         } catch (error) {
-            console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            throw error;
+            // res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }
 
     async set(req, res) {
-        // TODO
+        try {
+            const check_ins_pb = await this.db.query(
+                `INSERT INTO ${this.table} VALUES ()`,
+            );
+
+            if (check_ins_pb[0].serverStatus === 2) {
+                const id_new_bale = check_ins_pb[0].insertId;
+                res.json({ code: 0, message: { id_new_bale }});
+            } else {
+                const info = check_ins_pb[0].info;
+                res.json({ code: 1, message: { info }});
+            }
+        } catch (error) {
+            throw error;
+            // res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+        }
     }
 
     async update(req, res) {
         try {
             const { body } = req.body;
-    
-            console.info("[Update]: ", body)
 
-            const [check] = await this.db.query(
-                "UPDATE wheelman_bale SET id_wheelman=?, id_cwb=?, id_rnt=?, id_wd=?, note=?, printed=?, data_ins=NOW(), weigth=?" + 
-                "WHERE id=?",
-                [body.id_user, body.id_cwb, body.id_rnt, body.id_wd, body.note, body.isPrinted, body.weight, body.where]
-            );
+            const san = this.checkParams(body, {scope: "update", table: this.table})
+            
+            const [check] = await this.db.query(san.query, san.params);
     
             if (check) {
                 res.json({ code: 0 });
@@ -111,4 +117,4 @@ class WheelmanBale extends Bale {
 
 }
 
-module.exports = WheelmanBale
+export default WheelmanBale
