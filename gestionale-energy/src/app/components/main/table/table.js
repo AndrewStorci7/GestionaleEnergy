@@ -8,10 +8,14 @@ import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
 import ExportReport from "../admin/export-report";
 import BtnPresser from "../btn-presser";
+import Switch from "../admin/switch";
 
 import { useWebSocket } from "../ws/use-web-socket";
 
+import Image from "next/image";
+
 import { useEffect, useState } from "react";
+import { refreshPage } from "@/app/config";
 
 /**
  * Table
@@ -33,12 +37,7 @@ export default function Table({ type, implant, idUser }) {
     const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
     const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
-    const _CMNSTYLE_DIV = "grid grid-cols-2 gap-2 pt-[30px] relative mt-[20px] h-[60vh] overflow-y-scroll"; // inset-0 shadow-inner 
-    // const _CMNSTYLE_TABLE = "table-auto border-collapse border border-slate-400 w-full rounded-tl-[10px] text-left mt-[10px] h-fit"; 
     const _CMNSTYLE_TABLE = "border-collapse table-auto w-full text-sm";
-    const _CMNSTYLE_LABEL = "absolute top-[-10px] font-bold text-2xl px-[15px] rounded-[5px] mt-[10px]";
-    const _CMNSTYLE_SECONDARY = "bg-thirdary left-[50%] ml-[4px] opacity-50";
-    const _CMN_ONLY_VIEW = <span className="text-extrabold"> <u>solo visualizzazione</u></span>;
 
     const [selectedType, setSelectedType] = useState("general");
     const [addWasClicked, setAddClick] = useState(false); // gestisce il click del bottone "aggiungi"
@@ -48,12 +47,9 @@ export default function Table({ type, implant, idUser }) {
     const [isEmpty, setEmpty] = useState(false);
     const [isSelected, setSelected] = useState(null);
     const [idUnique, setIdUnique] = useState(null);
-    // const [btnPressed, setBtnPressed] = useState(null); // Track which button was pressed
-    
-    // const handleUpdateClickConfirmed = () => {
-    //     setConfirmedAdd(true);
-    //     setAddClick(false);
-    // }
+
+    const [handleToggleSwitch, setHandleToggleSwitch] = useState(false);
+
     const handleAddPressed = () => {
         setConfirmedAdd(prev => !prev);
         setAddClick(prev => !prev);
@@ -86,12 +82,6 @@ export default function Table({ type, implant, idUser }) {
         setSelected(select);
         setIdUnique(idUnique);
     }
-
-    // const handleDownloadClick = (reportType) => {
-    //     setBtnPressed(reportType); // Set the type of the report to trigger download in ExportReport
-    // }
-
-
 
     switch (type) {
         case "admin": {
@@ -175,47 +165,47 @@ export default function Table({ type, implant, idUser }) {
         case 'both': {
             return (
                 <>
-                    <div className="grid grid-cols-3 gap-2 pt-[30px] relative mt-[20px]">
-                        <button
-                            onClick={() => handleTypeChange("presser")}
-                            className={`bg-primary rounded-md text-2xl font-semibold text-white ${selectedType === "presser" ? "opacity-100" : "opacity-50"}`}
-                        >
-                            Pressista
-                        </button>
-                        <button
-                            onClick={() => handleTypeChange("wheelman")}
-                            className={`bg-secondary rounded-md text-2xl font-semibold text-white ${selectedType === "wheelman" ? "opacity-100" : "opacity-50"}`}
-                        >
-                            Carrellista
-                        </button>
-                        <button
-                            onClick={() => handleTypeChange("general")}
-                            className={`bg-thirdary_1 rounded-md text-2xl font-semibold text-white ${selectedType === "general" ? "opacity-100" : "opacity-50"}`}
-                        >
-                            Amministrazione
-                        </button>
+                    <div className="text-slate-600 bg-white shadow-sm w-fit p-2 pl-4 rounded-lg border border-zinc-100 relative mt-[10px]">
+                        <h2 className="font-bold text-lg">Cambia interfaccia</h2>
+                        <div className="flex gap-4">
+                            <div className="w-fit flex justify-between items-center space-x-4">
+                                <div className="flex items-center">
+                                    <p className={!handleToggleSwitch ? "font-semibold" : ""}>Amministratore</p>
+                                </div>
+                                <div className="flex items-center">
+                                    <Switch onToggle={setHandleToggleSwitch} />
+                                </div>
+                                <div className="flex items-center">
+                                    <p className={handleToggleSwitch ? "font-semibold" : ""}>Produzione</p>
+                                </div>
+                            </div>
+                            <div className="relative w-fit ml-5">
+                                {/* <label className='flex items-center text-zinc-400 absolute bottom-10 left-2 font-thin text-xs'>
+                                    <Icon />
+                                    Se non vedi i dati, ricarica manualmente.
+                                </label> */}
+                                <button 
+                                    className={`inline rounded-full bg-blue-500 px-1 py-1 ${!handleToggleSwitch && "disabled:bg-blue-200 cursor-no-drop"}`} 
+                                    onClick={() => {
+                                        if (handleToggleSwitch) refreshPage(ws);
+                                    }}
+                                >
+                                    <div className={`flex items-center p-1 text-white ${!handleToggleSwitch && "disabled:bg-blue-200"}`}>
+                                        <Image 
+                                            src={"/outlined/sinc.png"}
+                                            width={25}
+                                            height={25}
+                                            alt="Aggiungi icona"
+                                            className={"mr-2"}
+                                        />
+                                        Ricarica manualmente
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-
-                    {/* Table Content */}
-                    {selectedType === "presser" && (
-                        <div className={`shadow-lg  h-[60vh] overflow-y-scroll`}>
-                            <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                                <TableHeader type={"presser"} />
-                                <TableContent type={"presser"} />
-                            </table>
-                        </div>
-                    )}
-
-                    {selectedType === "wheelman" && (
-                        <div className={`shadow-lg  h-[60vh] overflow-y-scroll`}>
-                            <table id="gest-on-table" className={_CMNSTYLE_TABLE}>
-                                <TableHeader type={"wheelman"}/>
-                                <TableContent type={"wheelman"}/>
-                            </table>
-                        </div>
-                    )}
                     
-                    {selectedType === "general" && (
+                    {!handleToggleSwitch ? (
                         <div className={`grid grid-cols-2 gap-2 relative  h-[60vh]`}>
                             <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
                                 <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
@@ -250,6 +240,22 @@ export default function Table({ type, implant, idUser }) {
                                     <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
                                 </div>
                             </div>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[58vh] overflow-y-scroll shadow-inner mb-[40px]">
+                            <TableWrapper 
+                                className="col-span-5"
+                                type={"presser"}
+                                tableContent={{
+                                    handleSelect: (i, y) => handleSelect(i, y),
+                                    selectedBaleId: isSelected,
+                                    objAdd: objAdd,
+                                    noData: (e) => noData(e)
+                                }}
+                                primary
+                                admin
+                            />
+                            <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} />
                         </div>
                     )}
                 </>

@@ -35,6 +35,7 @@ import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
  * @returns
  */
 export default function TableContent({ 
+    admin = false,
     type, 
     add,
     useFor = 'regular', 
@@ -142,11 +143,13 @@ export default function TableContent({
                     <tr key={idUnique} data-bale-id={id} className='h-[41px]'>
                         {primary && (
                             <>
-                                <td key={idUnique + "_checkbtn"} className={style}>
-                                    {(useFor === 'regular' || useFor === 'reverse') && (
-                                        <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
-                                    )}
-                                </td>
+                                {!admin && 
+                                    <td key={idUnique + "_checkbtn"} className={style}>
+                                        {(useFor === 'regular' || useFor === 'reverse') && (
+                                            <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
+                                        )}
+                                    </td>
+                                }
                                 <td className={style + " font-bold"} >{idUnique}</td>
                                 <td className={style}><Icon type={status} /></td>
                                 {type === 'wheelman' ? <td className={style}>{plastic}</td> : <></>}

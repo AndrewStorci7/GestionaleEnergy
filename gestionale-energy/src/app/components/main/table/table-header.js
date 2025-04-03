@@ -1,7 +1,7 @@
 import { getBgColor } from "@@/config";
 
 /**
- * 
+ * @param {boolean} admin   Serve per gestire la visibilità di alcune colonne nel caso in cui la tabella venga vista da un amministratore; Default: false
  * @param {string}  type    [ 'presser' | 'wheelman' | 'both' | 'admin' ]
  *                          Il tipo della pagina
  * @param {boolean} primary Serve per settare correttamente il colore dello sfondo   
@@ -9,6 +9,7 @@ import { getBgColor } from "@@/config";
  * @returns 
  */
 export default function TableHeader({ 
+    admin = false,
     type, 
     primary = false,
     style, 
@@ -25,7 +26,7 @@ export default function TableHeader({
                 <>
                     <thead className="h-[52px]">
                         <tr>
-                            {(primary) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
+                            {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
                             {(primary) && <th className={style + fixColor}>N°</th>}
                             {(primary) && <th className={style + fixColor}>Stato</th>}
                             <th className={style + fixStyle + fixColor}>Plastica</th>
@@ -47,7 +48,7 @@ export default function TableHeader({
                 <>
                     <thead className="h-[52px]">
                         <tr>
-                            {(primary) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
+                            {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
                             {(primary) && <th className={style + fixColor}>N°</th>}
                             {(primary) && <th className={style + fixColor}>Stato</th>}
                             {(primary) && <th className={style + fixStyle + fixColor}>Plastica</th>}

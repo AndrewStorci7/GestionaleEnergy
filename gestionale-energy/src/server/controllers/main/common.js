@@ -161,10 +161,10 @@ class Common {
         // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
         if (type === "report") {
             condition = {
-                first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) AND wheelman_bale.id_cwb = 1 `,
+                first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
                 second: `AND DATE(presser_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
                 third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) `,
-                fourth: `AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `,
+                fourth: `AND wheelman_bale.id_cwb = 1 AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `,
             };
             params = [turn[0], turn[1], id_implant, turn[0], turn[1]];
         }
@@ -177,10 +177,10 @@ class Common {
             // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
             if (type === "report") {
                 condition = {
-                    first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) AND wheelman_bale.id_cwb = 1 `,
+                    first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
                     second: `AND ((DATE(presser_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ?) OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )) `,
                     third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL)`,
-                    fourth: `AND ((DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ) OR (DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )) `,
+                    fourth: `AND wheelman_bale.id_cwb = 1 AND ((DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ) OR (DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )) `,
                 };
                 params = [turn[0], turn[1], turn[2], turn[3], id_implant, turn[0], turn[1], turn[2], turn[3]];
             }

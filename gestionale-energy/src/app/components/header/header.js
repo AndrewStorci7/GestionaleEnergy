@@ -95,7 +95,7 @@ export default function Header({
     }, [message]);
 
     return (
-        <header className="on-header on-fix-index p-4 border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-xl">
+        <header className="on-header on-fix-index p-4 border-b border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl">
             <div className="grid grid-cols-9 gap-4">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">
@@ -110,8 +110,8 @@ export default function Header({
                     <div className="border w-fit py-1 px-2 rounded-xl bg-zinc-200 shadow-sm">
                         {implant}
                     </div>
-                    Balle totali a mag.: {totalbales}<br/>
-                    Balle totali lavorate: {totalbalesLavorate}
+                    Balle totali lavorate: {totalbalesLavorate}<br/>
+                    Balle totali a mag.: {totalbales}
                 </div> {/* end total bale */}
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {turn}

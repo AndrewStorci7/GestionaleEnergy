@@ -21,7 +21,6 @@ const ExportReport = ({ btnPressed }) => {
   
   const [reportData, setReportData] = useState([]);
   const [isEmpty, setEmpty] = useState(false);
-  const [combinedData, setCombinedData] = useState([]);
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -29,8 +28,8 @@ const ExportReport = ({ btnPressed }) => {
         setReportData([]);
         
         // Definisci gli impianti da considerare in base al pulsante premuto
-        const implant = (btnPressed === 'impianto-a') ? [2] : 
-                        (btnPressed === 'impianto-b') ? [1] : 
+        const implant = (btnPressed === 'impianto-a') ? [1] : 
+                        (btnPressed === 'impianto-b') ? [2] : 
                         (btnPressed === 'impianto-ab') ? [1, 2] : 0;
       
         const url = getServerRoute("report-daily");

@@ -10,6 +10,7 @@ import TableHeader from './table-header';
  * @returns 
  */
 const TableWrapper = ({
+    admin = false,
     tableHeader = null,
     tableContent = null,
     mod,
@@ -47,9 +48,10 @@ const TableWrapper = ({
                         id="gest-on-table" 
                         className="border-collapse table-auto w-full text-sm">
                             <TableHeader 
-                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
+                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                                 type={innerType} 
                                 primary={primary} 
+                                admin={admin}
                             />
                             
                             {/* BALLE IN LAVORAZIONE */}
@@ -62,13 +64,14 @@ const TableWrapper = ({
                                     useFor={innerType === "wheelman" ? "reverse" : "regular"}
                                     noData={(e) => tableContent.noData(e)} 
                                     primary={primary}
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400" 
+                                    admin={admin}
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400" 
                                 />
                             ) : (
                                 <TableContent 
                                     type={innerType} 
                                     add={tableContent.objAdd} 
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                                 />
                             )}
 
@@ -81,13 +84,14 @@ const TableWrapper = ({
                                     useFor={"specific"}
                                     noData={(e) => tableContent.noData(e)} 
                                     primary={primary}
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
+                                    admin={admin}
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                                 />
                             ) : (
                                 <TableContent 
                                     type={innerType} 
                                     useFor={"specific"} 
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-500 dark:text-slate-400"
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                                 />
                             )}          
                         </table>

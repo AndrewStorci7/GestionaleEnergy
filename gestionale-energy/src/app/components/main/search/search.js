@@ -14,8 +14,7 @@ function SearchInput({ type }) {
 
     const _CMNSTYLE_LABEL = "block font-bold  "
     const _CMNSTYLE_DIV = "grid content-center font-bold "
-    const _CMNSTYLE_BTN = "bg-thirdary rounded-md w-fit px-[10px]"
-    const _CMNSTYLE_DIV_MAIN = "justify-items-start w-full bg-white rounded-md border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 rounded-xl"
+    const _CMNSTYLE_DIV_MAIN = "justify-items-start w-full bg-white rounded-md border-b border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl"
 
     const [bg_color, setBgColor] = useState("");
     const [searchFor, setSearchFor] = useState([]);
