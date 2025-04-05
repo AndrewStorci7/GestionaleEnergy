@@ -70,6 +70,7 @@ const TableWrapper = ({
                             ) : (
                                 <TableContent 
                                     type={innerType} 
+                                    useFor={innerType === "presser" ? "reverse" : "regular"}
                                     add={tableContent.objAdd} 
                                     style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                                 />
