@@ -214,7 +214,7 @@ export default function Table({ type, implant, idUser }) {
                                 </div>
 
                             </div>
-                            <div className="grid-cols-1 bg-blue-100	 border-2 border-slate-400 mt-[10px]">
+                            <div className="bg-blue-100 border-2 border-slate-400 mt-[10px]">
                                 <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
                                 <div className="grid grid-cols-3 gap-1 mt-20">
                                     <p className="ml-3 mb-1.5">PERIODO</p>

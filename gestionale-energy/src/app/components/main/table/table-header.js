@@ -32,7 +32,7 @@ export default function TableHeader({
                             <th className={style + fixStyle + fixColor}>Plastica</th>
                             <th className={style + fixStyle + fixColor}>Codice</th>
                             <th className={style + fixStyle + fixColor}><p className="truncate">Utiliz. REI</p></th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Condiz. Balla Pressa</p></th>
+                            <th className={style + fixStyle + fixColor}><p className="truncate">Balla alla pressa</p></th>
                             <th className={style + fixStyle + fixColor}><p className="truncate">Balla Selez.</p></th>
                             <th className={style + fixStyle + fixColor}>Note</th>
                             {(primary) && <th className={style + fixStyle + fixColor + " w-[40px]"}></th>}
@@ -52,10 +52,10 @@ export default function TableHeader({
                             {(primary) && <th className={style + fixColor}>N°</th>}
                             {(primary) && <th className={style + fixColor}>Stato</th>}
                             {(primary) && <th className={style + fixStyle + fixColor}>Plastica</th>}
-                            <th className={style + fixStyle + fixColor + fixStyle}><p className="truncate">Condiz. Balla Carrel.</p></th>
+                            <th className={style + fixStyle + fixColor + fixStyle}><p className="truncate">Balla al carrello</p></th>
                             <th className={style + fixStyle + fixColor}>Motivaz.</th>
                             <th className={style + fixStyle + fixColor}>Peso (Kg)</th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Magaz. Destinazione</p></th>
+                            <th className={style + fixStyle + fixColor}><p className="truncate">Mag. Destinazione</p></th>
                             <th className={style + fixStyle + fixColor}>Note</th>
                             <th className={style + fixStyle + fixColor}><p className="truncate">Stato stampa</p></th>
                             {(primary) && <th className={style + fixStyle + fixColor + "w-[40px]"}></th>}

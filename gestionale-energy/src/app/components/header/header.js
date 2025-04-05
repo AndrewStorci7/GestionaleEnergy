@@ -96,22 +96,30 @@ export default function Header({
 
     return (
         <header className="on-header on-fix-index p-4 border-b border-slate-100 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl">
-            <div className="grid grid-cols-9 gap-4">
+            <div className="flex justify-between gap-2">
                 {/* logo */}
                 <div className="col-span-2 p-[5px]">
                     <Image
                         src="/logo-oe.webp"
-                        width={200}
-                        height={100}
+                        width={125}
+                        height={62.5}
                         alt="Oppimitti Energy Logo"
                     />
                 </div> {/* end logo */}
-                <div className={`${_CMN_PLACE_CENTER} col-span-2`}>
+                <div className={`${_CMN_PLACE_CENTER}`}>
                     <div className="border w-fit py-1 px-2 rounded-xl bg-zinc-200 shadow-sm">
                         {implant}
                     </div>
-                    Balle totali lavorate: {totalbalesLavorate}<br/>
-                    Balle totali a mag.: {totalbales}
+                </div>
+                <div className={`${_CMN_PLACE_CENTER}`}>
+                    <div className={type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}>
+                        Balle totali lavorate: {totalbalesLavorate}
+                    </div>
+                </div> {/* end total bale */}
+                <div className={`${_CMN_PLACE_CENTER}`}>
+                    <div className={type === 'wheelman' ? "border w-fit py-1 px-2 rounded-xl bg-green-200 shadow-sm" : ""}>
+                        Balle totali a mag.: {totalbales}
+                    </div>
                 </div> {/* end total bale */}
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     {turn}
@@ -124,8 +132,7 @@ export default function Header({
                 </div> {/* end time */}
                 <div></div>
                 <div className={`${_CMN_PLACE_CENTER}`}>
-                    {username}
-                    {/* <span className="w-fit">{name} {surname}</span> */}
+                    {username}    
                     <button
                         className="rounded-full bg-red-500 p-2 ml-2" 
                         onClick={logout}
