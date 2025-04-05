@@ -151,10 +151,10 @@ class Common {
     checkConditionForTurn(id_implant, type = null, turnIndex = 0) {
         const turn = this.checkTurn(turnIndex);
 
-        var condition = `AND DATE(presser_bale.data_ins) = CURDATE() 
+        var condition = `(DATE(presser_bale.data_ins) = CURDATE() 
                         AND DATE(wheelman_bale.data_ins) = CURDATE() 
                         AND TIME(presser_bale.data_ins) BETWEEN ? AND ? 
-                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `;
+                        AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )`;
         var params = [id_implant, turn[0], turn[1], turn[0], turn[1]];
 
         // Diffrenzio il ritrono della funzioni per tipo di chiamata
@@ -170,7 +170,17 @@ class Common {
         }
 
         if (turn[turn.length - 1] === 1) {
-            condition = `AND ((DATE(presser_bale.data_ins) = CURDATE() AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(presser_bale.data_ins) BETWEEN ? AND ? AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ) OR (DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(presser_bale.data_ins) BETWEEN ? AND ? AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ))`;
+            condition = `(
+                            DATE(presser_bale.data_ins) = CURDATE() AND 
+                            DATE(wheelman_bale.data_ins) = CURDATE() AND 
+                            TIME(presser_bale.data_ins) BETWEEN ? AND ? AND 
+                            TIME(wheelman_bale.data_ins) BETWEEN ? AND ? 
+                        ) OR (
+                            DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND 
+                            DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND 
+                            TIME(presser_bale.data_ins) BETWEEN ? AND ? AND 
+                            TIME(wheelman_bale.data_ins) BETWEEN ? AND ? 
+                        )`;
             params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
 
             // Diffrenzio il ritrono della funzioni per tipo di chiamata

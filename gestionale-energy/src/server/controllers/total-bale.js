@@ -118,7 +118,7 @@ class TotalBale extends Common {
             const { body } = req.body;
             const id_implant = body.id_implant;
             const useFor = body.useFor;
-            var cond_status = 'AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
+            var cond_status = 'OR pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
             var order_by = 'DESC';
 
             if (useFor === 'specific') {
@@ -154,9 +154,9 @@ class TotalBale extends Common {
                     ${this.table}.id_wb = wheelman_bale.id AND
                     ${this.table}.id_implant = implants.id
                 WHERE 
-                    ${this.table}.id_implant = ?
+                    ${this.table}.id_implant = ? AND (
                     ${_params.condition}
-                    ${cond_status}
+                    ${cond_status})
                 ORDER BY 
                     ${this.table}.id ${order_by},
                     TIME(presser_bale.data_ins) ${order_by}, 
@@ -164,8 +164,6 @@ class TotalBale extends Common {
                 LIMIT 300`,
                 _params.params
             );
-            
-            
 
             if (select !== 'undefined' || select !== null) {
                 for (const e of select) {
@@ -312,7 +310,7 @@ class TotalBale extends Common {
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_cplastic}
-                    ${_params.condition}`,
+                    AND (${_params.condition})`,
                 _params.params
             );
 
@@ -329,7 +327,7 @@ class TotalBale extends Common {
                     ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_idimplant}
-                    ${_params.condition}`,
+                    AND (${_params.condition})`,
                 _params.params
             );
 
