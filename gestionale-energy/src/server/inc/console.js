@@ -158,6 +158,16 @@ class Console {
         }
     }
 
+
+    /**
+     * Dispaly Log
+     * @param {any}     str 
+     * @param {string}  color
+     */
+    log(str, color = "") {
+        this.info(str, color);
+    }
+
     /**
      * Display status insertion
      * @param {any} str

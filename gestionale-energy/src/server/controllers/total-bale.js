@@ -1,7 +1,7 @@
 import Console from '../inc/console.js';
 import Common from './main/common.js';
 
-const console = new Console("TotalBale");
+const console = new Console("TotalBale", 1);
 
 /**
  * Total Bale data: get the data from presser and wheelman
@@ -40,6 +40,7 @@ class TotalBale extends Common {
             const gam = (data.body.id_rei == 5) ? JSON.stringify({ is_rei_altro_mag: true, id_implant: data.implant == 1 ? 2 : 1 }) : JSON.stringify({ is_rei_altro_mag: false, id_implant: null });
             var id_new_presser_bale = 0;
             var id_new_wheelman_bale = 0;
+            var checkIfMDR = data.body.id_plastic.includes('MDR'); // controllo che la balla inserita è MDR. Nel caso in cui è MDR vado ad impostare il magazzino di destinazione su Provvisorio
 
             /// Fetch dei dati del pressista 
             const data_presser = await fetch(this.internalUrl + '/presser/set', { 
@@ -54,7 +55,7 @@ class TotalBale extends Common {
             const data_wheelman = await fetch(this.internalUrl + '/wheelman/set', { 
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ body: data.body })
+                body: JSON.stringify({ body: checkIfMDR })
             })
             const data_wheelman_resolved = await data_wheelman.json();
             id_new_wheelman_bale = data_wheelman_resolved.message.id_new_bale;

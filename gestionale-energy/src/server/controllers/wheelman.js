@@ -1,11 +1,10 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';;
 
-const console = new Console("Wheelman");
+const console = new Console("Wheelman", 1);
 
 /**
- * 
- * 
+ * Gestisce i dati della balla lato carrellista
  * @author Andrea Storci form Oppimittinetworking
  */
 class WheelmanBale extends Bale {
@@ -52,10 +51,10 @@ class WheelmanBale extends Bale {
         );
     
         if (rows && rows.length > 0) {
-            console.info(rows) // test
+            // console.info(rows) // test
             return rows[0];
         } else {
-            console.info({ code: 1, message: "Nessuna balla trovata" }) // test
+            // console.info({ code: 1, message: "Nessuna balla trovata" }) // test
             return { code: 1, message: "Nessuna balla trovata" }
         }
     };
@@ -64,7 +63,7 @@ class WheelmanBale extends Bale {
         try {
             const data = await this.handleWheelmanData(req);
             
-            console.info(data) // test
+            // console.info(data) // test
             
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
                 res.json(data);
@@ -79,9 +78,17 @@ class WheelmanBale extends Bale {
 
     async set(req, res) {
         try {
-            const check_ins_pb = await this.db.query(
-                `INSERT INTO ${this.table} VALUES ()`,
-            );
+
+            const { body } = req.body;
+            var query = "";
+            
+            if (body) {
+                query = `INSERT INTO ${this.table}(id_wd) VALUES (2)`;
+            } else {
+                query = `INSERT INTO ${this.table} VALUES ()`;
+            }
+
+            const check_ins_pb = await this.db.query(query);
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
