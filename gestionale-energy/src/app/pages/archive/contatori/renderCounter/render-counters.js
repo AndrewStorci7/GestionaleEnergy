@@ -50,10 +50,6 @@ export default function RenderCounters({ handler }) {
                 const restotbal2 = await totbal2.json();
 
                 if (res.code === 0 && res2.code === 0 && restotbal.code === 0 && restotbal2.code === 0) {
-                    console.log(res.data)
-                    console.log(res2.data)
-                    console.log(restotbal.data)
-                    console.log(restotbal2.data)
                     setDataA(res.data);  // Store data
                     setDataB(res2.data);  // Store data
                     setDataTotalA(restotbal.data);

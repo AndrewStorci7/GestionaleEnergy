@@ -104,6 +104,12 @@ export default function TableContent({
                         data.wheelman[index].plasticPresser = bale.plastic; 
                     });
                 }
+
+                if (data.wheelman && Array.isArray(data.wheelman) && data.wheelman.length > 0) {
+                    data.wheelman.map((bale, index) => {
+                        data.presser[index]._idCwb = bale._idCwb; 
+                    });
+                }
     
                 // Popola il contenuto con i dati appropriati
                 setContent(type === "presser" ? data.presser : type === "wheelman" ? data.wheelman : []);
@@ -132,12 +138,15 @@ export default function TableContent({
             )}
 
             {!isEmpty && content.map((bale, index) => {
+                console.log(index, bale._idCwb, bale.status);
                 const plastic = bale.plasticPresser;
                 const id = bale.id;
                 const idUnique = bale.idUnique;
                 const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
                 const hour = bale.data_ins?.substr(11, 8) || "";
-                const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
+                const status =  (bale.status === 1 && bale._idCwb === 2) ? "rei" : 
+                                (bale.status === 0) ? "working" : 
+                                (bale.status === 1) ? "completed" : "warning";
                 
                 return (
                     <tr key={idUnique} data-bale-id={id} className='max-h-[45px] h-[45px]'>

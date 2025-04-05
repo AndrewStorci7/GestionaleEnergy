@@ -34,9 +34,6 @@ export default function UpdateValuesBale({
 
     const [note, setNote] = useState(""); // Note (sia carrellista che pressista)
 
-    /**
-     * 
-     */
     const fetchData = async () => {
         try {
             if (type === 'presser') {
@@ -114,8 +111,11 @@ export default function UpdateValuesBale({
                 url = getServerRoute("update-wheelman-bale");
             }
     
-            const body2 = { status: -1, where: idBale };
-            const resp = await fetch(url, {
+            console.log(cdbc);
+            const status = (cdbc === 2) ? 1 : -1;
+
+            const body2 = { status: status, where: idBale };
+            await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ body })
@@ -140,9 +140,13 @@ export default function UpdateValuesBale({
                         searchFor={(type === 'presser') ? "plastic" : "cdbc"}
                         value={(type === 'presser') ? plastic : cdbc}
                         onChange={(e) => { 
-                            if (type === 'presser') setPlastic(e.target.value); 
-                            else setCdbc(e.target.value);
-                            setCanProceed(e.target.value == 2);
+                            if (type === 'presser') {
+                                setPlastic(e.target.value); 
+                                setCanProceed(e.target.value !== "");
+                            } else {
+                                setCdbc(e.target.value);
+                                setCanProceed(e.target.value == 2);
+                            }
                         }} 
                         fixedW 
                     />
@@ -150,6 +154,7 @@ export default function UpdateValuesBale({
                 <div className='relative px-[5px]'>
                     <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Utiliz. REI" : "Motivaz."}</label>
                     <SelectInput 
+                        disabled={cdbc == 1}
                         searchFor={(type === 'presser') ? "rei" : "reason"} 
                         value={(type === 'presser') ? rei : reason}
                         onChange={(e) => {

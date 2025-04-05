@@ -3,9 +3,7 @@ import { FaCheck } from "react-icons/fa";
 import { IoIosWarning } from "react-icons/io";
 import { MdWork } from "react-icons/md";
 import { RiErrorWarningFill } from "react-icons/ri";
-// Info 1
-// import { MdInfoOutline } from "react-icons/md";
-// Info 2
+import { TbCircleLetterRFilled } from "react-icons/tb";
 import { FaInfoCircle } from "react-icons/fa";
 
 /**
@@ -28,6 +26,8 @@ export default function Icon({
                 return <IoIosWarning className="text-waiting text-2xl" />
             case 'info': 
                 return <FaInfoCircle className="text-info text-2xl" />
+            case "rei":
+                return <TbCircleLetterRFilled className="text-black text-2xl" />
             default:
                 return <IoIosWarning className="text-waiting text-2xl" />
         }

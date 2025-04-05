@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
  * 
  * @author Andrea Storci from Oppimittinetworking
  * 
+ * @param {boolean}  disabled
  * @param {string}   searchFor   [ Ricerca per
  *                                  'status'        => Stato lavorazione 
  *                                  'plastic'       => Tipo o codice plastica 
@@ -23,6 +24,7 @@ import React, { useEffect, useState } from "react";
  * @returns 
  */
 function SelectInput({ 
+    disabled,
     searchFor, 
     id, 
     fixedW, 
@@ -75,6 +77,7 @@ function SelectInput({
 
     return (
         <select
+            disabled={disabled}
             id={id}
             className={_CMNSTYLE_SELECT}
             value={value}

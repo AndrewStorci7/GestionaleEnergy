@@ -221,7 +221,7 @@ const updateStatusTotalbale = async (body, method = 'POST', url = getServerRoute
         if (body === undefined || body === null)
             throw new Error("Empty body passed");
 
-        const resp2 = await fetch(url, {
+        await fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ body })
