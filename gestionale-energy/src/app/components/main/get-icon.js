@@ -8,7 +8,14 @@ import { RiErrorWarningFill } from "react-icons/ri";
 // Info 2
 import { FaInfoCircle } from "react-icons/fa";
 
-export default function Icon({ type = "" }) {
+/**
+ * 
+ * @param {string} type 
+ * @returns 
+ */
+export default function Icon({ 
+    type = "" 
+}) {
 
     const icon = useMemo(() => {
 

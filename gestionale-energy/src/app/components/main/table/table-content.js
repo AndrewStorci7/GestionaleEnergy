@@ -140,7 +140,7 @@ export default function TableContent({
                 const status = bale.status === 0 ? "working" : bale.status === 1 ? "completed" : "warning";
                 
                 return (
-                    <tr key={idUnique} data-bale-id={id} className='h-[41px]'>
+                    <tr key={idUnique} data-bale-id={id} className='max-h-[45px] h-[45px]'>
                         {primary && (
                             <>
                                 {!admin && 
@@ -158,8 +158,8 @@ export default function TableContent({
                         {Object.entries(bale).map(([key, value]) => (
                             key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
                                 key === "notes" && value ? (
-                                    <td key={idUnique + key} className={style}>
-                                        <button className="w-auto p-[6px] mx-[10%] w-[80%]" onClick={() => handleNoteClick(id, value)}>
+                                    <td key={idUnique + key} className={style + " !p-1"}>
+                                        <button onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
                                             {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
                                         </button>
