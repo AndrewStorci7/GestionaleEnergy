@@ -136,6 +136,23 @@ class Console {
         console.log(ret + msg);
     }
 
+    debug(str, color = "") {
+        if (this.level !== 2) {
+            const fontColor = this.getColor(color);
+            const date = new Date();
+            const callerInfo = this.getCallerInfo();
+            const ret = (this.level !== 3 && this.level !== 2) ? `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} DEBUG ${_reset}][${callerInfo}]: ${fontColor}` : `[${_cyan} DEBUG ${_reset}]: `;
+            let msg = "Generic Info" + _reset;
+            if (str != "undefined" || str != null) {
+                if (typeof str === "object")
+                    msg = `${this.safeStringify(str)} ${_reset}`;
+                else msg = `${str} ${_reset}`;
+            }
+
+            console.log(ret + msg);
+        }
+    }
+
     /**
      * Dispaly Info
      * @param {any}     str 

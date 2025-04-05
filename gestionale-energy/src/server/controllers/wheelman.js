@@ -72,7 +72,6 @@ class WheelmanBale extends Bale {
             }
         } catch (error) {
             throw error;
-            // res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }
 
@@ -99,7 +98,6 @@ class WheelmanBale extends Bale {
             }
         } catch (error) {
             throw error;
-            // res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }
 

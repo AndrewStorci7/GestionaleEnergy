@@ -1,7 +1,8 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';
+import TotalBale from './total-bale.js';
 
-const console = new Console("Presser");
+const console = new Console("Presser", 1);
 
 /**
  * 
@@ -14,6 +15,7 @@ class PresserBale extends Bale {
 
     constructor(db, table) {
         super(db, table);
+        this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}`;
     }
 
     handlePresserData = async (req) => {
@@ -53,12 +55,12 @@ class PresserBale extends Bale {
             id
         );
     
-        console.info(rows);
+        // console.info(rows);
 
         if (rows && rows.length > 0) {
             return rows[0];
         } else {
-            console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
+            // console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
             return { code: 1, message: "Nessuna balla trovata" };
         }
     }
@@ -73,7 +75,7 @@ class PresserBale extends Bale {
         try {
             const data = await this.handlePresserData(req);
             
-            console.info(data); // test
+            // console.info(data); // test
     
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
                 res.json(data);
@@ -97,7 +99,7 @@ class PresserBale extends Bale {
             const { body } = req.body;
             const arr_body = Object.values(body);
 
-            console.info(body);
+            // console.info(body);
 
             const check_ins_pb = await this.db.query(
                 `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
@@ -105,7 +107,7 @@ class PresserBale extends Bale {
                 arr_body,
             );
 
-            console.info(check_ins_pb[0]);
+            // console.info(check_ins_pb[0]);
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
@@ -116,7 +118,6 @@ class PresserBale extends Bale {
             }
         } catch (error) {
             throw error;
-            // res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }
 
@@ -128,9 +129,28 @@ class PresserBale extends Bale {
      */
     async update(req, res) {
         try {
-            const {body} = req.body;
-            
-            console.info("[Update]: ", body);
+            const { body } = req.body;
+            const id_plastic = body?.id_plastic;
+            const id_bale = body?.where;
+            const checkIfIncludesMDR = id_plastic.includes("MDR");  
+
+            const getIds = await fetch(this.internalUrl + '/bale/ids', { 
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ body: id_bale })
+            });
+            const respGetIds = await getIds.json();
+
+            if (respGetIds.code === 0) {
+                await fetch(this.internalUrl + "/wheelman/update", {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ body: {
+                        id_wd: checkIfIncludesMDR ? 2 : 1,
+                        where: respGetIds.res[0].id_wb,
+                    }})
+                })
+            }
 
             const san = this.checkParams(body, {scope: "update", table: this.table})
             

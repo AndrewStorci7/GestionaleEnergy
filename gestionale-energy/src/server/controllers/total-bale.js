@@ -40,7 +40,7 @@ class TotalBale extends Common {
             const gam = (data.body.id_rei == 5) ? JSON.stringify({ is_rei_altro_mag: true, id_implant: data.implant == 1 ? 2 : 1 }) : JSON.stringify({ is_rei_altro_mag: false, id_implant: null });
             var id_new_presser_bale = 0;
             var id_new_wheelman_bale = 0;
-            var checkIfMDR = data.body.id_plastic.includes('MDR'); // controllo che la balla inserita è MDR. Nel caso in cui è MDR vado ad impostare il magazzino di destinazione su Provvisorio
+            const checkIfIncludesMDR = data.body.id_plastic.includes('MDR'); // controllo che la balla inserita è MDR. Nel caso in cui è MDR vado ad impostare il magazzino di destinazione su Provvisorio
 
             /// Fetch dei dati del pressista 
             const data_presser = await fetch(this.internalUrl + '/presser/set', { 
@@ -55,7 +55,7 @@ class TotalBale extends Common {
             const data_wheelman = await fetch(this.internalUrl + '/wheelman/set', { 
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ body: checkIfMDR })
+                body: JSON.stringify({ body: checkIfIncludesMDR })
             })
             const data_wheelman_resolved = await data_wheelman.json();
             id_new_wheelman_bale = data_wheelman_resolved.message.id_new_bale;
@@ -348,16 +348,41 @@ class TotalBale extends Common {
         }
     }
         
-    getIdsBale = async (id) => {
-        const [select] = await this.db.query(
-            `SELECT * FROM ${this.table} WHERE id_pb=?`,
-            [id]
-        );
+    async getIdsBale(req, res) {
+        try {
+            var id = 0; 
+            if (typeof req === 'object') {
+                id = req.body.body;
+            } else {
+                id = req;
+            }
+            console.debug(id);
 
-        if (select) {
-            return select;
-        } else {
-            throw new Error("Errore durante la selezione della balla");
+            const [select] = await this.db.query(
+                `SELECT 
+                    ${this.table}.id,
+                    ${this.table}.id_pb,
+                    ${this.table}.id_wb
+                FROM 
+                    ${this.table} 
+                WHERE 
+                    ${this.table}.id_pb = ?`,
+                [id]
+            );
+    
+            if (select) {
+                if (typeof req === 'object')
+                    res.json({ code: 0, res: select });
+                else 
+                    return select;
+            } else {
+                if (typeof req === 'object')
+                    res.json({ code: 0, res: select });
+                else 
+                    throw "Errore durante la selezione della balla";
+            }
+        } catch (error) {
+            throw error;
         }
     }
 

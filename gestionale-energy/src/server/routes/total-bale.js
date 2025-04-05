@@ -14,6 +14,9 @@ export default (db, table) => {
     // Update status of a bale
     router.post('/bale/status/update', (req, res) => controller.updateStatusTotalBale(req, res));
 
+    // Get every ID of the total bale: `id Presser Bale`, `id Wheelman Bale` and `Id Unique`
+    router.post('/bale/ids', (req, res) => controller.getIdsBale(req, res));
+
     // Conteggio Balle Totali in tempo reale
     router.post('/bale/total-count', (req, res) => controller.balleTotali(req, res));
 
