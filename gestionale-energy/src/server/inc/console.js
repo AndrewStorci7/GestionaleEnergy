@@ -9,11 +9,10 @@ const _padEnd = 16;
 const _CMN_TEXT_ERROR = ""
 
 /**
- * @param {number} level    { 
- *      1 => Debug, 
- *      2 => No Info, only errors
- *      3 => Info
- * }
+ * @param {number} level    Tipologie di livelli:
+ * - `1`: Debug, 
+ * - `2`: No Info, only errors
+ * - `3`: Info
  */
 class Console {
 
@@ -137,11 +136,11 @@ class Console {
     }
 
     debug(str, color = "") {
-        if (this.level !== 2) {
+        if (this.level === 1) {
             const fontColor = this.getColor(color);
             const date = new Date();
             const callerInfo = this.getCallerInfo();
-            const ret = (this.level !== 3 && this.level !== 2) ? `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} DEBUG ${_reset}][${callerInfo}]: ${fontColor}` : `[${_cyan} DEBUG ${_reset}]: `;
+            const ret = (this.level === 1) ? `[${date.toLocaleString()}][${_yellow} ${this.location.padEnd(_padEnd)} ${_reset}][${_cyan} DEBUG ${_reset}][${callerInfo}]: ${fontColor}` : `[${_cyan} DEBUG ${_reset}]: `;
             let msg = "Generic Info" + _reset;
             if (str != "undefined" || str != null) {
                 if (typeof str === "object")
@@ -150,6 +149,8 @@ class Console {
             }
 
             console.log(ret + msg);
+        } else {
+            console.log("salamaleku");
         }
     }
 

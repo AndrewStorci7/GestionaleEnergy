@@ -8,7 +8,7 @@ import mysql from 'mysql2';
 // const Console = require('./console');
 import Console from './console.js';
 
-const console = new Console("Database");
+const console = new Console("Database", 1);
 
 const DB_HOST = process.env.NEXT_PUBLIC_APP_DB_HOST;
 const DB_PORT = process.env.NEXT_PUBLIC_APP_DB_PORT;
@@ -25,18 +25,60 @@ const pool = mysql.createPool({
     timezone: "Europe/Rome"
 });
 
-const originalQuery = pool.query.bind(pool);
-pool.query = (sql, params, callback) => {
-    console.info(`\n[QUERY] ${sql}`);
-    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
-    return originalQuery(sql, params, callback);
+const promisePool = pool.promise();
+
+const originalPromiseQuery = promisePool.query.bind(promisePool);
+promisePool.query = (...args) => {
+    const debug = typeof args[args.length - 1] === 'boolean' ? args.pop() : false;
+    const [sql, params] = args;
+
+    if (debug) {
+        console.debug(`\n[QUERY] ${sql}`);
+        if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
+    }
+
+    return originalPromiseQuery(sql, params);
 };
 
-const originalExecute = pool.execute.bind(pool);
-pool.execute = (sql, params, callback) => {
-    console.info(`\n[EXECUTE] ${sql}`);
-    if (params) console.info(`\n[PARAMS] ${JSON.stringify(params)}`);
-    return originalExecute(sql, params, callback);
+const originalPromiseExecute = promisePool.execute.bind(promisePool);
+promisePool.execute = (...args) => {
+    const debug = typeof args[args.length - 1] === 'boolean' ? args.pop() : false;
+    const [sql, params] = args;
+
+    if (debug) {
+        console.debug(`\n[EXECUTE] ${sql}`);
+        if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
+    }
+
+    return originalPromiseExecute(sql, params);
 };
 
-export default pool.promise();
+export default promisePool;
+
+// const originalQuery = pool.query.bind(pool);
+// pool.query = (...args) => {
+//     const debug = typeof args[args.length - 1] === 'boolean' ? args.pop() : false;
+//     const [sql, params, callback] = args;
+
+//     if (debug) {
+//         console.debug(`\n[QUERY] ${sql}`);
+//         if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
+//     }
+
+//     return originalQuery(sql, params, callback);
+// };
+
+// const originalExecute = pool.execute.bind(pool);
+// pool.execute = (...args) => {
+//     const debug = typeof args[args.length - 1] === 'boolean' ? args.pop() : false;
+//     const [sql, params, callback] = args;
+
+//     if (debug) {
+//         console.debug(`\n[EXECUTE] ${sql}`);
+//         if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
+//     }
+
+//     return originalExecute(sql, params, callback);
+// };
+
+// export default pool.promise();

@@ -18,12 +18,9 @@ class TotalBale extends Common {
     /**
      * Add Bale on DB
      * 
-     * @param {json} req    { data: 
-     *                          {  
-     *                              id_implant: [int] id dell'impianto
-     *                              id_presser: [int] id dell'utente
-     *                          } 
-     *                      }
+     * @param {json} req    Contenuto dell'oggetto
+     * - `id_implant[int]`: id dell'impianto
+     * - `id_presser[int]`: id dell'utente
      */
     async add(req, res) {
         try {
@@ -119,11 +116,11 @@ class TotalBale extends Common {
             const { body } = req.body;
             const id_implant = body.id_implant;
             const useFor = body.useFor;
-            var cond_status = 'OR pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
+            var cond_status = 'OR pb_wb.status = -1) AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
             var order_by = 'DESC';
 
             if (useFor === 'specific') {
-                cond_status = 'AND pb_wb.status = 1';
+                cond_status = 'AND pb_wb.status = 1)';
             } else if (useFor === 'reverse') {
                 order_by = 'ASC';
             }
@@ -157,13 +154,14 @@ class TotalBale extends Common {
                 WHERE 
                     ${this.table}.id_implant = ? AND (
                     ${_params.condition}
-                    ${cond_status})
+                    ${cond_status}
                 ORDER BY 
                     ${this.table}.id ${order_by},
                     TIME(presser_bale.data_ins) ${order_by}, 
                     TIME(wheelman_bale.data_ins) ${order_by}
                 LIMIT 300`,
-                _params.params
+                _params.params,
+                true
             );
 
             if (select !== 'undefined' || select !== null) {

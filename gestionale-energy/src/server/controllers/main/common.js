@@ -137,16 +137,18 @@ class Common {
     /**
      * Questa funzione serve per settare la corretta condizione di ricerca basata sull'orario (per turni)
      * Ritorna un oggetto utilizzabile per l'esecuzione di una query.
-     * return {
-     *      `condition`: condizione del where
-     *      `params`: array con parametri per la query
-     * }
      * 
      * @param {number} id_implant   Id dell'impianto
      * @param {string} type         Tipo di condizione  
      * @param {number} turnIndex    Numero del turno per la condizione (delego a `checkTurn()`)
      * 
      * @returns {Object} 
+     * ```js
+     * {
+     *      `condition`: condizione del where
+     *      `params`: array con parametri per la query
+     * }
+     * ```
      */
     checkConditionForTurn(id_implant, type = null, turnIndex = 0) {
         const turn = this.checkTurn(turnIndex);
