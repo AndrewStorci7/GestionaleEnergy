@@ -138,7 +138,6 @@ export default function TableContent({
             )}
 
             {!isEmpty && content.map((bale, index) => {
-                console.log(index, bale._idCwb, bale.status);
                 const plastic = bale.plasticPresser;
                 const id = bale.id;
                 const idUnique = bale.idUnique;

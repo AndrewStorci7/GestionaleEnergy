@@ -61,8 +61,6 @@ export default function Alert({
   
   const handleConfirm = async () => {
     try {
-      console.log("ID BALLA DENTRO ALERT => " + baleObj.idBale);
-      console.log("conferma elimina cliccato");
       await handleDelete(baleObj.idBale, handleDeleteSuccess);
       closeAlert();
     } catch (error) {
@@ -180,7 +178,7 @@ export default function Alert({
             <p className="text-black mb-10 font-bold text-2xl text-left">Modifica dei dati della balla: </p>
             <UpdateValuesBale
               type={alertFor === "update-p" ? "presser" : "wheelman"}
-              idBale={baleObj.idBale}
+              objBale={baleObj}
               handlerClose={closeAlert}
             />
           </div>

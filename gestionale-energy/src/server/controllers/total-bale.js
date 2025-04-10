@@ -99,6 +99,44 @@ class TotalBale extends Common {
     }
 
     /**
+     * Compone gli array di oggetti per i dati del pressista e del carrellista.
+     * @param {object[]} presserResult     Array sul quale aggiugnere i dait del pressista
+     * @param {object[]} wheelmanResult    Array sul quale aggiugnere i dait del carrellista
+     */
+    createObjectArray = async (select, presserResult, wheelmanResult) => {
+        // console.debug(select);
+        for (const e of select) {
+            var id_presser = e.id_pb;
+            var id_wheelman = e.id_wb;
+            var status = e.status;
+            var id = e.id;
+
+            /// Fetch dei dati del pressista
+            const res_presser = await fetch(this.internalUrl + '/presser/get', { 
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: id_presser })
+            });
+            const data_presser = await res_presser.json();
+            data_presser.status = status;
+            data_presser.idUnique = id;
+
+            /// Fetch dei dati del carrellista
+            const res_wheelman = await fetch(this.internalUrl + '/wheelman/get', { 
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: id_wheelman })
+            });
+            const data_wheelman = await res_wheelman.json();
+            data_wheelman.status = status;
+            data_wheelman.idUnique = id;
+
+            presserResult.push(data_presser);
+            wheelmanResult.push(data_wheelman);
+        };
+    }
+
+    /**
      * Get a total bale composed by information of the bale created by presser
      * and the information of the bale added by wheelman
      * 
@@ -116,11 +154,13 @@ class TotalBale extends Common {
             const { body } = req.body;
             const id_implant = body.id_implant;
             const useFor = body.useFor;
-            var cond_status = 'OR pb_wb.status = -1) AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
+            var cond_status = ' AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
             var order_by = 'DESC';
 
+            console.debug(useFor);
+
             if (useFor === 'specific') {
-                cond_status = 'AND pb_wb.status = 1)';
+                cond_status = ' AND pb_wb.status = 1';
             } else if (useFor === 'reverse') {
                 order_by = 'ASC';
             }
@@ -133,6 +173,67 @@ class TotalBale extends Common {
             const wheelmanResult = [];
             const _params = super.checkConditionForTurn(id_implant);
 
+            // balle completate
+            if (useFor === 'regular' || useFor === 'reverse' || useFor === 'undefined') {
+                await this.getBalesNotCompleted(id_implant, order_by, presserResult, wheelmanResult);
+            } else {
+                const [select] = await this.db.query(
+                    `SELECT 
+                        ${this.table}.id_pb, 
+                        ${this.table}.id_wb, 
+                        ${this.table}.status,
+                        ${this.table}.id
+                    FROM 
+                        ${this.table} 
+                    JOIN 
+                        presser_bale 
+                    JOIN 
+                        wheelman_bale 
+                    JOIN 
+                        implants 
+                    ON 
+                        ${this.table}.id_pb = presser_bale.id AND
+                        ${this.table}.id_wb = wheelman_bale.id AND
+                        ${this.table}.id_implant = implants.id
+                    WHERE 
+                        ${this.table}.id_implant = ? AND (
+                        ${_params.condition})
+                        ${cond_status}
+                    ORDER BY 
+                        IFNULL(presser_bale.data_ins, wheelman_bale.data_ins) ${order_by}
+                    LIMIT 300`,
+                    _params.params,
+                    true
+                );
+
+                if (select !== 'undefined' || select !== null) {
+                    console.debug(select);
+                    await this.createObjectArray(select, presserResult, wheelmanResult);
+                }
+            }
+
+
+
+            if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
+                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
+            } else {
+                res.json({ code: 1, message: "Nessuna balla trovata" });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
+        }
+    }
+
+    /**
+     * Get alla bales from an implant that are not completed 
+     * @param {number}      implant        Impianto sul quale fare la ricerca 
+     * @param {string}      order_by       Ordine dei dati 
+     * @param {object[]}    presserResult  Array al quale verranno aggiunto il risultato (pressista)
+     * @param {object[]}    wheelmanResult Array al quale verranno aggiunto il risultato (carrellista)
+     */
+    async getBalesNotCompleted(implant, order_by, presserResult, wheelmanResult) {
+        try {
             const [select] = await this.db.query(
                 `SELECT 
                     ${this.table}.id_pb, 
@@ -152,58 +253,19 @@ class TotalBale extends Common {
                     ${this.table}.id_wb = wheelman_bale.id AND
                     ${this.table}.id_implant = implants.id
                 WHERE 
-                    ${this.table}.id_implant = ? AND (
-                    ${_params.condition}
-                    ${cond_status}
+                    ${this.table}.id_implant = ?
+                    AND ${this.table}.status != 1 
                 ORDER BY 
-                    ${this.table}.id ${order_by},
-                    TIME(presser_bale.data_ins) ${order_by}, 
-                    TIME(wheelman_bale.data_ins) ${order_by}
+                    IFNULL(presser_bale.data_ins, wheelman_bale.data_ins) ${order_by}
                 LIMIT 300`,
-                _params.params,
-                true
+                implant
             );
 
             if (select !== 'undefined' || select !== null) {
-                for (const e of select) {
-                    var id_presser = e.id_pb;
-                    var id_wheelman = e.id_wb;
-                    var status = e.status;
-                    var id = e.id;
-
-                    /// Fetch dei dati del pressista
-                    const res_presser = await fetch(this.internalUrl + '/presser/get', { 
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: id_presser })
-                    });
-                    const data_presser = await res_presser.json();
-                    data_presser.status = status;
-                    data_presser.idUnique = id;
-
-                    /// Fetch dei dati del carrellista
-                    const res_wheelman = await fetch(this.internalUrl + '/wheelman/get', { 
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: id_wheelman })
-                    });
-                    const data_wheelman = await res_wheelman.json();
-                    data_wheelman.status = status;
-                    data_wheelman.idUnique = id;
-
-                    presserResult.push(data_presser);
-                    wheelmanResult.push(data_wheelman);
-                };
-            }
-
-            if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
-                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
-            } else {
-                res.json({ code: 1, message: "Nessuna balla trovata" });
+                await this.createObjectArray(select, presserResult, wheelmanResult);
             }
         } catch (error) {
-            console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
+            throw error;
         }
     }
 
@@ -294,7 +356,6 @@ class TotalBale extends Common {
             }
 
             const _params = super.checkConditionForTurn(implant);
-            // this.updateIdImplant(_params.params, implant);
             
             const [countBalleMagazzino] = await this.db.query(
                 `SELECT 

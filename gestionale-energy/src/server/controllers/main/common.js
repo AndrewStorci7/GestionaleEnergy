@@ -48,9 +48,9 @@ class Common {
         if (_hour >= 6 && _hour < 14)
             return ['06:00:00', '13:59:59', 0];
         else if (_hour >= 14 && _hour < 22)
-            return ['14:00:00', '22:59:59', 0];
-        else if ((_hour >= 22 && _hour <= 24) || (_hour >= 24 && _hour < 6))
-            return ['23:00:00', '23:59:59', '00:00:00', '05:59:59', 1];
+            return ['14:00:00', '21:59:59', 0];
+        else if ((_hour >= 22 && _hour < 24) || (_hour >= 0 && _hour < 6))
+            return ['22:00:00', '23:59:59', '00:00:00', '05:59:59', 1];
     }
 
     convertSpecialCharsToHex(inputString) {
@@ -97,21 +97,17 @@ class Common {
                     }
                 }
 
-                // console.info(params)
-
                 // Creo correttamente la query
                 for (const [index, val] of Object.entries(columns)) {
                     if (index < columns.length - 2)
                         query += `${val}=?, `;
                     else 
-                        query += (val !== 'where') ? `${val}=? ` : `WHERE ${(table === "pb_wb") ? "id_pb=? OR id_wb=?": "id=?"}`;
+                        query += (val !== 'where') ? `${val} = ? ` : 'WHERE id = ?';
                 }
-
-                // console.info(query)
 
                 return { query, params };
             } else {
-                return obj
+                return obj;
             }
         } else {
             return null
@@ -173,15 +169,15 @@ class Common {
 
         if (turn[turn.length - 1] === 1) {
             condition = `(
-                            DATE(presser_bale.data_ins) = CURDATE() AND 
-                            DATE(wheelman_bale.data_ins) = CURDATE() AND 
-                            TIME(presser_bale.data_ins) BETWEEN ? AND ? AND 
-                            TIME(wheelman_bale.data_ins) BETWEEN ? AND ? 
+                            (DATE(presser_bale.data_ins) = CURDATE() OR 
+                            DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)) AND 
+                            (TIME(presser_bale.data_ins) BETWEEN ? AND ? OR 
+                            TIME(presser_bale.data_ins) BETWEEN ? AND ? )
                         ) OR (
-                            DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND 
-                            DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND 
-                            TIME(presser_bale.data_ins) BETWEEN ? AND ? AND 
-                            TIME(wheelman_bale.data_ins) BETWEEN ? AND ? 
+                            (DATE(wheelman_bale.data_ins) = CURDATE() OR 
+                            DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)) AND 
+                            (TIME(wheelman_bale.data_ins) BETWEEN ? AND ? OR 
+                            TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )  
                         )`;
             params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
 
@@ -197,6 +193,9 @@ class Common {
                 params = [turn[0], turn[1], turn[2], turn[3], id_implant, turn[0], turn[1], turn[2], turn[3]];
             }
         }
+
+        // console.debug(condition);
+        // console.debug(params);
 
         return { condition, params };
     }

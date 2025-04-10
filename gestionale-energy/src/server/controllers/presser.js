@@ -20,8 +20,8 @@ class PresserBale extends Bale {
 
     handlePresserData = async (req) => {
         
-        const {id} = req.body;
-        // console.info(`Data received: ${id}`, "yellow");
+        const { id } = req.body;
+        console.debug(`Data received: ${id}`, "yellow");
         const [rows] = await this.db.query(
             `SELECT 
                 ${this.table}.id AS 'id', 
@@ -74,8 +74,6 @@ class PresserBale extends Bale {
     async get(req, res) {
         try {
             const data = await this.handlePresserData(req);
-            
-            // console.info(data); // test
     
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
                 res.json(data);

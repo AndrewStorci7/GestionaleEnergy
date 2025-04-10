@@ -6,13 +6,13 @@ import Cookies from 'js-cookie';
 /**
  * @author Andrea Storci from Oppimittinetworking.com
  * 
- * @param {string}   type    Tipo della balla da modificare: [ 'presser' | 'wheelman' ]
- * @param {int}      idBale  Id numerico della balla da modificare 
- * @param {Function} handlerClose Funzione che gestisce il flusso dopo aver cliccato il bottone di Annulla o Conferma 
+ * @param {string}   type           Tipo della balla da modificare: [ 'presser' | 'wheelman' ]
+ * @param {int}      objBale        Id numerico della balla da modificare 
+ * @param {Function} handlerClose   Funzione che gestisce il flusso dopo aver cliccato il bottone di Annulla o Conferma 
  */
 export default function UpdateValuesBale({ 
     type, 
-    idBale, 
+    objBale, 
     handlerClose,
     ...props
 }) {
@@ -36,16 +36,17 @@ export default function UpdateValuesBale({
 
     const fetchData = async () => {
         try {
+            
+            const url = getServerRoute(type === 'presser' ? 'presser' : 'wheelman');
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id: objBale.idBale })
+            });
+
+            const data = await resp.json();
+
             if (type === 'presser') {
-                const url = getServerRoute("presser");
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ id: idBale })
-                });
-
-                const data = await resp.json();
-
                 setPlastic(data.plastic);
                 setRei(data._idRei);
                 setCdbp(data._idCpb);
@@ -53,15 +54,6 @@ export default function UpdateValuesBale({
                 setNote(data.notes);
                 setCanProceed(data.plastic !== null || data.plastic !== undefined);
             } else {
-                const url = getServerRoute("wheelman");
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ id: idBale })
-                });
-
-                const data = await resp.json();
-
                 setCdbc(data._idCwb);
                 setReason(data._idRnt);
                 setWeight(data.weight);
@@ -70,13 +62,13 @@ export default function UpdateValuesBale({
                 setCanProceed(data.weight > 0);
             }
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
     useEffect(() => {
         fetchData();
-    }, [idBale]);
+    }, [objBale]);
 
     /**
      * Handle Click function
@@ -95,7 +87,7 @@ export default function UpdateValuesBale({
                     id_cpb: cdbp,
                     id_sb: selected_b,
                     note: note,
-                    where: idBale,
+                    where: objBale.idBale,
                 };
                 url = getServerRoute("update-presser-bale");
             } else {
@@ -106,15 +98,14 @@ export default function UpdateValuesBale({
                     id_wd: dest_wh,
                     note: note,
                     weight: weight,
-                    where: idBale,
+                    where: objBale.idBale,
                 };
                 url = getServerRoute("update-wheelman-bale");
             }
-    
-            console.log(cdbc);
+
             const status = (cdbc === 2) ? 1 : -1;
 
-            const body2 = { status: status, where: idBale };
+            const body2 = { status: status, where: objBale.idUnique };
             await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -127,7 +118,7 @@ export default function UpdateValuesBale({
             handlerClose();
     
         } catch (error) {
-            console.log("Errore", error);
+            console.error("Errore", error);
         }
     }
 
