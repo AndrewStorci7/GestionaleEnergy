@@ -102,9 +102,9 @@ class Common {
                     if (index < columns.length - 2)
                         query += `${val}=?, `;
                     else 
-                        query += (val !== 'where') ? `${val} = ? ` : 'WHERE id = ?';
+                        query += (val !== 'where') ? `${val} = ? ` : 'WHERE pb_wb.id = ?';
                 }
-
+                console.debug(query, params);
                 return { query, params };
             } else {
                 return obj;

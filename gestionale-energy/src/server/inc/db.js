@@ -32,10 +32,10 @@ promisePool.query = (...args) => {
     const debug = typeof args[args.length - 1] === 'boolean' ? args.pop() : false;
     const [sql, params] = args;
 
-    // if (debug) {
-    //     console.debug(`\n[QUERY] ${sql}`);
-    //     if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
-    // }
+    if (debug) {
+        console.debug(`\n[QUERY] ${sql}`);
+        if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
+    }
 
     return originalPromiseQuery(sql, params);
 };
@@ -45,10 +45,10 @@ promisePool.execute = (...args) => {
     const debug = typeof args[args.length - 1] === 'boolean' ? args.pop() : false;
     const [sql, params] = args;
 
-    // if (debug) {
-    //     console.debug(`\n[EXECUTE] ${sql}`);
-    //     if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
-    // }
+    if (debug) {
+        console.debug(`\n[EXECUTE] ${sql}`);
+        if (params) console.debug(`[PARAMS] ${JSON.stringify(params)}`);
+    }
 
     return originalPromiseExecute(sql, params);
 };

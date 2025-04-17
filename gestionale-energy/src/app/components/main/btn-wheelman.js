@@ -69,12 +69,11 @@ export default function BtnWheelman({
     }
 
     const handleStampa = async (execute = false) => {
-        
         if (baleObj.idBale) {
             if (execute) {
                 try {
                     const body = { printed: true, where: baleObj.idBale }; // Body per l'update della balla del carrellista
-                    const body2 = { status: 1, where: baleObj.idBale }; // Body per l'update dello stato della balla totale
+                    const body2 = { status: 1, where: baleObj.idUnique }; // Body per l'update dello stato della balla totale
                     const url_update_wheelman = getServerRoute("update-wheelman-bale");
                     const url_update_status = getServerRoute("update-status-bale");
     

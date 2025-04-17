@@ -33,10 +33,16 @@ class Report extends Common {
                 
                 const [select] = await this.db.query(
                     `SELECT 
-                        code_plastic.code, 
+                        code_plastic.code,
                         code_plastic.desc,
-                        SUM(wheelman_bale.weight) AS "totale_peso",
-                        COUNT(pb_wb.id_pb) AS "totale_balle"
+                        SUM(CASE 
+                            WHEN wheelman_bale.id_cwb != 2 THEN wheelman_bale.weight
+                            ELSE 0
+                        END) AS "totale_peso",
+                        COUNT(CASE 
+                            WHEN wheelman_bale.id_cwb != 2 THEN pb_wb.id_pb
+                            ELSE NULL
+                        END) AS "totale_balle"
                     FROM 
                         code_plastic
                     LEFT JOIN presser_bale 
@@ -51,7 +57,8 @@ class Report extends Common {
                         ${params.condition.fourth}
                     GROUP BY 
                         code_plastic.code`,
-                    params.params
+                    params.params,
+                    true
                 );
 
                 if (select && select.length > 0)
@@ -128,7 +135,8 @@ class Report extends Common {
                 GROUP BY 
                     code_plastic.code
                 LIMIT 100`,
-                param
+                param,
+                true
             );
 
             const cont_plastic_comp = await this.db.query(
@@ -148,7 +156,8 @@ class Report extends Common {
                 GROUP BY 
                     code_plastic.code
                 LIMIT 100`,
-                param
+                param,
+                true
             );            
 
             const utiliz_rei = await this.db.query(

@@ -180,10 +180,6 @@ export default function Table({ type, implant, idUser }) {
                                 </div>
                             </div>
                             <div className="relative w-fit ml-5">
-                                {/* <label className='flex items-center text-zinc-400 absolute bottom-10 left-2 font-thin text-xs'>
-                                    <Icon />
-                                    Se non vedi i dati, ricarica manualmente.
-                                </label> */}
                                 <button 
                                     className={`inline rounded-full bg-blue-500 px-1 py-1 ${!handleToggleSwitch && "disabled:bg-blue-200 cursor-no-drop"}`} 
                                     onClick={() => {

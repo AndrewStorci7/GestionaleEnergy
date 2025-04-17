@@ -105,6 +105,7 @@ export default function UpdateValuesBale({
 
             const status = (cdbc === 2) ? 1 : -1;
 
+            console.log(objBale.idUnique);
             const body2 = { status: status, where: objBale.idUnique };
             await fetch(url, {
                 method: 'POST',
