@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import ExportReport from '@/app/components/main/admin/export-report';
+import Icon from '../get-icon';
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -59,6 +60,10 @@ export default function BtnReport({
       >
         GIOR. TEMPI IMP A e B
       </ExportReport>
+      <div className="inline-flex items-center font-thin text-sm opacity-50">
+        <Icon type="info" className="!text-gray-400" />
+        I report giornalieri fanno riferimento al giorno precedente
+      </div>
     </>
   );
 };

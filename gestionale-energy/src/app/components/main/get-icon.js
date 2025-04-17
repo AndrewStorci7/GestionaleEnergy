@@ -12,7 +12,9 @@ import { FaInfoCircle } from "react-icons/fa";
  * @returns 
  */
 export default function Icon({ 
-    type = "" 
+    className,
+    type = "",
+    ...props
 }) {
 
     const icon = useMemo(() => {
@@ -25,7 +27,7 @@ export default function Icon({
             case 'working':
                 return <IoIosWarning className="text-waiting text-2xl" />
             case 'info': 
-                return <FaInfoCircle className="text-info text-2xl" />
+                return <FaInfoCircle className={`text-info text-2xl ${className ?? className}`} />
             case "rei":
                 return <TbCircleLetterRFilled className="text-black text-2xl" />
             default:
@@ -34,7 +36,7 @@ export default function Icon({
     }, [type]);
     
     return (
-        <div className="w-full grid place-content-center">
+        <div className="mx-2 grid place-content-center">
             {icon}
         </div>
     );

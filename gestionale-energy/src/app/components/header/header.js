@@ -116,10 +116,16 @@ export default function Header({
                         Produzione sul turno
                     </h3>
                     <div className="grid grid-cols-2">
-                        <div className={`font-thin mr-[10px] ${type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}`}>
+                        {/* <div className={`font-thin mr-[10px] ${type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}`}>
                             Balle totali lavorate: {totalbalesLavorate}
                         </div>
                         <div className={`font-thin ${type === 'wheelman' ? "border w-fit py-1 px-2 rounded-xl bg-green-200 shadow-sm" : "font-thin"}`}>
+                            Balle totali a mag.: {totalbales}
+                        </div> */}
+                        <div className={`font-thin mr-[10px] ${type === 'presser' ? "!font-bold" : ""}`}>
+                            Balle totali lavorate: {totalbalesLavorate}
+                        </div>
+                        <div className={`font-thin ${type === 'wheelman' ? "!font-bold" : ""}`}>
                             Balle totali a mag.: {totalbales}
                         </div>
                     </div>
