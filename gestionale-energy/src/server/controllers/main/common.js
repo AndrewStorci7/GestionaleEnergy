@@ -169,17 +169,15 @@ class Common {
 
         if (turn[turn.length - 1] === 1) {
             condition = `(
-                            (DATE(presser_bale.data_ins) = CURDATE() OR 
-                            DATE(presser_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)) AND 
-                            (TIME(presser_bale.data_ins) BETWEEN ? AND ? OR 
-                            TIME(presser_bale.data_ins) BETWEEN ? AND ? )
+                            TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                            AND DATE(presser_bale.data_ins) = CURDATE() - INTERVAL 1 DAY OR 
+                            DATE(presser_bale.data_ins) = CURDATE()
                         ) OR (
-                            (DATE(wheelman_bale.data_ins) = CURDATE() OR 
-                            DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY)) AND 
-                            (TIME(wheelman_bale.data_ins) BETWEEN ? AND ? OR 
-                            TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )  
+                            TIME(presser_bale.data_ins) BETWEEN ? AND ?
+                            AND DATE(presser_bale.data_ins) = CURDATE() OR
+                            DATE(presser_bale.data_ins) = CURDATE() + INTERVAL 1 DAY
                         )`;
-            params = [id_implant, turn[0], turn[1], turn[0], turn[1], turn[2], turn[3], turn[2], turn[3]];
+            params = [id_implant, turn[0], turn[1], turn[2], turn[3]];
 
             // Diffrenzio il ritrono della funzioni per tipo di chiamata
             // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate

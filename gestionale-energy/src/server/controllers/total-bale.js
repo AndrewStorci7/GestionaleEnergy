@@ -196,13 +196,13 @@ class TotalBale extends Common {
                         ${this.table}.id_wb = wheelman_bale.id AND
                         ${this.table}.id_implant = implants.id
                     WHERE 
-                        ${this.table}.id_implant = ? AND (
-                        ${_params.condition})
+                        ${this.table}.id_implant = ? AND (${_params.condition})
                         ${cond_status}
                     ORDER BY 
                         IFNULL(presser_bale.data_ins, wheelman_bale.data_ins) ${order_by}
                     LIMIT 300`,
-                    _params.params
+                    _params.params,
+                    true
                 );
 
                 if (select !== 'undefined' || select !== null) {
