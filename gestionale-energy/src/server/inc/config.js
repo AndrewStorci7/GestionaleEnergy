@@ -23,7 +23,7 @@ const COND_GET_TOTAL_BALE = `${COND_ID_IMPLANT}
 
 const COND_GET_COUNT_PLASTIC_REPORT =   `${COND_ID_IMPLANT}
                                         AND (presser_bale.id_rei = 1 OR presser_bale.id_rei = 2 OR presser_bale.id_rei = 3)
-                                        AND wheelman_bale.id_cwb = 1
+                                        AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)
                                         AND pb_wb.status = 1`;
 
 export {
