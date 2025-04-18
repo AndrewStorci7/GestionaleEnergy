@@ -21,13 +21,42 @@ export default function BtnReport({ downloadFor, children }) {
 
   return (
     <>
-      <button onClick={() => handleDownloadClick('impianto-a')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A</button>
-      <button onClick={() => handleDownloadClick('impianto-a-tempi')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A</button>
-      <button onClick={() => handleDownloadClick('impianto-b')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO B</button>
-      <button onClick={() => handleDownloadClick('impianto-b-tempi')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP B</button>
-      <button onClick={() => handleDownloadClick('impianto-ab')}className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. IMPIANTO A e B</button>
-      <button onClick={() => handleDownloadClick('impianto-ab-tempi')} className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">GIOR. TEMPI IMP A e B</button>
-      <ExportReport btnPressed={btnPressed} />
+      <ExportReport 
+        reportFor={'impianto-a'} 
+        className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5"
+      >    
+        GIOR. IMPIANTO A
+      </ExportReport>
+      <ExportReport 
+        reportFor={'impianto-a-tempi'} 
+        className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5"
+      >
+        GIOR. TEMPI IMP A
+      </ExportReport>
+      <ExportReport
+        reportFor={'impianto-b'} 
+        className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5"
+      >
+        GIOR. IMPIANTO B
+      </ExportReport>
+      <ExportReport 
+        reportFor={'impianto-b-tempi'} 
+        className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5"
+      >
+        GIOR. TEMPI IMP B
+      </ExportReport>
+      <ExportReport 
+        reportFor={'impianto-ab'} 
+        className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5"
+      >
+        GIOR. IMPIANTO A e B
+      </ExportReport>
+      <ExportReport 
+        reportFor={'impianto-ab-tempi'} 
+        className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5"
+      >
+        GIOR. TEMPI IMP A e B
+      </ExportReport>
     </>
   );
 };
