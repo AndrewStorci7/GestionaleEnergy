@@ -289,8 +289,9 @@ const ExportReport = ({
 
   return (
     <button
-      className={className} 
+      className={`${className} ${props.disabled ? "opacity-60 cursor-not-allowed" : "transition-all hover:bg-sky-700 hover:text-white"}`} 
       onClick={async () => await handleDownload(reportFor)}
+      {...props}
     >
       {children}
     </button>

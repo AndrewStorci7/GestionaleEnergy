@@ -111,14 +111,17 @@ export default function Header({
                         {implant}
                     </div>
                 </div>
-                <div className={`${_CMN_PLACE_CENTER}`}>
-                    <div className={type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}>
-                        Balle totali lavorate: {totalbalesLavorate}
-                    </div>
-                </div> {/* end total bale */}
-                <div className={`${_CMN_PLACE_CENTER}`}>
-                    <div className={type === 'wheelman' ? "border w-fit py-1 px-2 rounded-xl bg-green-200 shadow-sm" : ""}>
-                        Balle totali a mag.: {totalbales}
+                <div className={`${_CMN_PLACE_CENTER} col-span-2 rounded-lg bg-gray-200 px-2`}>
+                    <h3 className="text-bold">
+                        Produzione sul turno
+                    </h3>
+                    <div className="grid grid-cols-2">
+                        <div className={`font-thin mr-[10px] ${type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}`}>
+                            Balle totali lavorate: {totalbalesLavorate}
+                        </div>
+                        <div className={`font-thin ${type === 'wheelman' ? "border w-fit py-1 px-2 rounded-xl bg-green-200 shadow-sm" : "font-thin"}`}>
+                            Balle totali a mag.: {totalbales}
+                        </div>
                     </div>
                 </div> {/* end total bale */}
                 <div className={`${_CMN_PLACE_CENTER}`}>

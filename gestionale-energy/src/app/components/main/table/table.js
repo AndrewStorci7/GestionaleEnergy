@@ -202,25 +202,31 @@ export default function Table({ type, implant, idUser }) {
                     </div>
                     
                     {!handleToggleSwitch ? (
-                        <div className={`grid grid-cols-2 gap-2 relative  h-[60vh]`}>
-                            <div className="grid-cols-1 bg-blue-100 mt-[10px] border-2 border-slate-400 ">
-                                <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT PREDEFINITI</h1>
-                                <div className="grid grid-cols-2 gap-1 mt-20">
+                        <div className="grid grid-cols-2 gap-2 relative h-[60vh] rounded-lg">
+                            <div className="bg-blue-100 mt-[10px] border-[0.1px] border-slate-200 shadow-lg rounded-lg">
+                                <h1 className="text-center bg-blue-300 font-bold text-xl py-[15px] rounded-t-lg">
+                                    REPORT PREDEFINITI
+                                </h1>
+                                <div className="grid grid-cols-2 gap-1 mt-20 p-20">
                                     <DownloadReport />
                                 </div>
-
                             </div>
-                            <div className="bg-blue-100 border-2 border-slate-400 mt-[10px]">
-                                <h1 className="text-center font-bold bg-blue-500 text-xl">REPORT DA FILTRI</h1>
-                                <div className="grid grid-cols-3 gap-1 mt-20">
-                                    <p className="ml-3 mb-1.5">PERIODO</p>
-                                    <input className=" mb-1.5" type="date"></input>
-                                    <input className=" mb-1.5" type="date"></input>
-                                    <p className="ml-3 mb-1.5">IMPIANTO</p>
+                            <div className="bg-blue-100 mt-[10px] border-[0.1px] border-slate-200 shadow-lg rounded-lg">
+                                <h1 className="text-center bg-blue-300 font-bold text-xl py-[15px] rounded-t-lg">
+                                    REPORT DA FILTRI
+                                </h1>
+                                <div className="grid grid-cols-3 gap-1 mt-20 p-20">
+                                    <p className="ml-3 mb-1.5 font-bold">
+                                        PERIODO
+                                    </p>
+                                    <input className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date"></input>
+                                    <input className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date"></input>
+                                    <p className="ml-3 mb-1.5 font-bold">IMPIANTO</p>
                                     <SelectInput id="search-input-implants" searchFor={"implants"} isForSearch />
                                     <p></p>
-                                    <p className="ml-3 mb-1.5">TIPO PLASTICA</p>
+                                    <p className="ml-3 mb-1.5 font-bold">TIPO PLASTICA</p>
                                     <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
+                                    {/*
                                     <p></p>
                                     <p className="ml-3 mb-1.5">PESO</p>
                                     <select name="peso" id="pesoid"> 
@@ -230,10 +236,12 @@ export default function Table({ type, implant, idUser }) {
                                     <p className="ml-3 mb-1.5">TURNO</p>
                                     <select name="turno" id="turnoid">
                                         <option value="esempio_a">-</option>
-                                    </select>
+                                    </select> */}
                                     <p></p>
                                     <p></p>
-                                    <button  className="text-black bg-sky-50 font-medium rounded-full text-sm px-2 py-1 text-center me-2 mt-3 mb-3.5">VISUALIZZA</button>
+                                    <button className="text-black font-semibold bg-sky-50 rounded-full text-sm px-2 py-2 text-center me-2 mt-3 mb-3.5 transition-all hover:bg-sky-700 hover:text-white">
+                                        VISUALIZZA
+                                    </button>
                                 </div>
                             </div>
                         </div>
