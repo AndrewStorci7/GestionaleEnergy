@@ -175,3 +175,12 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.draggable-wrapper {
+  position: fixed;
+  top: 50%;
+  /* left: 50%; */
+  transform: translate(0, 0); 
+  width: 100%;
+  /* z-index: 9999; /* opzionale per sovrapporre */
+}

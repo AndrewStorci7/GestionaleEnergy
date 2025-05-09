@@ -1,6 +1,7 @@
 'use client';
 
 import Cookies from "js-cookie";
+import Head from "next/head";
 
 import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
@@ -9,6 +10,14 @@ import { useEffect, useState } from "react";
 import CheckCookie from "@/app/components/main/check-cookie";
 
 import { WebSocketProvider } from '@@/components/main/ws/use-web-socket';
+
+// export const metadata = {
+// 	title: "Pannello – Oppimitti Energy",
+// 	description: "Gestionale che automatizza la gestione delle balle",
+// 	icons: {
+// 	  	icon: "/logoon.ico"
+// 	}
+// };
 
 export default function Admin() {
 
@@ -51,23 +60,29 @@ export default function Admin() {
     }, []);
 
     return(
-        <WebSocketProvider user={{ user, name, surname }}>
-            <div className="w-[99%] m-[0.5%] overflow-hidden">
-                <CheckCookie/>
-                <Header 
-                    implant={implant}
-                    username={user}
-                    type={type}
-                    name={name}
-                    surname={surname}
-                />
-                <MainContent 
-                    type={type}
-                    implant={idImplant}
-                    idUser={idUser}
-                />
-                <Footer />
-            </div>
-        </WebSocketProvider>
+        <>
+            <Head>
+                <title>Pannello – Oppimitti Energy</title>
+                <link rel="icon" href="/logoon.ico" />
+            </Head>
+            <WebSocketProvider user={{ user, name, surname }}>
+                <div className="w-[99%] m-[0.5%] overflow-hidden">
+                    <CheckCookie/>
+                    <Header 
+                        implant={implant}
+                        username={user}
+                        type={type}
+                        name={name}
+                        surname={surname}
+                    />
+                    <MainContent 
+                        type={type}
+                        implant={idImplant}
+                        idUser={idUser}
+                    />
+                    <Footer />
+                </div>
+            </WebSocketProvider>
+        </>
     );
 }
