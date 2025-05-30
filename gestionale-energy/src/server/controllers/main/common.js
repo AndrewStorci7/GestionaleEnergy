@@ -140,6 +140,7 @@ class Common {
     }
 
     formatDate(date) {
+        console.debug(typeof date);
         const yyyy = date.getFullYear();
         const mm = String(date.getMonth() + 1).padStart(2, '0');
         const dd = String(date.getDate()).padStart(2, '0');
@@ -162,19 +163,27 @@ class Common {
      * }
      * ```
      */
-    checkConditionForTurn(id_implant, type = null, turnIndex = 0) {
+    checkConditionForTurn(dateForReport, id_implant, type = null, turnIndex = 0) {
         const turn = this.checkTurn(turnIndex);
 
-        var condition = `(DATE(presser_bale.data_ins) = CURDATE() 
+        var condition = `(DATE(presser_bale.data_ins) = ${dateForReport} 
                         AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )`;
         var params = [id_implant, turn[0], turn[1]];
+
+        var [year, month, day] = dateForReport.split('-').map(Number);
+        const cd = new Date(year, month - 1, day);
+        const tm = new Date(year, month - 1, day + 1);
+        const currentDate = this.formatDate(cd); // 'YYYY-MM-DD'
+        const tomorrow = this.formatDate(tm); // 'YYYY-MM-DD'
+        console.debug(currentDate, tomorrow);
+
 
         // Diffrenzio il ritrono della funzioni per tipo di chiamata
         // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
         if (type === "report") {
             condition = {
                 first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
-                second: `AND DATE(presser_bale.data_ins) = CURDATE() - INTERVAL 1 DAY AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
+                second: `AND DATE(presser_bale.data_ins) = '${currentDate}' AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
                 third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) `,
                 fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
                 // fourth: `AND wheelman_bale.id_cwb = 1 AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `,
@@ -184,20 +193,20 @@ class Common {
         }
 
         if (turn[turn.length - 1] !== 0) {
-            const currentDate = new Date(), yesterday = new Date();
-            yesterday.setDate(currentDate.getDate() - 1);
+            // const currentDate = new Date(), yesterday = new Date();
+            // yesterday.setDate(currentDate.getDate() - 1);
 
-            const turn3_a = `${this.formatDate(yesterday)} 22:00:00`;
-            const turn3_b = `${this.formatDate(currentDate)} 05:59:59`;
+            const turn3_a = `${currentDate} 22:00:00`;
+            const turn3_b = `${tomorrow} 05:59:59`;
 
             if (turn[turn.length - 1] == 1) {
-                condition = `(DATE(presser_bale.data_ins) = CURDATE() AND 
+                condition = `(DATE(presser_bale.data_ins) = '${tomorrow}' AND 
                             TIME(presser_bale.data_ins) BETWEEN ? AND ? )`
                 params = [id_implant, turn[0], turn[1]];
             }
 
             if (turn[turn.length - 1] == 2) {
-                console.debug(turn3_a + turn3_b,);
+                // console.debug(turn3_a + turn3_b,);
                 condition = `presser_bale.data_ins BETWEEN ? AND ? `
                 params = [id_implant, turn3_a, turn3_b];
             }

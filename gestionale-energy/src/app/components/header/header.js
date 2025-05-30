@@ -2,13 +2,16 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { getEnv, getBgColor, getServerRoute } from "@/app/config";
+import { getEnv, getServerRoute, fetchReportData } from "@/app/config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
+import { handleDownload } from "@admin/export-report";
 
 /**
- * 
+ * Header
+ * @param {*} param0 
+ * @returns 
  */
 export default function Header({ 
     implant, 
@@ -49,7 +52,7 @@ export default function Header({
         const fetchData = async () => {
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
-                const url = await getServerRoute("total-bale-count");
+                const url = getServerRoute("total-bale-count");
                 const implant = cookies.id_implant;
                 
                 const resp = await fetch(url, {
@@ -87,6 +90,11 @@ export default function Header({
                 setTurn("Turno 3");
             else
                 setTurn("Turno 1");
+
+            if (_hour === 6) {
+                handleDownload(fetchReportData, 'impianto-a');
+                handleDownload(fetchReportData, 'impianto-b');
+            }
 
         }, 1000);
 
