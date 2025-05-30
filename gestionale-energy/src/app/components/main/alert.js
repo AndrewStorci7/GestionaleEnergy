@@ -43,12 +43,13 @@ export default function Alert({
   */
   const closeAlert = (isConfirmed = false) => {
     try {
-      baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
+      if (typeof baleObj !== undefined && baleObj !== undefined) baleObj.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
       handleClose(isConfirmed); 
       refreshPage(ws);
     } catch (error) {
       setSanitize("error");
-      setMessage(error);
+      if (typeof error === 'object') setMessage(error.message);
+      else setMessage(error);
     }
   };
 

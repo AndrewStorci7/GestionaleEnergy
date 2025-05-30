@@ -1,7 +1,7 @@
 import Common from './main/common.js';
 import Console from '../inc/console.js';
 
-const console = new Console("Report");
+const console = new Console("Report", 1);
 
 /**
  * Classe per la gestione dei report
@@ -23,13 +23,17 @@ class Report extends Common {
      */
     async reportGiornaliero(req, res) {
         try {
-            const { implant } = req.body;
+            // const { body } = req.body;
+            // console.debug(body);
+
+            const body = req.body;
+            console.debug(body);
 
             const data = new Array(3);
 
             for (let i = 1; i < 4; ++i) {
 
-                const params = super.checkConditionForTurn(implant, "report", i);
+                const params = super.checkConditionForTurn(body.date, body.implant, "report", i);
                 
                 const [select] = await this.db.query(
                     `SELECT 
@@ -63,6 +67,11 @@ class Report extends Common {
 
                 if (select && select.length > 0)
                     data[i - 1] = select;
+            }
+
+            if (body.saveOnServer) {
+                handleDownload(body.implant);
+                res.end();
             }
 
             if (data && data.length > 0) {

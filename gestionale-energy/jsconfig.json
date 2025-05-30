@@ -3,6 +3,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@@/*": ["./src/app/*"],
+      "@admin/*": ["./src/app/components/main/admin/*"]
     }
   }
 }

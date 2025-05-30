@@ -205,10 +205,10 @@ export default function TableContent({
                                     <td 
                                         className={style}
                                         key={idUnique + key}
-                                        onDoubleClick={(e) => {
-                                            cacheValue(e.target.value)
-                                            setEditingWeightRowId(idUnique)
-                                        }}
+                                        // onDoubleClick={(e) => {
+                                        //     cacheValue(e.target.value)
+                                        //     setEditingWeightRowId(idUnique)
+                                        // }}
                                     >
                                         {editingWeightRowId === idUnique ? (
                                             <input

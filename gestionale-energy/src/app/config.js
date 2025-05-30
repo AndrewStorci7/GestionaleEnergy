@@ -262,6 +262,68 @@ const handleDelete = async (id, handleAlertChange, msg) => {
     }
 }
 
+/**
+ * Fetch Data for report
+ * @param {string} reportFor 
+ * @param {Date} dateForReport
+ * @returns 
+ */
+const fetchReportData = async (reportFor, dateForReport) => {
+    try {
+        console.log(reportFor, dateForReport);
+
+        // Definisci gli impianti da considerare in base al pulsante premuto
+        const implant = (reportFor === 'impianto-a') ? [1] : 
+                        (reportFor === 'impianto-b') ? [2] : 
+                        (reportFor === 'impianto-ab') ? [1, 2] : 0;
+        
+        const url = getServerRoute("report-daily");
+        
+        if (implant === 0) {
+            console.log("Impianto type is invalid.");
+            return;
+        }
+        
+        let allData = [];
+
+        for (const i in implant) {
+            console.log("Fetching data for Impianto:", implant[i]);
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ implant: implant[i], date: dateForReport })
+            });
+
+            const data = await resp.json();
+            console.log("Server Response:", data);
+
+            if (data.code === 0) {
+                allData.push(data.data);
+            } else {
+                // setEmpty(true);
+            }
+        }
+
+        if (allData.length > 0) {
+            // Combina i dati degli impianti A e B se reportFor è 'impianto-ab'
+            if (reportFor === 'impianto-ab') {
+                const mergedData = [...allData[0], ...allData[1]];  // Unisce i dati dei due impianti
+                // setReportData(mergedData);
+                return mergedData;
+            } else {
+                // setReportData(allData[0]);  // Impianto singolo
+                return allData[0];
+            }
+        }
+
+        return allData;
+
+    } catch (error) {
+        console.error("Error Fetching Data:", error);
+        return null;
+    }
+};
+
 export { 
     getEnv, 
     getSrvUrl, 
@@ -271,5 +333,6 @@ export {
     isWebSocketConnected,
     getServerRoute,
     updateStatusTotalbale,
-    handleDelete
+    handleDelete,
+    fetchReportData
 };
