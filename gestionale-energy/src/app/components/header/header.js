@@ -91,10 +91,10 @@ export default function Header({
             else
                 setTurn("Turno 1");
 
-            if (_hour === 6) {
-                handleDownload(fetchReportData, 'impianto-a');
-                handleDownload(fetchReportData, 'impianto-b');
-            }
+            // if (_hour === 6) {
+            //     handleDownload(fetchReportData, 'impianto-a');
+            //     handleDownload(fetchReportData, 'impianto-b');
+            // }
 
         }, 1000);
 

@@ -33,7 +33,7 @@ class Report extends Common {
 
             for (let i = 1; i < 4; ++i) {
 
-                const params = super.checkConditionForTurn(body.date, body.implant, "report", i);
+                const params = super.checkConditionForTurn(body.implant, "report", i, body.date);
                 
                 const [select] = await this.db.query(
                     `SELECT 
@@ -110,7 +110,7 @@ class Report extends Common {
             );
 
             if (select && select.length > 0) {
-                console.info(select)
+                // console.info(select)
                 res.json({ code: 0, data: select });
             } else {
                 res.json({ code: 1, message: "No data fetched" });

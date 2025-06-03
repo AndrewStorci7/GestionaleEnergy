@@ -163,8 +163,12 @@ class Common {
      * }
      * ```
      */
-    checkConditionForTurn(dateForReport, id_implant, type = null, turnIndex = 0) {
+    checkConditionForTurn(id_implant, type = null, turnIndex = 0, dateForReport = null) {
         const turn = this.checkTurn(turnIndex);
+
+        if (dateForReport === null || !dateForReport) {
+            dateForReport = new Date();
+        }
 
         var condition = `(DATE(presser_bale.data_ins) = ${dateForReport} 
                         AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )`;
