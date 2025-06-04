@@ -131,10 +131,10 @@ export default function Header({
                             Balle totali a mag.: {totalbales}
                         </div> */}
                         <div className={`font-thin mr-[10px] ${type === 'presser' ? "!font-bold" : ""}`}>
-                            Balle totali lavorate: {totalbalesLavorate}
+                            Balle inserite: {totalbalesLavorate}
                         </div>
                         <div className={`font-thin ${type === 'wheelman' ? "!font-bold" : ""}`}>
-                            Balle totali a mag.: {totalbales}
+                            Balle prodotte: {totalbales}
                         </div>
                     </div>
                 </div> {/* end total bale */}
