@@ -140,7 +140,7 @@ class Common {
     }
 
     formatDate(date) {
-        console.debug(typeof date);
+        console.debug("Data ricevuta ===> " + date);
         const yyyy = date.getFullYear();
         const mm = String(date.getMonth() + 1).padStart(2, '0');
         const dd = String(date.getDate()).padStart(2, '0');
@@ -151,10 +151,10 @@ class Common {
      * Questa funzione serve per settare la corretta condizione di ricerca basata sull'orario (per turni)
      * Ritorna un oggetto utilizzabile per l'esecuzione di una query.
      * 
-     * @param {number} id_implant   Id dell'impianto
-     * @param {string} type         Tipo di condizione  
-     * @param {number} turnIndex    Numero del turno per la condizione (delego a `checkTurn()`)
-     * 
+     * @param {number} id_implant    Id dell'impianto
+     * @param {string} type          Tipo di condizione  
+     * @param {number} turnIndex     Numero del turno per la condizione (delego a `checkTurn()`)
+     * @param {string} dateForReport Data per il report
      * @returns {Object} 
      * ```js
      * {
@@ -163,50 +163,55 @@ class Common {
      * }
      * ```
      */
-    checkConditionForTurn(dateForReport, id_implant, type = null, turnIndex = 0) {
+    checkConditionForTurn(id_implant, type = null, turnIndex = 0, dateForReport = null) {
         const turn = this.checkTurn(turnIndex);
 
-        var condition = `(DATE(presser_bale.data_ins) = ${dateForReport} 
+        const check = (dateForReport === null);
+        var year, month, day, currentDate = new Date(), tomorrow = new Date(), yesterday = new Date();
+
+        if (!check) {
+            [year, month, day] = dateForReport.split('-').map(Number);
+            const cd = new Date(year, month - 1, day);
+            const tm = new Date(year, month - 1, day + 1);
+            currentDate = this.formatDate(cd); // 'YYYY-MM-DD'
+            tomorrow = this.formatDate(tm); // 'YYYY-MM-DD'
+            console.debug(currentDate, tomorrow);
+        } else {
+            currentDate = new Date();
+            yesterday = new Date();
+            yesterday.setDate(currentDate.getDate() - 1);
+            yesterday = this.formatDate(yesterday);
+            currentDate = this.formatDate(currentDate);
+        }
+
+        var condition = `(DATE(presser_bale.data_ins) = ${!check ? `'${tomorrow}'` : 'CURDATE()'} 
                         AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )`;
         var params = [id_implant, turn[0], turn[1]];
-
-        var [year, month, day] = dateForReport.split('-').map(Number);
-        const cd = new Date(year, month - 1, day);
-        const tm = new Date(year, month - 1, day + 1);
-        const currentDate = this.formatDate(cd); // 'YYYY-MM-DD'
-        const tomorrow = this.formatDate(tm); // 'YYYY-MM-DD'
-        console.debug(currentDate, tomorrow);
-
 
         // Diffrenzio il ritrono della funzioni per tipo di chiamata
         // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
         if (type === "report") {
             condition = {
                 first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
-                second: `AND DATE(presser_bale.data_ins) = '${currentDate}' AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
-                third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) `,
+                second: `AND DATE(presser_bale.data_ins) = ${!check ? `'${currentDate}'` : 'CURDATE() - INTERVAL 1 DAY'} AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
+                third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) AND pb_wb.status = 1`,
                 fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
-                // fourth: `AND wheelman_bale.id_cwb = 1 AND DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? `,
             };
-            // params = [turn[0], turn[1], id_implant, turn[0], turn[1]];
             params = [turn[0], turn[1], id_implant];
         }
 
         if (turn[turn.length - 1] !== 0) {
-            // const currentDate = new Date(), yesterday = new Date();
-            // yesterday.setDate(currentDate.getDate() - 1);
 
-            const turn3_a = `${currentDate} 22:00:00`;
-            const turn3_b = `${tomorrow} 05:59:59`;
+            const turn3_a = `${check ? yesterday : currentDate} 22:00:00`;
+            const turn3_b = `${check ? currentDate : tomorrow} 05:59:59`;
 
             if (turn[turn.length - 1] == 1) {
-                condition = `(DATE(presser_bale.data_ins) = '${tomorrow}' AND 
+                condition = `(DATE(presser_bale.data_ins) = ${!check ? `'${tomorrow}'` : 'CURDATE()'} AND 
                             TIME(presser_bale.data_ins) BETWEEN ? AND ? )`
                 params = [id_implant, turn[0], turn[1]];
             }
 
             if (turn[turn.length - 1] == 2) {
-                // console.debug(turn3_a + turn3_b,);
                 condition = `presser_bale.data_ins BETWEEN ? AND ? `
                 params = [id_implant, turn3_a, turn3_b];
             }
@@ -214,21 +219,15 @@ class Common {
             // Diffrenzio il ritrono della funzioni per tipo di chiamata
             // Nel caso in cui la chiamata sia per il report allora construisco un oggetto con condizioni separate
             if (type === "report") {
-                console.debug(turn3_a + turn3_b,);
                 condition = {
                     first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
                     second: `AND (presser_bale.data_ins BETWEEN ? AND ? )`,
-                    third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL)`,
+                    third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) AND pb_wb.status = 1`,
                     fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
-                    // fourth: `AND wheelman_bale.id_cwb = 1 AND ((DATE(wheelman_bale.data_ins) = CURDATE() AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? ) OR (DATE(wheelman_bale.data_ins) = (CURDATE() + INTERVAL 1 DAY) AND TIME(wheelman_bale.data_ins) BETWEEN ? AND ? )) `,
                 };
-                // params = [turn[0], turn[1], turn[2], turn[3], id_implant, turn[0], turn[1], turn[2], turn[3]];
                 params = [turn3_a, turn3_b, id_implant];
             }
         }
-
-        // console.debug(condition);
-        // console.debug(params);
 
         return { condition, params };
     }
