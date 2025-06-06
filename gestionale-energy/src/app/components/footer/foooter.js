@@ -21,6 +21,7 @@ export default function Footer( props ) {
           Powered by <a href="https://oppimittinetworking.com">Oppimittinetworking.com</a>
         </div>
         <div className="text-center sm:text-left">{year} @‌copyright</div>
+        <div className="text-center sm:text-left">{process.env.NEXT_PUBLIC_VERSION}</div>
       </div>
     </div>
   );

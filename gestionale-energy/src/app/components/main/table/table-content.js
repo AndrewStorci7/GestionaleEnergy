@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
-import Alert from '../alert';
+import Alert from '../alert/alert';
 
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 import { refreshPage, getServerRoute, getBgColor } from '@/app/config';

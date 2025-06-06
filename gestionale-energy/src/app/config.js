@@ -232,37 +232,6 @@ const updateStatusTotalbale = async (body, method = 'POST', url = getServerRoute
 }
 
 /**
- * Elimina una balla 
- * @param {number}      id 
- * @param {function}    handleAlertChange
- */
-const handleDelete = async (id, handleAlertChange, msg) => {
-
-    if (typeof handleAlertChange !== "function") {
-        throw new Error("Errore: `handleAlert` must be a function hook");
-    }
-
-    try {
-        console.log("entrato nel try/catch di `handleDelete`: id balla => " + id);
-        const url = getServerRoute('delete-bale');
-        const check = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_bale: id }),
-        });
-
-        const resp = await check.json();
-
-        if (resp.code < 0) {
-            console.log("risposta ottenuta da `handleDelete`: " + resp.message);
-            throw new Error(resp.message);
-        } 
-    } catch (error) {
-        throw new Error(error);
-    }
-}
-
-/**
  * Fetch Data for report
  * @param {string} reportFor 
  * @param {Date} dateForReport
@@ -333,6 +302,5 @@ export {
     isWebSocketConnected,
     getServerRoute,
     updateStatusTotalbale,
-    handleDelete,
     fetchReportData
 };

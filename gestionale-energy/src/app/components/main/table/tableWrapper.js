@@ -39,7 +39,8 @@ const TableWrapper = ({
             <div className={`not-prose shadow-sm relative rounded-xl overflow-hidden ${backgroundColor}`}>
                 <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
                     <h2 className='font-bold text-xl px-4 pt-[5px] text-white'>
-                        Dati inseriti dal  {(innerType === 'presser') ? 'Pressista' : (innerType === 'wheelman') ? 'Carrellista' : ''}
+                        {/* Dati inseriti dal  {(innerType === 'presser') ? 'Pressista' : (innerType === 'wheelman') ? 'Carrellista' : ''} */}
+                        {(innerType === 'presser') ? 'Pressista' : (innerType === 'wheelman') ? 'Carrellista' : ''}
                     </h2>
                 </div>
                 <div className="relative rounded-xl overflow-auto shadow-inner">
