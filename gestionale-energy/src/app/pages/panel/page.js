@@ -5,19 +5,12 @@ import Head from "next/head";
 
 import Footer from "@/app/components/footer/foooter";
 import Header from "@/app/components/header/header";
-import MainContent from "@/app/components/main/main-content";
+import MainContent from "@main/main-content";
 import { useEffect, useState } from "react";
-import CheckCookie from "@/app/components/main/check-cookie";
+import CheckCookie from "@main/check-cookie";
 
-import { WebSocketProvider } from '@@/components/main/ws/use-web-socket';
-
-// export const metadata = {
-// 	title: "Pannello – Oppimitti Energy",
-// 	description: "Gestionale che automatizza la gestione delle balle",
-// 	icons: {
-// 	  	icon: "/logoon.ico"
-// 	}
-// };
+import { WebSocketProvider } from '@main/ws/use-web-socket';
+import { AlertProvider } from "@/app/components/main/alert/alertProvider";
 
 export default function Admin() {
 
@@ -60,12 +53,12 @@ export default function Admin() {
     }, []);
 
     return(
-        <>
+        <WebSocketProvider user={{ user, name, surname }}>
             <Head>
                 <title>Pannello – Oppimitti Energy</title>
                 <link rel="icon" href="/logoon.ico" />
             </Head>
-            <WebSocketProvider user={{ user, name, surname }}>
+            <AlertProvider>
                 <div className="w-[99%] m-[0.5%] overflow-hidden">
                     <CheckCookie/>
                     <Header 
@@ -82,7 +75,7 @@ export default function Admin() {
                     />
                     <Footer />
                 </div>
-            </WebSocketProvider>
-        </>
+            </AlertProvider>
+        </WebSocketProvider>
     );
 }
