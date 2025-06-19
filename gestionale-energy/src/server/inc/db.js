@@ -22,7 +22,19 @@ const pool = mysql.createPool({
     password: DB_PW,
     database: DB_NAME,
     port: DB_PORT,
-    timezone: "Europe/Rome"
+    timezone: "Europe/Rome",
+    // Configurazioni del pool per evitare sovraccarico
+    connectionLimit: 50,           // Max connessioni simultanee
+    acquireTimeout: 60000,         // Timeout acquisizione connessione (60s)
+    timeout: 60000,                // Timeout query (60s)
+    idleTimeout: 300000,           // Timeout connessioni idle (5min)
+    reconnect: true,               // Riconnessione automatica
+    multipleStatements: false,     // Sicurezza
+    // Gestione degli errori di connessione
+    handleDisconnects: true,
+    // Pool eventi per debug
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 0
 });
 
 const promisePool = pool.promise();

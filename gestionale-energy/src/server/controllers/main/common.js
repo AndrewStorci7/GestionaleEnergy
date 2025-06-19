@@ -140,7 +140,7 @@ class Common {
     }
 
     formatDate(date) {
-        console.debug("Data ricevuta ===> " + date);
+        // console.debug("Data ricevuta ===> " + date);
         const yyyy = date.getFullYear();
         const mm = String(date.getMonth() + 1).padStart(2, '0');
         const dd = String(date.getDate()).padStart(2, '0');
@@ -175,7 +175,7 @@ class Common {
             const tm = new Date(year, month - 1, day + 1);
             currentDate = this.formatDate(cd); // 'YYYY-MM-DD'
             tomorrow = this.formatDate(tm); // 'YYYY-MM-DD'
-            console.debug(currentDate, tomorrow);
+            // console.debug(currentDate, tomorrow);
         } else {
             currentDate = new Date();
             yesterday = new Date();

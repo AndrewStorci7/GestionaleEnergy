@@ -9,7 +9,7 @@ export default (db, table) => {
 
     router.post('/presser/update', (req, res) => controller.update(req, res));
     
-    router.post('/presser/set', (req, res) => controller.set(req, res));
+    // router.post('/presser/set', (req, res) => controller.set(req, res));
 
     return router;
 }

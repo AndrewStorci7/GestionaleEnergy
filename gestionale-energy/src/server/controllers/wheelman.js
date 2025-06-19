@@ -1,5 +1,5 @@
 import Bale from './main/bale.js';
-import Console from '../inc/console.js';;
+import Console from '../inc/console.js';
 
 const console = new Console("Wheelman", 1);
 
@@ -15,7 +15,7 @@ class WheelmanBale extends Bale {
 
     handleWheelmanData = async (req) => {
         
-        const {id} = req.body;
+        const id = req.body.id;
         // console.info(`Data received: ${id}`, "yellow");
 
         const [rows] = await this.db.query(
@@ -49,9 +49,12 @@ class WheelmanBale extends Bale {
                 ${this.table}.id = ? LIMIT 1`,
             id
         );
+
+        console.debug(rows);
     
         if (rows && rows.length > 0) {
             // console.info(rows) // test
+            // return { code: 0, data: rows[0] };
             return rows[0];
         } else {
             // console.info({ code: 1, message: "Nessuna balla trovata" }) // test
@@ -59,26 +62,35 @@ class WheelmanBale extends Bale {
         }
     };
 
-    async get(req, res) {
+    async get(req, res, fromInside = false) {
         try {
+            console.info(req)
             const data = await this.handleWheelmanData(req);
             
-            // console.info(data) // test
-            
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
-                res.json(data);
+                if (fromInside) 
+                    return data;
+                else  
+                    res.json(data);
             } else { // in caso contrario, invio i dati
-                res.json({ code: 0, data: data });
+                if (fromInside)
+                    return data;
+                else  
+                    res.json({ code: 0, data: data });
             }
         } catch (error) {
-            throw error;
+            console.error(error.message);
+            if (fromInside) 
+                return error.message;
+            else 
+                res.status(500).send(`Errore durante l\'esecuzione della query: ${error.message}`);
         }
     }
 
-    async set(req, res) {
+    async set(data) {
         try {
 
-            const { body } = req.body;
+            const body = data;
             var query = "";
             
             if (body) {
@@ -91,13 +103,14 @@ class WheelmanBale extends Bale {
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
-                res.json({ code: 0, message: { id_new_bale }});
+                return { code: 0, message: { id_new_bale } };
             } else {
                 const info = check_ins_pb[0].info;
-                res.json({ code: 1, message: { info }});
+                return { code: 1, message: { info } };
             }
         } catch (error) {
-            throw error;
+            console.error(error.message);
+            throw `Presser Error Add: ${error.message}`;
         }
     }
 

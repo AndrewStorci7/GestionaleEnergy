@@ -1,5 +1,7 @@
 import Console from '../inc/console.js';
 import Common from './main/common.js';
+import PresserBale from './presser.js';
+import WheelmanBale from './wheelman.js';
 
 const console = new Console("TotalBale", 1);
 
@@ -13,8 +15,11 @@ class TotalBale extends Common {
     constructor(db, table) {
         super(db, table);
         this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}`;
+        this.PresserInstance = new PresserBale(this.db, 'presser_bale');
+        this.WheelmanInstance = new WheelmanBale(this.db, 'wheelman_bale');
     }
 
+    //#region Add New Bale
     /**
      * Add Bale on DB
      * 
@@ -40,22 +45,12 @@ class TotalBale extends Common {
             const checkIfIncludesMDR = data.body.id_plastic.includes('MDR'); // controllo che la balla inserita è MDR. Nel caso in cui è MDR vado ad impostare il magazzino di destinazione su Provvisorio
 
             /// Fetch dei dati del pressista 
-            const data_presser = await fetch(this.internalUrl + '/presser/set', { 
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ body: data.body })
-            });
-            const data_presser_resolved = await data_presser.json();
-            id_new_presser_bale = data_presser_resolved.message.id_new_bale;
+            const data_presser = await this.PresserInstance.set( data.body );
+            id_new_presser_bale = data_presser.message.id_new_bale;
 
             /// Fetch dei dati del carrellista
-            const data_wheelman = await fetch(this.internalUrl + '/wheelman/set', { 
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ body: checkIfIncludesMDR })
-            })
-            const data_wheelman_resolved = await data_wheelman.json();
-            id_new_wheelman_bale = data_wheelman_resolved.message.id_new_bale;
+            const data_wheelman = await this.WheelmanInstance.set( checkIfIncludesMDR );
+            id_new_wheelman_bale = data_wheelman.message.id_new_bale;
 
             const check_ins_pbwb = await this.db.query(
                 `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status, gam) VALUES(?, ?, ?, ?, ?)`,
@@ -98,6 +93,7 @@ class TotalBale extends Common {
         }
     }
 
+    //#region Create Object 
     /**
      * Compone gli array di oggetti per i dati del pressista e del carrellista.
      * @param {object[]} presserResult     Array sul quale aggiugnere i dait del pressista
@@ -111,23 +107,21 @@ class TotalBale extends Common {
             var status = e.status;
             var id = e.id;
 
-            /// Fetch dei dati del pressista
-            const res_presser = await fetch(this.internalUrl + '/presser/get', { 
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: id_presser })
-            });
-            const data_presser = await res_presser.json();
+            /// Fetch dei dati del pressista 
+            const data_presser = await this.PresserInstance.get(
+                { body: { id: id_presser } },
+                null,
+                true
+            );
             data_presser.status = status;
             data_presser.idUnique = id;
 
             /// Fetch dei dati del carrellista
-            const res_wheelman = await fetch(this.internalUrl + '/wheelman/get', { 
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: id_wheelman })
-            });
-            const data_wheelman = await res_wheelman.json();
+            const data_wheelman = await this.WheelmanInstance.get(
+                { body: { id: id_wheelman } },
+                null,
+                true
+            );
             data_wheelman.status = status;
             data_wheelman.idUnique = id;
 
@@ -136,6 +130,7 @@ class TotalBale extends Common {
         };
     }
 
+    //#region Get Total Bale
     /**
      * Get a total bale composed by information of the bale created by presser
      * and the information of the bale added by wheelman
@@ -151,13 +146,16 @@ class TotalBale extends Common {
      */
     async get(req, res) {
         try {
+            const start = Date.now();
             const { body } = req.body;
+            console.debug(body)
+            // res.json({ body: req.body });
             const id_implant = body.id_implant;
             const useFor = body.useFor;
             var cond_status = ' AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
             var order_by = 'DESC';
 
-            console.debug(useFor);
+            console.debug();
 
             if (useFor === 'specific') {
                 cond_status = ' AND pb_wb.status = 1';
@@ -201,18 +199,18 @@ class TotalBale extends Common {
                     ORDER BY 
                         IFNULL(presser_bale.data_ins, wheelman_bale.data_ins) ${order_by}
                     LIMIT 300`,
-                    _params.params,
-                    true
+                    _params.params
                 );
 
                 if (select !== 'undefined' || select !== null) {
-                    console.debug(select);
+                    // console.debug(select);
                     await this.createObjectArray(select, presserResult, wheelmanResult);
                 }
             }
 
 
-
+            const current = Date.now() - start;
+            console.debug(`[OK] ${current}ms`);
             if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
                 res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
             } else {

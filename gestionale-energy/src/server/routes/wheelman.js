@@ -9,7 +9,7 @@ export default (db, table) => {
 
     router.post('/wheelman/update', (req, res) => controller.update(req, res));
     
-    router.post('/wheelman/set', (req, res) => controller.set(req, res));
+    // router.post('/wheelman/set', (req, res) => controller.set(req, res));
 
     return router;
 }

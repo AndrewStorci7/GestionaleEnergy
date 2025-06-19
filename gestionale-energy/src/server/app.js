@@ -83,4 +83,5 @@ app.use(reportRouter(db));
 
 server.listen(PORT, ADDRESS, () => {
     console.info(`Server running on ${URL}:${PORT}`);
+    console.info(`DB MySQL running on ${process.env.NEXT_PUBLIC_APP_DB_HOST}:${process.env.NEXT_PUBLIC_APP_DB_PORT}`)
 });
