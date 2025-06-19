@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import SelectInput from './search/select';
-import { updateStatusTotalbale, getServerRoute } from '@@/config';
 import Cookies from 'js-cookie';
+import Image from 'next/image';
+
+import { updateStatusTotalbale, getServerRoute, refreshPage } from '@@/config';
+import { fetchDataBale, handleStampa } from '@main/fetch';
+import { useAlert } from '@main/alert/alertProvider';
+import { useWebSocket } from '@main/ws/use-web-socket';
+import SelectInput from './search/select';
 
 /**
  * @author Andrea Storci from Oppimittinetworking.com
@@ -17,58 +22,43 @@ export default function UpdateValuesBale({
     ...props
 }) {
 
+    console.log("Data passed to UpdateValuesBale: ", objBale);
+
+    const { showAlert } = useAlert();
+    const { ws } = useWebSocket();
+
     const [canProceed, setCanProceed] = useState(false);
 
-    // Dati Pressista
-    const [plastic, setPlastic] = useState(""); // Id plastica
-    // const [plastic2, setPlastic2] = useState(""); // Codice plastica   
-    const [rei, setRei] = useState(""); // Stato se balla reimballata
-    const [cdbp, setCdbp] = useState(""); // Condizione balla pressista
-    const [selected_b, setSelectedBale] = useState(""); // Balla selezionata
+    const [presserData, setPresserData] = useState({
+        plastic: null, 
+        rei: null,
+        cdbp: null,
+        selected_b: null,
+        notes: null
+    });
 
-    // Dati carrellista
-    const [cdbc, setCdbc] = useState(""); // Condizione balla carrellista
-    const [reason, setReason] = useState(""); // Motivazione
-    const [weight, setWeight] = useState(0); // Peso
-    const [dest_wh, setDestWh] = useState(""); // magazzino destinazione
+    const [wheelmanData, setWheelmanData] = useState({
+        cdbc: null, 
+        reason: null,
+        weight: null,
+        dest_wh: null,
+        notes: null
+    });
 
-    const [note, setNote] = useState(""); // Note (sia carrellista che pressista)
-
-    const fetchData = async () => {
-        try {
-            
-            const url = getServerRoute(type === 'presser' ? 'presser' : 'wheelman');
-            const resp = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: objBale.idBale })
-            });
-
-            const data = await resp.json();
-
-            if (type === 'presser') {
-                setPlastic(data.plastic);
-                setRei(data._idRei);
-                setCdbp(data._idCpb);
-                setSelectedBale(data._idSb);
-                setNote(data.notes);
-                setCanProceed(data.plastic !== null || data.plastic !== undefined);
-            } else {
-                setCdbc(data._idCwb);
-                setReason(data._idRnt);
-                setWeight(data.weight);
-                setDestWh(data._idWd);
-                setNote(data.notes);
-                setCanProceed(data.weight > 0);
-            }
-        } catch (error) {
-            console.error(error);
+    const handleData = (data) => {
+        if (type === "presser") {
+            const tmpData = { plastic: data.plastic, rei: data._idRei, cdbp: data._idCpb, selected_b: data._idSb, notes: data.notes };
+            setPresserData({ plastic: data.plastic, rei: data._idRei, cdbp: data._idCpb, selected_b: data._idSb, notes: data.notes });
+            setCanProceed(data.plastic !== null || data.plastic !== undefined);
+        } else {
+            setPresserData({ cdbc: data._idCwb, reason: data._idRnt, weight: data.weight, dest_wh: data._idWd, notes: data.notes });
+            setCanProceed(data.weight > 0);
         }
     }
 
     useEffect(() => {
-        fetchData();
-    }, [objBale]);
+        fetchDataBale(type, objBale, handleData);
+    }, []);
 
     /**
      * Handle Click function
@@ -115,8 +105,10 @@ export default function UpdateValuesBale({
     
             // Aggiorna lo stato della balla totale
             await updateStatusTotalbale(body2);
+            setCanProceed(false);
+            refreshPage(ws);
             // Gestisco la conferma e ri-renderizzo la componente padre
-            handlerClose();
+            // handlerClose();
     
         } catch (error) {
             console.error("Errore", error);
@@ -185,10 +177,11 @@ export default function UpdateValuesBale({
                             className='text-black w-full on-input'
                             type="number"
                             id="peso-carrellista"
-                            value={weight}
+                            value={weight || 0}
                             onChange={(e) => { 
-                                setWeight(e.target.value);
-                                setCanProceed(e.target.value > 0 && e.target.value);
+                                const newWeight = parseFloat(e.target.value) || 0;
+                                setWeight(newWeight);
+                                setCanProceed(newWeight > 0 && newWeight);
                             }}
                             placeholder="Inserisci peso"
                         />
@@ -214,14 +207,31 @@ export default function UpdateValuesBale({
                     onClick={() => handleClick()}
                     disabled={!canProceed}
                 >
-                    OK
+                    Conferma
                 </button>
                 <button 
-                    className={'border px-[10px] py-[5px] rounded-xl bg-primary mr-4'}
+                    className={'border px-[10px] py-[5px] rounded-xl bg-primary mx-4'}
                     onClick={() => handlerClose()}
                 >
                     Annulla
                 </button>
+                {type === 'wheelman' && (
+                    <button className={'border px-[10px] py-[5px] rounded-xl bg-green-500 mr-4'}
+                    onClick={() => handleStampa(objBale, showAlert, handlerClose, weight > 0)}
+                    // onClick={() => {}}
+                    >
+                        <div className="flex items-center p-1">
+                            <Image 
+                                src={"/filled/stampa-bianco-filled.png"}
+                                width={25}
+                                height={25}
+                                alt="Aggiungi icona"
+                                className="mr-2"
+                            />
+                            Stampa etich.
+                        </div>
+                    </button>
+                )}
             </div>
         </>
     )

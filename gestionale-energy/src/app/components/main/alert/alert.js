@@ -1,11 +1,13 @@
 'use client';
 import React, { useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
+import { IoClose } from "react-icons/io5";
+import Icon from "@main/get-icon";
 
 import UpdateValuesBale from "@main/update-bale";
 import { useWebSocket } from "@main/ws/use-web-socket";
 import { useAlert } from "@main/alert/alertProvider";
-import { handleDelete } from "@main/fetch";
+import { handleDelete, handleStampa } from "@main/fetch";
 
 import { refreshPage } from "@/app/config";
 
@@ -50,12 +52,12 @@ export default function Alert({
   /**
   * @param {boolean} isConfirmed
   */
-  const closeAlert = (isConfirmed = false) => {
+  const closeAlert = () => {
     try {
       if (data !== null && typeof data !== undefined) {
         data.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
-        // refreshPage(ws);
       } 
+      refreshPage(ws);
       cancel(); 
     } catch (error) {
       setSanitize("error");
@@ -80,6 +82,7 @@ export default function Alert({
   const handleConfirm = async () => {
     try {
       await handleDelete(data.idBale, handleDeleteSuccess);
+      refreshPage(ws);
       cancel();
     } catch (error) {
       setSanitize("error");
@@ -107,7 +110,7 @@ export default function Alert({
             </h1>
             <p>Errore: {message}</p>
             <button
-              onClick={() => closeAlert()}
+              onClick={closeAlert}
               className="alert-button error-button"
             >
               Chiudi
@@ -125,7 +128,7 @@ export default function Alert({
             <p className="text-left">{message}</p>
             <br />
             <button
-              onClick={() => closeAlert(false)}
+              onClick={closeAlert}
               className="alert-button note-button"
             >
               Chiudi
@@ -138,13 +141,13 @@ export default function Alert({
           <div className="alert-box on-border confirmed">
             <p>{message}</p>
             <button
-              onClick={() => handleConfirm()}
+              onClick={handleConfirm}
               className="alert-button confirmed-button mr-2"
             >
               Si
             </button>
             <button
-              onClick={() => closeAlert()}
+              onClick={closeAlert}
               className="alert-button confirmed-button mr-[10px]"
             >
               No
@@ -155,15 +158,19 @@ export default function Alert({
       case "confirm": {
         return (
           <div className="alert-box on-border bg-slate-100">
+            <h2 className="bg-gray-300 rounded-full w-fit py-1 pr-3 font-bold flex items-center mb-4">
+              <Icon type="working" />
+              {title}
+            </h2>
             <p>{message}</p>
             <button
-              onClick={() => closeAlert(true)}
+              onClick={() => handleStampa(data, closeAlert, showAlert)}
               className="alert-button on-btn bg-blue-500"
             >
               Conferma
             </button>
             <button
-              onClick={() => closeAlert()}
+              onClick={closeAlert}
               className="alert-button on-btn bg-red-500 mr-[10px]"
             >
               Annulla
@@ -176,7 +183,7 @@ export default function Alert({
           <div className="alert-box on-border confirmed">
             <p>{message}</p>
             <button
-              onClick={() => closeAlert()}
+              onClick={closeAlert}
               className="alert-button confirmed-button"
             >
               OK
@@ -187,6 +194,9 @@ export default function Alert({
       case 'update': {
         return (
           <div className="alert-box on-border update !bg-slate-50">
+            <button className="fixed bg-red-400 right-10 top-[-20] rounded-t-lg" onClick={closeAlert} >
+              <IoClose size={30} className="text-white fixed bg-red-400 right-3 top-3 rounded-full" />
+            </button>
             <p className="text-black mb-10 font-bold text-2xl text-left">
               {title || 'Modifica dei dati della balla:'} 
             </p>
@@ -209,7 +219,9 @@ export default function Alert({
     <div className="overlay">
       <Draggable nodeRef={nodeRef}>
         <div ref={nodeRef} className="draggable-wrapper">
-          {alertContent}
+          {/* <div className="alert-box"> */}
+            {alertContent}
+          {/* </div> */}
         </div>
       </Draggable>
     </div>

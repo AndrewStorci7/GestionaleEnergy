@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { fetchReportData } from '@@/config';
-import Alert from "../alert";
+import Alert from "../alert/alert";
 
 /**
  * Handle download of the report

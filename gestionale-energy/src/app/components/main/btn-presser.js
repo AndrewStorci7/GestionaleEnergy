@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import Alert from '@@/components/main/alert';
+import { useAlert } from "@main/alert/alertProvider";
 import Image from "next/image";
 
 /**
@@ -28,13 +28,8 @@ export default function BtnPresser({
     clickAddHandle
 }) {
 
-    const default_message = `Balla numero ${baleObj.idUnique} eliminata correttamente!`;
-    const confirm_message = `Sei sicuro di voler eliminare la balla ${baleObj.idUnique} ?`;
-
-    const [showAlert, setShowAlert] = useState(false);
+    const { showAlert, hideAlert } = useAlert();
     const [addWasClicked, setAddWasClicked] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [scope, setScope] = useState('');
 
     useEffect(() => {
         if(handleConfirmAdd) {
@@ -42,18 +37,7 @@ export default function BtnPresser({
         } else {
             setAddWasClicked(true)
         }
-    },[handleConfirmAdd]);
-    
-    const handleAlert = async (msg, scope = "error") => {
-        setScope(scope);
-        setErrorMessage(msg);
-        setShowAlert(prev => !prev);
-    };
-
-    const closeAlert = (val = true) => {
-        setShowAlert(prev => !prev);
-        if (val) baleObj.setIdBale(null);
-    };
+    }, [handleConfirmAdd]);
 
     const addNewBale = () => {
         try {
@@ -64,12 +48,21 @@ export default function BtnPresser({
         }
     }
 
-    const handleClick = (f) => {
+    const handleClick = (type) => {
         if (baleObj && baleObj.idBale !== null) {
-            if (f) handleAlert("", 'update-p');
-            else handleAlert(confirm_message, "delete");
+            showAlert({ 
+                title: null, 
+                message: type === "update" ? null : `Sei sicuro di voler eliminiare la balla ${baleObj.idUnique} ?`, 
+                type: type === "update" ? "update-p" : "delete", 
+                // onConfirm: () => type === "update" ? null : handleStampa(baleObj, showAlert, hideAlert, false),
+                data: baleObj
+            });
         } else {
-            handleAlert("Nessuna balla selezionata!");
+            showAlert({
+                title: null,
+                message: "Nessuna balla selezionata!",
+                type: "error",
+            });
         }
     }
 
@@ -79,7 +72,7 @@ export default function BtnPresser({
                 <div className="flex flex-row-reverse">
                     <button 
                     className="on-btn-presser" 
-                    onClick={() => handleClick(false)}>
+                    onClick={() => handleClick("delete")}>
                         <div className="flex items-center p-1">
                             <Image 
                                 src={"/filled/elimina-bianco-filled.png"}
@@ -93,7 +86,7 @@ export default function BtnPresser({
                     </button>
                     <button 
                     className="on-btn-presser mr-[50px]" 
-                    onClick={() => handleClick(true)}>
+                    onClick={() => handleClick("update")}>
                         <div className="flex items-center p-1">
                             <Image 
                                 src={"/filled/modifica-bianco-filled.png"}
@@ -125,15 +118,6 @@ export default function BtnPresser({
                     </button>
                 </div>
             </div>
-
-            {showAlert && 
-                <Alert
-                    handleClose={closeAlert}
-                    alertFor={scope}
-                    msg={errorMessage}
-                    baleObj={baleObj}
-                />
-            }
         </>
     );
 }

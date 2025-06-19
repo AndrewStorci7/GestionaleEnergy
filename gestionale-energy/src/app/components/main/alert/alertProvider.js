@@ -19,6 +19,7 @@ export const AlertProvider = ({ children }) => {
     }); 
 
     const showAlert = ({ title, message, type = 'info', onConfirm = null, onCancel = null, data = null }) => {
+        console.log(title, data);
         setAlertConfig({ visible: true, title, message, type, onConfirm, onCancel, data });
     };
 

@@ -107,6 +107,7 @@ const isWebSocketConnected = (ws) => {
     }
 }
 
+//#region Server Routes
 /**
  * Get the server route
  * @param {string} route 
