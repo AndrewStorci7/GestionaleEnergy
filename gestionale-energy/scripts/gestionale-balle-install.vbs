@@ -1,0 +1,2 @@
+Set UAC = CreateObject("Shell.Application")
+UAC.ShellExecute "cmd.exe", "/k ""C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\scripts\gestionale-balle-install.bat""", "", "runas", 1

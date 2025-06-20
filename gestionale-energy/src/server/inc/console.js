@@ -149,8 +149,6 @@ class Console {
             }
 
             console.log(ret + msg);
-        } else {
-            console.log("salamaleku");
         }
     }
 

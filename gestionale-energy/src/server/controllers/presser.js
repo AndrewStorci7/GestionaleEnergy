@@ -73,7 +73,7 @@ class PresserBale extends Bale {
      */
     async get(req, res, fromInside = false) {
         try {
-            console.info(req)
+            // console.info(req)
             const data = await this.handlePresserData(req);
     
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
