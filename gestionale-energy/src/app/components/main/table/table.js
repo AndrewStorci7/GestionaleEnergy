@@ -1,12 +1,9 @@
 'use client'
 
 import TableWrapper from "./tableWrapper";
-import TableContent from "./table-content";
-import TableHeader from "./table-header";
 import DownloadReport from "../admin/btn-report"
 import SelectInput from "../search/select";
 import BtnWheelman from "../btn-wheelman";
-import ExportReport from "../admin/export-report";
 import BtnPresser from "../btn-presser";
 import Switch from "../admin/switch";
 
@@ -14,7 +11,7 @@ import { useWebSocket } from "../ws/use-web-socket";
 
 import Image from "next/image";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { refreshPage } from "@/app/config";
 
 /**

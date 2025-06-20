@@ -3,21 +3,20 @@ import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
-import Alert from '../alert/alert';
+import { useAlert } from "@alert/alertProvider";
 
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
+import { fetchDataTotalBale } from '../fetch';
 
 /**
  * Custom component for handling the data of a bale
  * 
  * @param {string}      type    [ `presser` | `wheelman` | `both` | `admin` ]
  *                              Il tipo della pagina
- * 
  * @param {Object}      add     Oggetto che contiene lo stato di add e la funzione che gestisce il suo cambiamento 
  *                              [ `true` | `false` ]
  *                              True se il bottone di aggiunta è stato premuto, altrimenti false
- * 
  * @param {Object}      useFor  [ `regular` | `specific` | `reverse` ]
  *                              Di default è impostato su `regolar`, ovvero, che stampa tutte le alle ancora in lavorazione.
  *                              Se invece viene impostato su `specific`, allora stamperà le balle completate.
@@ -49,6 +48,7 @@ export default function TableContent({
     ...props
 }) {
     // WebSocket instance
+    const { showAlert, hideAlert } = useAlert();
     const { ws, message } = useWebSocket();
 
     const [content, setContent] = useState([]);
@@ -63,11 +63,16 @@ export default function TableContent({
     const selectedBaleIdRef = useRef([]);
 
     const handleNoteClick = (id, note) => {
-        setNoteMessage(note);
-        setOpenNotes(prev => ({ ...prev, [id]: !prev[id] }));
+        showAlert({
+            title: "Nota dell'utente",
+            message: note,
+            type: "note"
+        })
+        // setNoteMessage(note);
+        // setOpenNotes(prev => ({ ...prev, [id]: !prev[id] }));
     };
 
-    const handleCloseNote = id => setOpenNotes(prev => ({ ...prev, [id]: false }));
+    // const handleCloseNote = id => setOpenNotes(prev => ({ ...prev, [id]: false }));
 
     /**
      * 
@@ -88,49 +93,20 @@ export default function TableContent({
         try {
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
-            const url = getServerRoute("bale");
-    
-            const resp = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ body }),
-            });
-    
-            if (!resp.ok) throw new Error("Network response was not ok");
-    
-            const data = await resp.json();
-
-            console.log(data);
-
-            if (data.code === 0) {
-                setEmpty(false);
-    
-                // Assicurati di assegnare i dati da presser a wheelman
-                if (data.presser && Array.isArray(data.presser) && data.presser.length > 0) {
-                    data.presser.map((bale, index) => {
-                        data.wheelman[index].plasticPresser = bale.plastic; 
-                    });
-                }
-
-                if (data.wheelman && Array.isArray(data.wheelman) && data.wheelman.length > 0) {
-                    data.wheelman.map((bale, index) => {
-                        data.presser[index]._idCwb = bale._idCwb; 
-                    });
-                }
-    
-                // Popola il contenuto con i dati appropriati
-                setContent(type === "presser" ? data.presser : type === "wheelman" ? data.wheelman : []);
-            } else {
-                setEmpty(true);
-                noData && noData(data.message);
-            }
+            const typeToFetch = type !== "presser" && type !== 'wheelman' ? "presser" : type; // Se il tipo è 'both', prendi solo 'presser' o 'wheelman'
+            fetchDataTotalBale(body, typeToFetch, setContent, setEmpty, noData, showAlert);
         } catch (error) {
-            console.error(error);
+            showAlert({
+                title: null,
+                message: error.message,
+                type: "error"
+            });
         }
     };
-    
-    
-    useEffect(() => { fetchData(); }, [message]);
+
+    useEffect(() => {
+        fetchData();
+    }, [message]);
 
     const handleRowClick = (id, idUnique) => {
         const newSelectedBaleId = selectedBaleId === id ? null : id;
@@ -142,7 +118,7 @@ export default function TableContent({
         if (e.key === "Enter" || bypassKeyDown) {
             // console.log(`New Weight => ${newWeight}`);
             // console.log("Oggetto", e)
-            console.log(`Valore: ${e.target.value}`)
+            // console.log(`Valore: ${e.target.value}`)
             const url = getServerRoute("update-wheelman-bale");
             const fetch1 = await fetch(url, {
                 method: 'POST',
@@ -150,7 +126,7 @@ export default function TableContent({
                 body: JSON.stringify({ weight: e.target.value, where: idUnique, }),
             });
             const check = await fetch1.json();
-            console.log(check);
+            // console.log(check);
         } else if (e.key === "Escape") {
             e.target.value = cachedValued;
         }
@@ -196,7 +172,7 @@ export default function TableContent({
                                     <td key={idUnique + key} className={style + " !p-1"}>
                                         <button onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
-                                            {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />}
+                                            {/* {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />} */}
                                         </button>
                                     </td>
                                 ) : (key === "is_printed") ? (

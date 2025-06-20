@@ -44,7 +44,11 @@ export default function BtnPresser({
             setAddWasClicked(prev => !prev);
             clickAddHandle(prev => !prev);
         } catch (error) {
-            handleAlert(error);
+            showAlert({
+                title: null,
+                message: error.message,
+                type: "error",
+            });
         }
     }
 

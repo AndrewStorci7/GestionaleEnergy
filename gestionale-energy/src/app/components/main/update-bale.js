@@ -25,7 +25,7 @@ export default function UpdateValuesBale({
     console.log("Data passed to UpdateValuesBale: ", objBale);
 
     const { showAlert } = useAlert();
-    const { ws } = useWebSocket();
+    const { ws, message } = useWebSocket();
 
     const [canProceed, setCanProceed] = useState(false);
 
@@ -45,20 +45,22 @@ export default function UpdateValuesBale({
         notes: null
     });
 
+    const [cacheWeight, setCacheWeight] = useState(0);
+
     const handleData = (data) => {
         if (type === "presser") {
             const tmpData = { plastic: data.plastic, rei: data._idRei, cdbp: data._idCpb, selected_b: data._idSb, notes: data.notes };
-            setPresserData({ plastic: data.plastic, rei: data._idRei, cdbp: data._idCpb, selected_b: data._idSb, notes: data.notes });
+            setPresserData(tmpData);
             setCanProceed(data.plastic !== null || data.plastic !== undefined);
         } else {
-            setPresserData({ cdbc: data._idCwb, reason: data._idRnt, weight: data.weight, dest_wh: data._idWd, notes: data.notes });
+            setWheelmanData({ cdbc: data._idCwb, reason: data._idRnt, weight: data.weight, dest_wh: data._idWd, notes: data.notes });
             setCanProceed(data.weight > 0);
         }
     }
 
     useEffect(() => {
         fetchDataBale(type, objBale, handleData);
-    }, []);
+    }, [message]);
 
     /**
      * Handle Click function
@@ -69,31 +71,32 @@ export default function UpdateValuesBale({
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
             var body = null, url = "";
+            setWheelmanData(prev => ({ ...prev, weight: cacheWeight })); // Assicuro che il peso sia un numero
             if (type === 'presser') {
                 body = {
                     id_presser: cookie.id_user,
-                    id_plastic: plastic,
-                    id_rei: rei,
-                    id_cpb: cdbp,
-                    id_sb: selected_b,
-                    note: note,
+                    id_plastic: presserData.plastic,
+                    id_rei: presserData.rei,
+                    id_cpb: presserData.cdbp,
+                    id_sb: presserData.selected_b,
+                    note: presserData.notes,
                     where: objBale.idBale,
                 };
                 url = getServerRoute("update-presser-bale");
             } else {
                 body = {
                     id_wheelman: cookie.id_user,
-                    id_cwb: cdbc,
-                    id_rnt: reason,
-                    id_wd: dest_wh,
-                    note: note,
-                    weight: weight,
+                    id_cwb: wheelmanData.cdbc,
+                    id_rnt: wheelmanData.reason,
+                    id_wd: wheelmanData.dest_wh,
+                    note: wheelmanData.notes,
+                    weight: wheelmanData.weight,
                     where: objBale.idBale,
                 };
                 url = getServerRoute("update-wheelman-bale");
             }
 
-            const status = (cdbc === 2) ? 1 : -1;
+            const status = (wheelmanData.cdbc === 2) ? 1 : -1;
 
             console.log(objBale.idUnique);
             const body2 = { status: status, where: objBale.idUnique };
@@ -122,13 +125,13 @@ export default function UpdateValuesBale({
                     <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Codice Plastica" : "Cond. Balla Carrel."}</label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "plastic" : "cdbc"}
-                        value={(type === 'presser') ? plastic : cdbc}
+                        value={(type === 'presser') ? presserData.plastic : wheelmanData.cdbc}
                         onChange={(e) => { 
                             if (type === 'presser') {
-                                setPlastic(e.target.value); 
+                                setPresserData(prev => ({ ...prev, plastic: e.target.value })); 
                                 setCanProceed(e.target.value !== "");
                             } else {
-                                setCdbc(e.target.value);
+                                setWheelmanData(prev => ({ ...prev, cdbc: e.target.value }));
                                 setCanProceed(e.target.value == 2);
                             }
                         }} 
@@ -138,12 +141,15 @@ export default function UpdateValuesBale({
                 <div className='relative px-[5px]'>
                     <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Utiliz. REI" : "Motivaz."}</label>
                     <SelectInput 
-                        disabled={cdbc == 1}
+                        disabled={wheelmanData.cdbc == 1}
                         searchFor={(type === 'presser') ? "rei" : "reason"} 
-                        value={(type === 'presser') ? rei : reason}
+                        value={(type === 'presser') ? presserData.rei : wheelmanData.reason}
                         onChange={(e) => {
-                            if (type === 'presser') setRei(e.target.value);
-                            else setReason(e.target.value);
+                            if (type === 'presser') {
+                                setPresserData(prev => ({ ...prev, rei: e.target.value }));
+                            } else {
+                                setWheelmanData(prev => ({ ...prev, reason: e.target.value }));
+                            }
                         }} 
                         fixedW 
                     />
@@ -152,10 +158,13 @@ export default function UpdateValuesBale({
                     <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}</label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
-                        value={(type === 'presser') ? cdbp : dest_wh}
+                        value={(type === 'presser') ? presserData.cdbp : wheelmanData.dest_wh}
                         onChange={(e) => {
-                            if (type === 'presser') setCdbp(e.target.value)
-                            else setDestWh(e.target.value)
+                            if (type === 'presser') {
+                                setPresserData(prev => ({ ...prev, cdbp: e.target.value }));
+                            } else {
+                                setWheelmanData(prev => ({ ...prev, dest_wh: e.target.value }));
+                            }
                         }}  
                         fixedW 
                     />
@@ -165,8 +174,8 @@ export default function UpdateValuesBale({
                         <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Balla Selez.</label>
                         <SelectInput 
                             searchFor={"selected-b"} 
-                            value={selected_b}
-                            onChange={(e) => setSelectedBale(e.target.value)} 
+                            value={presserData.selected_b}
+                            onChange={(e) => setPresserData(prev => ({ ...prev, selected_b: e.target.value }))} 
                             fixedW 
                         />
                     </div>
@@ -177,10 +186,11 @@ export default function UpdateValuesBale({
                             className='text-black w-full on-input'
                             type="number"
                             id="peso-carrellista"
-                            value={weight || 0}
+                            value={cacheWeight || 0}
                             onChange={(e) => { 
                                 const newWeight = parseFloat(e.target.value) || 0;
-                                setWeight(newWeight);
+                                setCacheWeight(newWeight);
+                                // setWheelmanData(prev => ({ ...prev, weight: newWeight }));
                                 setCanProceed(newWeight > 0 && newWeight);
                             }}
                             placeholder="Inserisci peso"
@@ -194,8 +204,14 @@ export default function UpdateValuesBale({
                         className='text-black w-full on-input'
                         type="text"
                         id="note-carrellista"
-                        value={note || ""}
-                        onChange={(e) => setNote(e.target.value)}
+                        value={(type === 'presser' && presserData.notes) ? presserData.notes : wheelmanData.notes ? wheelmanData.notes : ""}
+                        onChange={(e) => {
+                            if (type === 'presser') {
+                                setPresserData(prev => ({ ...prev, notes: e.target.value }));
+                            } else {
+                                setWheelmanData(prev => ({ ...prev, notes: e.target.value }));
+                            }
+                        }}
                         placeholder="Inserisci note"
                         // defaultValue={note}
                     />
@@ -217,7 +233,7 @@ export default function UpdateValuesBale({
                 </button>
                 {type === 'wheelman' && (
                     <button className={'border px-[10px] py-[5px] rounded-xl bg-green-500 mr-4'}
-                    onClick={() => handleStampa(objBale, showAlert, handlerClose, weight > 0)}
+                    onClick={() => handleStampa(objBale, showAlert, handlerClose, wheelmanData.weight > 0)}
                     // onClick={() => {}}
                     >
                         <div className="flex items-center p-1">
