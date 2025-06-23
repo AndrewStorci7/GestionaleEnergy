@@ -1,5 +1,6 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';
+import TotalBale from './total-bale.js';
 
 const console = new Console("Presser", 1);
 
@@ -18,10 +19,9 @@ class PresserBale extends Bale {
     }
 
     handlePresserData = async (req) => {
-
-        console.debug(`Data received: ${req}`, "yellow");
         
-        const id = req.body.id;
+        const { id } = req.body;
+        console.debug(`Data received: ${id}`, "yellow");
         const [rows] = await this.db.query(
             `SELECT 
                 ${this.table}.id AS 'id', 
@@ -55,7 +55,7 @@ class PresserBale extends Bale {
             id
         );
     
-        console.debug(rows);
+        // console.info(rows);
 
         if (rows && rows.length > 0) {
             return rows[0];
@@ -71,28 +71,18 @@ class PresserBale extends Bale {
      * @param {object} req 
      * @param {object} res 
      */
-    async get(req, res, fromInside = false) {
+    async get(req, res) {
         try {
-            // console.info(req)
             const data = await this.handlePresserData(req);
     
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
-                if (fromInside) 
-                    return data;
-                else  
-                    res.json(data);
+                res.json(data);
             } else { // in caso contrario, invio i dati
-                if (fromInside)
-                    return data;
-                else  
-                    res.json({ code: 0, data: data });
+                res.json({ code: 0, data: data });
             }
         } catch (error) {
-            console.error(error.message);
-            if (fromInside) 
-                return error.message;
-            else 
-                res.status(500).send(`Errore durante l\'esecuzione della query: ${error.message}`);
+            console.error(error);
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
         }
     }
 
@@ -100,12 +90,14 @@ class PresserBale extends Bale {
      * Set a new bale with Presser information
      * 
      * @param {Object} req 
+     * @param {Object} res 
      */
-    async set(data) {
+    async set(req, res) {
         try {
-            const body = data;
-            console.debug(data);
+            const { body } = req.body;
             const arr_body = Object.values(body);
+
+            // console.info(body);
 
             const check_ins_pb = await this.db.query(
                 `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
@@ -113,16 +105,17 @@ class PresserBale extends Bale {
                 arr_body,
             );
 
+            // console.info(check_ins_pb[0]);
+
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
-                return { code: 0, message: { id_new_bale } }
+                res.json({ code: 0, message: { id_new_bale } });
             } else {
                 const info = check_ins_pb[0].info;
-                return { code: 1, message: { info } }
+                res.json({ code: 1, message: { info } });
             }
         } catch (error) {
-            console.error(error.message);
-            throw `Presser Error Add: ${error.message}`;
+            throw error;
         }
     }
 
