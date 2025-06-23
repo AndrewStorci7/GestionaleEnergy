@@ -154,6 +154,9 @@ const getServerRoute = (route) => {
         case "totale-balle": 
         case "total-bale-count": 
             return getSrvUrl() + "/bale/total-count";
+        case "totale-chili":
+        case "total-kilos": 
+            return getSrvUrl() + "/bale/total-chili";
         case "id-balla": 
         case "id-bale": 
             return getSrvUrl() + "/bale/id";

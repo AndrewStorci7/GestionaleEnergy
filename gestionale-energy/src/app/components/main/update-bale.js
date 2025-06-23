@@ -47,7 +47,9 @@ export default function UpdateValuesBale({
 
     const [cacheWeight, setCacheWeight] = useState(0);
 
-    const handleData = (data) => {
+    const handleData = (response) => {
+        const data = response.data;
+        console.log("UpdateBale Dati dentro handleData: ", data);
         if (type === "presser") {
             const tmpData = { plastic: data.plastic, rei: data._idRei, cdbp: data._idCpb, selected_b: data._idSb, notes: data.notes };
             setPresserData(tmpData);

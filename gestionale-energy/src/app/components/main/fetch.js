@@ -218,9 +218,35 @@ const handleDelete = async (id, handleAlertChange, msg) => {
     }
 }
 
+//#region Totale Chili
+/**
+ * 
+ * @param {*} implant 
+ * @returns 
+ */
+const fetchTotaleChili = async (implant) => {
+    try {
+        const response = await fetch(getServerRoute("totale-chili"), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ implant })
+        });
+        const data = await response.json();
+        if (data.code === 0) {
+            return data.message;
+        } else {
+            throw new Error(data.message);
+        }
+    } catch (error) {
+        console.error("Errore nel recupero del totale chili:", error);
+        throw error;
+    }
+}
+
 export {
     fetchDataBale,
     fetchDataTotalBale,
     handleStampa,
-    handleDelete
+    handleDelete,
+    fetchTotaleChili
 }
