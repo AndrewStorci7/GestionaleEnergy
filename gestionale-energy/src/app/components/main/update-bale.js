@@ -90,7 +90,7 @@ export default function UpdateValuesBale({
                     id_rnt: wheelmanData.reason,
                     id_wd: wheelmanData.dest_wh,
                     note: wheelmanData.notes,
-                    weight: wheelmanData.weight,
+                    weight: cacheWeight,
                     where: objBale.idBale,
                 };
                 url = getServerRoute("update-wheelman-bale");
