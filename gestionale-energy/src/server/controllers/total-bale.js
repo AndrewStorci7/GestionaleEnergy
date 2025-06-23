@@ -101,33 +101,37 @@ class TotalBale extends Common {
      */
     createObjectArray = async (select, presserResult, wheelmanResult) => {
         // console.debug(select);
-        for (const e of select) {
-            var id_presser = e.id_pb;
-            var id_wheelman = e.id_wb;
-            var status = e.status;
-            var id = e.id;
-
-            /// Fetch dei dati del pressista 
-            const data_presser = await this.PresserInstance.get(
-                { body: { id: id_presser } },
-                null,
-                true
-            );
-            data_presser.status = status;
-            data_presser.idUnique = id;
-
-            /// Fetch dei dati del carrellista
-            const data_wheelman = await this.WheelmanInstance.get(
-                { body: { id: id_wheelman } },
-                null,
-                true
-            );
-            data_wheelman.status = status;
-            data_wheelman.idUnique = id;
-
-            presserResult.push(data_presser);
-            wheelmanResult.push(data_wheelman);
-        };
+        try {
+            for (const e of select) {
+                var id_presser = e.id_pb;
+                var id_wheelman = e.id_wb;
+                var status = e.status;
+                var id = e.id;
+    
+                /// Fetch dei dati del pressista 
+                const data_presser = await this.PresserInstance.get(
+                    { body: { id: id_presser } },
+                    null,
+                    true
+                );
+                data_presser.status = status;
+                data_presser.idUnique = id;
+    
+                /// Fetch dei dati del carrellista
+                const data_wheelman = await this.WheelmanInstance.get(
+                    { body: { id: id_wheelman } },
+                    null,
+                    true
+                );
+                data_wheelman.status = status;
+                data_wheelman.idUnique = id;
+    
+                presserResult.push(data_presser);
+                wheelmanResult.push(data_wheelman);
+            };
+        } catch (error) {
+            throw error;
+        }
     }
 
     //#region Get Total Bale
