@@ -94,7 +94,7 @@ class PresserBale extends Bale {
             }
         } catch (error) {
             console.error(error.message);
-            throw error;
+            throw `Presser get data Error: ${error.message}`;
             // if (fromInside) 
             //     return error.message;
             // else 
