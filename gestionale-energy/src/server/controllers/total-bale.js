@@ -1,5 +1,7 @@
 import Console from '../inc/console.js';
 import Common from './main/common.js';
+import PresserBale from './presser.js';
+import WheelmanBale from './wheelman.js';
 
 const console = new Console("TotalBale", 1);
 
