@@ -77,7 +77,7 @@ class PresserBale extends Bale {
      * @param {object} req 
      * @param {object} res 
      */
-    async get(req, res) {
+    async get(req, res, fromInside = false) {
         try {
             // console.info(req)
             const data = await this.handlePresserData(req, !fromInside);

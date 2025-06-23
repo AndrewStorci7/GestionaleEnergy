@@ -66,7 +66,7 @@ class WheelmanBale extends Bale {
         }
     };
 
-    async get(req, res) {
+    async get(req, res, fromInside = false) {
         try {
             // console.info(req)
             const data = await this.handleWheelmanData(req, !fromInside);
