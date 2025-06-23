@@ -127,6 +127,7 @@ class PresserBale extends Bale {
             }
         } catch (error) {
             console.error(error.message);
+            res.status(500).send(`Presser Error Add: ${error.message}`);
             throw `Presser Error Add: ${error.message}`;
         }
     }
@@ -172,8 +173,8 @@ class PresserBale extends Bale {
                 res.json({ code: 1, message: "Errore nella modifica di una balla" })
             }
         } catch (error) {
+            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
             throw error;
-            // res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
         }
     }
 

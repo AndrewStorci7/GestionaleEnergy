@@ -263,6 +263,7 @@ class TotalBale extends Common {
                 await this.createObjectArray(select, presserResult, wheelmanResult);
             }
         } catch (error) {
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);
             throw error;
         }
     }
@@ -467,10 +468,10 @@ class TotalBale extends Common {
                 if (typeof req === 'object')
                     res.json({ code: 0, res: select });
                 else 
-                    throw "Errore durante la selezione della balla";
+                    res.status(500).send("Errore durante la selezione della balla (per ID)");
             }
         } catch (error) {
-            throw error;
+            res.status(500).send();
         }
     }
 
