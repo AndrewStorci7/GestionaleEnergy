@@ -34,6 +34,8 @@ export default function Header({
     const [totalbales, setTotalBales] = useState(0);
     // conteggio delle balle lavorate dal pressista
     const [totalbalesLavorate, setTotalBalesLavorate] = useState(0);
+    // conteggio dei chili totali per turno
+    const [totalChili, setTotalChili] = useState(0);
 
     /**
      * Logout handler
@@ -53,6 +55,7 @@ export default function Header({
             try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 const url = getServerRoute("total-bale-count");
+                const urlTotChili = getServerRoute("totale-chili");
                 const implant = cookies.id_implant;
                 
                 const resp = await fetch(url, {
@@ -60,6 +63,12 @@ export default function Header({
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ implant }),
                 });
+                const totChili = await fetch(urlTotChili, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ implant }),
+                });
+                const totChiliResp = await totChili.json();
 
                 if (!resp.ok) {
                     throw new Error("Network response was not ok");
@@ -70,6 +79,7 @@ export default function Header({
                 if (data.code == 0) {
                     setTotalBales(data.message);
                     setTotalBalesLavorate(data.message2);
+                    setTotalChili(totChiliResp.message.totale_chili);
                 }
             } catch (error) {
                 console.log(error);
@@ -123,7 +133,7 @@ export default function Header({
                     <h3 className="text-bold">
                         Produzione sul turno
                     </h3>
-                    <div className="grid grid-cols-2">
+                    <div className="grid grid-cols-3 gap-2">
                         {/* <div className={`font-thin mr-[10px] ${type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}`}>
                             Balle totali lavorate: {totalbalesLavorate}
                         </div>
@@ -135,6 +145,9 @@ export default function Header({
                         </div>
                         <div className={`font-thin ${type === 'wheelman' ? "!font-bold" : ""}`}>
                             Balle prodotte: {totalbales}
+                        </div>
+                        <div className="font-thin">
+                            Totale chili: {totalChili}kg
                         </div>
                     </div>
                 </div> {/* end total bale */}

@@ -417,7 +417,7 @@ class TotalBale extends Common {
 
             const [countChili] = await this.db.query(
                 `SELECT 
-                    SUM(wheelman_bale.weight) AS totale_chili 
+                    IFNULL(SUM(wheelman_bale.weight), 0) AS totale_chili
                 FROM 
                     pb_wb
                 LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
