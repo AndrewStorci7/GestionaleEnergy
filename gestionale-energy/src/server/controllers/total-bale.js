@@ -108,27 +108,24 @@ class TotalBale extends Common {
                 var status = e.status;
                 var id = e.id;
     
-                /// Fetch dei dati del pressista 
-                const data_presser = await this.PresserInstance.get(
-                    { body: { id: id_presser } },
-                    null,
-                    true
-                );
+                const data_presser = await this.PresserInstance.get({ body: { id: id_presser } }, null, true);
+                if (data_presser === -1) {
+                    throw new Error("ID nullo passato");
+                }
                 data_presser.status = status;
                 data_presser.idUnique = id;
+                presserResult.push(data_presser);
     
                 /// Fetch dei dati del carrellista
-                const data_wheelman = await this.WheelmanInstance.get(
-                    { body: { id: id_wheelman } },
-                    null,
-                    true
-                );
+                const data_wheelman = await this.WheelmanInstance.get({ body: { id: id_wheelman } }, null, true);
+                if (data_wheelman === -1) {
+                    throw new Error("ID nullo passato");
+                }
                 data_wheelman.status = status;
                 data_wheelman.idUnique = id;
     
-                presserResult.push(data_presser);
                 wheelmanResult.push(data_wheelman);
-            };
+            }
         } catch (error) {
             throw error;
         }

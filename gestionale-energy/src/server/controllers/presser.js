@@ -17,7 +17,7 @@ class PresserBale extends Bale {
         this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}`;
     }
 
-    handlePresserData = async (req) => {
+    handlePresserData = async (req, debug = false) => {
 
         // console.debug(`Data received: ${typeof req.body.id}`, "yellow");
         
@@ -57,16 +57,16 @@ class PresserBale extends Bale {
                 id
             );
         
-            console.debug(rows);
+            if (debug) console.debug(rows);
 
             if (rows && rows.length > 0) {
-                return rows[0];
+                return { code: 0, data: rows[0] };
             } else {
                 // console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
                 return { code: 1, message: "Nessuna balla trovata" };
             }
         } else {
-            throw new Error("ID non fornito o nullo");
+            return -1;
         }
     }
 
@@ -79,26 +79,25 @@ class PresserBale extends Bale {
     async get(req, res, fromInside = false) {
         try {
             // console.info(req)
-            const data = await this.handlePresserData(req);
-    
+            const data = await this.handlePresserData(req, !fromInside);
+            
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
-                // if (fromInside) 
-                    return data;
-                // else  
-                //     res.json(data);
+                if (fromInside) 
+                    return -1;
+                else  
+                    res.json(data);
             } else { // in caso contrario, invio i dati
-                // if (fromInside)
-                    return data;
-                // else  
-                //     res.json({ code: 0, data: data });
+                if (fromInside)
+                    return data.data;
+                else  
+                    res.json({ code: 0, data: data.data });
             }
         } catch (error) {
             console.error(error.message);
-            throw `Presser get data Error: ${error.message}`;
-            // if (fromInside) 
-            //     return error.message;
-            // else 
-            //     res.status(500).send(`Errore durante l\'esecuzione della query: ${error.message}`);
+            if (fromInside) 
+                throw `Presser get data Error: ${error.message}`;
+            else 
+                res.status(500).send(`Presser get data Error: ${error.message}`);
         }
     }
 
