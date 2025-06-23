@@ -19,11 +19,11 @@ class PresserBale extends Bale {
 
     handlePresserData = async (req) => {
 
-        console.debug(`Data received: ${req}`, "yellow");
+        // console.debug(`Data received: ${typeof req.body.id}`, "yellow");
         
         const id = req.body.id;
         
-        if (id !== 0 && id == undefined && id !== null) {
+        if (id !== 0 && id !== undefined && id !== null) {
             const [rows] = await this.db.query(
                 `SELECT 
                     ${this.table}.id AS 'id', 
@@ -82,22 +82,23 @@ class PresserBale extends Bale {
             const data = await this.handlePresserData(req);
     
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
-                if (fromInside) 
+                // if (fromInside) 
                     return data;
-                else  
-                    res.json(data);
+                // else  
+                //     res.json(data);
             } else { // in caso contrario, invio i dati
-                if (fromInside)
+                // if (fromInside)
                     return data;
-                else  
-                    res.json({ code: 0, data: data });
+                // else  
+                //     res.json({ code: 0, data: data });
             }
         } catch (error) {
             console.error(error.message);
-            if (fromInside) 
-                return error.message;
-            else 
-                res.status(500).send(`Errore durante l\'esecuzione della query: ${error.message}`);
+            throw error;
+            // if (fromInside) 
+            //     return error.message;
+            // else 
+            //     res.status(500).send(`Errore durante l\'esecuzione della query: ${error.message}`);
         }
     }
 

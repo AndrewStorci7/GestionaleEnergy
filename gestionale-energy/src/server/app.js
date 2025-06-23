@@ -68,8 +68,11 @@ wsa.onConnection();
 
 app.use(loginRouter(db));
 
+// const presser = presserRoute(db, "presser_bale")
+// const wheelman = wheelmanRoute(db, "wheelman_bale")
 app.use(presserRoute(db, "presser_bale"));
 app.use(wheelmanRoute(db, "wheelman_bale"));
+// app.use(totalBaleRoute(db, "pb_wb", presser, wheelman));
 app.use(totalBaleRoute(db, "pb_wb"));
 app.use(plasticRoute(db, "code_plastic"));
 app.use(cdbpRoute(db, "cond_presser_bale"));

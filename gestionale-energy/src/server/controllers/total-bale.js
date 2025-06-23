@@ -12,11 +12,11 @@ const console = new Console("TotalBale", 1);
  */
 class TotalBale extends Common {
 
-    constructor(db, table, presser, wheelman) {
+    constructor(db, table) {
         super(db, table);
         this.internalUrl = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}:${process.env.NEXT_PUBLIC_APP_SERVER_PORT}`;
-        this.PresserInstance = presser;
-        this.WheelmanInstance = wheelman;
+        this.PresserInstance = new PresserBale(db, "presser_bale");
+        this.WheelmanInstance = new WheelmanBale(db, "wheelman_bale");
     }
 
     //#region Add New Bale
@@ -155,7 +155,7 @@ class TotalBale extends Common {
             var cond_status = ' AND pb_wb.status != 1'; // di default è impostato su `pb_wb.status != 1` perché stamperà le balle ancora in lavorazione
             var order_by = 'DESC';
 
-            console.debug();
+            // console.debug();
 
             if (useFor === 'specific') {
                 cond_status = ' AND pb_wb.status = 1';
