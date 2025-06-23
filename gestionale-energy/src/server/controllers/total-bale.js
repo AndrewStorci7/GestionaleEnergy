@@ -350,7 +350,7 @@ class TotalBale extends Common {
             const { implant } = req.body;
 
             if (implant == 0 || implant == undefined ) {
-                res.json({ code: 1, message: "Nessuna balla trovata" });
+                res.json({ code: 1, message: "Impianto non specificato" });
             }
 
             const _params = super.checkConditionForTurn(implant);
@@ -401,7 +401,38 @@ class TotalBale extends Common {
 
         } catch (error) {
             console.error(error);
-            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);
+        }
+    }
+
+    async totaleChili(req, res) {
+        try {
+            const { implant } = req.body;
+
+            if (implant == 0 || implant == undefined ) {
+                res.json({ code: 1, message: "Impianto non specificato" });
+            }
+            const _params = super.checkConditionForTurn(implant); 
+
+            const [countChili] = await this.db.query(
+                `SELECT 
+                    SUM(wheelman_bale.weight) AS totale_chili 
+                FROM 
+                    pb_wb
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
+                LEFT JOIN presser_bale ON pb_wb.id_pb = presser_bale.id
+                WHERE
+                    ${this.cond_for_idimplant} AND
+                    ${_params.condition}`,
+                _params.params,
+                true
+            );
+
+            console.debug(countChili[0]);
+            res.json({ code: 0, message: countChili[0] });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);
         }
     }
         

@@ -20,6 +20,9 @@ export default (db, table) => {
     // Conteggio Balle Totali in tempo reale
     router.post('/bale/total-count', (req, res) => controller.balleTotali(req, res));
 
+    // Conteggio Balle Totali in tempo reale
+    router.post('/bale/total-chili', (req, res) => controller.totaleChili(req, res));
+
     // Get ID bale
     router.post('/bale/id', (req,res) => controller.getByImplantId(req, res));
     
