@@ -118,8 +118,9 @@ class TotalBale extends Common {
                 body: JSON.stringify({ id: id_presser })
             });
             const data_presser = await res_presser.json();
-            data_presser.status = status;
-            data_presser.idUnique = id;
+            const data_data_presser = data_presser.data;
+            data_data_presser.status = status;
+            data_data_presser.idUnique = id;
 
             /// Fetch dei dati del carrellista
             const res_wheelman = await fetch(this.internalUrl + '/wheelman/get', { 
@@ -128,11 +129,12 @@ class TotalBale extends Common {
                 body: JSON.stringify({ id: id_wheelman })
             });
             const data_wheelman = await res_wheelman.json();
-            data_wheelman.status = status;
-            data_wheelman.idUnique = id;
+            const data_data_wheelman = data_wheelman.data;
+            data_data_wheelman.status = status;
+            data_data_wheelman.idUnique = id;
 
-            presserResult.push(data_presser);
-            wheelmanResult.push(data_wheelman);
+            presserResult.push(data_data_presser);
+            wheelmanResult.push(data_data_wheelman);
         };
     }
 

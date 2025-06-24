@@ -18,44 +18,48 @@ class WheelmanBale extends Bale {
         const {id} = req.body;
         // console.info(`Data received: ${id}`, "yellow");
 
-        const [rows] = await this.db.query(
-            `SELECT 
-                ${this.table}.id AS 'id', 
-                cond_${this.table}.type AS 'condition', 
-                ${this.table}.id_cwb AS '_idCwb', 
-                reas_not_tying.name AS 'reason', 
-                ${this.table}.id_rnt AS '_idRnt', 
-                ${this.table}.weight AS 'weight', 
-                warehouse_dest.name AS 'warehouse', 
-                ${this.table}.id_wd AS '_idWd', 
-                ${this.table}.note AS 'notes', 
-                ${this.table}.printed AS 'is_printed', 
-                ${this.table}.data_ins AS 'data_ins' 
-            FROM 
-                ${this.table} 
-            JOIN 
-                reas_not_tying 
-            JOIN 
-                cond_${this.table} 
-            JOIN 
-                warehouse_dest 
-            ON 
-                ${this.table}.id_cwb = cond_${this.table}.id 
-            AND 
-                ${this.table}.id_rnt = reas_not_tying.id 
-            AND 
-                ${this.table}.id_wd = warehouse_dest.id 
-            WHERE 
-                ${this.table}.id = ? LIMIT 1`,
-            id
-        );
-    
-        if (rows && rows.length > 0) {
-            // console.info(rows) // test
-            return rows[0];
+        if (id !== undefined && id !== null && id !== 0) {
+            const [rows] = await this.db.query(
+                `SELECT 
+                    ${this.table}.id AS 'id', 
+                    cond_${this.table}.type AS 'condition', 
+                    ${this.table}.id_cwb AS '_idCwb', 
+                    reas_not_tying.name AS 'reason', 
+                    ${this.table}.id_rnt AS '_idRnt', 
+                    ${this.table}.weight AS 'weight', 
+                    warehouse_dest.name AS 'warehouse', 
+                    ${this.table}.id_wd AS '_idWd', 
+                    ${this.table}.note AS 'notes', 
+                    ${this.table}.printed AS 'is_printed', 
+                    ${this.table}.data_ins AS 'data_ins' 
+                FROM 
+                    ${this.table} 
+                JOIN 
+                    reas_not_tying 
+                JOIN 
+                    cond_${this.table} 
+                JOIN 
+                    warehouse_dest 
+                ON 
+                    ${this.table}.id_cwb = cond_${this.table}.id 
+                AND 
+                    ${this.table}.id_rnt = reas_not_tying.id 
+                AND 
+                    ${this.table}.id_wd = warehouse_dest.id 
+                WHERE 
+                    ${this.table}.id = ? LIMIT 1`,
+                id
+            );
+        
+            if (rows && rows.length > 0) {
+                // console.info(rows) // test
+                return { code: 0, data: rows[0] };
+            } else {
+                // console.info({ code: 1, message: "Nessuna balla trovata" }) // test
+                return { code: 1, message: "Nessuna balla trovata" }
+            }
         } else {
-            // console.info({ code: 1, message: "Nessuna balla trovata" }) // test
-            return { code: 1, message: "Nessuna balla trovata" }
+            return { code: 1, message: "ID non valido" };
         }
     };
 
@@ -68,9 +72,10 @@ class WheelmanBale extends Bale {
             if (data.code !== 0) { // Nel caso in cui non ottengo dati
                 res.json(data);
             } else { // in caso contrario, invio i dati
-                res.json({ code: 0, data: data });
+                res.json({ code: 0, data: data.data });
             }
         } catch (error) {
+            res.status(500).send(`Errore wheelman get(): ${error}`);
             throw error;
         }
     }
@@ -97,6 +102,7 @@ class WheelmanBale extends Bale {
                 res.json({ code: 1, message: { info }});
             }
         } catch (error) {
+            res.status(500).send(`Errore wheelman set(): ${error}`);
             throw error;
         }
     }

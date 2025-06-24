@@ -44,7 +44,8 @@ export default function UpdateValuesBale({
                 body: JSON.stringify({ id: objBale.idBale })
             });
 
-            const data = await resp.json();
+            const json = await resp.json();
+            const data = json.data;
 
             if (type === 'presser') {
                 setPlastic(data.plastic);
