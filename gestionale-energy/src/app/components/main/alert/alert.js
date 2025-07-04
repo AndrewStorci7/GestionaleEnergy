@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Draggable from "react-draggable";
 import { IoClose } from "react-icons/io5";
 import Icon from "@main/get-icon";
@@ -14,216 +14,273 @@ import { refreshPage } from "@/app/config";
 /**
 * @author Daniele Zeraschi from Oppimittinetworking
 * 
-* @param {string}    msg        Stringa dell'errore da stampare
-* @param {string}    alertFor   Il tipo di alert:
-* * `error`: Errore
-* * `confirm`: Conferma operazione generica
-* * `note`: Visuaizzazione note
-* * `update-p`: Alert per modifica dati balla pressista
-* * `update-w`: Alert per modificare dati balla carrellista
-* @param {function}  onCancel   Funzione che gestisce la chiusura dell'alert
-* @param {Function}  onConfirm  Funzione che gestisce la conferma 
-* @param {object}    data       Oggetto composto dai seguenti attributi: 
-* * `idBale`[`number`]: id della balla
-* * `setIdBale`[`function`]: gancio per aggiornare l'id in caso di elimina
-* * `idUnique`[`number`]: id unico della balla totale
+* @param {string}    title      Titolo dell'alert
+* @param {string}    msg        Messaggio dell'alert
+* @param {string}    alertFor   Tipo di alert
+* @param {object}    data       Dati della balla
+* @param {Function}  onHide     Callback per chiudere l'alert
 **/
 export default function Alert({
-  title = null,
-  msg = null, 
-  alertFor = null,
-  onCancel,
-  onConfirm,
-  data
+    title = null,
+    msg = null, 
+    alertFor = null,
+    data = null,
+    onHide
 }) {
+    const nodeRef = useRef(null);
+    const { showAlert, hideAlert } = useAlert(); 
+    const { ws } = useWebSocket();
+    
+    const [internalState, setInternalState] = useState({
+        alertType: "",
+        message: "",
+        isProcessing: false
+    });
 
-  // console.log("Data passed to Alert: ", data);
+    // Memoizza il tipo di alert sanitizzato
+    const sanitizedAlertType = useMemo(() => {
+        if (!alertFor) return "error";
+        return alertFor.startsWith('update') ? 'update' : alertFor;
+    }, [alertFor]);
 
-  const nodeRef = useRef(null); // per risolvere il problema di react-draggable essendo `findDOMNode` deprecato
-  const { showAlert, hideAlert } = useAlert(); 
-  const { ws } = useWebSocket();
-  
-  const [sanitize_alertFor, setSanitize] = useState("");
-  const [message, setMessage] = useState(""); 
-  
-  const cancel = onCancel || (() => hideAlert());
-  const confirm = onConfirm || (() => hideAlert());
-  
-  /**
-  * @param {boolean} isConfirmed
-  */
-  const closeAlert = () => {
-    try {
-      if (data !== null && typeof data !== undefined) {
-        data.setIdBale(null); // annullo la selezione della balla sempre dopo la chiusura dell'alert
-      } 
-      refreshPage(ws);
-      cancel(); 
-    } catch (error) {
-      setSanitize("error");
-      if (typeof error === 'object') { 
-        setMessage(error.message);
-      } else {
-        setMessage(error);
-      }
-    }
-  };
+    // Callback per chiudere l'alert ottimizzato
+    const closeAlert = useCallback(() => {
+        try {
+            if (data?.setIdBale) {
+                data.setIdBale(null);
+            }
+            // Non fare refresh automatico - lascia che sia il componente parent a decidere
+            onHide?.() || hideAlert();
+        } catch (error) {
+            console.error('Error closing alert:', error);
+            setInternalState(prev => ({
+                ...prev,
+                alertType: "error",
+                message: error.message || error
+            }));
+        }
+    }, [data, onHide, hideAlert]);
 
-  /**
-   * Gestisce l'aggiornamento della componente
-   * @param {string} msg   Messaggio per l'alert 
-   * @param {string} scope Tipo di alert 
-   */
-  const handleDeleteSuccess = (msg, scope) => {
-    setSanitize(scope);
-    setMessage(msg);
-  }
-  
-  const handleConfirm = async () => {
-    try {
-      await handleDelete(data.idBale, handleDeleteSuccess);
-      refreshPage(ws);
-      cancel();
-    } catch (error) {
-      setSanitize("error");
-      if (typeof error === 'object') {
-        setMessage(error.message);
-      } else {
-        setMessage(error);
-      }
-    }
-  }
-  
-  useEffect(() => {
-    setSanitize(alertFor.startsWith('update') ? 'update' : alertFor);
-    setMessage(msg);
-  }, [alertFor, msg]);
-  
-  const renderAlert = () => {
-    switch(sanitize_alertFor) {
-      default:
-      case "error": {
-        return (
-          <div className="alert-box on-border error">
-            <h1 className="title-alert" style={{ color: 'red' }}>
-              {title || 'Errore'}
-            </h1>
-            <p>Errore: {message}</p>
-            <button
-              onClick={closeAlert}
-              className="alert-button error-button"
-            >
-              Chiudi
-            </button>
-          </div>
-        );
-      }
-      case "note": {
-        return (
-          <div className="alert-box on-border note">
-            <h1 className="title-alert text-left" style={{ color: 'black' }}>
-              {title || 'Nota scritta dall\'utente'}
-            </h1>
-            <br />
-            <p className="text-left">{message}</p>
-            <br />
-            <button
-              onClick={closeAlert}
-              className="alert-button note-button"
-            >
-              Chiudi
-            </button>
-          </div>
-        );
-      }
-      case "delete": {
-        return (
-          <div className="alert-box on-border confirmed">
-            <p>{message}</p>
-            <button
-              onClick={handleConfirm}
-              className="alert-button confirmed-button mr-2"
-            >
-              Si
-            </button>
-            <button
-              onClick={closeAlert}
-              className="alert-button confirmed-button mr-[10px]"
-            >
-              No
-            </button>
-          </div>
-        );
-      }
-      case "confirm": {
-        return (
-          <div className="alert-box on-border bg-slate-100">
-            <h2 className="bg-gray-300 rounded-full w-fit py-1 pr-3 font-bold flex items-center mb-4">
-              <Icon type="working" />
-              {title}
-            </h2>
-            <p>{message}</p>
-            <button
-              onClick={() => handleStampa(data, closeAlert, showAlert)}
-              className="alert-button on-btn bg-blue-500"
-            >
-              Conferma
-            </button>
-            <button
-              onClick={closeAlert}
-              className="alert-button on-btn bg-red-500 mr-[10px]"
-            >
-              Annulla
-            </button>
-          </div>
-        );
-      }
-      case 'confirmed-successfull': {
-        return (
-          <div className="alert-box on-border confirmed">
-            <p>{message}</p>
-            <button
-              onClick={closeAlert}
-              className="alert-button confirmed-button"
-            >
-              OK
-            </button>
-          </div>
-        );
-      }
-      case 'update': {
-        return (
-          <div className="alert-box on-border update !bg-slate-50">
-            <button className="fixed bg-red-400 right-10 top-[-20] rounded-t-lg" onClick={closeAlert} >
-              <IoClose size={30} className="text-white fixed bg-red-400 right-3 top-3 rounded-full" />
-            </button>
-            <p className="text-black mb-10 font-bold text-2xl text-left">
-              {title || 'Modifica dei dati della balla:'} 
-            </p>
-            <UpdateValuesBale
-              type={alertFor === "update-p" ? "presser" : "wheelman"}
-              objBale={data}
-              handlerClose={closeAlert}
-            />
-          </div>
-        );
-      }
-    }
-  }
+    // Callback per gestire l'eliminazione
+    const handleConfirm = useCallback(async () => {
+        if (internalState.isProcessing) return;
+        
+        try {
+            setInternalState(prev => ({ ...prev, isProcessing: true }));
+            
+            await handleDelete(data.idBale, (msg, scope) => {
+                setInternalState(prev => ({
+                    ...prev,
+                    alertType: scope,
+                    message: msg
+                }));
+            });
+            
+            refreshPage(ws);
+            closeAlert();
+        } catch (error) {
+            console.error('Error in handleConfirm:', error);
+            setInternalState(prev => ({
+                ...prev,
+                alertType: "error",
+                message: error.message || error,
+                isProcessing: false
+            }));
+        }
+    }, [data?.idBale, internalState.isProcessing, ws, closeAlert]);
 
-  const alertContent = renderAlert();
+    // Callback per gestire la stampa
+    const handlePrintConfirm = useCallback(async () => {
+        if (internalState.isProcessing) return;
+        
+        try {
+            setInternalState(prev => ({ ...prev, isProcessing: true }));
+            await handleStampa(data, closeAlert, showAlert);
+        } catch (error) {
+            console.error('Error in handlePrintConfirm:', error);
+            setInternalState(prev => ({
+                ...prev,
+                alertType: "error",
+                message: error.message || error,
+                isProcessing: false
+            }));
+        }
+    }, [data, internalState.isProcessing, closeAlert, showAlert]);
 
-  if (!alertContent) return null;
+    // Inizializza lo stato interno solo al mount
+    useEffect(() => {
+        setInternalState(prev => ({
+            ...prev,
+            alertType: sanitizedAlertType,
+            message: msg || ""
+        }));
+    }, [sanitizedAlertType, msg]);
 
-  return (
-    <div className="overlay">
-      <Draggable nodeRef={nodeRef}>
-        <div ref={nodeRef} className="draggable-wrapper">
-          {/* <div className="alert-box"> */}
-            {alertContent}
-          {/* </div> */}
+    // Memoizza il contenuto dell'alert per evitare re-render
+    const alertContent = useMemo(() => {
+        const currentAlertType = internalState.alertType || sanitizedAlertType;
+        const currentMessage = internalState.message || msg || "";
+        
+        switch(currentAlertType) {
+            case "error": {
+                return (
+                    <div className="alert-box on-border error">
+                        <h1 className="title-alert" style={{ color: 'red' }}>
+                            {title || 'Errore'}
+                        </h1>
+                        <p>Errore: {currentMessage}</p>
+                        <button
+                            onClick={closeAlert}
+                            className="alert-button error-button"
+                            disabled={internalState.isProcessing}
+                        >
+                            Chiudi
+                        </button>
+                    </div>
+                );
+            }
+            case "note": {
+                return (
+                    <div className="alert-box on-border note">
+                        <h1 className="title-alert text-left" style={{ color: 'black' }}>
+                            {title || 'Nota scritta dall\'utente'}
+                        </h1>
+                        <br />
+                        <p className="text-left">{currentMessage}</p>
+                        <br />
+                        <button
+                            onClick={closeAlert}
+                            className="alert-button note-button"
+                            disabled={internalState.isProcessing}
+                        >
+                            Chiudi
+                        </button>
+                    </div>
+                );
+            }
+            case "delete": {
+                return (
+                    <div className="alert-box on-border confirmed">
+                        <p>{currentMessage}</p>
+                        <button
+                            onClick={handleConfirm}
+                            className="alert-button confirmed-button mr-2"
+                            disabled={internalState.isProcessing}
+                        >
+                            {internalState.isProcessing ? 'Eliminando...' : 'Si'}
+                        </button>
+                        <button
+                            onClick={closeAlert}
+                            className="alert-button confirmed-button mr-[10px]"
+                            disabled={internalState.isProcessing}
+                        >
+                            No
+                        </button>
+                    </div>
+                );
+            }
+            case "confirm": {
+                return (
+                    <div className="alert-box on-border bg-slate-100">
+                        <h2 className="bg-gray-300 rounded-full w-fit py-1 pr-3 font-bold flex items-center mb-4">
+                            <Icon type="working" />
+                            {title}
+                        </h2>
+                        <p>{currentMessage}</p>
+                        <button
+                            onClick={handlePrintConfirm}
+                            className="alert-button on-btn bg-blue-500"
+                            disabled={internalState.isProcessing}
+                        >
+                            {internalState.isProcessing ? 'Stampando...' : 'Conferma'}
+                        </button>
+                        <button
+                            onClick={closeAlert}
+                            className="alert-button on-btn bg-red-500 mr-[10px]"
+                            disabled={internalState.isProcessing}
+                        >
+                            Annulla
+                        </button>
+                    </div>
+                );
+            }
+            case 'confirmed-successfull': {
+                return (
+                    <div className="alert-box on-border confirmed">
+                        <p>{currentMessage}</p>
+                        <button
+                            onClick={closeAlert}
+                            className="alert-button confirmed-button"
+                            disabled={internalState.isProcessing}
+                        >
+                            OK
+                        </button>
+                    </div>
+                );
+            }
+            case 'update': {
+                return (
+                    <div className="alert-box on-border update !bg-slate-50">
+                        <button 
+                            className="fixed bg-red-400 right-10 top-[-20] rounded-t-lg" 
+                            onClick={closeAlert}
+                            disabled={internalState.isProcessing}
+                            aria-label="Chiudi"
+                        >
+                            <IoClose size={30} className="text-white fixed bg-red-400 right-3 top-3 rounded-full" />
+                        </button>
+                        <p className="text-black mb-10 font-bold text-2xl text-left">
+                            {title || 'Modifica dei dati della balla:'} 
+                        </p>
+                        <UpdateValuesBale
+                            type={alertFor === "update-p" ? "presser" : "wheelman"}
+                            objBale={data}
+                            handlerClose={closeAlert}
+                        />
+                    </div>
+                );
+            }
+            default: {
+                return (
+                    <div className="alert-box on-border error">
+                        <h1 className="title-alert" style={{ color: 'red' }}>
+                            Tipo di alert non riconosciuto
+                        </h1>
+                        <p>Tipo: {currentAlertType}</p>
+                        <button
+                            onClick={closeAlert}
+                            className="alert-button error-button"
+                        >
+                            Chiudi
+                        </button>
+                    </div>
+                );
+            }
+        }
+    }, [
+        internalState.alertType, 
+        internalState.message, 
+        internalState.isProcessing,
+        sanitizedAlertType, 
+        msg, 
+        title, 
+        alertFor, 
+        data, 
+        closeAlert, 
+        handleConfirm, 
+        handlePrintConfirm
+    ]);
+
+    // Se non c'è contenuto, non renderizzare nulla
+    if (!alertContent) return null;
+
+    return (
+        <div className="overlay">
+            <Draggable nodeRef={nodeRef}>
+                <div ref={nodeRef} className="draggable-wrapper">
+                    {alertContent}
+                </div>
+            </Draggable>
         </div>
-      </Draggable>
-    </div>
-  )
+    );
 }

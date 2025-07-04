@@ -69,44 +69,51 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
 
         const dataJson = await resp.json();
 
-        console.log("Dati ricevuti dal server:", dataJson);
+        console.log(dataJson);
 
         if (dataJson.code === 0) {
             setEmpty(false);
 
-            // ✅ Verifica che entrambi gli array esistano e siano validi
-            const presserData = dataJson.presser || [];
-            const wheelmanData = dataJson.wheelman || [];
-
-            console.log("Lunghezza array presser:", presserData.length);
-            console.log("Lunghezza array wheelman:", wheelmanData.length);
-
-            // ✅ Assicurati di assegnare i dati da presser a wheelman solo se entrambi esistono
-            if (presserData.length > 0 && wheelmanData.length > 0) {
-                // Usa la lunghezza minima per evitare errori di index
-                const minLength = Math.min(presserData.length, wheelmanData.length);
-                
-                for (let index = 0; index < minLength; index++) {
-                    // ✅ Verifica che gli oggetti esistano prima di accedere alle proprietà
-                    if (presserData[index] && wheelmanData[index]) {
-                        wheelmanData[index].plasticPresser = presserData[index].plastic || null;
-                        presserData[index]._idCwb = wheelmanData[index]._idCwb || null;
+            if (dataJson.presser && Array.isArray(dataJson.presser) && dataJson.presser.length > 0) {
+                dataJson.presser.map((bale, index) => {
+                    if (dataJson.wheelman[index]) {
+                        dataJson.wheelman[index].plasticPresser = bale.plastic;
                     }
+                });
+            }
+
+            if (dataJson.wheelman && Array.isArray(dataJson.wheelman) && dataJson.wheelman.length > 0) {
+                dataJson.wheelman.map((bale, index) => {
+                    if (dataJson.presser[index]) {
+                        dataJson.presser[index]._idCwb = bale._idCwb;
+                    }
+                });
+            }
+
+            let contentData = type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : [];
+
+            console.log("Dati ricevuti all'interno di fetchDataTotalBale: " + data.useFor + " " + type);
+
+            if (data.useFor === 'regular' || data.useFor === 'specific') {
+                if (type === 'wheelman') {
+                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
+                } else if (type === 'presser') {
+                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
                 }
-            }
+            } else if (data.useFor === 'reverse') {
+                if (type === 'wheelman') {
+                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
+                } else if (type === 'presser') {
+                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
+                }
+            } 
+            // else if (data.useFor === 'specific') {
+            //     // Per le balle completate, mantieni l'ordinamento del database
+            //     // o applica una logica specifica se necessario
+            // }
 
-            // ✅ Gestisci il caso in cui una delle due array sia vuota
-            let contentToSet = [];
-            if (type === "presser") {
-                contentToSet = presserData;
-            } else if (type === "wheelman") {
-                contentToSet = wheelmanData;
-            }
-
-            console.log("Contenuto da impostare:", contentToSet);
-            setContent(contentToSet);
+            setContent(contentData);
         } else {
-            console.log("Nessun dato ricevuto dal server:", dataJson.message);
             setEmpty(true);
             hook && hook(dataJson.message);
         }
@@ -140,14 +147,14 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
             try {
                 const body = { printed: true, where: obj.idBale }; // Body per l'update della balla del carrellista
                 const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
-                const url_update_wheelman = getServerRoute("update-wheelman-bale");
+                const url_update_wheelman = getServerRoute("update-bale");
                 const url_update_status = getServerRoute("update-status-bale");
 
                 // Invia la richiesta per aggiornare lo stato della balla
                 const response = await fetch(url_update_wheelman, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body: body }),
+                    body: JSON.stringify({ body: body, type: "wheelman" }),
                 });
 
                 // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
