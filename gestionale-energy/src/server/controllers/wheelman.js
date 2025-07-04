@@ -144,19 +144,81 @@ class WheelmanBale extends Bale {
                 return { code: 1, message: "Nessun body fornito per l'aggiornamento della balla Wheelman" };
             }
 
-            const san = this.checkParams(body, {scope: "update", table: this.table})
+            // Validazione dei parametri prima di processarli
+            // const validatedBody = this.validateUpdateBody(body);
+            
+            const san = this.checkParams(body, {scope: "update", table: this.table});
             
             const [check] = await this.db.query(san.query, san.params);
     
-            if (check) {
-                return { code: 0 };
+            if (check && check.affectedRows > 0) {
+                return { code: 0, message: "Balla carrellista aggiornata con successo" };
             } else {
-                return { code: 1, message: "Errore nella modifica di una balla" };
+                return { code: 1, message: "Nessuna riga aggiornata - verifica l'ID della balla" };
             }
         } catch (error) {
-            console.error(error)
-            throw `Wheelman Error Update: ${error.message}`;
+            console.error(`Wheelman Error Update: ${error.message}`);
+            throw new Error(`Wheelman Error Update: ${error.message}`);
         }
+    }
+
+    /**
+     * Valida e sanitizza i dati per l'update
+     * @param {Object} body 
+     * @returns {Object}
+     */
+    validateUpdateBody(body) {
+        const validatedBody = {};
+        
+        // Lista dei campi validi per wheelman
+        const validFields = [
+            'id_cwb', 'id_rnt', 'id_wd', 'weight', 'note', 'printed', 'where'
+        ];
+        
+        for (const [key, value] of Object.entries(body)) {
+            if (validFields.includes(key)) {
+                // Validazione specifica per campo
+                switch (key) {
+                    case 'weight':
+                        // Assicurati che il peso sia un numero valido
+                        const weightValue = parseFloat(value);
+                        if (!isNaN(weightValue) && weightValue >= 0) {
+                            validatedBody[key] = weightValue;
+                        }
+                        break;
+                    case 'id_cwb':
+                    case 'id_rnt':
+                    case 'id_wd':
+                    case 'printed':
+                        // Assicurati che gli ID siano numeri interi
+                        const intValue = parseInt(value);
+                        if (!isNaN(intValue)) {
+                            validatedBody[key] = intValue;
+                        }
+                        break;
+                    case 'note':
+                        // Gestione delle note - può essere stringa vuota o null
+                        if (value === null || value === undefined) {
+                            validatedBody[key] = null;
+                        } else {
+                            validatedBody[key] = String(value).trim();
+                        }
+                        break;
+                    case 'where':
+                        // ID per la clausola WHERE
+                        const whereValue = parseInt(value);
+                        if (!isNaN(whereValue) && whereValue > 0) {
+                            validatedBody[key] = whereValue;
+                        }
+                        break;
+                    default:
+                        validatedBody[key] = value;
+                }
+            }
+        }
+        
+        console.debug(`Validated body: ${JSON.stringify(validatedBody)}`);
+        return validatedBody;
     }
 
 }

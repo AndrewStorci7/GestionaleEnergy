@@ -19,6 +19,7 @@ class TotalBale extends Common {
         this.WheelmanInstance = new WheelmanBale(db, "wheelman_bale");
     }
 
+    //#region ADD
     /**
      * Add Bale on DB
      * 
@@ -95,6 +96,7 @@ class TotalBale extends Common {
         }
     }
 
+    //#region UPDATE STATUS
     /**
      * Update the status of a total bale after updating a bale from Presser or Wheelman interface
      * 
@@ -135,7 +137,7 @@ class TotalBale extends Common {
                 const status = e.status;
                 const id = e.id;
 
-                console.debug(`Processando balla - ID Presser: ${id_presser}, ID Wheelman: ${id_wheelman}`);
+                // console.debug(`Processando balla - ID Presser: ${id_presser}, ID Wheelman: ${id_wheelman}`);
 
                 if (!id_presser || !id_wheelman) {
                     console.error(`ID non validi - Presser: ${id_presser}, Wheelman: ${id_wheelman}`);
@@ -166,6 +168,7 @@ class TotalBale extends Common {
         }
     }
 
+    //#region GET
     /**
      * Get a total bale composed by information of the bale created by presser
      * and the information of the bale added by wheelman
@@ -191,9 +194,10 @@ class TotalBale extends Common {
 
             if (useFor === 'specific') {
                 cond_status = ' AND pb_wb.status = 1';
-            } else if (useFor === 'reverse') {
-                order_by = 'ASC';
-            }
+            } 
+            // else if (useFor === 'reverse') {
+            //     order_by = 'ASC';
+            // }
 
             if (id_implant == 0) {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
@@ -240,8 +244,6 @@ class TotalBale extends Common {
                     await this.createObjectArray(select, presserResult, wheelmanResult);
                 }
             }
-
-
 
             if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
                 res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
@@ -296,75 +298,6 @@ class TotalBale extends Common {
         } catch (error) {
             // res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);
             throw error;
-        }
-    }
-
-    /**
-     * Get all bale 
-     * 
-     * @param {object} req
-     * @param {object} res
-     */    
-    async getByImplantId(req, res) {
-        try {
-            const { id_implant } = req.body;
-        
-            const [select] = await this.db.query(
-                `SELECT
-                    ${this.table}.id_pb, ${this.table}.id_wb, 
-                    presser_bale.data_ins AS presser_data, 
-                    wheelman_bale.data_ins AS wheelman_data
-                FROM 
-                    ${this.table} 
-                JOIN 
-                    presser_bale 
-                JOIN 
-                    wheelman_bale 
-                JOIN 
-                    implants 
-                ON 
-                    ${this.table}.id_pb = presser_bale.id 
-                    AND ${this.table}.id_wb = wheelman_bale.id 
-                    AND ${this.table}.id_implant = implants.id
-                WHERE 
-                    ${this.table}.id_implant = ? 
-                ORDER BY 
-                    presser_bale.data_ins DESC
-                LIMIT 300`,
-                [id_implant]
-            );
-        
-            if (select && select.length > 0) {
-                const presserResult = [];
-                const wheelmanResult = [];
-        
-                for (const e of select) {
-                    var id_presser = e.id_pb;
-                    var id_wheelman = e.id_wb;
-        
-                    const [res_presser] = await fetch(this.internalUrl + '/presser/get', { 
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: id_presser })
-                    }).then(res => res.json());
-        
-                    const [res_wheelman] = await fetch(this.internalUrl + '/wheelman/get', { 
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ id: id_wheelman })
-                    }).then(res => res.json());
-        
-                    presserResult.push(res_presser);
-                    wheelmanResult.push(res_wheelman);
-                }
-        
-                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
-            } else {
-                res.json({ code: 1, message: "Nessuna Balla Trovata." });
-            }
-        } catch (error) {
-            console.error(error);
-            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
 

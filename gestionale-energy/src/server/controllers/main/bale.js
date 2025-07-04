@@ -11,7 +11,6 @@ const console = new Console("Bale");
  * @param {string}      idUser      Id of user
  */
 class Bale extends Common {
-
     constructor(db, table) {
         super(db, table);
     }
@@ -27,10 +26,9 @@ class Bale extends Common {
     }
 
     /**
-     * 
+     * Funzione migliorata per la gestione dei parametri SQL
      * @param {Object} obj      Oggetto ricevuto tramite richiesta 
      * @param {Object} options  Opzioni facoltative per la gestione dell'update
-     * 
      * @returns {Object} 
      */
     checkParams(obj, options) {
@@ -40,27 +38,52 @@ class Bale extends Common {
         if (obj !== null && obj !== undefined) {
             if (typeof obj === 'object') {
                 const table = options.table;
-                var query = this.selectQuery(options);
-                var columns = [];
-                var params = [];
+                let query = this.selectQuery(options);
+                let columns = [];
+                let params = [];
                 
-                // Creo un array con solo i valori diversi da "" (vuoto o null)
-                // Differenzio per evitare casini nella creazione della stringa per la query
+                // Validazione e sanitizzazione dei parametri
                 for (const [key, value] of Object.entries(obj)) {
-                    if (value !== '' && value !== 0 && (value !== 'undefined' || value !== undefined)) {
+                    // Migliore validazione dei valori
+                    if (this.isValidValue(value)) {
                         columns.push(key);
-                        params.push(value);
-                        if (table === "pb_wb" && key === "where") params.push(value);
+                        
+                        // Converti appropriatamente i valori
+                        let sanitizedValue = this.sanitizeValue(value);
+                        params.push(sanitizedValue);
+                        
+                        // Gestione speciale per la tabella pb_wb
+                        if (table === "pb_wb" && key === "where") {
+                            params.push(sanitizedValue);
+                        }
                     }
                 }
 
-                // Creo correttamente la query
-                for (const [index, val] of Object.entries(columns)) {
-                    if (index < columns.length - 2) query += `${val}=?, `;
-                    else query += (val !== 'where') ? `${val}=? ` : `WHERE ${(table === "pb_wb") ? "id_pb=? OR id_wb=?": "id=?"}`;
+                console.debug(`Columns: ${JSON.stringify(columns)}`);
+                console.debug(`Params before query construction: ${JSON.stringify(params)}`);
+
+                // Costruzione query migliorata
+                for (let i = 0; i < columns.length; i++) {
+                    const col = columns[i];
+                    
+                    if (col === 'where') {
+                        // Gestione della clausola WHERE
+                        query += `WHERE ${(table === "pb_wb") ? "id=?" : "id=?"}`;
+                    } else {
+                        // Gestione delle colonne SET
+                        query += `${col}=?`;
+                        if (i < columns.length - 1 && columns[i + 1] !== 'where') {
+                            query += ', ';
+                        } else if (i < columns.length - 1) {
+                            query += ' ';
+                        }
+                    }
                 }
 
-                return { query, params }
+                console.debug(`Final query: ${query}`);
+                console.debug(`Final params: ${JSON.stringify(params)}`);
+
+                return { query, params };
             } else {
                 return obj;
             }
@@ -70,8 +93,50 @@ class Bale extends Common {
     }
 
     /**
+     * Verifica se un valore è valido per l'inserimento nel database
+     * @param {any} value 
+     * @returns {boolean}
+     */
+    isValidValue(value) {
+        // Accetta 0 come valore valido per i numeri
+        if (value === 0) return true;
+        
+        // Rifiuta valori null, undefined, stringa vuota
+        if (value === null || value === undefined || value === '') return false;
+        
+        // Rifiuta la stringa 'undefined'
+        if (value === 'undefined') return false;
+        
+        return true;
+    }
+
+    /**
+     * Sanitizza un valore per l'inserimento nel database
+     * @param {any} value 
+     * @returns {any}
+     */
+    sanitizeValue(value) {
+        // Gestione dei numeri
+        if (typeof value === 'number') {
+            return value;
+        }
+        
+        // Gestione delle stringhe
+        if (typeof value === 'string') {
+            return value.trim();
+        }
+        
+        // Gestione dei boolean
+        if (typeof value === 'boolean') {
+            return value ? 1 : 0;
+        }
+        
+        // Per altri tipi, converti in stringa
+        return String(value);
+    }
+
+    /**
      * Select query only for UPDATE and DELETE 
-     * 
      * @param {object} options  
      */
     selectQuery(options) {
@@ -81,6 +146,9 @@ class Bale extends Common {
             }
             case "update": {
                 return `UPDATE ${options.table} SET `;
+            }
+            default: {
+                throw new Error(`Scope non valido: ${options.scope}`);
             }
         }
     }
