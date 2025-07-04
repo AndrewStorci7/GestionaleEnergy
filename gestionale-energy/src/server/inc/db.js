@@ -22,7 +22,7 @@ const pool = mysql.createPool({
     password: DB_PW,
     database: DB_NAME,
     port: DB_PORT,
-    timezone: "Europe/Rome",
+    timezone: 'Europe/Rome',
     // Configurazioni del pool per evitare sovraccarico
     connectionLimit: 100,          // Max connessioni simultanee
     // acquireTimeout: 60000,         // Timeout acquisizione connessione (60s)

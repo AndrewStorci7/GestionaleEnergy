@@ -21,14 +21,9 @@ export default function UpdateValuesBale({
     handlerClose,
     ...props
 }) {
-
-    console.log("Data passed to UpdateValuesBale: ", objBale);
-
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
     const { ws, message } = useWebSocket();
-
     const [canProceed, setCanProceed] = useState(false);
-
     const [presserData, setPresserData] = useState({
         plastic: null, 
         rei: null,
@@ -36,7 +31,6 @@ export default function UpdateValuesBale({
         selected_b: null,
         notes: null
     });
-
     const [wheelmanData, setWheelmanData] = useState({
         cdbc: null, 
         reason: null,
@@ -44,7 +38,6 @@ export default function UpdateValuesBale({
         dest_wh: null,
         notes: null
     });
-
     const [cacheWeight, setCacheWeight] = useState(0);
 
     const handleData = (response) => {
@@ -72,9 +65,10 @@ export default function UpdateValuesBale({
     const handleClick = async () => {
         try {
             const cookie = JSON.parse(Cookies.get('user-info'));
-            var body = null, url = "";
+            var body = null, typeFixed;
             setWheelmanData(prev => ({ ...prev, weight: cacheWeight })); // Assicuro che il peso sia un numero
             if (type === 'presser') {
+                typeFixed = 'presser';
                 body = {
                     id_presser: cookie.id_user,
                     id_plastic: presserData.plastic,
@@ -82,10 +76,10 @@ export default function UpdateValuesBale({
                     id_cpb: presserData.cdbp,
                     id_sb: presserData.selected_b,
                     note: presserData.notes,
-                    where: objBale.idBale,
+                    where: objBale.idUnique,
                 };
-                url = getServerRoute("update-presser-bale");
             } else {
+                typeFixed = 'wheelman';
                 body = {
                     id_wheelman: cookie.id_user,
                     id_cwb: wheelmanData.cdbc,
@@ -93,27 +87,26 @@ export default function UpdateValuesBale({
                     id_wd: wheelmanData.dest_wh,
                     note: wheelmanData.notes,
                     weight: cacheWeight,
-                    where: objBale.idBale,
+                    where: objBale.idUnique,
                 };
-                url = getServerRoute("update-wheelman-bale");
             }
 
             const status = (wheelmanData.cdbc === 2) ? 1 : -1;
-
-            console.log(objBale.idUnique);
             const body2 = { status: status, where: objBale.idUnique };
-            await fetch(url, {
+
+            await fetch(getServerRoute("update-bale"), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ body })
+                body: JSON.stringify({ body, type }),
             });
     
             // Aggiorna lo stato della balla totale
             await updateStatusTotalbale(body2);
+            if (status === 1) {
+                hideAlert();
+            }
             setCanProceed(false);
             refreshPage(ws);
-            // Gestisco la conferma e ri-renderizzo la componente padre
-            // handlerClose();
     
         } catch (error) {
             console.error("Errore", error);

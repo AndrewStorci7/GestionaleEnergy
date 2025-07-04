@@ -53,8 +53,6 @@ export default function TableContent({
 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false);
-    const [openNotes, setOpenNotes] = useState({}); 
-    const [noteMessage, setNoteMessage] = useState("");
     // const [changeWeight, canChangeWeight] = useState(false);
     const [editingWeightRowId, setEditingWeightRowId] = useState(null);
     const [newWeight, setWeight] = useState(0);

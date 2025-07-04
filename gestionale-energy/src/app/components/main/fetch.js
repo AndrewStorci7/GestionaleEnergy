@@ -67,40 +67,56 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
             body: JSON.stringify({ body: data }),
         });
 
-        // if (!resp.ok) throw new Error("Network response was not ok");
-
         const dataJson = await resp.json();
 
-        console.log(dataJson);
+        console.log("Dati ricevuti dal server:", dataJson);
 
         if (dataJson.code === 0) {
             setEmpty(false);
 
-            // Assicurati di assegnare i dati da presser a wheelman
-            if (dataJson.presser && Array.isArray(dataJson.presser) && dataJson.presser.length > 0) {
-                dataJson.presser.map((bale, index) => {
-                    dataJson.wheelman[index].plasticPresser = bale.plastic; 
-                });
+            // ✅ Verifica che entrambi gli array esistano e siano validi
+            const presserData = dataJson.presser || [];
+            const wheelmanData = dataJson.wheelman || [];
+
+            console.log("Lunghezza array presser:", presserData.length);
+            console.log("Lunghezza array wheelman:", wheelmanData.length);
+
+            // ✅ Assicurati di assegnare i dati da presser a wheelman solo se entrambi esistono
+            if (presserData.length > 0 && wheelmanData.length > 0) {
+                // Usa la lunghezza minima per evitare errori di index
+                const minLength = Math.min(presserData.length, wheelmanData.length);
+                
+                for (let index = 0; index < minLength; index++) {
+                    // ✅ Verifica che gli oggetti esistano prima di accedere alle proprietà
+                    if (presserData[index] && wheelmanData[index]) {
+                        wheelmanData[index].plasticPresser = presserData[index].plastic || null;
+                        presserData[index]._idCwb = wheelmanData[index]._idCwb || null;
+                    }
+                }
             }
 
-            if (dataJson.wheelman && Array.isArray(dataJson.wheelman) && dataJson.wheelman.length > 0) {
-                dataJson.wheelman.map((bale, index) => {
-                    dataJson.presser[index]._idCwb = bale._idCwb; 
-                });
+            // ✅ Gestisci il caso in cui una delle due array sia vuota
+            let contentToSet = [];
+            if (type === "presser") {
+                contentToSet = presserData;
+            } else if (type === "wheelman") {
+                contentToSet = wheelmanData;
             }
 
-            // Popola il contenuto con i dati appropriati
-            setContent(type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : []);
+            console.log("Contenuto da impostare:", contentToSet);
+            setContent(contentToSet);
         } else {
+            console.log("Nessun dato ricevuto dal server:", dataJson.message);
             setEmpty(true);
             hook && hook(dataJson.message);
         }
     } catch (error) {
+        console.error("Errore in fetchDataTotalBale:", error);
         showAlert({
             title: null,
             message: error.message,
             type: 'error'
-        })
+        });
     }
 }
 

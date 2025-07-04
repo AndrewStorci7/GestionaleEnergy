@@ -160,6 +160,9 @@ const getServerRoute = (route) => {
         case "id-balla": 
         case "id-bale": 
             return getSrvUrl() + "/bale/id";
+        case "update-bale": 
+        case "update-bale-data":
+            return getSrvUrl() + "/bale/update";
         
         //////////////////////////////////////////////////////
         // Rotte per la gestione dei dati della balla lato PRESSISTA

@@ -253,18 +253,34 @@ class Common {
         }
     }
 
-    async prova(req, res) {
+    async getIdsBale(id) {
         try {
-            const {body} = req.body;
-            console.info(`stringa normale: ${body}`);
-            const stringa = this.convertSpecialCharsToHex(body);
-            console.info(`stringa convertita: ${stringa}`);
+            if (id === 0 || id === undefined || id === null) {
+                return { code: 1, message: "ID non specificato" };
+            }
+
+            const [select] = await this.db.query(
+                `SELECT 
+                    pb_wb.id,
+                    pb_wb.id_pb,
+                    pb_wb.id_wb
+                FROM 
+                    pb_wb 
+                WHERE 
+                    pb_wb.id = ?`,
+                [id]
+            );
+    
+            if (select) {
+                return { code: 0, data: select };
+            } else {
+                return { code: 1, message: "Nessuna balla trovata con questo ID" };
+            }
         } catch (error) {
-            console.error(error);
-            res.status(500);
+            return { code: 1, message: `Errore all'interno di getIdsBale(): ${error.message}` };
         }
     }
 }
 
-export default Common
+export default Common;
 

@@ -1,9 +1,10 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { fetchReportData } from '@@/config';
 import Alert from "../alert/alert";
+import { useAlert } from "../alert/alertProvider";
 
 /**
  * Handle download of the report
@@ -248,8 +249,10 @@ const ExportReport = ({
   ...props
 }) => {
 
+  const { showAlert } = useAlert();
+
   const [dateForReport, setDateForReport] = useState(null);
-  const [showAlert, setShowAlert] = useState(false);
+  // const [showAlert, setShowAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [scope, setScope] = useState('');
 
@@ -257,20 +260,12 @@ const ExportReport = ({
     setDateForReport(date);
   }, [date])
 
-  const closeAlert = () => {
-    setShowAlert(prev => !prev);
-    // if (val) baleObj.setIdBale(null);
-  };
-
-  const handleAlert = async (msg, scope = "error") => {
-    setScope(scope);
-    setErrorMessage(msg);
-    setShowAlert(prev => !prev);
-  };
-
   const hookDownload = async () => {
     if (date === null || date === undefined) {
-      handleAlert("Devi selezionare una data");
+      showAlert({
+        title: null,
+        message: "Devi selezionare una data",
+      })
     } else {
       const data = await fetchReportData(reportFor, dateForReport); 
   
@@ -291,14 +286,14 @@ const ExportReport = ({
       >
         {children}
       </button>
-      {showAlert && 
+      {/* {showAlert && 
         <Alert
           handleClose={closeAlert}
           alertFor={scope}
           msg={errorMessage}
           // baleObj={baleObj}
         />
-      }
+      } */}
     </>
   );
 

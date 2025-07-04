@@ -1,5 +1,6 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';
+import WheelmanBale from './wheelman.js';
 
 const console = new Console("Presser", 1);
 
@@ -18,12 +19,26 @@ class PresserBale extends Bale {
     }
 
     handlePresserData = async (req, debug = false) => {
-
-        // console.debug(`Data received: ${typeof req.body.id}`, "yellow");
+        // Debug: verifica cosa viene passato
+        // console.debug(`Req ricevuto in handlePresserData:`, req);
         
-        const id = req.body.id;
+        let id;
+        if (req && req.body) {
+            id = req.body.id;
+        } else if (typeof req === 'object' && req.id !== undefined) {
+            id = req.id;
+        } else if (typeof req === 'number') {
+            id = req;
+        }
         
-        if (id !== 0 && id !== undefined && id !== null) {
+        // console.debug(`ID estratto: ${id}, tipo: ${typeof id}`);
+        
+        if (id === null || id === undefined || id === 0 || id === '') {
+            console.error(`ID non valido ricevuto: ${id}`);
+            return { code: 1, message: "ID non fornito o non valido" };
+        }
+        
+        try {
             const [rows] = await this.db.query(
                 `SELECT 
                     ${this.table}.id AS 'id', 
@@ -54,19 +69,19 @@ class PresserBale extends Bale {
                     ${this.table}.id_sb = selected_bale.id
                 WHERE 
                     ${this.table}.id = ? LIMIT 1`,
-                id
+                [id] 
             );
         
-            if (debug) console.debug(rows);
+            if (debug) console.debug("Risultato query presser:", rows);
 
             if (rows && rows.length > 0) {
                 return { code: 0, data: rows[0] };
             } else {
-                // console.info(JSON.stringify({ code: 1, message: "Nessuna balla trovata" }))
                 return { code: 1, message: "Nessuna balla trovata" };
             }
-        } else {
-            return -1;
+        } catch (error) {
+            console.error("Errore nella query presser:", error);
+            return { code: 1, message: `Errore database: ${error.message}` };
         }
     }
 
@@ -105,29 +120,32 @@ class PresserBale extends Bale {
      * Set a new bale with Presser information
      * 
      * @param {Object} req 
+     * @param {Object} res 
      */
-    async set(data) {
+    async set(body) {
         try {
-            const body = data;
-            console.debug(data);
+            if (!body || typeof body !== 'object') {
+                throw new Error("Body non valido");
+            }
+            console.debug(`${JSON.stringify(body)}, typeof: ${typeof body}`);
+
             const arr_body = Object.values(body);
 
             const check_ins_pb = await this.db.query(
-                `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note) 
-                VALUES( ?, ?, ?, ?, ?, ? )`,
+                `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note, data_ins) 
+                VALUES( ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
                 arr_body,
             );
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
-                return { code: 0, message: { id_new_bale } }
+                return { code: 0, message: { id: id_new_bale } }
             } else {
                 const info = check_ins_pb[0].info;
-                return { code: 1, message: { info } }
+                return { code: 1, message: { info } };
             }
         } catch (error) {
             console.error(error.message);
-            res.status(500).send(`Presser Error Add: ${error.message}`);
             throw `Presser Error Add: ${error.message}`;
         }
     }
@@ -138,29 +156,23 @@ class PresserBale extends Bale {
      * @param {object} req 
      * @param {object} res 
      */
-    async update(req, res) {
+    async update(body) {
         try {
-            const { body } = req.body;
+            console.log(`Presser update body: ${JSON.stringify(body)}`);
             const id_plastic = body?.id_plastic;
             const id_bale = body?.where;
-            const checkIfIncludesMDR = id_plastic.includes("MDR");  
+            const checkIfIncludesMDR = id_plastic.includes("MDR"); 
+            const wheelmanInstance = new WheelmanBale(this.db, "wheelman_bale");
 
-            const getIds = await fetch(this.internalUrl + '/bale/ids', { 
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ body: id_bale })
-            });
-            const respGetIds = await getIds.json();
+            const getIds = await this.getIdsBale(id_bale);
 
-            if (respGetIds.code === 0) {
-                await fetch(this.internalUrl + "/wheelman/update", {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body: {
-                        id_wd: checkIfIncludesMDR ? 2 : 1,
-                        where: respGetIds.res[0].id_wb,
-                    }})
-                })
+            console.debug(`UPDATE getIds: ${JSON.stringify(getIds)}`);
+
+            if (getIds.code === 0 && checkIfIncludesMDR) {
+                await wheelmanInstance.update({
+                    id_wd: 2,
+                    where: getIds.data[0].id_wb,
+                });
             }
 
             const san = this.checkParams(body, {scope: "update", table: this.table})
@@ -168,12 +180,12 @@ class PresserBale extends Bale {
             const [check] = await this.db.query(san.query, san.params);
     
             if (check) {
-                res.json({ code: 0 })
+                return { code: 0 }
             } else {
-                res.json({ code: 1, message: "Errore nella modifica di una balla" })
+                return { code: 1, message: "Errore nella modifica di una balla" }
             }
         } catch (error) {
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            console.error("Errore in Presser.update():", error);
             throw error;
         }
     }
