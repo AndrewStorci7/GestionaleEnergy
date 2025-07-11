@@ -158,15 +158,19 @@ class PresserBale extends Bale {
      */
     async update(body) {
         try {
+            if (body === null || body === undefined) {
+                return { code: 1, message: "Nessun body fornito per l'aggiornamento della balla Wheelman" };
+            }
+
             // Validazione dei parametri
-            const validatedBody = this.validateUpdateBody(body);
+            // const validatedBody = this.validateUpdateBody(body);
             
-            const id_plastic = validatedBody?.id_plastic;
-            const id_bale = validatedBody?.where;
+            const id_plastic = body?.id_plastic;
+            const id_bale = body?.where;
             
             if (id_plastic && id_plastic.includes("MDR")) {
                 const wheelmanInstance = new WheelmanBale(this.db, "wheelman_bale");
-                const getIds = await this.getIdsBale(id_bale);
+                const getIds = await this.getIdsBale(id_bale, 'presser');
 
                 console.debug(`UPDATE getIds: ${JSON.stringify(getIds)}`);
 
@@ -178,7 +182,7 @@ class PresserBale extends Bale {
                 }
             }
 
-            const san = this.checkParams(validatedBody, {scope: "update", table: this.table});
+            const san = this.checkParams(body, {scope: "update", table: this.table});
             
             const [check] = await this.db.query(san.query, san.params);
     

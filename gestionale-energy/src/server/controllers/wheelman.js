@@ -62,8 +62,7 @@ class WheelmanBale extends Bale {
                     ${this.table}.id_wd = warehouse_dest.id 
                 WHERE 
                     ${this.table}.id = ? LIMIT 1`,
-                [id],
-                true 
+                [id] 
             );
 
             if (debug) console.debug(`Risultato query wheelman: ${rows}`);

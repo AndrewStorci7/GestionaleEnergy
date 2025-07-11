@@ -235,8 +235,7 @@ class TotalBale extends Common {
                     ORDER BY 
                         IFNULL(presser_bale.data_ins, wheelman_bale.data_ins) ${order_by}
                     LIMIT 300`,
-                    _params.params,
-                    true
+                    _params.params
                 );
 
                 if (select !== 'undefined' || select !== null) {
@@ -389,8 +388,7 @@ class TotalBale extends Common {
                 WHERE
                     ${this.cond_for_idimplant} AND
                     ${_params.condition}`,
-                _params.params,
-                true
+                _params.params
             );
 
             console.debug(countChili[0]);
@@ -439,30 +437,35 @@ class TotalBale extends Common {
         try {
             const { id_bale } = req.body;
 
+            console.debug(`Delete body ricevuto: ${JSON.stringify(req.body)}`);
+
             if (id_bale !== null && id_bale !== undefined) {
 
                 const allId = await this.getIdsBale(id_bale);
-                if (allId.code !== 0) {
+                if (allId.code !== 0 || allId.data.length == 0) {
                     res.status(500).json(allId);
+                    return;
                 }
+
+                console.debug(`Delete allId ricevuto: ${JSON.stringify(allId)}`);
                 const id_pb = allId.data[0].id_pb;
                 const id_wb = allId.data[0].id_wb;
 
                 const [check] = await this.db.query(
-                    `DELETE FROM ${this.table} WHERE ${this.table}.id_pb=?`,
+                    `DELETE FROM ${this.table} WHERE ${this.table}.id = ?`,
                     [id_bale]
                 );
                 
                 if (check && check.affectedRows > 0) {
                     // Check delete of presser bale
                     const [check_dp] = await this.db.query(
-                        "DELETE FROM presser_bale WHERE presser_bale.id=?",
+                        "DELETE FROM presser_bale WHERE presser_bale.id = ?",
                         [id_pb]
                     );
 
                     // Check delete of wheelman bale
                     const [check_dw] = await this.db.query(
-                        "DELETE FROM wheelman_bale WHERE wheelman_bale.id=?",
+                        "DELETE FROM wheelman_bale WHERE wheelman_bale.id = ?",
                         [id_wb]
                     );
 

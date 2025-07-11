@@ -85,7 +85,7 @@ export default function UpdateValuesBale({
         if (type === 'presser') {
             return presserData.plastic !== null && presserData.plastic !== undefined && presserData.plastic !== "";
         } else {
-            return cacheWeight > 0 || hasChanges || wheelmanData.cdbc === 2;
+            return cacheWeight > 0 || hasChanges;
         }
     }, [type, presserData.plastic, cacheWeight]);
 
@@ -144,7 +144,8 @@ export default function UpdateValuesBale({
                     id_cpb: presserData.cdbp ? parseInt(presserData.cdbp) : null,
                     id_sb: presserData.selected_b ? parseInt(presserData.selected_b) : null,
                     note: presserData.notes || null,
-                    where: parseInt(objBale.idUnique),
+                    where: parseInt(objBale.idBale),
+                    // where: parseInt(objBale.idUnique),
                 };
             } else {
                 body = {
@@ -154,7 +155,8 @@ export default function UpdateValuesBale({
                     id_wd: wheelmanData.dest_wh ? parseInt(wheelmanData.dest_wh) : null,
                     note: wheelmanData.notes || null,
                     weight: parseFloat(cacheWeight),
-                    where: parseInt(objBale.idUnique),
+                    where: parseInt(objBale.idBale),
+                    // where: parseInt(objBale.idUnique),
                 };
             }
 
@@ -166,15 +168,15 @@ export default function UpdateValuesBale({
             });
 
             // Aggiorna lo stato della balla totale solo se è wheelman e cdbc === 2
-            if (type === 'wheelman') {
-                const status = (wheelmanData.cdbc === 2) ? 1 : -1;
-                const body2 = { status: status, where: objBale.idUnique };
-                await updateStatusTotalbale(body2);
+            // if (type === 'wheelman') {
+            //     const status = (wheelmanData.cdbc === 2) ? 1 : -1;
+            //     const body2 = { status: status, where: objBale.idUnique };
+            //     await updateStatusTotalbale(body2);
                 
-                if (status === 1) {
-                    hideAlert();
-                }
-            }
+            //     if (status === 1) {
+            //         hideAlert();
+            //     }
+            // }
 
             // Aggiorna i dati originali per evitare false modifiche
             if (type === 'presser') {
@@ -184,6 +186,8 @@ export default function UpdateValuesBale({
             }
 
             if (!skipRefresh) {
+                const body2 = { status: -1, where: objBale.idUnique };
+                await updateStatusTotalbale(body2);
                 refreshPage(ws);
             }
 
@@ -224,7 +228,7 @@ export default function UpdateValuesBale({
                 }
             }
 
-            await handleStampa(objBale, showAlert, handlerClose, wheelmanData.weight > 0);
+            await handleStampa(objBale, showAlert, handlerClose, cacheWeight > 0);
         } catch (error) {
             console.error("Errore nella stampa:", error);
             showAlert({

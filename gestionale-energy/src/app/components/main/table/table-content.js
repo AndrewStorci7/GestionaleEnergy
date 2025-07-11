@@ -209,28 +209,28 @@ export default function TableContent({
                                                 type="text"
                                                 value={value}
                                                 className="text-black w-full on-input"
-                                                onChange={(e) => {
-                                                    setWeight(e.target.value);
-                                                    // aggiorna localmente, puoi anche salvarlo in uno stato per poi inviarlo
-                                                    const updatedContent = [...content];
-                                                    const rowIndex = updatedContent.findIndex(row => row.idUnique === idUnique);
-                                                    if (rowIndex !== -1) {
-                                                        updatedContent[rowIndex][key] = e.target.value;
-                                                        // setContent(updatedContent);
-                                                    }
-                                                }}
-                                                onKeyDown={(e) => {
-                                                    // salva dato su db
-                                                    // se preme 'Enter' salva, se preme 'Esc' non salva
-                                                    if (e.key === 'Enter')
-                                                        updateWeightData(e, idUnique, false);
-                                                    else if (e.key === 'Escape') 
-                                                        updateWeightData(e, idUnique, false);
-                                                }}
-                                                onBlur={(e) => {
-                                                    // aggiorna dato peso sul db
-                                                    updateWeightData(e, idUnique, true);
-                                                }} // chiudi l'input quando esce dal focus
+                                                // onChange={(e) => {
+                                                //     setWeight(e.target.value);
+                                                //     // aggiorna localmente, puoi anche salvarlo in uno stato per poi inviarlo
+                                                //     const updatedContent = [...content];
+                                                //     const rowIndex = updatedContent.findIndex(row => row.idUnique === idUnique);
+                                                //     if (rowIndex !== -1) {
+                                                //         updatedContent[rowIndex][key] = e.target.value;
+                                                //         // setContent(updatedContent);
+                                                //     }
+                                                // }}
+                                                // onKeyDown={(e) => {
+                                                //     // salva dato su db
+                                                //     // se preme 'Enter' salva, se preme 'Esc' non salva
+                                                //     if (e.key === 'Enter')
+                                                //         updateWeightData(e, idUnique, false);
+                                                //     else if (e.key === 'Escape') 
+                                                //         updateWeightData(e, idUnique, false);
+                                                // }}
+                                                // onBlur={(e) => {
+                                                //     // aggiorna dato peso sul db
+                                                //     updateWeightData(e, idUnique, true);
+                                                // }} // chiudi l'input quando esce dal focus
                                             />
                                         ) : value}
                                     </td>

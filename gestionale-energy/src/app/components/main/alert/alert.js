@@ -50,6 +50,7 @@ export default function Alert({
                 data.setIdBale(null);
             }
             // Non fare refresh automatico - lascia che sia il componente parent a decidere
+            refreshPage(ws);
             onHide?.() || hideAlert();
         } catch (error) {
             console.error('Error closing alert:', error);
@@ -68,7 +69,7 @@ export default function Alert({
         try {
             setInternalState(prev => ({ ...prev, isProcessing: true }));
             
-            await handleDelete(data.idBale, (msg, scope) => {
+            await handleDelete(data.idUnique, (msg, scope) => {
                 setInternalState(prev => ({
                     ...prev,
                     alertType: scope,

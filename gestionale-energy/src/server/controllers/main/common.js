@@ -318,7 +318,7 @@ class Common {
         }
     }
 
-    async getIdsBale(id) {
+    async getIdsBale(id, type) {
         try {
             if (id === 0 || id === undefined || id === null) {
                 return { code: 1, message: "ID non specificato" };
@@ -332,9 +332,11 @@ class Common {
                 FROM 
                     pb_wb 
                 WHERE 
-                    pb_wb.id = ?`,
+                    ${type === 'presser' ? 'pb_wb.id_pb' : type === 'wheelman' ? 'pb_wb.id_wb' : 'pb_wb.id'} = ?`,
                 [id]
             );
+
+            console.debug(`getIdsBale() - Risultato della query: ${JSON.stringify(select)}`);
     
             if (select) {
                 return { code: 0, data: select };
