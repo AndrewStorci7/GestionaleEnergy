@@ -1,10 +1,6 @@
 import Bale from './main/bale.js';
 import Console from '../inc/console.js';
-<<<<<<< HEAD
-import TotalBale from './total-bale.js';
-=======
 import WheelmanBale from './wheelman.js';
->>>>>>> dev/managmentThreadsConnections
 
 const console = new Console("Presser", 1);
 

@@ -3,17 +3,12 @@ import { useState, useEffect, useActionState } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { fetchReportData } from '@@/config';
-<<<<<<< HEAD
-import Alert from "../alert/alert";
-import { useAlert } from "../alert/alertProvider";
-=======
 import { useAlert } from "../alert/alertProvider";
 
 // formula per arrotondare un numero
 const createRoundingFormula = (sumFormula) => {
   return `IF(MOD(${sumFormula},10)>5,ROUNDUP(${sumFormula},-1),IF(MOD(${sumFormula},10)<=5,ROUNDDOWN(${sumFormula},-1),${sumFormula}))`;
 };
->>>>>>> dev/managmentThreadsConnections
 
 /**
  * Handle download of the report
