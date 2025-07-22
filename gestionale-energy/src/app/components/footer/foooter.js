@@ -3,6 +3,7 @@
  * @returns Footer
  */
 import Image from "next/image";
+import packageJson from "../../../../package.json";
 
 export default function Footer( props ) {
 
@@ -21,7 +22,7 @@ export default function Footer( props ) {
           Powered by <a href="https://oppimittinetworking.com">Oppimittinetworking.com</a>
         </div>
         <div className="text-center sm:text-left">{year} @‌copyright</div>
-        <div className="text-center sm:text-left">{process.env.NEXT_PUBLIC_VERSION}</div>
+        <div className="text-center sm:text-left">v{packageJson.version}</div>
       </div>
     </div>
   );

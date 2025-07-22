@@ -76,11 +76,9 @@ class Common {
     }
 
     /**
-     * Funzione che crea e adatta la query per l'UPDATE o DELETE query sul DB
-     * 
+     * Funzione migliorata per la gestione dei parametri SQL
      * @param {Object} obj      Oggetto ricevuto tramite richiesta 
      * @param {Object} options  Opzioni facoltative per la gestione dell'update
-     * 
      * @returns {Object} 
      */
     checkParams(obj, options) {
@@ -89,43 +87,107 @@ class Common {
 
         if (obj !== null && obj !== undefined) {
             if (typeof obj === 'object') {
-
                 const table = options.table;
-                var query = this.selectQuery(options)
-                var columns = []
-                var params = []
+                let query = this.selectQuery(options);
+                let columns = [];
+                let params = [];
                 
-                // Creo un array con solo i valori diversi da "" (vuoto o null)
-                // Differenzio per evitare casini nella creazione della stringa per la query
+                console.debug(`Input object: ${JSON.stringify(obj)}`);
+                
+                // Validazione e sanitizzazione dei parametri
                 for (const [key, value] of Object.entries(obj)) {
-                    if (value !== '' && value !== 0 && (value !== 'undefined' || value !== undefined)) {
+                    if (this.isValidValue(value)) {
                         columns.push(key);
-                        params.push(value);
-                        if (table === "pb_wb" && key === "where")
-                            params.push(value);
+                        
+                        // Converti appropriatamente i valori
+                        let sanitizedValue = this.sanitizeValue(value);
+                        params.push(sanitizedValue);
+                        
+                        // Gestione speciale per la tabella pb_wb
+                        if (table === "pb_wb" && key === "where") {
+                            params.push(sanitizedValue);
+                        }
                     }
                 }
 
-                // Creo correttamente la query
-                for (const [index, val] of Object.entries(columns)) {
-                    if (index < columns.length - 2)
-                        query += `${val}=?, `;
-                    else 
-                        query += (val !== 'where') ? `${val} = ? ` : 'WHERE pb_wb.id = ?';
+                console.debug(`Processed columns: ${JSON.stringify(columns)}`);
+                console.debug(`Processed params: ${JSON.stringify(params)}`);
+
+                // Costruzione query migliorata
+                for (let i = 0; i < columns.length; i++) {
+                    const col = columns[i];
+                    
+                    if (col === 'where') {
+                        // Gestione della clausola WHERE
+                        query += `WHERE ${table}.id = ?`;
+                    } else {
+                        // Gestione delle colonne SET
+                        query += `${col} = ?`;
+                        if (i < columns.length - 1 && columns[i + 1] !== 'where') {
+                            query += ', ';
+                        } else if (i < columns.length - 1) {
+                            query += ' ';
+                        }
+                    }
                 }
-                console.debug(query, params);
+
+                console.debug(`Final query: ${query}`);
+                console.debug(`Final params: ${JSON.stringify(params)}`);
+
                 return { query, params };
             } else {
                 return obj;
             }
         } else {
-            return null
+            return null;
         }
     }
 
     /**
+     * Verifica se un valore è valido per l'inserimento nel database
+     * @param {any} value 
+     * @returns {boolean}
+     */
+    isValidValue(value) {
+        // Accetta 0 come valore valido per i numeri
+        if (value === 0) return true;
+        
+        // Rifiuta valori null, undefined, stringa vuota
+        if (value === null || value === undefined || value === '') return false;
+        
+        // Rifiuta la stringa 'undefined'
+        if (value === 'undefined') return false;
+        
+        return true;
+    }
+
+    /**
+     * Sanitizza un valore per l'inserimento nel database
+     * @param {any} value 
+     * @returns {any}
+     */
+    sanitizeValue(value) {
+        // Gestione dei numeri
+        if (typeof value === 'number') {
+            return value;
+        }
+        
+        // Gestione delle stringhe
+        if (typeof value === 'string') {
+            return value.trim();
+        }
+        
+        // Gestione dei boolean
+        if (typeof value === 'boolean') {
+            return value ? 1 : 0;
+        }
+        
+        // Per altri tipi, converti in stringa
+        return String(value);
+    }
+
+    /**
      * Select query only for UPDATE, DELETE 
-     * 
      * @param {object} options  
      */
     selectQuery(options) {
@@ -135,6 +197,9 @@ class Common {
             }
             case "update": {
                 return `UPDATE ${options.table} SET `;
+            }
+            default: {
+                throw new Error(`Scope non valido: ${options.scope}`);
             }
         }
     }
@@ -195,7 +260,8 @@ class Common {
                 first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
                 second: `AND DATE(presser_bale.data_ins) = ${!check ? `'${currentDate}'` : 'CURDATE() - INTERVAL 1 DAY'} AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
                 third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) AND pb_wb.status = 1`,
-                fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                // fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                fourth: `AND wheelman_bale.id_cwb = 1`,
             };
             params = [turn[0], turn[1], id_implant];
         }
@@ -253,18 +319,36 @@ class Common {
         }
     }
 
-    async prova(req, res) {
+    async getIdsBale(id, type) {
         try {
-            const {body} = req.body;
-            console.info(`stringa normale: ${body}`);
-            const stringa = this.convertSpecialCharsToHex(body);
-            console.info(`stringa convertita: ${stringa}`);
+            if (id === 0 || id === undefined || id === null) {
+                return { code: 1, message: "ID non specificato" };
+            }
+
+            const [select] = await this.db.query(
+                `SELECT 
+                    pb_wb.id,
+                    pb_wb.id_pb,
+                    pb_wb.id_wb
+                FROM 
+                    pb_wb 
+                WHERE 
+                    ${type === 'presser' ? 'pb_wb.id_pb' : type === 'wheelman' ? 'pb_wb.id_wb' : 'pb_wb.id'} = ?`,
+                [id]
+            );
+
+            console.debug(`getIdsBale() - Risultato della query: ${JSON.stringify(select)}`);
+    
+            if (select) {
+                return { code: 0, data: select };
+            } else {
+                return { code: 1, message: "Nessuna balla trovata con questo ID" };
+            }
         } catch (error) {
-            console.error(error);
-            res.status(500);
+            return { code: 1, message: `Errore all'interno di getIdsBale(): ${error.message}` };
         }
     }
 }
 
-export default Common
+export default Common;
 

@@ -102,9 +102,12 @@ export default function Table({ type, implant, idUser }) {
                                 objAdd: objAdd,
                                 noData: (e) => noData(e)
                             }}
-                            primary
-                        />
-                        <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} />
+                            primary />
+
+                        <TableWrapper 
+                            className="col-span-4" 
+                            type={"wheelman"} 
+                            tableContent={{ objAdd: objAdd }} />
                     </div>
 
                     <BtnPresser 
@@ -138,9 +141,12 @@ export default function Table({ type, implant, idUser }) {
                                 objAdd: objAdd,
                                 noData: (e) => noData(e)
                             }}
-                            primary
-                        />
-                        <TableWrapper className="col-span-4" type={"presser"} tableContent={{ objAdd: objAdd }} />
+                            primary />
+
+                        <TableWrapper 
+                            className="col-span-4" 
+                            type={"presser"} 
+                            tableContent={{ objAdd: objAdd }} />
                     </div>
 
                     <BtnWheelman 

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
@@ -53,8 +53,6 @@ export default function TableContent({
 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false);
-    const [openNotes, setOpenNotes] = useState({}); 
-    const [noteMessage, setNoteMessage] = useState("");
     // const [changeWeight, canChangeWeight] = useState(false);
     const [editingWeightRowId, setEditingWeightRowId] = useState(null);
     const [newWeight, setWeight] = useState(0);
@@ -68,11 +66,7 @@ export default function TableContent({
             message: note,
             type: "note"
         })
-        // setNoteMessage(note);
-        // setOpenNotes(prev => ({ ...prev, [id]: !prev[id] }));
     };
-
-    // const handleCloseNote = id => setOpenNotes(prev => ({ ...prev, [id]: false }));
 
     /**
      * 
@@ -89,24 +83,51 @@ export default function TableContent({
         }
     };
     
-    const fetchData = async () => {
+    const safeType = useMemo(() => {
+        if (!type || (type !== 'presser' && type !== 'wheelman')) {
+            console.warn(`Invalid type in TableContent: ${type}, defaulting to 'presser'`);
+            return 'presser';
+        }
+        return type;
+    }, [type]);
+
+    // Usa useCallback per evitare re-render non necessari
+    const fetchData = useCallback(async () => {
         try {
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
-            const typeToFetch = type !== "presser" && type !== 'wheelman' ? "presser" : type; // Se il tipo è 'both', prendi solo 'presser' o 'wheelman'
-            fetchDataTotalBale(body, typeToFetch, setContent, setEmpty, noData, showAlert);
+            
+            // Rimuovi la logica confusa di typeToFetch
+            console.log(`Fetching data for type: ${safeType}, useFor: ${useFor}`);
+            
+            await fetchDataTotalBale(body, safeType, setContent, setEmpty, noData, showAlert);
         } catch (error) {
+            console.error('Error fetching data:', error);
             showAlert({
                 title: null,
                 message: error.message,
                 type: "error"
             });
         }
-    };
+    }, [safeType, useFor, noData, showAlert]);
 
+    // Separare gli useEffect per una migliore gestione
     useEffect(() => {
         fetchData();
-    }, [message]);
+    }, [fetchData]);
+
+    // Separare la gestione dei messaggi WebSocket
+    useEffect(() => {
+        if (message) {
+            console.log('WebSocket message received, refreshing data...');
+            fetchData();
+        }
+    }, [message, fetchData]);
+
+    // Debug per verificare i valori
+    useEffect(() => {
+        console.log(`TableContent rendered with type: ${safeType}, useFor: ${useFor}, primary: ${primary}`);
+    }, [safeType, useFor, primary]);
 
     const handleRowClick = (id, idUnique) => {
         const newSelectedBaleId = selectedBaleId === id ? null : id;
@@ -116,9 +137,6 @@ export default function TableContent({
 
     const updateWeightData = async (e, idUnique, bypassKeyDown) => {
         if (e.key === "Enter" || bypassKeyDown) {
-            // console.log(`New Weight => ${newWeight}`);
-            // console.log("Oggetto", e)
-            // console.log(`Valore: ${e.target.value}`)
             const url = getServerRoute("update-wheelman-bale");
             const fetch1 = await fetch(url, {
                 method: 'POST',
@@ -191,28 +209,28 @@ export default function TableContent({
                                                 type="text"
                                                 value={value}
                                                 className="text-black w-full on-input"
-                                                onChange={(e) => {
-                                                    setWeight(e.target.value);
-                                                    // aggiorna localmente, puoi anche salvarlo in uno stato per poi inviarlo
-                                                    const updatedContent = [...content];
-                                                    const rowIndex = updatedContent.findIndex(row => row.idUnique === idUnique);
-                                                    if (rowIndex !== -1) {
-                                                        updatedContent[rowIndex][key] = e.target.value;
-                                                        // setContent(updatedContent);
-                                                    }
-                                                }}
-                                                onKeyDown={(e) => {
-                                                    // salva dato su db
-                                                    // se preme 'Enter' salva, se preme 'Esc' non salva
-                                                    if (e.key === 'Enter')
-                                                        updateWeightData(e, idUnique, false);
-                                                    else if (e.key === 'Escape') 
-                                                        updateWeightData(e, idUnique, false);
-                                                }}
-                                                onBlur={(e) => {
-                                                    // aggiorna dato peso sul db
-                                                    updateWeightData(e, idUnique, true);
-                                                }} // chiudi l'input quando esce dal focus
+                                                // onChange={(e) => {
+                                                //     setWeight(e.target.value);
+                                                //     // aggiorna localmente, puoi anche salvarlo in uno stato per poi inviarlo
+                                                //     const updatedContent = [...content];
+                                                //     const rowIndex = updatedContent.findIndex(row => row.idUnique === idUnique);
+                                                //     if (rowIndex !== -1) {
+                                                //         updatedContent[rowIndex][key] = e.target.value;
+                                                //         // setContent(updatedContent);
+                                                //     }
+                                                // }}
+                                                // onKeyDown={(e) => {
+                                                //     // salva dato su db
+                                                //     // se preme 'Enter' salva, se preme 'Esc' non salva
+                                                //     if (e.key === 'Enter')
+                                                //         updateWeightData(e, idUnique, false);
+                                                //     else if (e.key === 'Escape') 
+                                                //         updateWeightData(e, idUnique, false);
+                                                // }}
+                                                // onBlur={(e) => {
+                                                //     // aggiorna dato peso sul db
+                                                //     updateWeightData(e, idUnique, true);
+                                                // }} // chiudi l'input quando esce dal focus
                                             />
                                         ) : value}
                                     </td>

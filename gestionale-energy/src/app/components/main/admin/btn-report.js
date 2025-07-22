@@ -17,7 +17,7 @@ export default function BtnReport({
   children 
 }) {
 
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(null); // data del report
 
   const COMMON_STYLE = "text-black font-semibold bg-sky-50 rounded-full text-sm px-2 py-2 text-center me-2 mb-3.5";
 

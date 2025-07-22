@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 
@@ -21,14 +21,26 @@ export default function UpdateValuesBale({
     handlerClose,
     ...props
 }) {
-
-    console.log("Data passed to UpdateValuesBale: ", objBale);
-
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
     const { ws, message } = useWebSocket();
-
-    const [canProceed, setCanProceed] = useState(false);
-
+    
+    // Stati per i dati originali (per confronto)
+    const [originalPresserData, setOriginalPresserData] = useState({
+        plastic: null, 
+        rei: null,
+        cdbp: null,
+        selected_b: null,
+        notes: null
+    });
+    const [originalWheelmanData, setOriginalWheelmanData] = useState({
+        cdbc: null, 
+        reason: null,
+        weight: null,
+        dest_wh: null,
+        notes: null
+    });
+    
+    // Stati per i dati correnti
     const [presserData, setPresserData] = useState({
         plastic: null, 
         rei: null,
@@ -36,7 +48,6 @@ export default function UpdateValuesBale({
         selected_b: null,
         notes: null
     });
-
     const [wheelmanData, setWheelmanData] = useState({
         cdbc: null, 
         reason: null,
@@ -44,106 +55,216 @@ export default function UpdateValuesBale({
         dest_wh: null,
         notes: null
     });
-
+    
     const [cacheWeight, setCacheWeight] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Verifica se ci sono state modifiche confrontando i dati originali con quelli correnti
+    const hasChanges = useMemo(() => {
+        if (type === 'presser') {
+            return (
+                presserData.plastic !== originalPresserData.plastic ||
+                presserData.rei !== originalPresserData.rei ||
+                presserData.cdbp !== originalPresserData.cdbp ||
+                presserData.selected_b !== originalPresserData.selected_b ||
+                presserData.notes !== originalPresserData.notes
+            );
+        } else {
+            return (
+                wheelmanData.cdbc !== originalWheelmanData.cdbc ||
+                wheelmanData.reason !== originalWheelmanData.reason ||
+                cacheWeight !== originalWheelmanData.weight ||
+                wheelmanData.dest_wh !== originalWheelmanData.dest_wh ||
+                wheelmanData.notes !== originalWheelmanData.notes
+            );
+        }
+    }, [type, presserData, wheelmanData, cacheWeight, originalPresserData, originalWheelmanData]);
+
+    // Verifica se i dati sono validi per procedere
+    const canProceed = useMemo(() => {
+        if (type === 'presser') {
+            return presserData.plastic !== null && presserData.plastic !== undefined && presserData.plastic !== "";
+        } else {
+            return cacheWeight > 0 || hasChanges;
+        }
+    }, [type, presserData.plastic, cacheWeight]);
+
+    // Verifica se può stampare (peso > 0 e non deve necessariamente aver confermato)
+    const canPrint = useMemo(() => {
+        return (type === 'wheelman' && cacheWeight > 0) || wheelmanData.cdbc == 2;
+    }, [type, cacheWeight, hasChanges]);
 
     const handleData = (response) => {
         const data = response.data;
         console.log("UpdateBale Dati dentro handleData: ", data);
+        
         if (type === "presser") {
-            const tmpData = { plastic: data.plastic, rei: data._idRei, cdbp: data._idCpb, selected_b: data._idSb, notes: data.notes };
+            const tmpData = { 
+                plastic: data.plastic, 
+                rei: data._idRei, 
+                cdbp: data._idCpb, 
+                selected_b: data._idSb, 
+                notes: data.notes || "" 
+            };
             setPresserData(tmpData);
-            setCanProceed(data.plastic !== null || data.plastic !== undefined);
+            setOriginalPresserData({ ...tmpData }); // Salva i dati originali
         } else {
-            setWheelmanData({ cdbc: data._idCwb, reason: data._idRnt, weight: data.weight, dest_wh: data._idWd, notes: data.notes });
-            setCanProceed(data.weight > 0);
+            const tmpData = { 
+                cdbc: data._idCwb, 
+                reason: data._idRnt, 
+                weight: data.weight || 0, 
+                dest_wh: data._idWd, 
+                notes: data.notes || "" 
+            };
+            setWheelmanData(tmpData);
+            setOriginalWheelmanData({ ...tmpData }); // Salva i dati originali
+            setCacheWeight(data.weight || 0);
         }
     }
 
     useEffect(() => {
         fetchDataBale(type, objBale, handleData);
-    }, [message]);
+    }, [type, objBale, message]);
 
     /**
-     * Handle Click function
-     * 
-     * @param {boolean} f 
+     * Funzione per salvare i dati della balla
+     * @param {boolean} skipRefresh - Se true, non ricarica la pagina (utile per stampa)
      */
-    const handleClick = async () => {
+    const saveBaleData = async (skipRefresh = false) => {
         try {
+            setIsLoading(true);
             const cookie = JSON.parse(Cookies.get('user-info'));
-            var body = null, url = "";
-            setWheelmanData(prev => ({ ...prev, weight: cacheWeight })); // Assicuro che il peso sia un numero
+            let body = null;
+            
             if (type === 'presser') {
                 body = {
-                    id_presser: cookie.id_user,
+                    id_presser: parseInt(cookie.id_user),
                     id_plastic: presserData.plastic,
-                    id_rei: presserData.rei,
-                    id_cpb: presserData.cdbp,
-                    id_sb: presserData.selected_b,
-                    note: presserData.notes,
-                    where: objBale.idBale,
+                    id_rei: presserData.rei ? parseInt(presserData.rei) : null,
+                    id_cpb: presserData.cdbp ? parseInt(presserData.cdbp) : null,
+                    id_sb: presserData.selected_b ? parseInt(presserData.selected_b) : null,
+                    note: presserData.notes || null,
+                    where: parseInt(objBale.idBale),
+                    // where: parseInt(objBale.idUnique),
                 };
-                url = getServerRoute("update-presser-bale");
             } else {
                 body = {
-                    id_wheelman: cookie.id_user,
-                    id_cwb: wheelmanData.cdbc,
-                    id_rnt: wheelmanData.reason,
-                    id_wd: wheelmanData.dest_wh,
-                    note: wheelmanData.notes,
-                    weight: cacheWeight,
-                    where: objBale.idBale,
+                    id_wheelman: parseInt(cookie.id_user),
+                    id_cwb: wheelmanData.cdbc ? parseInt(wheelmanData.cdbc) : null,
+                    id_rnt: wheelmanData.reason ? parseInt(wheelmanData.reason) : null,
+                    id_wd: wheelmanData.dest_wh ? parseInt(wheelmanData.dest_wh) : null,
+                    note: wheelmanData.notes || null,
+                    weight: parseFloat(cacheWeight),
+                    where: parseInt(objBale.idBale),
+                    // where: parseInt(objBale.idUnique),
                 };
-                url = getServerRoute("update-wheelman-bale");
             }
 
-            const status = (wheelmanData.cdbc === 2) ? 1 : -1;
-
-            console.log(objBale.idUnique);
-            const body2 = { status: status, where: objBale.idUnique };
-            await fetch(url, {
+            // Aggiorna i dati della balla
+            await fetch(getServerRoute("update-bale"), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ body })
+                body: JSON.stringify({ body, type }),
             });
-    
-            // Aggiorna lo stato della balla totale
-            await updateStatusTotalbale(body2);
-            setCanProceed(false);
-            refreshPage(ws);
-            // Gestisco la conferma e ri-renderizzo la componente padre
-            // handlerClose();
-    
+
+            // Aggiorna lo stato della balla totale solo se è wheelman e cdbc === 2
+            // if (type === 'wheelman') {
+            //     const status = (wheelmanData.cdbc === 2) ? 1 : -1;
+            //     const body2 = { status: status, where: objBale.idUnique };
+            //     await updateStatusTotalbale(body2);
+                
+            //     if (status === 1) {
+            //         hideAlert();
+            //     }
+            // }
+
+            // Aggiorna i dati originali per evitare false modifiche
+            if (type === 'presser') {
+                setOriginalPresserData({ ...presserData });
+            } else {
+                setOriginalWheelmanData({ ...wheelmanData, weight: cacheWeight });
+            }
+
+            if (!skipRefresh) {
+                const body2 = { status: -1, where: objBale.idUnique };
+                await updateStatusTotalbale(body2);
+                refreshPage(ws);
+            }
+
+            return true;
         } catch (error) {
-            console.error("Errore", error);
+            console.error("Errore nel salvare i dati:", error);
+            showAlert({
+                title: "Errore",
+                message: "Errore nel salvare i dati della balla",
+                type: "error"
+            });
+            return false;
+        } finally {
+            setIsLoading(false);
         }
-    }
+    };
+
+    /**
+     * Handle Click function per conferma
+     */
+    const handleConfirm = async () => {
+        const success = await saveBaleData(false);
+        if (success) {
+            handlerClose();
+        }
+    };
+
+    /**
+     * Handle Click function per stampa
+     * Se ci sono modifiche non salvate, le salva prima di stampare
+     */
+    const handlePrint = async () => {
+        try {
+            if (hasChanges) {
+                const success = await saveBaleData(true);
+                if (!success) {
+                    return;
+                }
+            }
+
+            await handleStampa(objBale, showAlert, handlerClose, cacheWeight > 0);
+        } catch (error) {
+            console.error("Errore nella stampa:", error);
+            showAlert({
+                title: "Errore",
+                message: "Errore durante la stampa dell'etichetta",
+                type: "error"
+            });
+        }
+    };
 
     return (
         <>
             <div className='grid grid-cols-5'>
                 <div className='relative px-[5px]'>
-                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Codice Plastica" : "Cond. Balla Carrel."}</label>
+                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>
+                        {(type === 'presser') ? "Codice Plastica" : "Cond. Balla Carrel."}
+                    </label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "plastic" : "cdbc"}
                         value={(type === 'presser') ? presserData.plastic : wheelmanData.cdbc}
                         onChange={(e) => { 
                             if (type === 'presser') {
                                 setPresserData(prev => ({ ...prev, plastic: e.target.value })); 
-                                setCanProceed(e.target.value !== "");
                             } else {
                                 setWheelmanData(prev => ({ ...prev, cdbc: e.target.value }));
-                                setCanProceed(e.target.value == 2);
                             }
                         }} 
                         fixedW 
                     />
                 </div>
                 <div className='relative px-[5px]'>
-                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Utiliz. REI" : "Motivaz."}</label>
+                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>
+                        {(type === 'presser') ? "Utiliz. REI" : "Motivaz."}
+                    </label>
                     <SelectInput 
-                        disabled={wheelmanData.cdbc == 1}
+                        disabled={type === 'wheelman' && wheelmanData.cdbc == 1}
                         searchFor={(type === 'presser') ? "rei" : "reason"} 
                         value={(type === 'presser') ? presserData.rei : wheelmanData.reason}
                         onChange={(e) => {
@@ -157,7 +278,9 @@ export default function UpdateValuesBale({
                     />
                 </div>
                 <div className='relative px-[5px]'>
-                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>{(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}</label>
+                    <label className='text-black absolute top-[-30px] left-[5px] font-bold'>
+                        {(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}
+                    </label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
                         value={(type === 'presser') ? presserData.cdbp : wheelmanData.dest_wh}
@@ -192,8 +315,6 @@ export default function UpdateValuesBale({
                             onChange={(e) => { 
                                 const newWeight = parseFloat(e.target.value) || 0;
                                 setCacheWeight(newWeight);
-                                // setWheelmanData(prev => ({ ...prev, weight: newWeight }));
-                                setCanProceed(newWeight > 0 && newWeight);
                             }}
                             placeholder="Inserisci peso"
                         />
@@ -205,8 +326,8 @@ export default function UpdateValuesBale({
                     <input 
                         className='text-black w-full on-input'
                         type="text"
-                        id="note-carrellista"
-                        value={(type === 'presser' && presserData.notes) ? presserData.notes : wheelmanData.notes ? wheelmanData.notes : ""}
+                        id="note-input"
+                        value={(type === 'presser') ? presserData.notes : wheelmanData.notes}
                         onChange={(e) => {
                             if (type === 'presser') {
                                 setPresserData(prev => ({ ...prev, notes: e.target.value }));
@@ -215,41 +336,53 @@ export default function UpdateValuesBale({
                             }
                         }}
                         placeholder="Inserisci note"
-                        // defaultValue={note}
                     />
                 </div>
             </div>
+            
+            {/* Indicatore di modifiche */}
+            {hasChanges && (
+                <div className='text-orange-600 font-semibold text-center mt-2'>
+                    ⚠️ Ci sono modifiche non salvate
+                </div>
+            )}
+            
             <div className='flex flex-row-reverse m-[10px] mt-[20px]'>
-                <button 
-                    className={`border px-[10px] py-[5px] rounded-xl ml-4 bg-blue-500 ${!canProceed && 'disabled:opacity-45 cursor-no-drop'}`}
-                    onClick={() => handleClick()}
-                    disabled={!canProceed}
-                >
-                    Conferma
-                </button>
-                <button 
-                    className={'border px-[10px] py-[5px] rounded-xl bg-primary mx-4'}
-                    onClick={() => handlerClose()}
-                >
-                    Annulla
-                </button>
                 {type === 'wheelman' && (
-                    <button className={'border px-[10px] py-[5px] rounded-xl bg-green-500 mr-4'}
-                    onClick={() => handleStampa(objBale, showAlert, handlerClose, wheelmanData.weight > 0)}
-                    // onClick={() => {}}
+                    <button 
+                        className={`border px-[10px] py-[5px] rounded-xl mr-4 text-white font-semibold
+                            ${canPrint ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-no-drop'}`}
+                        onClick={handlePrint}
+                        disabled={!canPrint || isLoading}
+                        title={!canPrint ? "Inserisci un peso valido per stampare" : "Stampa etichetta"}
                     >
                         <div className="flex items-center p-1">
                             <Image 
                                 src={"/filled/stampa-bianco-filled.png"}
                                 width={25}
                                 height={25}
-                                alt="Aggiungi icona"
+                                alt="Stampa icona"
                                 className="mr-2"
                             />
-                            Stampa etich.
+                            {isLoading ? 'Stampando...' : 'Stampa etich.'}
                         </div>
                     </button>
                 )}
+                <button 
+                    className={`border px-[10px] py-[5px] rounded-xl mx-4 bg-blue-500 text-white font-semibold
+                        ${(!canProceed || !hasChanges) ? 'disabled:opacity-45 cursor-no-drop' : 'hover:bg-blue-600'}`}
+                    onClick={handleConfirm}
+                    disabled={!canProceed || !hasChanges || isLoading}
+                >
+                    {isLoading ? 'Salvando...' : 'Conferma'}
+                </button>
+                <button 
+                    className='border px-[10px] py-[5px] rounded-xl bg-gray-500 text-white font-semibold mx-4 hover:bg-gray-600'
+                    onClick={handlerClose}
+                    disabled={isLoading}
+                >
+                    Annulla
+                </button>
             </div>
         </>
     )

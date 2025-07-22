@@ -41,6 +41,8 @@ import implantRouter from './routes/implant.js';
 import loginRouter from './routes/loginroutes.js';
 import reportRouter from './routes/report.js';
 
+import Monitoring from './inc/monitoring.js';
+
 // Istanza app Express 
 const app = express();
 const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS;
@@ -63,16 +65,18 @@ app.use(cors());
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 const wsa = new WebSocketApp(wss);
+const monitoring = new Monitoring(db);
 
 wsa.onConnection();
 
 app.use(loginRouter(db));
 
-// const presser = presserRoute(db, "presser_bale")
-// const wheelman = wheelmanRoute(db, "wheelman_bale")
+// app.use(Monitoring(db));
+// HEALTH CHECK ENDPOINT
+app.get('/health', monitoring.healthCheck);
+
 app.use(presserRoute(db, "presser_bale"));
 app.use(wheelmanRoute(db, "wheelman_bale"));
-// app.use(totalBaleRoute(db, "pb_wb", presser, wheelman));
 app.use(totalBaleRoute(db, "pb_wb"));
 app.use(plasticRoute(db, "code_plastic"));
 app.use(cdbpRoute(db, "cond_presser_bale"));

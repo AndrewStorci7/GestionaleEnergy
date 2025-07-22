@@ -67,8 +67,6 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
             body: JSON.stringify({ body: data }),
         });
 
-        // if (!resp.ok) throw new Error("Network response was not ok");
-
         const dataJson = await resp.json();
 
         console.log(dataJson);
@@ -76,31 +74,56 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
         if (dataJson.code === 0) {
             setEmpty(false);
 
-            // Assicurati di assegnare i dati da presser a wheelman
             if (dataJson.presser && Array.isArray(dataJson.presser) && dataJson.presser.length > 0) {
                 dataJson.presser.map((bale, index) => {
-                    dataJson.wheelman[index].plasticPresser = bale.plastic; 
+                    if (dataJson.wheelman[index]) {
+                        dataJson.wheelman[index].plasticPresser = bale.plastic;
+                    }
                 });
             }
 
             if (dataJson.wheelman && Array.isArray(dataJson.wheelman) && dataJson.wheelman.length > 0) {
                 dataJson.wheelman.map((bale, index) => {
-                    dataJson.presser[index]._idCwb = bale._idCwb; 
+                    if (dataJson.presser[index]) {
+                        dataJson.presser[index]._idCwb = bale._idCwb;
+                    }
                 });
             }
 
-            // Popola il contenuto con i dati appropriati
-            setContent(type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : []);
+            let contentData = type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : [];
+
+            console.log("Dati ricevuti all'interno di fetchDataTotalBale: " + data.useFor + " " + type);
+
+            if (data.useFor === 'regular' || data.useFor === 'specific') {
+                if (type === 'wheelman') {
+                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
+                } else if (type === 'presser') {
+                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
+                }
+            } else if (data.useFor === 'reverse') {
+                if (type === 'wheelman') {
+                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
+                } else if (type === 'presser') {
+                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
+                }
+            } 
+            // else if (data.useFor === 'specific') {
+            //     // Per le balle completate, mantieni l'ordinamento del database
+            //     // o applica una logica specifica se necessario
+            // }
+
+            setContent(contentData);
         } else {
             setEmpty(true);
             hook && hook(dataJson.message);
         }
     } catch (error) {
+        console.error("Errore in fetchDataTotalBale:", error);
         showAlert({
             title: null,
             message: error.message,
             type: 'error'
-        })
+        });
     }
 }
 
@@ -124,14 +147,14 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
             try {
                 const body = { printed: true, where: obj.idBale }; // Body per l'update della balla del carrellista
                 const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
-                const url_update_wheelman = getServerRoute("update-wheelman-bale");
+                const url_update_wheelman = getServerRoute("update-bale");
                 const url_update_status = getServerRoute("update-status-bale");
 
                 // Invia la richiesta per aggiornare lo stato della balla
                 const response = await fetch(url_update_wheelman, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body: body }),
+                    body: JSON.stringify({ body: body, type: "wheelman" }),
                 });
 
                 // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica

@@ -160,6 +160,9 @@ const getServerRoute = (route) => {
         case "id-balla": 
         case "id-bale": 
             return getSrvUrl() + "/bale/id";
+        case "update-bale": 
+        case "update-bale-data":
+            return getSrvUrl() + "/bale/update";
         
         //////////////////////////////////////////////////////
         // Rotte per la gestione dei dati della balla lato PRESSISTA
@@ -170,9 +173,9 @@ const getServerRoute = (route) => {
         case "add-presser-bale": 
             return getSrvUrl() + "/presser/set"; // non ancora sviluppata
         // case "rimuovi-balla-pressista": case "delete-presser-bale": return getSrvUrl() + "/presser/delete"; // non ancora sviluppata
-        case "aggiorna-balla-pressista": 
-        case "update-presser-bale": 
-            return getSrvUrl() + "/presser/update";
+        // case "aggiorna-balla-pressista": 
+        // case "update-presser-bale": 
+        //     return getSrvUrl() + "/presser/update";
         
         //////////////////////////////////////////////////////
         // Rotte per la gestione dei dati della balla lato CARRELLISTA
@@ -183,9 +186,9 @@ const getServerRoute = (route) => {
         case "add-wheelman-bale": 
             return getSrvUrl() + "/wheelman/set"; // non ancora sviluppata
         // case "rimuovi-balla-carrellista" || "delete-wheelman-bale": return getSrvUrl() + "/wheelman/delete"; // non ancora sviluppata
-        case "aggiorna-balla-carrellista": 
-        case "update-wheelman-bale": 
-            return getSrvUrl() + "/wheelman/update";
+        // case "aggiorna-balla-carrellista": 
+        // case "update-wheelman-bale": 
+        //     return getSrvUrl() + "/wheelman/update";
 
         // //////////////////////////////////////////////////////
         // // Rotte per la gestione dei dati di ogni inserimento, eliomina, modifica di qualsiasi balla
@@ -212,6 +215,9 @@ const getServerRoute = (route) => {
         // case "aggiorna-stato-balla": case "update-status-bale": return getSrvUrl() + "/bale/status/update";
         // case "totale-balle": case "total-bale-count": return getSrvUrl() + "/bale/total-count";
         // case "id-balla": case "id-bale": return getSrvUrl() + "/bale/id";
+
+        case 'health-check':
+            return getSrvUrl() + "/health";
     }
 }
 
