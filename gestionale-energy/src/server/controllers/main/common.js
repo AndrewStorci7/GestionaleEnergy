@@ -260,7 +260,8 @@ class Common {
                 first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
                 second: `AND DATE(presser_bale.data_ins) = ${!check ? `'${currentDate}'` : 'CURDATE() - INTERVAL 1 DAY'} AND TIME(presser_bale.data_ins) BETWEEN ? AND ? `,
                 third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) AND pb_wb.status = 1`,
-                fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                // fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                fourth: `AND wheelman_bale.id_cwb = 1`,
             };
             params = [turn[0], turn[1], id_implant];
         }

@@ -75,7 +75,7 @@ class Report extends Common {
             }
 
             if (data && data.length > 0) {
-                console.info(data)
+                console.info("Report generato per la data: " + new Date(body.date).toLocaleDateString("it-IT"));
                 res.json({ code: 0, data: data })
             } else {
                 res.json({ code: 1, message: "No data fetched" })
