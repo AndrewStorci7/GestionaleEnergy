@@ -26,7 +26,6 @@
     "js-cookie": "^3.0.5",
     "md5": "^2.3.0",
     "mysql2": "^3.11.4",
-    "next": "15.0.3",
     "node-fetch": "^3.3.2",
     "p-queue": "^8.1.0",
     "react": "19.0.0-rc-66855b96-20241106",
@@ -39,8 +38,10 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^15.4.3",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
+    "next": "^15.4.3",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
   }
