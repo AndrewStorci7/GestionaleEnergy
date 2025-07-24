@@ -1,0 +1,32 @@
+name: Build, Test & Deploy
+
+on: 
+  push:
+    branches: "test/workflows"
+  pull_request:
+    branches: "test/workflows"
+  
+  jobs:
+    eslint:
+      name: Check syntax with ESLint
+      runs-on: ubuntu-latest
+
+      strategy:
+        matrix:
+          node-version: [18.x, 20.x, 22.x]
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+
+        - name: Use Node.js ${{ matrix.node-version }} to Check Lint
+          uses: actions/setup-node@v3
+          with:
+            node-version: ${{ matrix.node-version }}
+            cache: 'npm'
+
+        - name: Install Dependencies
+          run: npm ci
+
+        - name: Run ESLint
+          run: npm run lint
