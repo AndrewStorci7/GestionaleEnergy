@@ -35,14 +35,14 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install eslint@8.10.0 --legacy-peer-deps
+          npm install eslint@latest --legacy-peer-deps
           npm install @microsoft/eslint-formatter-sarif@3.1.0 --legacy-peer-deps
         working-directory: gestionale-energy
         shell: bash
 
       - name: Run ESLint
         run: |
-          npx eslint . --config .eslintrc.json --ext .js,.jsx,.ts,.tsx --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif
+          npx eslint . --config eslint.config.js --ext .js,.jsx,.ts,.tsx --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif
         continue-on-error: true
         working-directory: gestionale-energy
         shell: bash
