@@ -22,7 +22,7 @@ jobs:
     
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout code
@@ -37,16 +37,23 @@ jobs:
         run: |
           npm install eslint@8.10.0
           npm install @microsoft/eslint-formatter-sarif@3.1.0
+        working-directory: gestionale-energy
+        shell: bash
+
+      - name: Ensure SARIF directory exists
+        run: mkdir -p ../.github/SARIF
+        working-directory: gestionale-energy
         shell: bash
 
       - name: Run ESLint
         run: |
-          npx eslint . --config .eslintrc.js --ext .js,.jsx,.ts,.tsx --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif
+          npx eslint . --config .eslintrc.json --ext .js,.jsx,.ts,.tsx --format @microsoft/eslint-formatter-sarif --output-file ../.github/SARIF/eslint-results.sarif
         continue-on-error: true
+        working-directory: gestionale-energy
         shell: bash
 
       - name: Upload SARIF
         if: runner.os == 'Linux' # Evitiamo duplicati: carichiamo il SARIF solo da Linux
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: eslint-results.sarif
+          sarif_file: .github/SARIF/eslint-results.sarif
