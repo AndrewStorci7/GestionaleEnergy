@@ -36,7 +36,7 @@ jobs:
 
       - name: Upload Jest test results
         if: runner.os == 'Linux' # Avoid duplicates, upload only from Linux
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: gestionale-energy/coverage/
