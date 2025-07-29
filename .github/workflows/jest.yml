@@ -30,7 +30,7 @@ jobs:
         shell: bash
 
       - name: Run Jest tests
-        run: npm test -- --coverage --ci --reporters=default --reporters=jest-junit --reporters=github-actions-formatter
+        run: npm test -- --coverage --ci --reporters=default --reporters=jest-junit --reporters=github-actions
         working-directory: gestionale-energy
         shell: bash
 
