@@ -6,8 +6,6 @@ const _blue = '\x1b[34m';
 const _cyan = '\x1b[36m';
 const _padEnd = 16;
 
-const _CMN_TEXT_ERROR = ""
-
 /**
  * @param {number} level    Tipologie di livelli:
  * - `1`: Debug, 
@@ -227,15 +225,20 @@ class Console {
      */
     getColor(color = "") {
         switch (color) {
-            case "blue" || "blu":
+            case "blue":
+            case "blu":
                 return _blue;
-            case "red" || "rosso":
+            case "red":
+            case "rosso":
                 return _red;
-            case "yellow" || "giallo":
+            case "yellow":
+            case "giallo":
                 return _yellow;
-            case "cyan" || "ciano":
+            case "cyan":
+            case "ciano":
                 return _cyan;
-            case "green" || "verde":
+            case "green":
+            case "verde":
                 return _green;
             default:
                 return _blue;

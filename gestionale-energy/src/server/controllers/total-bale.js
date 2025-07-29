@@ -72,7 +72,7 @@ class TotalBale extends Common {
             const id_new_wheelman_bale = wheelmanResult.message.id;
 
             // Insert nella tabella principale
-            const [check_ins_pbwb] = await transaction.query(
+            await transaction.query(
                 `INSERT INTO ${this.table}(id_pb, id_wb, id_implant, status, gam) VALUES(?, ?, ?, ?, ?)`,
                 [id_new_presser_bale, id_new_wheelman_bale, id_implant, 0, gam]
             );
@@ -118,7 +118,7 @@ class TotalBale extends Common {
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
 
@@ -252,7 +252,7 @@ class TotalBale extends Common {
             }
         } catch (error) {
             console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
 
@@ -264,7 +264,7 @@ class TotalBale extends Common {
      * @param {object[]}    wheelmanResult Array al quale verranno aggiunto il risultato (carrellista)
      */
     async getBalesNotCompleted(implant, order_by, presserResult, wheelmanResult) {
-        try {
+        // try {
             const [select] = await this.db.query(
                 `SELECT 
                     ${this.table}.id_pb, 
@@ -295,10 +295,10 @@ class TotalBale extends Common {
             if (select !== 'undefined' || select !== null) {
                 await this.createObjectArray(select, presserResult, wheelmanResult);
             }
-        } catch (error) {
-            // res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);
-            throw error;
-        }
+        // } catch (error) {
+        //     // res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);
+        //     throw error;
+        // }
     }
 
     /**

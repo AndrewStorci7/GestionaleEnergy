@@ -212,10 +212,9 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
  * @function handleDelete
  * @param {number} id - ID della balla da eliminare.
  * @param {function} handleAlertChange - Funzione hook per gestire gli alert.
- * @param {*} msg - Messaggio opzionale da mostrare.
  * @throws {Error} Se `handleAlertChange` non è una funzione o in caso di errore nella richiesta.
  */
-const handleDelete = async (id, handleAlertChange, msg) => {
+const handleDelete = async (id, handleAlertChange) => {
 
     if (typeof handleAlertChange !== "function") {
         throw new Error("Errore: `handleAlert` must be a function hook");

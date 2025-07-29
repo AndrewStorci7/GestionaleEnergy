@@ -23,8 +23,6 @@ class Report extends Common {
      */
     async reportGiornaliero(req, res) {
         try {
-            // const { body } = req.body;
-            // console.debug(body);
 
             const body = req.body;
             console.debug(body);
@@ -61,17 +59,11 @@ class Report extends Common {
                         ${params.condition.fourth}
                     GROUP BY 
                         code_plastic.code`,
-                    params.params,
-                    true
+                    params.params
                 );
 
                 if (select && select.length > 0)
                     data[i - 1] = select;
-            }
-
-            if (body.saveOnServer) {
-                handleDownload(body.implant);
-                res.end();
             }
 
             if (data && data.length > 0) {
@@ -82,7 +74,7 @@ class Report extends Common {
             }
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 
@@ -118,7 +110,7 @@ class Report extends Common {
 
         } catch (error) {
             console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
 
@@ -309,7 +301,7 @@ class Report extends Common {
 
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 

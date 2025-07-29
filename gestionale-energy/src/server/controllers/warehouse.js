@@ -32,16 +32,16 @@ class Warehouse extends Common {
             }
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 
     /**
      * Get all bale grouped by turn and implant
      */
-    async getAll() {
+    // async getAll() {
 
-    }
+    // }
 }
 
 export default Warehouse

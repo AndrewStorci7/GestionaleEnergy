@@ -1,5 +1,8 @@
-import { getServerRoute } from "@/app/config";
 import React, { useEffect, useState } from "react";
+import { getServerRoute } from "@config";
+// import { useAlert } from "@alert/alertProvider";
+
+import PropTypes from 'prop-types'; // per ESLint
 
 /**
  * 
@@ -30,17 +33,15 @@ function SelectInput({
     fixedW, 
     value, 
     onChange, 
-    isForSearch = false, 
-    type,
-    ...props 
+    isForSearch = false
 }) {
 
     const fixed_width = (fixedW) && "w-full";
     const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black border-2 border-gray-300 p-1`;
 
-    const [error, setError] = useState("");
     // Risposta ottenuta dal server
     const [content, setContent] = useState([]);
+    // const { showAlert } = useAlert();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,7 +49,7 @@ function SelectInput({
                 if (searchFor === undefined || searchFor === null)
                     return;
 
-                const url = await getServerRoute(searchFor);
+                const url = getServerRoute(searchFor);
 
                 if (url != -1) {
                     const resp = await fetch(url, {
@@ -63,12 +64,16 @@ function SelectInput({
                     const data = await resp.json();
         
                     if (data.code === 0) setContent(data.data);
-                    else setError(data.message);
                 } else {
                     setContent(["In lavorazione", "Cambiato", "Completato"]);
                 }
             } catch (error) {
-                console.log(error);
+                console.log(error.message || "Failed to fetch data");
+                // showAlert({
+                //     title: "Error",
+                //     message: error.message || "Failed to fetch data",
+                //     type: "error",
+                // });
             }
         }
 
@@ -97,28 +102,30 @@ function SelectInput({
 
                     // Controllo per impostare componente <option> correttamente:
                     // <option value={id}>name</option>
-                    Object.keys(_m).map((key, __i) => {
+                    Object.keys(_m).map((key) => {
                         code += (key === "code" || key === "id") ? _m[key] : "";
                         data = (key === "desc") ? _m[key] : "";
-                        tmp = (key === "desc") ? `\(${_m[key]}\)` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
+                        tmp = (key === "desc") ? `(${_m[key]})` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
                         str += tmp + " "; 
                     });
 
-                    return ( 
-                        <option key={"option-" + _i} value={code} data-code={data}>
-                            {str}
-                        </option>
-                    )
+                    return <option key={"option-" + _i} value={code} data-code={data}>{str}</option>
                 } else {
-                    return (
-                        <option key={_m[_i] + _i} value={_m}>
-                            {_m}
-                        </option>
-                    )
+                    return <option key={_m[_i] + _i} value={_m}>{_m}</option>
                 }
             })}
         </select>
     );
 }
+
+SelectInput.propTypes = {
+    disabled: PropTypes.bool,
+    searchFor: PropTypes.string,
+    id: PropTypes.string.isRequired,
+    fixedW: PropTypes.bool,
+    value: PropTypes.any,
+    onChange: PropTypes.func,
+    isForSearch: PropTypes.bool
+};
 
 export default React.memo(SelectInput);

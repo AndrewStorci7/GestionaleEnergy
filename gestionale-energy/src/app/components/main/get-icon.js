@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 import { FaCheck } from "react-icons/fa";
 import { IoIosWarning } from "react-icons/io";
-import { MdWork } from "react-icons/md";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { TbCircleLetterRFilled } from "react-icons/tb";
 import { FaInfoCircle } from "react-icons/fa";
+
+import PropTypes from 'prop-types'; // per ESLint
 
 /**
  * 
@@ -13,8 +14,7 @@ import { FaInfoCircle } from "react-icons/fa";
  */
 export default function Icon({ 
     className,
-    type = "",
-    ...props
+    type = ""
 }) {
 
     const icon = useMemo(() => {
@@ -41,3 +41,8 @@ export default function Icon({
         </div>
     );
 }
+
+Icon.propTypes = {
+    className: PropTypes.string,
+    type: PropTypes.string
+};

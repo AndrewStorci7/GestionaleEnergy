@@ -3,6 +3,8 @@ import React from "react";
 import Image from 'next/image';
 import { useAlert } from '@main/alert/alertProvider';
 
+import PropTypes from 'prop-types'; // per ESLint
+
 /**
  * Button for wheelman
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -16,11 +18,10 @@ import { useAlert } from '@main/alert/alertProvider';
  */
 
 export default function BtnWheelman({ 
-    baleObj,
-    ...props
+    baleObj
 }) {
 
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
 
     const handleClick = (type) => {
         if (baleObj && baleObj.idBale !== null) {
@@ -72,3 +73,10 @@ export default function BtnWheelman({
     )
 }
 
+BtnWheelman.propTypes = {
+    baleObj: PropTypes.shape({
+        idBale: PropTypes.number,
+        setIdBale: PropTypes.func,
+        idUnique: PropTypes.number
+    }).isRequired,
+};

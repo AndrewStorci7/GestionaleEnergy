@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useAlert } from "@main/alert/alertProvider";
 import Image from "next/image";
 
+import PropTypes from 'prop-types'; // per ESLint
+
 /**
  * Custom component for adding, updating or erase a bale 
  * 
@@ -28,7 +30,7 @@ export default function BtnPresser({
     clickAddHandle
 }) {
 
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
     const [addWasClicked, setAddWasClicked] = useState(false);
 
     useEffect(() => {
@@ -125,3 +127,13 @@ export default function BtnPresser({
         </>
     );
 }
+
+BtnPresser.propTypes = {
+    baleObj: PropTypes.shape({
+        idBale: PropTypes.number,
+        setIdBale: PropTypes.func,
+        idUnique: PropTypes.number
+    }).isRequired,
+    handleConfirmAdd: PropTypes.bool,
+    clickAddHandle: PropTypes.func.isRequired
+};

@@ -1,5 +1,5 @@
 # Gestionale Energy
-### Version 1.5 :label: 📢
+### Version 1.7 :label: 📢
 #### :calendar: 2025/03/27
 
 ## Main Features :sparkles:

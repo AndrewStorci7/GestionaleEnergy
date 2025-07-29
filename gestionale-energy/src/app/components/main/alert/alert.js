@@ -11,6 +11,9 @@ import { handleDelete, handleStampa } from "@main/fetch";
 
 import { refreshPage } from "@/app/config";
 
+import PropTypes from 'prop-types'; // per ESLint
+
+
 /**
 * @author Daniele Zeraschi from Oppimittinetworking
 * 
@@ -285,3 +288,11 @@ export default function Alert({
         </div>
     );
 }
+
+Alert.propTypes = {
+    title: PropTypes.string,
+    msg: PropTypes.string,
+    alertFor: PropTypes.string,
+    data: PropTypes.object,
+    onHide: PropTypes.func
+};

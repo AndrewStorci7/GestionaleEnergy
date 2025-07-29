@@ -221,13 +221,14 @@ class PresserBale extends Bale {
                     case 'id_presser':
                     case 'id_rei':
                     case 'id_cpb':
-                    case 'id_sb':
+                    case 'id_sb': {
                         // Assicurati che gli ID siano numeri interi
                         const intValue = parseInt(value);
                         if (!isNaN(intValue)) {
                             validatedBody[key] = intValue;
                         }
                         break;
+                    }
                     case 'id_plastic':
                         // Codice plastica - deve essere una stringa
                         if (typeof value === 'string' && value.trim() !== '') {
@@ -242,13 +243,14 @@ class PresserBale extends Bale {
                             validatedBody[key] = String(value).trim();
                         }
                         break;
-                    case 'where':
+                    case 'where': {
                         // ID per la clausola WHERE
                         const whereValue = parseInt(value);
                         if (!isNaN(whereValue) && whereValue > 0) {
                             validatedBody[key] = whereValue;
                         }
                         break;
+                    }
                     default:
                         validatedBody[key] = value;
                 }
@@ -265,13 +267,13 @@ class PresserBale extends Bale {
      * @param {object} req
      * @param {object} res
      */
-    async delete(req, res) {
-        try {
+    // async delete(req, res) {
+    //     try {
 
-        } catch (error) {
+    //     } catch (error) {
             
-        }
-    }
+    //     }
+    // }
 
 }
 

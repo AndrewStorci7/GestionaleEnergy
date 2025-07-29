@@ -2,10 +2,11 @@
  * Footer components
  * @returns Footer
  */
+import React from "react";
 import Image from "next/image";
 import packageJson from "../../../../package.json";
 
-export default function Footer( props ) {
+export default function Footer() {
 
   const year = new Date().getFullYear();
 

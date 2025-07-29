@@ -9,17 +9,17 @@
 
 const getEnv = (key, defaultKey = "") => {
 
-    switch (key) {
-        case 'srvurl' || 'SRVURL': {
+    switch (key.toLowerCase()) {
+        case 'srvurl': {
             return process.env.NEXT_PUBLIC_SERVER_URL;
         }
-        case 'srvport' || 'SRVPORT': {
+        case 'srvport': {
             return process.env.NEXT_PUBLIC_SERVER_PORT;
         }
-        case 'domain' || 'DOMAIN': {
+        case 'domain': {
             return process.env.NEXT_PUBLIC_APP_DOMAIN;
         }
-        case 'wsurl' || 'WSURL': {
+        case 'wsurl': {
             return process.env.NEXT_PUBLIC_WS_URL;
         }
         default: {

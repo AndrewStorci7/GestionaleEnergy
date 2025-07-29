@@ -2,11 +2,13 @@ import React, { useEffect, useState, useMemo } from 'react'
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 
-import { updateStatusTotalbale, getServerRoute, refreshPage } from '@@/config';
+import { updateStatusTotalbale, getServerRoute, refreshPage } from '@config';
 import { fetchDataBale, handleStampa } from '@main/fetch';
 import { useAlert } from '@main/alert/alertProvider';
 import { useWebSocket } from '@main/ws/use-web-socket';
-import SelectInput from './search/select';
+import SelectInput from '@main/search/select';
+
+import PropTypes from 'prop-types'; // per ESLint
 
 /**
  * @author Andrea Storci from Oppimittinetworking.com
@@ -18,10 +20,9 @@ import SelectInput from './search/select';
 export default function UpdateValuesBale({ 
     type, 
     objBale, 
-    handlerClose,
-    ...props
+    handlerClose
 }) {
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
     const { ws, message } = useWebSocket();
     
     // Stati per i dati originali (per confronto)
@@ -387,3 +388,9 @@ export default function UpdateValuesBale({
         </>
     )
 }
+
+UpdateValuesBale.propTypes = {
+    type: PropTypes.string.isRequired,
+    objBale: PropTypes.object.isRequired,
+    handlerClose: PropTypes.func.isRequired
+};

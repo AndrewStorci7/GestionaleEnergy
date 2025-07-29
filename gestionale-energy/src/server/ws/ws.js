@@ -12,8 +12,7 @@ const console = new Console("WebSocketApp");
  */
 class WebSocketApp {
 
-    constructor(ws, server) {
-        // this.ws = (ws !== null && ws) ? ws : new WebSocket.Server({ server });
+    constructor(ws) {
         this.ws = ws;
     }
 
@@ -40,7 +39,7 @@ class WebSocketApp {
                         } 
                         case "new-connection": {
                             // console.info(parsedMessage);
-                            if (parsedMessage.data.user) {
+                            if (parsedMessage.data.user && parsedMessage.data.user !== "none") {
                                 const parser = new UAParser.UAParser(parsedMessage.data.userAgent);
                                 const deviceInfo = {
                                     browser: parser.getBrowser().name || "Unknown",

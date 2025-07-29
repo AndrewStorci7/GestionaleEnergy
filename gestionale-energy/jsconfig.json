@@ -6,6 +6,7 @@
       "@main/*": ["./src/app/components/main/*"],
       "@admin/*": ["./src/app/components/main/admin/*"],
       "@alert/*": ["./src/app/components/main/alert/*"],
+      "@config": ["./src/app/config.js"],
     }
   }
 }

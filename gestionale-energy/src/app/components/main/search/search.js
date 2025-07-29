@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import SelectInput from "./select";
 
+import PropTypes from 'prop-types'; // per ESLint
+
 /**
  * Search/filter Component
  * 
@@ -34,12 +36,12 @@ function SearchInput({ type }) {
                 setLabelTitle(["Cond. balla carrellista", "Magaz. Destinazione"])
                 break;
             }
-            default: { /// TEST start
+            default: {
                 setBgColor("bg-primary_3")
                 setSearchFor(["rei", "selected-b"])
                 setLabelTitle(["Utilizzo REI", "Balla selezionata"])
                 break;
-            } /// TEST end
+            }
         }
     }
 
@@ -104,5 +106,9 @@ function SearchInput({ type }) {
         </div>
     );
 }
+
+SearchInput.propTypes = {
+    type: PropTypes.string.isRequired
+};
 
 export default React.memo(SearchInput);

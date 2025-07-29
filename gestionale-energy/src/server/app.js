@@ -22,9 +22,8 @@ if (!fs.existsSync(envFile)) {
 import express from 'express';
 import cors from 'cors';
 import db from './inc/db.js';
-import WebSocket, { WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
 import WebSocketApp from './ws/ws.js';
-import https from 'https';
 import { createServer } from 'http';
 
 import presserRoute from './routes/presser.js';
@@ -48,12 +47,6 @@ const app = express();
 const ADDRESS = process.env.NEXT_PUBLIC_APP_ADDRESS;
 const PORT = process.env.NEXT_PUBLIC_APP_SERVER_PORT;
 const URL = process.env.NEXT_PUBLIC_APP_SERVER_URL;
-// const CERT_PATH = process.env.NEXT_PUBLIC_APP_CERT_PATH;
-// const KEY_PATH = process.env.NEXT_PUBLIC_APP_KEY_PATH;
-// const options = {
-//     key: fs.readFileSync(KEY_PATH),
-//     cert: fs.readFileSync(CERT_PATH)
-// };
 
 // Middleware per fare il parse in JSON
 app.use(express.json());
@@ -61,7 +54,6 @@ app.use(express.json());
 app.use(cors());
 
 // Istanza Server Web Socket
-// const server = https.createServer(options, app); // Test https
 const server = createServer(app);
 const wss = new WebSocketServer({ server });
 const wsa = new WebSocketApp(wss);
