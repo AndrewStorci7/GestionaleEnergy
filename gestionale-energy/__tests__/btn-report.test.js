@@ -3,7 +3,7 @@ import BtnReport from "@@/components/main/admin/btn-report";
 
 jest.mock('exceljs');
 jest.mock('file-saver');
-jest.mock('@@/config', () => ({
+jest.mock('@config', () => ({
   fetchReportData: jest.fn(() => Promise.resolve([]))
 }));
 

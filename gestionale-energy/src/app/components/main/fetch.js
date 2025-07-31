@@ -1,4 +1,4 @@
-import { getServerRoute } from "@/app/config";
+import { getServerRoute } from "@config";
 
 //#region Fetch Single Bale
 /**

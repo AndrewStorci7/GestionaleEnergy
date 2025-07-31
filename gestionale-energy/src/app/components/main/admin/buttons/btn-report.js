@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import ExportReport from '@/app/components/main/admin/export-report';
-import Icon from '../get-icon';
+import ExportReport from '@/app/components/main/admin/export/export-report';
+import Icon from '@main/get-icon';
+import { reportCorepla } from '@/app/components/main/admin/export/export-report-corepla';
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -70,6 +71,14 @@ export default function BtnReport() {
       >
         GIOR. TEMPI IMP A e B
       </ExportReport>
+
+      <button 
+        onClick={() => {
+          reportCorepla('impianto-a');
+        }}
+      >
+        Esporta Report COREPLA
+      </button>
 
       <div className="inline-flex items-center font-thin text-sm opacity-50">
         <Icon type="info" className="!text-gray-400" />

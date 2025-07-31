@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { fetchReportData } from '@@/config';
-import { useAlert } from "../alert/alertProvider";
+import { fetchReportData } from '@config';
+import { useAlert } from "@alert/alertProvider";
 
 import PropTypes from "prop-types"; // per ESLint
 
@@ -34,6 +34,7 @@ export const handleDownload = async (
 
   if (!data) {
     console.error("No data");
+    return;
   }
 
   const workbook = new ExcelJS.Workbook();
@@ -52,7 +53,6 @@ export const handleDownload = async (
     { header: "", key: "totale_balle_turno_3", width: 15 },
     { header: "", key: "", width: 15 },
     { header: "", key: "", width: 15 },
-    
   ];
 
   worksheet.getCell('A1').border = {

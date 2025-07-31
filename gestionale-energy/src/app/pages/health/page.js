@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { getServerRoute } from '@/app/config'
+import { getServerRoute } from '@config'
 
 
 /**

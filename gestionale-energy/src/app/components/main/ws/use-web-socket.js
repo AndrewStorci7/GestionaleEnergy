@@ -5,7 +5,7 @@ import React, {
     useRef, 
     useState 
 } from 'react';
-import { getWsUrl } from '@/app/config';
+import { getWsUrl } from '@config';
 
 import PropTypes from 'prop-types'; // per ESLint
 

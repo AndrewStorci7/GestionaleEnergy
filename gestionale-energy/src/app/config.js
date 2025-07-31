@@ -78,6 +78,24 @@ const getBgColor = (type, scope = "") => {
     }
 }
 
+
+/**
+ * Format date and time to a specific format
+ * By default it will decrease the day by one
+ * 
+ * @param {*} date 
+ * @returns 
+ */
+const formattedDateTime = (date) => {
+    const now = new Date(date);
+    now.setDate(now.getDate() - 1); // Imposta la data al giorno precedente
+    return now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + 'T' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0');
+} 
+
 /**
  * Reload Server through Websocket
  * 
@@ -197,6 +215,8 @@ const getServerRoute = (route) => {
         case "report-giornaliero": 
         case "report-daily": 
             return getSrvUrl() + "/report/daily";
+        case "report-corepla":
+            return getSrvUrl() + "/report/corepla";
 
         case "report-live": 
             return getSrvUrl() + "/report/contatori";
@@ -303,14 +323,39 @@ const fetchReportData = async (reportFor, dateForReport) => {
     }
 };
 
+const fetchReportCorepla = async (reportFor, options) => {
+    try {
+        console.log(options);
+        const implant = (reportFor === 'impianto-a') ? [1] : 
+                        (reportFor === 'impianto-b') ? [2] : 
+                        (reportFor === 'impianto-ab') ? [1, 2] : 0;
+
+        const url = getServerRoute("report-corepla");
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ implant, options })
+        });
+
+        const data = await response.json();
+
+        return data.code === 0 ? data.data : null;
+    } catch (error) {
+        console.error("Error Fetching Corepla Report Data:", error);
+        return null;
+    }
+}
+
 export { 
     getEnv, 
     getSrvUrl, 
     getWsUrl, 
     getBgColor,
+    formattedDateTime,
     refreshPage,
     isWebSocketConnected,
     getServerRoute,
     updateStatusTotalbale,
-    fetchReportData
+    fetchReportData,
+    fetchReportCorepla
 };

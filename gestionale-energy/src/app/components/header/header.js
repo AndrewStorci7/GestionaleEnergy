@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { getEnv, getServerRoute } from "@@/config";
+import { getEnv, getServerRoute } from "@config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";

@@ -33,6 +33,7 @@ function SelectInput({
     fixedW, 
     value, 
     onChange, 
+    required = false,
     isForSearch = false
 }) {
 
@@ -87,6 +88,7 @@ function SelectInput({
             className={_CMNSTYLE_SELECT}
             value={value}
             onChange={onChange}
+            required={required}
         >
             {(isForSearch || searchFor === "plastic") && <option value={""}>-</option>}
 
@@ -125,6 +127,7 @@ SelectInput.propTypes = {
     fixedW: PropTypes.bool,
     value: PropTypes.any,
     onChange: PropTypes.func,
+    required: PropTypes.bool,
     isForSearch: PropTypes.bool
 };
 

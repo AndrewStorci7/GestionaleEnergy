@@ -1,15 +1,15 @@
 'use client'
 
 import React, { useState } from "react";
-import TableWrapper from "./tableWrapper";
-import DownloadReport from "../admin/btn-report"
-import SelectInput from "../search/select";
-import BtnWheelman from "../btn-wheelman";
-import BtnPresser from "../btn-presser";
-import Switch from "../admin/switch";
-import { useWebSocket } from "../ws/use-web-socket";
+import TableWrapper from "@main/table/tableWrapper";
+import DownloadReport from "@admin/buttons/btn-report";
+import BtnWheelman from "@main/btn-wheelman";
+import BtnPresser from "@main/btn-presser";
+import Switch from "@admin/switch";
+import { useWebSocket } from "@main/ws/use-web-socket";
 import Image from "next/image";
-import { refreshPage } from "@/app/config";
+import { refreshPage } from "@config";
+import BtnReportFiltered from "@admin/buttons/btn-report-filtered";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -215,21 +215,7 @@ export default function Table({
                                     REPORT DA FILTRI
                                 </h1>
                                 <div className="grid grid-cols-3 gap-1 mt-20 p-20">
-                                    <p className="ml-3 mb-1.5 font-bold">
-                                        PERIODO
-                                    </p>
-                                    <input className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date"></input>
-                                    <input className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date"></input>
-                                    <p className="ml-3 mb-1.5 font-bold">IMPIANTO</p>
-                                    <SelectInput id="search-input-implants" searchFor={"implants"} isForSearch />
-                                    <p></p>
-                                    <p className="ml-3 mb-1.5 font-bold">TIPO PLASTICA</p>
-                                    <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
-                                    <p></p>
-                                    <p></p>
-                                    <button className="text-black font-semibold bg-sky-50 rounded-full text-sm px-2 py-2 text-center me-2 mt-3 mb-3.5 transition-all hover:bg-sky-700 hover:text-white">
-                                        VISUALIZZA
-                                    </button>
+                                    <BtnReportFiltered />
                                 </div>
                             </div>
                         </div>

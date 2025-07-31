@@ -350,6 +350,40 @@ class Report extends Common {
             res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
+
+    async reportCorepla(req, res) {
+        try {
+            const { implant, options } = req.body;
+            const param = implant;
+
+            const [select] = await this.db.query(
+                `SELECT
+                    cp.code as 'plastic',
+                    cp.desc as 'code',
+                    w.weight AS 'weight', 
+                    w.data_ins AS 'data_ins'
+                FROM pb_wb t
+                INNER JOIN presser_bale p ON t.id_pb = p.id
+                INNER JOIN wheelman_bale w ON t.id_wb = w.id
+                INNER JOIN implants i ON t.id_implant = i.id
+                INNER JOIN code_plastic cp ON p.id_plastic = cp.code
+                WHERE 
+                    i.id = ?
+                    AND DATE(w.data_ins) = CURRENT_DATE() - 1
+                    AND TIME(w.data_ins) BETWEEN '06:00:00' AND '21:59:59'`, 
+                [param]
+            );
+
+            if (select && select.length > 0) {
+                res.json({ code: 0, data: select });
+            } else {
+                res.json({ code: 1, message: "No data fetched" });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
+        }
+    }
 }
 
 export default Report

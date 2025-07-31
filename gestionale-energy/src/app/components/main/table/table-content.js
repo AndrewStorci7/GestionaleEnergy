@@ -6,7 +6,7 @@ import InsertNewBale from '../insert-new-bale';
 import { useAlert } from "@alert/alertProvider";
 
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
-import { refreshPage } from '@/app/config';
+import { refreshPage } from '@config';
 import { fetchDataTotalBale } from '../fetch';
 
 import PropTypes from 'prop-types'; // per ESLint

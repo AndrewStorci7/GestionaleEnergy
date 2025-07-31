@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react'
-import { getServerRoute } from '@@/config';
+import { getServerRoute } from '@config';
 import { useAlert } from "@/app/components/main/alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint

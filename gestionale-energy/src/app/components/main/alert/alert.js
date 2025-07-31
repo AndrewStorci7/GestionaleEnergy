@@ -9,7 +9,7 @@ import { useWebSocket } from "@main/ws/use-web-socket";
 import { useAlert } from "@main/alert/alertProvider";
 import { handleDelete, handleStampa } from "@main/fetch";
 
-import { refreshPage } from "@/app/config";
+import { refreshPage } from "@config";
 
 import PropTypes from 'prop-types'; // per ESLint
 

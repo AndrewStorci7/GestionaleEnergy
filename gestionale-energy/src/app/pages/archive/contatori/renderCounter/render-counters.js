@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { getServerRoute } from '@/app/config';
+import { getServerRoute } from '@config';
 import { useWebSocket } from "@/app/components/main/ws/use-web-socket";
 
 export default function RenderCounters() {
