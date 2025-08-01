@@ -1,19 +1,19 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import BtnReport from "@@/components/main/admin/btn-report";
+import BtnReport from "@admin/buttons/btn-report";
 
 jest.mock('exceljs');
 jest.mock('file-saver');
 jest.mock('@config', () => ({
-  fetchReportData: jest.fn(() => Promise.resolve([]))
+    fetchReportData: jest.fn(() => Promise.resolve([]))
 }));
 
-jest.mock('@@/components/main/alert/alertProvider', () => ({
-  useAlert: () => ({
-    showAlert: jest.fn()
-  })
+jest.mock('@alert/alertProvider', () => ({
+    useAlert: () => ({
+        showAlert: jest.fn()
+    })
 }));
 
-jest.mock('@@/components/main/admin/export-report', () => {
+jest.mock('@admin/export/export-report', () => {
     return jest.fn(({ children, date, reportFor, className, disabled }) => (
         <button 
             data-testid={`export-${reportFor}`}
@@ -27,7 +27,7 @@ jest.mock('@@/components/main/admin/export-report', () => {
     ));
 });
 
-jest.mock('@@/components/main/get-icon', () => ({
+jest.mock('@main/get-icon', () => ({
     __esModule: true,
     default: jest.fn(({ type, className }) => (
         <span className={className} data-testid={`icon-${type}`}>Icon</span>

@@ -56,7 +56,7 @@ export default function Alert({
             refreshPage(ws);
             onHide?.() || hideAlert();
         } catch (error) {
-            console.error('Error closing alert:', error);
+            // console.error('Error closing alert:', error);
             setInternalState(prev => ({
                 ...prev,
                 alertType: "error",
@@ -83,7 +83,7 @@ export default function Alert({
             refreshPage(ws);
             closeAlert();
         } catch (error) {
-            console.error('Error in handleConfirm:', error);
+            // console.error('Error in handleConfirm:', error);
             setInternalState(prev => ({
                 ...prev,
                 alertType: "error",
@@ -101,7 +101,7 @@ export default function Alert({
             setInternalState(prev => ({ ...prev, isProcessing: true }));
             await handleStampa(data, closeAlert, showAlert);
         } catch (error) {
-            console.error('Error in handlePrintConfirm:', error);
+            // console.error('Error in handlePrintConfirm:', error);
             setInternalState(prev => ({
                 ...prev,
                 alertType: "error",
@@ -147,6 +147,26 @@ export default function Alert({
                 return (
                     <div className="alert-box on-border note">
                         <h1 className="title-alert text-left" style={{ color: 'black' }}>
+                            {title || 'Nota scritta dall\'utente'}
+                        </h1>
+                        <br />
+                        <p className="text-left">{currentMessage}</p>
+                        <br />
+                        <button
+                            onClick={closeAlert}
+                            className="alert-button note-button"
+                            disabled={internalState.isProcessing}
+                        >
+                            Chiudi
+                        </button>
+                    </div>
+                );
+            }
+            case "info": {
+                return (
+                    <div className="alert-box on-border note">
+                        <h1 className="flex items-center title-alert text-left" style={{ color: 'black' }}>
+                            <Icon type="working" /> 
                             {title || 'Nota scritta dall\'utente'}
                         </h1>
                         <br />

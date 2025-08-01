@@ -216,7 +216,9 @@ const getServerRoute = (route) => {
         case "report-daily": 
             return getSrvUrl() + "/report/daily";
         case "report-corepla":
-            return getSrvUrl() + "/report/corepla";
+        case "report-filtered":
+        case "report-filtrato":
+            return getSrvUrl() + "/report/filtered";
 
         case "report-live": 
             return getSrvUrl() + "/report/contatori";
@@ -323,25 +325,35 @@ const fetchReportData = async (reportFor, dateForReport) => {
     }
 };
 
-const fetchReportCorepla = async (reportFor, options) => {
+const fetchReportDataFiltered = async (reportFor, options) => {
     try {
-        console.log(options);
-        const implant = (reportFor === 'impianto-a') ? [1] : 
+        console.log(typeof reportFor, typeof options);
+        var implant;
+
+        if (!reportFor || reportFor <= 0 ) {
+            console.error("ID impianto non valido.");
+            throw new Error("ID impianto non valido.");
+        } else if (typeof reportFor == "number") {
+            implant = reportFor;
+        } else {
+            implant = (reportFor === 'impianto-a') ? [1] : 
                         (reportFor === 'impianto-b') ? [2] : 
                         (reportFor === 'impianto-ab') ? [1, 2] : 0;
+        }
 
         const url = getServerRoute("report-corepla");
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ implant, options })
+            body: JSON.stringify({ implant: implant, options: options })
         });
 
         const data = await response.json();
+        console.log("Server Response:", data);
 
         return data.code === 0 ? data.data : null;
     } catch (error) {
-        console.error("Error Fetching Corepla Report Data:", error);
+        console.error(`Error Fetching Corepla Report Data: ${error.toString()}`);
         return null;
     }
 }
@@ -357,5 +369,5 @@ export {
     getServerRoute,
     updateStatusTotalbale,
     fetchReportData,
-    fetchReportCorepla
+    fetchReportDataFiltered
 };

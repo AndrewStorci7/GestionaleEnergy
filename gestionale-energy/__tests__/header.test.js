@@ -1,5 +1,5 @@
 import { act, render, screen, fireEvent } from "@testing-library/react";
-import Header from "../src/app/components/header/header";
+import Header from "@header/header";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
@@ -13,7 +13,7 @@ jest.mock("js-cookie", () => ({
     get: jest.fn(() => JSON.stringify({ id_implant: "impianto-123" })),
 }));
 
-jest.mock("@@/components/main/ws/use-web-socket", () => ({
+jest.mock("@main/ws/use-web-socket", () => ({
     useWebSocket: () => ({ message: "test message" }),
 }));
 

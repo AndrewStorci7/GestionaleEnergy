@@ -351,10 +351,34 @@ class Report extends Common {
         }
     }
 
-    async reportCorepla(req, res) {
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     */
+    async reportFiltered(req, res) {
         try {
             const { implant, options } = req.body;
-            const param = implant;
+
+            if (!implant || implant <= 0) {
+                console.error("Chiamata all'API non valida, manca l'ID dell'impianto");
+                res.status(400).send("Chiamata all'API non valida, mnaca l'ID dell'impianto");
+                return;
+            }
+
+            var startDate = ''; // data di inzio filtro
+            var endDate = ''; // data di fine filtro
+
+            if (options) {
+                // Aggiungi qui la logica per gestire le opzioni
+                startDate = options.startDate.replace('T', ' ');
+                endDate = options.endDate.replace('T', ' ');
+                console.info(`Start Date: ${startDate}, End Date: ${endDate}`);
+            } else {
+                console.error("Nessuna opzione fornita per il report filtrato.");
+                res.status(400).send("Nessuna opzione fornita per il report filtrato.");
+                return;
+            }
 
             const [select] = await this.db.query(
                 `SELECT
@@ -369,9 +393,11 @@ class Report extends Common {
                 INNER JOIN code_plastic cp ON p.id_plastic = cp.code
                 WHERE 
                     i.id = ?
-                    AND DATE(w.data_ins) = CURRENT_DATE() - 1
-                    AND TIME(w.data_ins) BETWEEN '06:00:00' AND '21:59:59'`, 
-                [param]
+                    AND w.weight > 1 
+                    AND w.data_ins >= ? AND w.data_ins <= ?
+                ORDER BY w.data_ins ASC`, 
+                [implant, startDate, endDate],
+                true
             );
 
             if (select && select.length > 0) {

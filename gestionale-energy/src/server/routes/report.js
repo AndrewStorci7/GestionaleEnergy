@@ -13,7 +13,7 @@ export default (db, table) => {
 
     router.post('/report/dynamic', (req, res) => controller.reportDinamico(req, res));
 
-    router.post('/report/corepla', (req, res) => controller.reportCorepla(req, res));
+    router.post('/report/filtered', (req, res) => controller.reportFiltered(req, res));
 
     return router;
 }

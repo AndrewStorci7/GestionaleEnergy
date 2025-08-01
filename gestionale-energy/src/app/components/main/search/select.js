@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getServerRoute } from "@config";
+import { fetchDataSingleElements } from "@fetch";
 // import { useAlert } from "@alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint
@@ -26,7 +26,7 @@ import PropTypes from 'prop-types'; // per ESLint
  *  
  * @returns 
  */
-function SelectInput({ 
+const SelectInput = ({ 
     disabled,
     searchFor, 
     id, 
@@ -35,7 +35,7 @@ function SelectInput({
     onChange, 
     required = false,
     isForSearch = false
-}) {
+}) => {
 
     const fixed_width = (fixedW) && "w-full";
     const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black border-2 border-gray-300 p-1`;
@@ -47,37 +47,14 @@ function SelectInput({
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (searchFor === undefined || searchFor === null)
-                    return;
-
-                const url = getServerRoute(searchFor);
-
-                if (url != -1) {
-                    const resp = await fetch(url, {
-                        method: 'GET',
-                        headers: {'Content-Type': 'application/json'},
-                    });
-        
-                    if (!resp.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-        
-                    const data = await resp.json();
-        
-                    if (data.code === 0) setContent(data.data);
-                } else {
-                    setContent(["In lavorazione", "Cambiato", "Completato"]);
-                }
+                // fetchDataSingleElements(searchFor, setContent);
+                const data = await fetchDataSingleElements(searchFor);
+                console.log(data);
+                setContent(data);
             } catch (error) {
-                console.log(error.message || "Failed to fetch data");
-                // showAlert({
-                //     title: "Error",
-                //     message: error.message || "Failed to fetch data",
-                //     type: "error",
-                // });
+                console.error("Error fetching data:", error);
             }
         }
-
         fetchData();
     }, [searchFor]);
 
@@ -85,6 +62,7 @@ function SelectInput({
         <select
             disabled={disabled}
             id={id}
+            data-testid={id}
             className={_CMNSTYLE_SELECT}
             value={value}
             onChange={onChange}
@@ -122,7 +100,7 @@ function SelectInput({
 
 SelectInput.propTypes = {
     disabled: PropTypes.bool,
-    searchFor: PropTypes.string,
+    searchFor: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     fixedW: PropTypes.bool,
     value: PropTypes.any,

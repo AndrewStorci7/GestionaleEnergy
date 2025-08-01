@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import ExportReport from '@/app/components/main/admin/export/export-report';
+import ExportReport from '@admin/export/export-report';
 import Icon from '@main/get-icon';
-import { reportCorepla } from '@/app/components/main/admin/export/export-report-corepla';
+import { reportFiltered } from '@admin/export/export-report-filtered';
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -74,7 +74,7 @@ export default function BtnReport() {
 
       <button 
         onClick={() => {
-          reportCorepla('impianto-a');
+          reportFiltered('impianto-a');
         }}
       >
         Esporta Report COREPLA

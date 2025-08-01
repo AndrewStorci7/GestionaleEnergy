@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="2" failures="0" errors="0" time="7.049">
+  <testsuite name="BtnReportFiltered Component" errors="0" failures="0" skipped="0" timestamp="2025-08-01T10:36:09" time="5.536" tests="2">
+    <testcase classname="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" name="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" time="0.208">
+    </testcase>
+    <testcase classname="BtnReportFiltered Component Check update of date inputs" name="BtnReportFiltered Component Check update of date inputs" time="0.305">
+    </testcase>
+  </testsuite>
+</testsuites>

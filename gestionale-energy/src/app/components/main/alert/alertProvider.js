@@ -30,7 +30,7 @@ export const AlertProvider = ({ children }) => {
         type = 'info', 
         data = null 
     }) => {
-        console.log('Showing alert:', { title, type, hasData: !!data });
+        // console.log('Showing alert:', { title, type, hasData: !!data });
         
         setAlertState({
             visible: true,

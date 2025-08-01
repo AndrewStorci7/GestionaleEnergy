@@ -218,8 +218,12 @@ const config = {
   moduleNameMapper: {
     "^@@/(.*)$": "<rootDir>/src/app/$1",  // mappa @@/qualcosa a src/app/qualcosa
     "^@/(.*)$": "<rootDir>/src/$1",        // mappa @/qualcosa a src/qualcosa
+    "^@header/(.*)$": "<rootDir>/src/app/components/header/$1", // mappa @header/qualcosa a src/app/components/header/qualcosa
     "^@main/(.*)$": "<rootDir>/src/app/components/main/$1", // mappa @main/qualcosa a src/app/components/main/qualcosa
-    "^@config": "<rootDir>/src/app/config.js", //
+    "^@admin/(.*)$": "<rootDir>/src/app/components/main/admin/$1", // mappa @admin/qualcosa a src/app/components/main/admin/qualcosa
+    "^@alert/(.*)$": "<rootDir>/src/app/components/main/alert/$1", // mappa @alert/qualcosa a src/app/components/main/alert/qualcosa
+    "^@config": "<rootDir>/src/app/config.js",
+    "^@fetch": "<rootDir>/src/app/components/main/fetch.js",
   },
 };
 

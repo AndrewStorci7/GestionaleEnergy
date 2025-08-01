@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from "file-saver";
-import { fetchReportData, fetchReportCorepla } from '@config';
+import { fetchReportData, fetchReportDataFiltered } from '@config';
 
 /**
  * 
@@ -42,12 +42,45 @@ const applyBorders = (ws, range) => {
     }
 };
 
-const reportCorepla = async (reportFor, options) => {
+/**
+ * 
+ * @param {string} reportFor 
+ * @param {object} options Object containing the filter's options
+ * @param {function} showAlert Function to show alerts
+ * @returns 
+ */
+const reportFiltered = async (reportFor, options, showAlert) => {
     try {
-        const data = await fetchReportCorepla(reportFor, options);
+        if (options && options.startDate && options.endDate) {
+            console.log("Start Date:", typeof options.startDate);
+            if (options.startDate > options.endDate) {
+                // console.error("La data di inizio non può essere successiva alla data di fine.");
+                showAlert({
+                    type: 'error',
+                    title: 'Errore nelle date',
+                    message: 'La data di inizio non può essere successiva alla data di fine.'
+                });
+                return;
+            }
+        } else {
+            // console.error("Date non valide.");
+            showAlert({
+                type: 'error',
+                title: 'Errore nelle date',
+                message: 'Date non valide.'
+            });
+            return;
+        }
+
+        const data = await fetchReportDataFiltered(reportFor, options);
 
         if (!data) {
-            console.error("Nessun dato fornito per il report Corepla.");
+            // console.warn("Nessun dato fornito per il report Corepla.");
+            showAlert({
+                type: 'info',
+                title: 'Nessun dato trovato',
+                message: 'Nessun dato trovato per il report Corepla.'
+            });
             return;
         }
 
@@ -115,5 +148,5 @@ const reportCorepla = async (reportFor, options) => {
 export { 
     setCell,
     applyBorders,
-    reportCorepla
+    reportFiltered
 }
