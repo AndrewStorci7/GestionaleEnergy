@@ -72,14 +72,6 @@ export default function BtnReport() {
         GIOR. TEMPI IMP A e B
       </ExportReport>
 
-      <button 
-        onClick={() => {
-          reportFiltered('impianto-a');
-        }}
-      >
-        Esporta Report COREPLA
-      </button>
-
       <div className="inline-flex items-center font-thin text-sm opacity-50">
         <Icon type="info" className="!text-gray-400" />
         I report giornalieri fanno riferimento alla data selezionata
