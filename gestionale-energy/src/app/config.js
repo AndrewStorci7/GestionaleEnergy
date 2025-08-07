@@ -327,11 +327,11 @@ const fetchReportData = async (reportFor, dateForReport) => {
 
 const fetchReportDataFiltered = async (reportFor, options) => {
     try {
-        console.log(typeof reportFor, typeof options);
+        // console.log(typeof reportFor, typeof options);
         var implant;
 
         if (!reportFor || reportFor <= 0 ) {
-            console.error("ID impianto non valido.");
+            // console.error("ID impianto non valido.");
             throw new Error("ID impianto non valido.");
         } else if (typeof reportFor == "number") {
             implant = reportFor;

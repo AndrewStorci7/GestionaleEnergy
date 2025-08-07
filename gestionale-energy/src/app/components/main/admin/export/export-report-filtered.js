@@ -73,6 +73,7 @@ const reportFiltered = async (reportFor, options, showAlert) => {
         }
 
         const data = await fetchReportDataFiltered(reportFor, options);
+        const fileString = `${options.startDate}_${options.endDate}`
 
         if (!data) {
             // console.warn("Nessun dato fornito per il report Corepla.");
@@ -88,7 +89,7 @@ const reportFiltered = async (reportFor, options, showAlert) => {
         var char = 'A';
 
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('COREPLA');
+        const worksheet = workbook.addWorksheet('REPORT');
 
         worksheet.columns = [
             { header: "PLASTICA", key: "plastic_name", width: 20 },
@@ -137,7 +138,7 @@ const reportFiltered = async (reportFor, options, showAlert) => {
 
         workbook.xlsx.writeBuffer().then((buffer) => {
             const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-            saveAs(blob, `REPORT_COREPLA.xlsx`);
+            saveAs(blob, `REPORT_${fileString}.xlsx`);
         });
 
     } catch (error) {
