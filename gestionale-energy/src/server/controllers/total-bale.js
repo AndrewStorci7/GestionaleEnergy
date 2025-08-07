@@ -217,23 +217,15 @@ class TotalBale extends Common {
                         ${this.table}.id_wb, 
                         ${this.table}.status,
                         ${this.table}.id
-                    FROM 
-                        ${this.table} 
-                    JOIN 
-                        presser_bale 
-                    JOIN 
-                        wheelman_bale 
-                    JOIN 
-                        implants 
-                    ON 
-                        ${this.table}.id_pb = presser_bale.id AND
-                        ${this.table}.id_wb = wheelman_bale.id AND
-                        ${this.table}.id_implant = implants.id
+                    FROM ${this.table} 
+                    JOIN presser_bale ON ${this.table}.id_pb = presser_bale.id 
+                    JOIN wheelman_bale ON ${this.table}.id_wb = wheelman_bale.id
+                    JOIN implants ON ${this.table}.id_implant = implants.id
                     WHERE 
                         ${this.table}.id_implant = ? AND (${_params.condition})
                         ${cond_status}
                     ORDER BY 
-                        IFNULL(presser_bale.data_ins, wheelman_bale.data_ins) ${order_by}
+                        presser_bale.data_ins, wheelman_bale.data_ins ${order_by}
                     LIMIT 300`,
                     _params.params,
                     true
@@ -271,18 +263,10 @@ class TotalBale extends Common {
                     ${this.table}.id_wb, 
                     ${this.table}.status,
                     ${this.table}.id
-                FROM 
-                    ${this.table} 
-                JOIN 
-                    presser_bale 
-                JOIN 
-                    wheelman_bale 
-                JOIN 
-                    implants 
-                ON 
-                    ${this.table}.id_pb = presser_bale.id AND
-                    ${this.table}.id_wb = wheelman_bale.id AND
-                    ${this.table}.id_implant = implants.id
+                FROM ${this.table} 
+                JOIN presser_bale ON ${this.table}.id_pb = presser_bale.id
+                JOIN wheelman_bale ON ${this.table}.id_wb = wheelman_bale.id 
+                JOIN implants ON ${this.table}.id_implant = implants.id
                 WHERE 
                     ${this.table}.id_implant = ?
                     AND ${this.table}.status != 1 
@@ -323,14 +307,10 @@ class TotalBale extends Common {
             const [countBalleMagazzino] = await this.db.query(
                 `SELECT 
                     COUNT(pb_wb.id_pb) AS "totale_magazzino_turno"
-                FROM 
-                    code_plastic
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_plastic = code_plastic.code
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM code_plastic
+                LEFT JOIN presser_bale ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_cplastic}
                     AND (${_params.condition})`,
@@ -340,14 +320,10 @@ class TotalBale extends Common {
             const [countBalleLavorate] = await this.db.query(
                 `SELECT 
                     COUNT(pb_wb.id_pb) AS "totale_balle_lavorate"
-                FROM 
-                    code_plastic
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_plastic = code_plastic.code
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM code_plastic
+                LEFT JOIN presser_bale ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_idimplant}
                     AND (${_params.condition})`,
@@ -382,8 +358,7 @@ class TotalBale extends Common {
             const [countChili] = await this.db.query(
                 `SELECT 
                     IFNULL(SUM(wheelman_bale.weight), 0) AS totale_chili
-                FROM 
-                    pb_wb
+                FROM pb_wb
                 LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 LEFT JOIN presser_bale ON pb_wb.id_pb = presser_bale.id
                 WHERE

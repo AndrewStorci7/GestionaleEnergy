@@ -52,21 +52,11 @@ class PresserBale extends Bale {
                     ${this.table}.id_sb AS '_idSb',
                     ${this.table}.note AS 'notes',
                     ${this.table}.data_ins AS 'data_ins'
-                FROM 
-                    ${this.table} 
-                JOIN 
-                    code_plastic 
-                JOIN 
-                    cond_${this.table} 
-                JOIN 
-                    rei 
-                JOIN 
-                    selected_bale
-                ON 
-                    ${this.table}.id_cpb = cond_${this.table}.id AND
-                    ${this.table}.id_plastic = code_plastic.code AND
-                    ${this.table}.id_rei = rei.id AND
-                    ${this.table}.id_sb = selected_bale.id
+                FROM ${this.table} 
+                JOIN code_plastic ON ${this.table}.id_plastic = code_plastic.code
+                JOIN cond_${this.table} ON ${this.table}.id_cpb = cond_${this.table}.id
+                JOIN rei ON ${this.table}.id_rei = rei.id 
+                JOIN selected_bale ON ${this.table}.id_sb = selected_bale.id
                 WHERE 
                     ${this.table}.id = ? LIMIT 1`,
                 [id] 
