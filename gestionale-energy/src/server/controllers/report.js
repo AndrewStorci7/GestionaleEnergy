@@ -88,14 +88,10 @@ class Report extends Common {
                 `SELECT 
                     SUM(wheelman_bale.weight) AS "totale_peso",
                     COUNT(pb_wb.id_pb) AS "totale_balle"
-                FROM 
-                    code_plastic
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_plastic = code_plastic.code
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM code_plastic
+                LEFT JOIN presser_bale ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_cplastic}`,
                 params
@@ -123,14 +119,10 @@ class Report extends Common {
                 `SELECT 
                     code_plastic.code AS 'name', 
                     COUNT(pb_wb.id_pb) AS "totale_balle"
-                FROM 
-                    code_plastic
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_plastic = code_plastic.code
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM code_plastic
+                LEFT JOIN presser_bale ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_cplastic}
                 GROUP BY 
@@ -144,14 +136,10 @@ class Report extends Common {
                 `SELECT 
                     code_plastic.code AS 'name', 
                     COUNT(pb_wb.id_pb) AS "totale_balle"
-                FROM 
-                    code_plastic
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_plastic = code_plastic.code
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM code_plastic
+                LEFT JOIN presser_bale ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_cplastic}
                 GROUP BY 
@@ -165,14 +153,10 @@ class Report extends Common {
                 `SELECT 
                     rei.name,
                     COUNT(pb_wb.id_pb) AS "totale_balle"
-                FROM 
-                    rei
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_rei = rei.id
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM rei
+                LEFT JOIN presser_bale ON presser_bale.id_rei = rei.id
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -187,14 +171,10 @@ class Report extends Common {
                 `SELECT 
                     cond_presser_bale.type AS 'name',
                     COUNT(pb_wb.id_pb) AS "totale_balle"
-                FROM 
-                    cond_presser_bale
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_cpb= cond_presser_bale.id
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM cond_presser_bale
+                LEFT JOIN presser_bale ON presser_bale.id_cpb= cond_presser_bale.id
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -209,14 +189,10 @@ class Report extends Common {
                 `SELECT 
                     cond_wheelman_bale.type AS 'name',
                     COUNT(pb_wb.id_wb) AS "totale_balle"
-                FROM 
-                    cond_wheelman_bale
-                LEFT JOIN wheelman_bale 
-                    ON wheelman_bale.id_cwb = cond_wheelman_bale.id
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_wb = wheelman_bale.id
-                LEFT JOIN presser_bale
-                    ON pb_wb.id_pb = presser_bale.id
+                FROM cond_wheelman_bale
+                LEFT JOIN wheelman_bale ON wheelman_bale.id_cwb = cond_wheelman_bale.id
+                LEFT JOIN pb_wb ON pb_wb.id_wb = wheelman_bale.id
+                LEFT JOIN presser_bale ON pb_wb.id_pb = presser_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -231,14 +207,10 @@ class Report extends Common {
                 `SELECT 
                     selected_bale.name,
                     COUNT(pb_wb.id_pb) AS "totale_balle"
-                FROM 
-                    selected_bale
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_sb = selected_bale.id
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM selected_bale
+                LEFT JOIN presser_bale ON presser_bale.id_sb = selected_bale.id
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -253,14 +225,10 @@ class Report extends Common {
                 `SELECT 
                     warehouse_dest.name,
                     COUNT(pb_wb.id_wb) AS "totale_balle"
-                FROM 
-                    warehouse_dest
-                LEFT JOIN wheelman_bale 
-                    ON wheelman_bale.id_wd = warehouse_dest.id
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_wb = wheelman_bale.id
-                LEFT JOIN presser_bale
-                    ON pb_wb.id_pb = wheelman_bale.id
+                FROM warehouse_dest
+                LEFT JOIN wheelman_bale ON wheelman_bale.id_wd = warehouse_dest.id
+                LEFT JOIN pb_wb ON pb_wb.id_wb = wheelman_bale.id
+                LEFT JOIN presser_bale ON pb_wb.id_pb = wheelman_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -275,14 +243,10 @@ class Report extends Common {
                 `SELECT 
                     reas_not_tying.name,
                     COUNT(pb_wb.id_wb) AS "totale_balle"
-                FROM 
-                    reas_not_tying
-                LEFT JOIN wheelman_bale 
-                    ON wheelman_bale.id_wd = reas_not_tying.id
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_wb = wheelman_bale.id
-                LEFT JOIN presser_bale
-                    ON pb_wb.id_pb = presser_bale.id
+                FROM reas_not_tying
+                LEFT JOIN wheelman_bale ON wheelman_bale.id_wd = reas_not_tying.id
+                LEFT JOIN pb_wb ON pb_wb.id_wb = wheelman_bale.id
+                LEFT JOIN presser_bale ON pb_wb.id_pb = presser_bale.id
                 WHERE 
                     pb_wb.id_implant = ?
                 GROUP BY 
@@ -325,14 +289,10 @@ class Report extends Common {
                 `SELECT 
                     code_plastic.code AS 'name', 
                     COUNT(pb_wb.id_pb) AS "totale_balle"
-                FROM 
-                    code_plastic
-                LEFT JOIN presser_bale 
-                    ON presser_bale.id_plastic = code_plastic.code
-                LEFT JOIN pb_wb 
-                    ON pb_wb.id_pb = presser_bale.id
-                LEFT JOIN wheelman_bale
-                    ON pb_wb.id_wb = wheelman_bale.id
+                FROM code_plastic
+                LEFT JOIN presser_bale ON presser_bale.id_plastic = code_plastic.code
+                LEFT JOIN pb_wb ON pb_wb.id_pb = presser_bale.id
+                LEFT JOIN wheelman_bale ON pb_wb.id_wb = wheelman_bale.id
                 WHERE 
                     ${this.cond_for_cplastic}
                 GROUP BY 
