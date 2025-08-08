@@ -11,9 +11,15 @@ name: ESLint
 
 on:
   push:
-    branches: ["master", "test/workflows"]
+    branches:
+      - master
+      - test/*
+      - release/*
   pull_request:
-    branches: ["master", "test/workflows"]
+    branches:
+      - master
+      - test/*
+      - release/*
 
 permissions:
   contents: read

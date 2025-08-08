@@ -2,9 +2,15 @@ name: Jest
 
 on:
   push:
-    branches: ["master", "test/workflows"]
+    branches: 
+      - master
+      - test/*
+      - release/*
   pull_request:
-    branches: ["master", "test/workflows"]
+    branches:
+      - master
+      - test/*
+      - release/*
 
 jobs:
   jest:
