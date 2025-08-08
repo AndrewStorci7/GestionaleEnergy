@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import BtnReportFiltered from '@admin/buttons/btn-report-filtered';
 import { formattedDateTime } from '@config';

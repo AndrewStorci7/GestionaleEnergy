@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import { act, render, screen, fireEvent } from "@testing-library/react";
 import Header from "@header/header";
 import { useRouter } from "next/navigation";

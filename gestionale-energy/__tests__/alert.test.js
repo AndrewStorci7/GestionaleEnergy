@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import Alert from '@main/alert/alert';
 import { AlertProvider, useAlert } from '@main/alert/alertProvider';

@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import { render, screen, fireEvent } from "@testing-library/react";
 import BtnReport from "@admin/buttons/btn-report";
 

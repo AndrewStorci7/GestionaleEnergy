@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import { render, screen } from "@testing-library/react";
 import Footer from "../src/app/components/footer/footer.js";
 import packageJson from "../package.json";
