@@ -1,4 +1,4 @@
-import { getServerRoute } from "@/app/config";
+import { getServerRoute } from "@config";
 
 //#region Fetch Single Bale
 /**
@@ -126,6 +126,54 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
         });
     }
 }
+//#endregion Fetch Total Bale
+
+//#region Fetch Single Elements
+/**
+ * Fetches single elements from the server based on the specified type.
+ * 
+ * @param {string} searchFor - Tipo di elemento da cercare (es. 'implants', 'plastic', etc.).
+ * @param {function} setContent - Funzione per aggiornare lo stato con i dati ottenuti.
+ * @throws {Error} Se `searchFor` o `setContent` non sono definiti.
+ */
+async function fetchDataSingleElements(
+    searchFor, 
+    // setContent
+) {
+    try {
+        if (searchFor === undefined || searchFor === null) {
+            throw new Error("searchFor is undefined or null");
+        } 
+        // else if (setContent === undefined || setContent === null || typeof setContent !== "function") {
+        //     throw new Error("setContent is undefined, null, or not a function");
+        // }
+
+        const url = getServerRoute(searchFor);
+
+        if (url != -1) {
+            const resp = await fetch(url, {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+            });
+
+            if (!resp.ok) {
+                throw new Error("Network response was not ok");
+            }
+
+            const data = await resp.json();
+
+            // if (data.code === 0) setContent(data.data);
+            if (data.code === 0) return Promise.resolve(data.data);
+        } else {
+            // setContent(["In lavorazione", "Cambiat", "Completato"]);
+            return Promise.resolve(["In lavorazione", "Cambiat", "Completato"]);
+        }
+    } catch (error) {
+        // console.log(error.message || "Failed to fetch data");
+        throw error;
+    }
+}
+
 
 //#region Gestione Stampa 
 /**
@@ -212,10 +260,9 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
  * @function handleDelete
  * @param {number} id - ID della balla da eliminare.
  * @param {function} handleAlertChange - Funzione hook per gestire gli alert.
- * @param {*} msg - Messaggio opzionale da mostrare.
  * @throws {Error} Se `handleAlertChange` non è una funzione o in caso di errore nella richiesta.
  */
-const handleDelete = async (id, handleAlertChange, msg) => {
+const handleDelete = async (id, handleAlertChange) => {
 
     if (typeof handleAlertChange !== "function") {
         throw new Error("Errore: `handleAlert` must be a function hook");
@@ -269,6 +316,7 @@ const fetchTotaleChili = async (implant) => {
 export {
     fetchDataBale,
     fetchDataTotalBale,
+    fetchDataSingleElements,
     handleStampa,
     handleDelete,
     fetchTotaleChili

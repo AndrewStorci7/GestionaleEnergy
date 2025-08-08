@@ -1,12 +1,12 @@
 'use client'
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { getEnv, getServerRoute, fetchReportData } from "@/app/config";
+import React, { useState, useEffect } from "react";
+import { getEnv, getServerRoute } from "@config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
-import { handleDownload } from "@admin/export-report";
+import PropTypes from "prop-types"; // per ESLint
 
 /**
  * Header
@@ -16,12 +16,10 @@ import { handleDownload } from "@admin/export-report";
 export default function Header({ 
     implant, 
     username, 
-    type, 
-    name, 
-    surname 
+    type
 }) {
 
-    const { ws, message } = useWebSocket();
+    const { message } = useWebSocket();
     
     const _CMN_PLACE_CENTER = "place-content-center";
     
@@ -91,20 +89,11 @@ export default function Header({
             setDate(new Date().toLocaleDateString());
 
             let _hour = parseInt(time.split(":")[0])
-            // console.log(_hour)
-            if (_hour >= 6 && _hour < 14)
-                setTurn("Turno 1");
-            else if (_hour >= 14 && _hour < 22)
-                setTurn("Turno 2");
-            else if (_hour >= 22 && _hour <= 23 || _hour >= 0 && _hour < 6)
-                setTurn("Turno 3");
-            else
-                setTurn("Turno 1");
 
-            // if (_hour === 6) {
-            //     handleDownload(fetchReportData, 'impianto-a');
-            //     handleDownload(fetchReportData, 'impianto-b');
-            // }
+            if (_hour >= 6 && _hour < 14) setTurn("Turno 1");
+            else if (_hour >= 14 && _hour < 22) setTurn("Turno 2");
+            else if (_hour >= 22 && _hour <= 23 || _hour >= 0 && _hour < 6) setTurn("Turno 3");
+            else setTurn("Turno 1");
 
         }, 1000);
 
@@ -179,3 +168,9 @@ export default function Header({
         </header>
     );
 }
+
+Header.propTypes = {
+    implant: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+};

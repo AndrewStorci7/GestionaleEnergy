@@ -1,0 +1,42 @@
+name: Jest
+
+on:
+  push:
+    branches: ["master", "test/workflows"]
+  pull_request:
+    branches: ["master", "test/workflows"]
+
+jobs:
+  jest:
+    name: Jest on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+        working-directory: gestionale-energy
+        shell: bash
+
+      - name: Run Jest tests
+        run: npm test -- --coverage --ci --reporters=default --reporters=jest-junit --reporters=github-actions
+        working-directory: gestionale-energy
+        shell: bash
+
+      - name: Upload Jest test results
+        if: runner.os == 'Linux' # Avoid duplicates, upload only from Linux
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: gestionale-energy/coverage/

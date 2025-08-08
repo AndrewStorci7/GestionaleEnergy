@@ -1,14 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types"; // per ESLint
 
 /**
  * @author Andrea Storci from Oppimittinetworking.com
  * @param {boolean} onToggle    Gestisce il click 
  * @returns 
  */
-const Switch = ({ 
-    onToggle,
-    ...props
-}) => {
+const Switch = ({ onToggle }) => {
 
   const [isOn, setIsOn] = useState(false);
 
@@ -25,6 +23,10 @@ const Switch = ({
       <div className={`bg-white w-6 h-6 rounded-full shadow-sm transform transition-transform ${isOn ? "translate-x-6" : "translate-x-0"}`} />
     </div>
   );
+};
+
+Switch.propTypes = {
+  onToggle: PropTypes.func.isRequired,
 };
 
 export default Switch;

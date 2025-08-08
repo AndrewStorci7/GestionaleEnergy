@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
@@ -6,8 +6,10 @@ import InsertNewBale from '../insert-new-bale';
 import { useAlert } from "@alert/alertProvider";
 
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
-import { refreshPage, getServerRoute, getBgColor } from '@/app/config';
+import { refreshPage } from '@config';
 import { fetchDataTotalBale } from '../fetch';
+
+import PropTypes from 'prop-types'; // per ESLint
 
 /**
  * Custom component for handling the data of a bale
@@ -40,27 +42,21 @@ export default function TableContent({
     useFor = 'regular', 
     noData, 
     handleSelect,
-    primary = false, 
-    tableChange = false,
+    primary = false,
     handleError,
     selectedBaleId,
-    style,
-    ...props
+    style
 }) {
     // WebSocket instance
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
     const { ws, message } = useWebSocket();
 
     const [content, setContent] = useState([]);
     const [isEmpty, setEmpty] = useState(false);
-    // const [changeWeight, canChangeWeight] = useState(false);
-    const [editingWeightRowId, setEditingWeightRowId] = useState(null);
-    const [newWeight, setWeight] = useState(0);
-    const [cachedValued, cacheValue] = useState(0);
 
     const selectedBaleIdRef = useRef([]);
 
-    const handleNoteClick = (id, note) => {
+    const handleNoteClick = (note) => {
         showAlert({
             title: "Nota dell'utente",
             message: note,
@@ -135,30 +131,13 @@ export default function TableContent({
         handleSelect(newSelectedBaleId, idUnique);
     };
 
-    const updateWeightData = async (e, idUnique, bypassKeyDown) => {
-        if (e.key === "Enter" || bypassKeyDown) {
-            const url = getServerRoute("update-wheelman-bale");
-            const fetch1 = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ weight: e.target.value, where: idUnique, }),
-            });
-            const check = await fetch1.json();
-            // console.log(check);
-        } else if (e.key === "Escape") {
-            e.target.value = cachedValued;
-        }
-
-        setEditingWeightRowId(null);
-    }
-
     return (
         <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll">            
             {useFor === 'regular' && add.state && (
                 <InsertNewBale style={style} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
 
-            {!isEmpty && content.map((bale, index) => {
+            {!isEmpty && content.map((bale) => {
                 const plastic = bale.plasticPresser;
                 const id = bale.id;
                 const idUnique = bale.idUnique;
@@ -190,7 +169,6 @@ export default function TableContent({
                                     <td key={idUnique + key} className={style + " !p-1"}>
                                         <button onClick={() => handleNoteClick(id, value)}>
                                             <Icon type="info" /> 
-                                            {/* {openNotes[id] && <Alert msg={noteMessage} alertFor="note" handleClose={() => handleCloseNote(id)} />} */}
                                         </button>
                                     </td>
                                 ) : (key === "is_printed") ? (
@@ -199,40 +177,8 @@ export default function TableContent({
                                     <td 
                                         className={style}
                                         key={idUnique + key}
-                                        // onDoubleClick={(e) => {
-                                        //     cacheValue(e.target.value)
-                                        //     setEditingWeightRowId(idUnique)
-                                        // }}
                                     >
-                                        {editingWeightRowId === idUnique ? (
-                                            <input
-                                                type="text"
-                                                value={value}
-                                                className="text-black w-full on-input"
-                                                // onChange={(e) => {
-                                                //     setWeight(e.target.value);
-                                                //     // aggiorna localmente, puoi anche salvarlo in uno stato per poi inviarlo
-                                                //     const updatedContent = [...content];
-                                                //     const rowIndex = updatedContent.findIndex(row => row.idUnique === idUnique);
-                                                //     if (rowIndex !== -1) {
-                                                //         updatedContent[rowIndex][key] = e.target.value;
-                                                //         // setContent(updatedContent);
-                                                //     }
-                                                // }}
-                                                // onKeyDown={(e) => {
-                                                //     // salva dato su db
-                                                //     // se preme 'Enter' salva, se preme 'Esc' non salva
-                                                //     if (e.key === 'Enter')
-                                                //         updateWeightData(e, idUnique, false);
-                                                //     else if (e.key === 'Escape') 
-                                                //         updateWeightData(e, idUnique, false);
-                                                // }}
-                                                // onBlur={(e) => {
-                                                //     // aggiorna dato peso sul db
-                                                //     updateWeightData(e, idUnique, true);
-                                                // }} // chiudi l'input quando esce dal focus
-                                            />
-                                        ) : value}
+                                        {value}
                                     </td>
                                 ) : (key !== "data_ins") ? (
                                     <td key={idUnique + key} className={style}>{value}</td>
@@ -248,3 +194,16 @@ export default function TableContent({
         </tbody>
     );
 }
+
+TableContent.propTypes = {
+    admin: PropTypes.bool,
+    type: PropTypes.string,
+    add: PropTypes.object,
+    useFor: PropTypes.string,
+    noData: PropTypes.func,
+    handleSelect: PropTypes.func,
+    primary: PropTypes.bool,
+    handleError: PropTypes.func,
+    selectedBaleId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    style: PropTypes.string
+};

@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 import Alert from "@main/alert/alert";
 
+import PropTypes from 'prop-types'; // per ESLint
+
 const AlertContext = createContext();
 
 export const useAlert = () => {
@@ -28,7 +30,7 @@ export const AlertProvider = ({ children }) => {
         type = 'info', 
         data = null 
     }) => {
-        console.log('Showing alert:', { title, type, hasData: !!data });
+        // console.log('Showing alert:', { title, type, hasData: !!data });
         
         setAlertState({
             visible: true,
@@ -68,48 +70,6 @@ export const AlertProvider = ({ children }) => {
     );
 };
 
-// import React, { createContext, useContext, useState } from "react";
-// import Alert from "@main/alert/alert";
-
-// const AlertContext = createContext();
-
-// export const useAlert = () => useContext(AlertContext);
-
-// export const AlertProvider = ({ children }) => {
-
-//     // configurazione dell'alert
-//     const [alertConfig, setAlertConfig] = useState({
-//         visible: false,
-//         title: '',
-//         message: '',
-//         type: 'info',
-//         onConfirm: null,
-//         onCancel: null,
-//         data: null,
-//     }); 
-
-//     const showAlert = ({ title, message, type = 'info', onConfirm = null, onCancel = null, data = null }) => {
-//         console.log(title, data);
-//         setAlertConfig({ visible: true, title, message, type, onConfirm, onCancel, data });
-//     };
-
-//     const hideAlert = () => {
-//         setAlertConfig((prev) => ({ ...prev, visible: false }));
-//     };
-
-//     return (
-//         <AlertContext.Provider value={{ showAlert, hideAlert }}>
-//             {children}
-//             {alertConfig.visible && (
-//                 <Alert
-//                     title={alertConfig.title} 
-//                     msg={alertConfig.message}
-//                     alertFor={alertConfig.type}
-//                     onCancel={alertConfig.onCancel}
-//                     onConfirm={alertConfig.onConfirm}
-//                     data={alertConfig.data}
-//                 />
-//             )}
-//         </AlertContext.Provider>
-//     );
-// }
+AlertProvider.propTypes = {
+    children: PropTypes.node.isRequired
+};

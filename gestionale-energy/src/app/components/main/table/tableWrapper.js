@@ -1,13 +1,13 @@
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import TableContent from './table-content';
 import TableHeader from './table-header';
 
+import PropTypes from 'prop-types'; // per ESLint
+
 const TableWrapper = ({
     admin = false,
-    tableHeader = null,
     tableContent = null,
-    mod,
     type,
     primary = false,
     ...props
@@ -26,10 +26,10 @@ const TableWrapper = ({
     }, [type]);
 
     useEffect(() => {
-        if (!tableHeader && !tableContent) {
-            console.error("TableHeader e TableContent non definiti");
+        if (!tableContent) {
+            console.error("TableContent non definito");
         }
-    }, [tableHeader, tableContent]);
+    }, [tableContent]);
 
     return (
         <div {...props}>
@@ -105,5 +105,17 @@ const TableWrapper = ({
         </div>
     )
 }
+
+TableWrapper.propTypes = {
+    admin: PropTypes.bool,
+    tableContent: PropTypes.shape({
+        handleSelect: PropTypes.func.isRequired,
+        selectedBaleId: PropTypes.string,
+        objAdd: PropTypes.object.isRequired,
+        noData: PropTypes.func.isRequired
+    }).isRequired,
+    type: PropTypes.oneOf(['presser', 'wheelman', 'both', 'admin']).isRequired,
+    primary: PropTypes.bool,
+};
 
 export default TableWrapper;

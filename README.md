@@ -1,6 +1,8 @@
 # Gestionale Energy
-### Version 1.5 :label: 📢
-#### :calendar: 2025/03/27
+### Version 1.7.0 :label: 📢
+
+[![ESLint](https://github.com/AndrewStorci7/GestionaleEnergy/actions/workflows/eslint.yml/badge.svg?branch=test%2Fworkflows)](https://github.com/AndrewStorci7/GestionaleEnergy/actions/workflows/eslint.yml)
+[![Jest](https://github.com/AndrewStorci7/GestionaleEnergy/actions/workflows/jest.yml/badge.svg)](https://github.com/AndrewStorci7/GestionaleEnergy/actions/workflows/jest.yml)
 
 ## Main Features :sparkles:
 

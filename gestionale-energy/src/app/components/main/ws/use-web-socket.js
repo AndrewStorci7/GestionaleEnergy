@@ -5,7 +5,9 @@ import React, {
     useRef, 
     useState 
 } from 'react';
-import { getWsUrl } from '@/app/config';
+import { getWsUrl } from '@config';
+
+import PropTypes from 'prop-types'; // per ESLint
 
 const wsurl = getWsUrl();
 const WebSocketContext = createContext();
@@ -17,7 +19,10 @@ const WebSocketContext = createContext();
  * @param {Object} user     Informazioni dell'utente che si è collegato
  * @param {Object} children  
  */
-export const WebSocketProvider = ({ user, children }) => {
+export const WebSocketProvider = ({ 
+    user, 
+    children 
+}) => {
 
     const ws = useRef(null);
     const [message, setMessage] = useState(null);
@@ -82,6 +87,11 @@ export const WebSocketProvider = ({ user, children }) => {
             {children}
         </WebSocketContext.Provider>
     );
+};
+
+WebSocketProvider.propTypes = {
+    user: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired
 };
 
 export const useWebSocket = () => useContext(WebSocketContext);

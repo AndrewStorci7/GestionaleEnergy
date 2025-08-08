@@ -1,14 +1,15 @@
 'use client';
 
-// import getEnv from '@/app/config';
+// import getEnv from '@config';
 import React, { useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
-import { getServerRoute } from '@@/config';
+import { getServerRoute } from '@config';
 import md5 from 'md5';
 import SelectImplants from '@/app/components/main/select-implant';
+import { AlertProvider } from "@/app/components/main/alert/alertProvider";
 
 /**
  * Login page
@@ -33,7 +34,7 @@ export default function LoginPage() {
         
         // Basic form validation
         if (!username || !password || !implant) {
-            setError('Please fill in both fields.');
+            setError('Compilare tutti i campi richiesti.');
             return;
         } else {
 
@@ -41,7 +42,7 @@ export default function LoginPage() {
             let crypted_pw = md5(md5(password));
 
             try {
-                const url = await getServerRoute("login");
+                const url = getServerRoute("login");
                 const resp = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
@@ -78,52 +79,54 @@ export default function LoginPage() {
     }
 
     return (
-        <div className={styles.container}>
-            <div className="w-full ">
-                <Image 
-                    src="/logo-oe.webp"
-                    width={400}
-                    height={400}
-                    alt='Oppimitti Energy Logo'
-                />
+        <AlertProvider>
+            <div className={styles.container}>
+                <div className="w-full ">
+                    <Image 
+                        src="/logo-oe.webp"
+                        width={400}
+                        height={400}
+                        alt='Oppimitti Energy Logo'
+                    />
+                </div>
+                <h1 className={styles.title}>Login</h1>
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.label} htmlFor="email">Impianto:</label>
+                        <SelectImplants 
+                            ref={selectRef}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.label} htmlFor="email">Username:</label>
+                        <input
+                            className={styles.input}
+                            type="text"
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Enter your email"
+                            required
+                        />
+                    </div>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.label} htmlFor="password">Password:</label>
+                        <input
+                            className={styles.input}
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter your password"
+                            required
+                        />
+                    </div>
+                    {error && <p className={styles.error}>{error}</p>}
+                    <button type="submit" className={styles.button}>Login</button>
+                </form>
             </div>
-            <h1 className={styles.title}>Login</h1>
-            <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                    <label className={styles.label} htmlFor="email">Impianto:</label>
-                    <SelectImplants 
-                        ref={selectRef}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label className={styles.label} htmlFor="email">Username:</label>
-                    <input
-                        className={styles.input}
-                        type="text"
-                        id="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="Enter your email"
-                        required
-                    />
-                </div>
-                <div className={styles.inputGroup}>
-                    <label className={styles.label} htmlFor="password">Password:</label>
-                    <input
-                        className={styles.input}
-                        type="password"
-                        id="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter your password"
-                        required
-                    />
-                </div>
-                {error && <p className={styles.error}>{error}</p>}
-                <button type="submit" className={styles.button}>Login</button>
-            </form>
-        </div>
+        </AlertProvider>
     );
 };

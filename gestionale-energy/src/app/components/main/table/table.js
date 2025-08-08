@@ -1,18 +1,17 @@
 'use client'
 
-import TableWrapper from "./tableWrapper";
-import DownloadReport from "../admin/btn-report"
-import SelectInput from "../search/select";
-import BtnWheelman from "../btn-wheelman";
-import BtnPresser from "../btn-presser";
-import Switch from "../admin/switch";
-
-import { useWebSocket } from "../ws/use-web-socket";
-
+import React, { useState } from "react";
+import TableWrapper from "@main/table/tableWrapper";
+import DownloadReport from "@admin/buttons/btn-report";
+import BtnWheelman from "@main/btn-wheelman";
+import BtnPresser from "@main/btn-presser";
+import Switch from "@admin/switch";
+import { useWebSocket } from "@main/ws/use-web-socket";
 import Image from "next/image";
+import { refreshPage } from "@config";
+import BtnReportFiltered from "@admin/buttons/btn-report-filtered";
 
-import { useState } from "react";
-import { refreshPage } from "@/app/config";
+import PropTypes from 'prop-types'; // per ESLint
 
 /**
  * Table
@@ -26,17 +25,19 @@ import { refreshPage } from "@/app/config";
  *                          L'oggetto sarà diverso da null quando verrà cliccato il bottone aggiungi  
  * @returns 
  */
-export default function Table({ type, implant, idUser }) {
+export default function Table({ 
+    type, 
+    implant, 
+    idUser 
+}) {
 
     // WebSocket instance
-    const { ws, message } = useWebSocket();
+    const { ws } = useWebSocket();
     /// Common style
     const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
     const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
-    const _CMNSTYLE_TABLE = "border-collapse table-auto w-full text-sm";
 
-    const [selectedType, setSelectedType] = useState("general");
     const [addWasClicked, setAddClick] = useState(false); // gestisce il click del bottone "aggiungi"
     const [confirmedAdd, setConfirmedAdd] = useState(true); // gestisce il click della conferma dell'inserimento
 
@@ -50,7 +51,6 @@ export default function Table({ type, implant, idUser }) {
     const handleAddPressed = () => {
         setConfirmedAdd(prev => !prev);
         setAddClick(prev => !prev);
-        console.log("STATO BOTTONE OK AGGIUNTA: " + confirmedAdd);
     }
     
     // Oggetto per gestire l'id della balla selezionata
@@ -70,10 +70,6 @@ export default function Table({ type, implant, idUser }) {
         setEmpty(false);
         setMsg(msg);
     }
-
-    const handleTypeChange = (type) => {
-        setSelectedType(type);
-    };
 
     const handleSelect = (select, idUnique) => {
         setSelected(select);
@@ -219,32 +215,7 @@ export default function Table({ type, implant, idUser }) {
                                     REPORT DA FILTRI
                                 </h1>
                                 <div className="grid grid-cols-3 gap-1 mt-20 p-20">
-                                    <p className="ml-3 mb-1.5 font-bold">
-                                        PERIODO
-                                    </p>
-                                    <input className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date"></input>
-                                    <input className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date"></input>
-                                    <p className="ml-3 mb-1.5 font-bold">IMPIANTO</p>
-                                    <SelectInput id="search-input-implants" searchFor={"implants"} isForSearch />
-                                    <p></p>
-                                    <p className="ml-3 mb-1.5 font-bold">TIPO PLASTICA</p>
-                                    <SelectInput id="search-input-plastic" searchFor={"plastic"} isForSearch />
-                                    {/*
-                                    <p></p>
-                                    <p className="ml-3 mb-1.5">PESO</p>
-                                    <select name="peso" id="pesoid"> 
-                                        <option value="esempio_a">-</option>
-                                    </select>
-                                    <p></p>
-                                    <p className="ml-3 mb-1.5">TURNO</p>
-                                    <select name="turno" id="turnoid">
-                                        <option value="esempio_a">-</option>
-                                    </select> */}
-                                    <p></p>
-                                    <p></p>
-                                    <button className="text-black font-semibold bg-sky-50 rounded-full text-sm px-2 py-2 text-center me-2 mt-3 mb-3.5 transition-all hover:bg-sky-700 hover:text-white">
-                                        VISUALIZZA
-                                    </button>
+                                    <BtnReportFiltered />
                                 </div>
                             </div>
                         </div>
@@ -270,3 +241,9 @@ export default function Table({ type, implant, idUser }) {
         }
     }
 }
+
+Table.propTypes = {
+    type: PropTypes.oneOf(['presser', 'wheelman', 'both', 'admin']).isRequired,
+    implant: PropTypes.string,
+    idUser: PropTypes.string
+};

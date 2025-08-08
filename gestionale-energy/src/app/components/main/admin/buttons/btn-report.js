@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import ExportReport from '@/app/components/main/admin/export-report';
-import Icon from '../get-icon';
+import ExportReport from '@admin/export/export-report';
+import Icon from '@main/get-icon';
+import { reportFiltered } from '@admin/export/export-report-filtered';
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -12,10 +13,7 @@ import Icon from '../get-icon';
  * @param {any}     children    
  * 
  */
-export default function BtnReport({ 
-  downloadFor, 
-  children 
-}) {
+export default function BtnReport() {
 
   const [date, setDate] = useState(null); // data del report
 
@@ -27,7 +25,7 @@ export default function BtnReport({
 
   return (
     <>
-      <input className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date" onChange={(e) => setDate(e.target.value)} /><br/>
+      <input aria-label="Date input" className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date" onChange={(e) => setDate(e.target.value)} /><br/>
       <ExportReport 
         date={date}
         reportFor={'impianto-a'} 
@@ -73,11 +71,6 @@ export default function BtnReport({
       >
         GIOR. TEMPI IMP A e B
       </ExportReport>
-
-      {/* <div className="inline-flex items-center font-thin text-sm opacity-50">
-        <Icon type="info" className="!text-gray-400" />
-        I report giornalieri fanno riferimento al giorno precedente
-      </div> */}
 
       <div className="inline-flex items-center font-thin text-sm opacity-50">
         <Icon type="info" className="!text-gray-400" />

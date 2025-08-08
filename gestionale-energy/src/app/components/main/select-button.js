@@ -1,6 +1,8 @@
 import React from 'react';
 import { FaCheck, FaRegSquare } from 'react-icons/fa'; // FontAwesome icons
 
+import PropTypes from 'prop-types'; // per ESLint
+
 /**
  * Check button for selecting a bale
  * 
@@ -30,3 +32,8 @@ export default function CheckButton({
         </div>
     );
 }
+
+CheckButton.propTypes = {
+    isSelected: PropTypes.bool,
+    handleClick: PropTypes.func.isRequired
+};

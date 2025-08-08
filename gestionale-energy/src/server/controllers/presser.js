@@ -52,21 +52,11 @@ class PresserBale extends Bale {
                     ${this.table}.id_sb AS '_idSb',
                     ${this.table}.note AS 'notes',
                     ${this.table}.data_ins AS 'data_ins'
-                FROM 
-                    ${this.table} 
-                JOIN 
-                    code_plastic 
-                JOIN 
-                    cond_${this.table} 
-                JOIN 
-                    rei 
-                JOIN 
-                    selected_bale
-                ON 
-                    ${this.table}.id_cpb = cond_${this.table}.id AND
-                    ${this.table}.id_plastic = code_plastic.code AND
-                    ${this.table}.id_rei = rei.id AND
-                    ${this.table}.id_sb = selected_bale.id
+                FROM ${this.table} 
+                JOIN code_plastic ON ${this.table}.id_plastic = code_plastic.code
+                JOIN cond_${this.table} ON ${this.table}.id_cpb = cond_${this.table}.id
+                JOIN rei ON ${this.table}.id_rei = rei.id 
+                JOIN selected_bale ON ${this.table}.id_sb = selected_bale.id
                 WHERE 
                     ${this.table}.id = ? LIMIT 1`,
                 [id] 
@@ -221,13 +211,14 @@ class PresserBale extends Bale {
                     case 'id_presser':
                     case 'id_rei':
                     case 'id_cpb':
-                    case 'id_sb':
+                    case 'id_sb': {
                         // Assicurati che gli ID siano numeri interi
                         const intValue = parseInt(value);
                         if (!isNaN(intValue)) {
                             validatedBody[key] = intValue;
                         }
                         break;
+                    }
                     case 'id_plastic':
                         // Codice plastica - deve essere una stringa
                         if (typeof value === 'string' && value.trim() !== '') {
@@ -242,13 +233,14 @@ class PresserBale extends Bale {
                             validatedBody[key] = String(value).trim();
                         }
                         break;
-                    case 'where':
+                    case 'where': {
                         // ID per la clausola WHERE
                         const whereValue = parseInt(value);
                         if (!isNaN(whereValue) && whereValue > 0) {
                             validatedBody[key] = whereValue;
                         }
                         break;
+                    }
                     default:
                         validatedBody[key] = value;
                 }
@@ -265,13 +257,13 @@ class PresserBale extends Bale {
      * @param {object} req
      * @param {object} res
      */
-    async delete(req, res) {
-        try {
+    // async delete(req, res) {
+    //     try {
 
-        } catch (error) {
+    //     } catch (error) {
             
-        }
-    }
+    //     }
+    // }
 
 }
 

@@ -35,7 +35,7 @@ class Reason extends Common {
             }
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 
@@ -45,9 +45,9 @@ class Reason extends Common {
      * @param {object} req  object request 
      * @param {object} res  object response 
      */
-    async set(req, res) {
-        // TODO
-    }
+    // async set(req, res) {
+    //     // TODO
+    // }
 }
 
 export default Reason

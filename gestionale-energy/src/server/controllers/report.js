@@ -23,8 +23,6 @@ class Report extends Common {
      */
     async reportGiornaliero(req, res) {
         try {
-            // const { body } = req.body;
-            // console.debug(body);
 
             const body = req.body;
             console.debug(body);
@@ -61,17 +59,11 @@ class Report extends Common {
                         ${params.condition.fourth}
                     GROUP BY 
                         code_plastic.code`,
-                    params.params,
-                    true
+                    params.params
                 );
 
                 if (select && select.length > 0)
                     data[i - 1] = select;
-            }
-
-            if (body.saveOnServer) {
-                handleDownload(body.implant);
-                res.end();
             }
 
             if (data && data.length > 0) {
@@ -82,7 +74,7 @@ class Report extends Common {
             }
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 
@@ -118,7 +110,7 @@ class Report extends Common {
 
         } catch (error) {
             console.error(error);
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
 
@@ -309,7 +301,7 @@ class Report extends Common {
 
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 
@@ -348,6 +340,66 @@ class Report extends Common {
                 [param]
             );
     
+            if (select && select.length > 0) {
+                res.json({ code: 0, data: select });
+            } else {
+                res.json({ code: 1, message: "No data fetched" });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
+        }
+    }
+
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     */
+    async reportFiltered(req, res) {
+        try {
+            const { implant, options } = req.body;
+
+            if (!implant || implant <= 0) {
+                console.error("Chiamata all'API non valida, manca l'ID dell'impianto");
+                res.status(400).send("Chiamata all'API non valida, mnaca l'ID dell'impianto");
+                return;
+            }
+
+            var startDate = ''; // data di inzio filtro
+            var endDate = ''; // data di fine filtro
+
+            if (options) {
+                // Aggiungi qui la logica per gestire le opzioni
+                startDate = options.startDate.replace('T', ' ');
+                endDate = options.endDate.replace('T', ' ');
+                console.info(`Start Date: ${startDate}, End Date: ${endDate}`);
+            } else {
+                console.error("Nessuna opzione fornita per il report filtrato.");
+                res.status(400).send("Nessuna opzione fornita per il report filtrato.");
+                return;
+            }
+
+            const [select] = await this.db.query(
+                `SELECT
+                    cp.code as 'plastic',
+                    cp.desc as 'code',
+                    w.weight AS 'weight', 
+                    w.data_ins AS 'data_ins'
+                FROM pb_wb t
+                INNER JOIN presser_bale p ON t.id_pb = p.id
+                INNER JOIN wheelman_bale w ON t.id_wb = w.id
+                INNER JOIN implants i ON t.id_implant = i.id
+                INNER JOIN code_plastic cp ON p.id_plastic = cp.code
+                WHERE 
+                    i.id = ?
+                    AND w.weight > 1 
+                    AND w.data_ins >= ? AND w.data_ins <= ?
+                ORDER BY w.data_ins ASC`, 
+                [implant, startDate, endDate],
+                true
+            );
+
             if (select && select.length > 0) {
                 res.json({ code: 0, data: select });
             } else {
