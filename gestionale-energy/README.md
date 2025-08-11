@@ -1,18 +1,14 @@
-# Gestionale Energy
-### Version 1.5 :label: 📢
-#### :calendar: 2025/03/27
+# Gestionale Energy 🌱
+### Version 1.7.0 :label: 📢
+#### :calendar: 2025/08/11
 
-## Main Features :sparkles:
+Siamo lieti di annunciare il rilascio della nuova versione del **Gestionale Energy**, progettata per ottimizzare e automatizzare il processo di gestione della creazione delle balle di plastica.
 
-#### 🔄 **Automazione Completa**  
-Il gestionale ora offre una **gestione completa delle balle**, garantendo un flusso di lavoro ancora più efficiente tra pressista e carrellista.  
+Con questa versione:
 
-#### 📊 **Reportistica Immediata**  
-Grazie al nuovo sistema di reportistica avanzata, è possibile ottenere in **tempo reale** tutti i dati di produzione, migliorando il monitoraggio e l’analisi delle performance.  
-
-🔹 **Pressista**: Inserimento delle caratteristiche del materiale da pressare.  
-🔹 **Carrellista**: Registrazione rapida e precisa delle balle all'uscita dalla pressa.  
+- **Automazione completa del flusso di produzione**: gestione rapida e precisa della pressa per ogni tipologia di plastica.
+- **Reportistica avanzata**: visualizzazione immediata della produzione corrente e possibilità di filtrare i dati per analisi dettagliate.
+- **Maggiore efficienza operativa**: riduzione degli errori manuali e miglior tracciabilità delle operazioni.
+- Il nuovo Gestionale Energy rappresenta un passo avanti verso una gestione più **veloce**, **smart** e sostenibile della produzione. 
 
 Questa versione introduce **maggior efficienza, precisione e visibilità sui dati** per ottimizzare la gestione della produzione.  
-
-📌 **Aggiorna ora e scopri le nuove funzionalità!** 🎉
