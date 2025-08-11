@@ -1,5 +1,8 @@
-import { getServerRoute } from "@/app/config";
 import React, { useEffect, useState } from "react";
+import { fetchDataSingleElements } from "@fetch";
+// import { useAlert } from "@alert/alertProvider";
+
+import PropTypes from 'prop-types'; // per ESLint
 
 /**
  * 
@@ -23,55 +26,35 @@ import React, { useEffect, useState } from "react";
  *  
  * @returns 
  */
-function SelectInput({ 
+const SelectInput = ({ 
     disabled,
     searchFor, 
     id, 
     fixedW, 
     value, 
     onChange, 
-    isForSearch = false, 
-    type,
-    ...props 
-}) {
+    required = false,
+    isForSearch = false
+}) => {
 
     const fixed_width = (fixedW) && "w-full";
     const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black border-2 border-gray-300 p-1`;
 
-    const [error, setError] = useState("");
     // Risposta ottenuta dal server
     const [content, setContent] = useState([]);
+    // const { showAlert } = useAlert();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                if (searchFor === undefined || searchFor === null)
-                    return;
-
-                const url = await getServerRoute(searchFor);
-
-                if (url != -1) {
-                    const resp = await fetch(url, {
-                        method: 'GET',
-                        headers: {'Content-Type': 'application/json'},
-                    });
-        
-                    if (!resp.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-        
-                    const data = await resp.json();
-        
-                    if (data.code === 0) setContent(data.data);
-                    else setError(data.message);
-                } else {
-                    setContent(["In lavorazione", "Cambiato", "Completato"]);
-                }
+                // fetchDataSingleElements(searchFor, setContent);
+                const data = await fetchDataSingleElements(searchFor);
+                console.log(data);
+                setContent(data);
             } catch (error) {
-                console.log(error);
+                console.error("Error fetching data:", error);
             }
         }
-
         fetchData();
     }, [searchFor]);
 
@@ -79,9 +62,11 @@ function SelectInput({
         <select
             disabled={disabled}
             id={id}
+            data-testid={id}
             className={_CMNSTYLE_SELECT}
             value={value}
             onChange={onChange}
+            required={required}
         >
             {(isForSearch || searchFor === "plastic") && <option value={""}>-</option>}
 
@@ -97,28 +82,31 @@ function SelectInput({
 
                     // Controllo per impostare componente <option> correttamente:
                     // <option value={id}>name</option>
-                    Object.keys(_m).map((key, __i) => {
+                    Object.keys(_m).map((key) => {
                         code += (key === "code" || key === "id") ? _m[key] : "";
                         data = (key === "desc") ? _m[key] : "";
-                        tmp = (key === "desc") ? `\(${_m[key]}\)` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
+                        tmp = (key === "desc") ? `(${_m[key]})` : (key !== "plastic_type" && key !== "id") ? _m[key] : "";
                         str += tmp + " "; 
                     });
 
-                    return ( 
-                        <option key={"option-" + _i} value={code} data-code={data}>
-                            {str}
-                        </option>
-                    )
+                    return <option key={"option-" + _i} value={code} data-code={data}>{str}</option>
                 } else {
-                    return (
-                        <option key={_m[_i] + _i} value={_m}>
-                            {_m}
-                        </option>
-                    )
+                    return <option key={_m[_i] + _i} value={_m}>{_m}</option>
                 }
             })}
         </select>
     );
 }
+
+SelectInput.propTypes = {
+    disabled: PropTypes.bool,
+    searchFor: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    fixedW: PropTypes.bool,
+    value: PropTypes.any,
+    onChange: PropTypes.func,
+    required: PropTypes.bool,
+    isForSearch: PropTypes.bool
+};
 
 export default React.memo(SelectInput);

@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { getServerRoute } from '@/app/config'
+import { getServerRoute } from '@config'
 
 
 /**
@@ -86,7 +86,6 @@ export default function HealthServer() {
 
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
-    const [memory, setMemory] = useState(null);
     
     const checkHealthServer = () => {
         fetch(getServerRoute('health-check'))
@@ -99,7 +98,6 @@ export default function HealthServer() {
         .then(data => {
             console.log('Health check successful:', data);
             setResponse(data);
-            setMemory(data.memory);
         })
         .catch(error => {
             console.error('Health check failed:', error);

@@ -11,18 +11,28 @@ name: ESLint
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
+      - test/*
+      - release/*
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
+      - test/*
+      - release/*
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
   eslint:
     name: ESLint on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
       - name: Checkout code
@@ -31,7 +41,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: |
@@ -42,7 +52,7 @@ jobs:
 
       - name: Run ESLint
         run: |
-          npx eslint . --config eslint.config.js --ext .js,.jsx,.ts,.tsx --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif
+          npx eslint . --config eslint.config.js --ext .js,.jsx,.ts,.tsx --format @microsoft/eslint-formatter-sarif --output-file eslint-results.sarif || true
         continue-on-error: true
         working-directory: gestionale-energy
         shell: bash
@@ -51,4 +61,4 @@ jobs:
         if: runner.os == 'Linux' # Evitiamo duplicati: carichiamo il SARIF solo da Linux
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: eslint-results.sarif
+          sarif_file: gestionale-energy/eslint-results.sarif

@@ -204,12 +204,22 @@ class Common {
         }
     }
 
-    formatDate(date) {
+    formatDate(date, onlyDate = true) {
         // console.debug("Data ricevuta ===> " + date);
-        const yyyy = date.getFullYear();
-        const mm = String(date.getMonth() + 1).padStart(2, '0');
-        const dd = String(date.getDate()).padStart(2, '0');
-        return `${yyyy}-${mm}-${dd}`;
+        if (onlyDate) {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        } else {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            const hh = String(date.getHours()).padStart(2, '0');
+            const min = String(date.getMinutes()).padStart(2, '0');
+            const ss = String(date.getSeconds()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+        }
     }
 
     /**
@@ -249,8 +259,9 @@ class Common {
             currentDate = this.formatDate(currentDate);
         }
 
-        var condition = `(DATE(presser_bale.data_ins) = ${!check ? `'${tomorrow}'` : 'CURDATE()'} 
-                        AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )`;
+        // var condition = `(DATE(presser_bale.data_ins) = ${!check ? `'${tomorrow}'` : 'CURDATE()'} 
+        //                 AND TIME(presser_bale.data_ins) BETWEEN ? AND ? )`;
+        var condition = `presser_bale.data_ins BETWEEN "${currentDate} ?" AND "${currentDate} ?"`
         var params = [id_implant, turn[0], turn[1]];
 
         // Diffrenzio il ritrono della funzioni per tipo di chiamata
@@ -271,12 +282,14 @@ class Common {
             const turn3_a = `${check ? yesterday : currentDate} 22:00:00`;
             const turn3_b = `${check ? currentDate : tomorrow} 05:59:59`;
 
+            // primo turno
             if (turn[turn.length - 1] == 1) {
                 condition = `(DATE(presser_bale.data_ins) = ${!check ? `'${tomorrow}'` : 'CURDATE()'} AND 
                             TIME(presser_bale.data_ins) BETWEEN ? AND ? )`
                 params = [id_implant, turn[0], turn[1]];
             }
 
+            // secondo turno
             if (turn[turn.length - 1] == 2) {
                 condition = `presser_bale.data_ins BETWEEN ? AND ? `
                 params = [id_implant, turn3_a, turn3_b];
@@ -330,8 +343,7 @@ class Common {
                     pb_wb.id,
                     pb_wb.id_pb,
                     pb_wb.id_wb
-                FROM 
-                    pb_wb 
+                FROM pb_wb 
                 WHERE 
                     ${type === 'presser' ? 'pb_wb.id_pb' : type === 'wheelman' ? 'pb_wb.id_wb' : 'pb_wb.id'} = ?`,
                 [id]

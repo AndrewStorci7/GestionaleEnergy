@@ -30,7 +30,7 @@ class Login extends Common {
             }
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 

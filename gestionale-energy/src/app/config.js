@@ -9,17 +9,17 @@
 
 const getEnv = (key, defaultKey = "") => {
 
-    switch (key) {
-        case 'srvurl' || 'SRVURL': {
+    switch (key.toLowerCase()) {
+        case 'srvurl': {
             return process.env.NEXT_PUBLIC_SERVER_URL;
         }
-        case 'srvport' || 'SRVPORT': {
+        case 'srvport': {
             return process.env.NEXT_PUBLIC_SERVER_PORT;
         }
-        case 'domain' || 'DOMAIN': {
+        case 'domain': {
             return process.env.NEXT_PUBLIC_APP_DOMAIN;
         }
-        case 'wsurl' || 'WSURL': {
+        case 'wsurl': {
             return process.env.NEXT_PUBLIC_WS_URL;
         }
         default: {
@@ -77,6 +77,24 @@ const getBgColor = (type, scope = "") => {
             return (scope === "header") ? "bg-primary" : (scope === "theader") ? "bg-primary" : "bg-primary_2";
     }
 }
+
+
+/**
+ * Format date and time to a specific format
+ * By default it will decrease the day by one
+ * 
+ * @param {*} date 
+ * @returns 
+ */
+const formattedDateTime = (date) => {
+    const now = new Date(date);
+    now.setDate(now.getDate() - 1); // Imposta la data al giorno precedente
+    return now.getFullYear() + '-' +
+        String(now.getMonth() + 1).padStart(2, '0') + '-' +
+        String(now.getDate()).padStart(2, '0') + 'T' +
+        String(now.getHours()).padStart(2, '0') + ':' +
+        String(now.getMinutes()).padStart(2, '0');
+} 
 
 /**
  * Reload Server through Websocket
@@ -197,6 +215,10 @@ const getServerRoute = (route) => {
         case "report-giornaliero": 
         case "report-daily": 
             return getSrvUrl() + "/report/daily";
+        case "report-corepla":
+        case "report-filtered":
+        case "report-filtrato":
+            return getSrvUrl() + "/report/filtered";
 
         case "report-live": 
             return getSrvUrl() + "/report/contatori";
@@ -303,14 +325,49 @@ const fetchReportData = async (reportFor, dateForReport) => {
     }
 };
 
+const fetchReportDataFiltered = async (reportFor, options) => {
+    try {
+        // console.log(typeof reportFor, typeof options);
+        var implant;
+
+        if (!reportFor || reportFor <= 0 ) {
+            // console.error("ID impianto non valido.");
+            throw new Error("ID impianto non valido.");
+        } else if (typeof reportFor == "number") {
+            implant = reportFor;
+        } else {
+            implant = (reportFor === 'impianto-a') ? [1] : 
+                        (reportFor === 'impianto-b') ? [2] : 
+                        (reportFor === 'impianto-ab') ? [1, 2] : 0;
+        }
+
+        const url = getServerRoute("report-corepla");
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ implant: implant, options: options })
+        });
+
+        const data = await response.json();
+        console.log("Server Response:", data);
+
+        return data.code === 0 ? data.data : null;
+    } catch (error) {
+        console.error(`Error Fetching Corepla Report Data: ${error.toString()}`);
+        return null;
+    }
+}
+
 export { 
     getEnv, 
     getSrvUrl, 
     getWsUrl, 
     getBgColor,
+    formattedDateTime,
     refreshPage,
     isWebSocketConnected,
     getServerRoute,
     updateStatusTotalbale,
-    fetchReportData
+    fetchReportData,
+    fetchReportDataFiltered
 };

@@ -1,12 +1,12 @@
 'use client';
 
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Head from "next/head";
 
-import Footer from "@/app/components/footer/foooter";
+import Footer from "@/app/components/footer/footer";
 import Header from "@/app/components/header/header";
 import MainContent from "@main/main-content";
-import { useEffect, useState } from "react";
 import CheckCookie from "@main/check-cookie";
 
 import { WebSocketProvider } from '@main/ws/use-web-socket';
@@ -28,6 +28,7 @@ export default function Admin() {
     const [surname, setSurname] = useState("");
     // Tipo utente [ 'admin' | 'presser' | 'wheelman' | 'both' ]
     const [type, setType] = useState("");
+    // const { showAlert } = useAlert();
     
     useEffect(() => {
         async function fetchData() {
@@ -46,6 +47,11 @@ export default function Admin() {
                 }  
             } catch (error) {
                 console.log(`Error: ${error}`);
+                // showAlert({
+                //     title: "Error",
+                //     message: "Failed to load user data. Please log in again.",
+                //     type: "error",
+                // });
             }
         }
 

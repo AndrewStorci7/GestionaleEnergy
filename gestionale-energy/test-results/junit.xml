@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="19" failures="0" errors="0" time="33.225">
+  <testsuite name="Footer" errors="0" failures="0" skipped="0" timestamp="2025-08-11T07:04:43" time="13.331" tests="4">
+    <testcase classname="Footer renders the logo image" name="Footer renders the logo image" time="0.148">
+    </testcase>
+    <testcase classname="Footer displays &apos;Powered by&apos; text" name="Footer displays &apos;Powered by&apos; text" time="0.027">
+    </testcase>
+    <testcase classname="Footer shows current year" name="Footer shows current year" time="0.019">
+    </testcase>
+    <testcase classname="Footer shows the current version from package.json" name="Footer shows the current version from package.json" time="0.01">
+    </testcase>
+  </testsuite>
+  <testsuite name="Header component" errors="0" failures="0" skipped="0" timestamp="2025-08-11T07:04:43" time="13.789" tests="1">
+    <testcase classname="Header component calls logout on button click" name="Header component calls logout on button click" time="0.453">
+    </testcase>
+  </testsuite>
+  <testsuite name="Alert Component" errors="0" failures="0" skipped="0" timestamp="2025-08-11T07:04:43" time="15.013" tests="9">
+    <testcase classname="Alert Component renders error alert correctly" name="Alert Component renders error alert correctly" time="0.12">
+    </testcase>
+    <testcase classname="Alert Component renders confirmation alert correctly" name="Alert Component renders confirmation alert correctly" time="0.013">
+    </testcase>
+    <testcase classname="Alert Component calls onHide when close button is clicked" name="Alert Component calls onHide when close button is clicked" time="0.022">
+    </testcase>
+    <testcase classname="Alert Component handles delete confirmation" name="Alert Component handles delete confirmation" time="0.019">
+    </testcase>
+    <testcase classname="Alert Component handles print confirmation" name="Alert Component handles print confirmation" time="0.02">
+    </testcase>
+    <testcase classname="Alert Component renders update form for presser" name="Alert Component renders update form for presser" time="0.063">
+    </testcase>
+    <testcase classname="AlertProvider provides alert context to children" name="AlertProvider provides alert context to children" time="0.007">
+    </testcase>
+    <testcase classname="AlertProvider shows and hides alerts" name="AlertProvider shows and hides alerts" time="0.038">
+    </testcase>
+    <testcase classname="AlertProvider throws error when used outside provider" name="AlertProvider throws error when used outside provider" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="BtnReport Component" errors="0" failures="0" skipped="0" timestamp="2025-08-11T07:04:43" time="19.969" tests="3">
+    <testcase classname="BtnReport Component renders correctly" name="BtnReport Component renders correctly" time="0.113">
+    </testcase>
+    <testcase classname="BtnReport Component updates the date state and passes it to ExportReport components" name="BtnReport Component updates the date state and passes it to ExportReport components" time="0.051">
+    </testcase>
+    <testcase classname="BtnReport Component passes correct disabled prop to tempo reports" name="BtnReport Component passes correct disabled prop to tempo reports" time="0.015">
+    </testcase>
+  </testsuite>
+  <testsuite name="BtnReportFiltered Component" errors="0" failures="0" skipped="0" timestamp="2025-08-11T07:04:43" time="21.268" tests="2">
+    <testcase classname="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" name="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" time="0.134">
+    </testcase>
+    <testcase classname="BtnReportFiltered Component Check update of date inputs" name="BtnReportFiltered Component Check update of date inputs" time="0.262">
+    </testcase>
+  </testsuite>
+</testsuites>

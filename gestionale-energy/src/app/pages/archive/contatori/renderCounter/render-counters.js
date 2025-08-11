@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
-import { getServerRoute } from '@/app/config';
+import { getServerRoute } from '@config';
 import { useWebSocket } from "@/app/components/main/ws/use-web-socket";
 
-export default function RenderCounters({ handler }) {
+export default function RenderCounters() {
 
-    const { ws, message } = useWebSocket();
+    const { message } = useWebSocket();
 
-    const [implant, setImplant] = useState(0);
     const [dataImplantA, setDataA] = useState(null);
     const [dataImplantB, setDataB] = useState(null);
     const [dataTotalA, setDataTotalA] = useState(null);
@@ -59,7 +58,7 @@ export default function RenderCounters({ handler }) {
                     // console.error(res.message);
                 }
             } catch (error) {
-                setError("Error occurred while fetching the data");
+                setError(`Error occurred while fetching the data: ${error.message}`);
                 // console.error(error);
             }
         };

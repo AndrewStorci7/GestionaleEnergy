@@ -1,4 +1,6 @@
-import { getBgColor } from "@@/config";
+import React from "react";
+
+import PropTypes from 'prop-types'; // per ESLint
 
 /**
  * @param {boolean} admin   Serve per gestire la visibilità di alcune colonne nel caso in cui la tabella venga vista da un amministratore; Default: false
@@ -12,8 +14,7 @@ export default function TableHeader({
     admin = false,
     type, 
     primary = false,
-    style, 
-    ...props 
+    style
 }) {
     
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
@@ -68,3 +69,10 @@ export default function TableHeader({
         }
     }
 }
+
+TableHeader.propTypes = {
+    admin: PropTypes.bool,
+    type: PropTypes.string.isRequired,
+    primary: PropTypes.bool,
+    style: PropTypes.string
+};

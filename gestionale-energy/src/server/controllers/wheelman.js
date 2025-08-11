@@ -129,11 +129,12 @@ class WheelmanBale extends Bale {
                 return { code: 0, message: { id: id_new_bale } };
             } else {
                 const info = check_ins_pb[0].info;
-                res.json({ code: 1, message: { info }});
+                // res.json({ code: 1, message: { info }});
+                return { code: 1, message: `Errore durante l'inserimento della balla Wheelman: ${info}` };
             }
         } catch (error) {
             console.error(error.message);
-            res.send(500).send(`Wheelman Error Add: ${error.message}`);
+            // res.send(500).send(`Wheelman Error Add: ${error.message}`);
             throw `Wheelman Error Add: ${error.message}`;
         }
     }
@@ -179,23 +180,25 @@ class WheelmanBale extends Bale {
             if (validFields.includes(key)) {
                 // Validazione specifica per campo
                 switch (key) {
-                    case 'weight':
+                    case 'weight': {
                         // Assicurati che il peso sia un numero valido
                         const weightValue = parseFloat(value);
                         if (!isNaN(weightValue) && weightValue >= 0) {
                             validatedBody[key] = weightValue;
                         }
                         break;
+                    }
                     case 'id_cwb':
                     case 'id_rnt':
                     case 'id_wd':
-                    case 'printed':
+                    case 'printed': {
                         // Assicurati che gli ID siano numeri interi
                         const intValue = parseInt(value);
                         if (!isNaN(intValue)) {
                             validatedBody[key] = intValue;
                         }
                         break;
+                    }
                     case 'note':
                         // Gestione delle note - può essere stringa vuota o null
                         if (value === null || value === undefined) {
@@ -204,13 +207,14 @@ class WheelmanBale extends Bale {
                             validatedBody[key] = String(value).trim();
                         }
                         break;
-                    case 'where':
+                    case 'where': {
                         // ID per la clausola WHERE
                         const whereValue = parseInt(value);
                         if (!isNaN(whereValue) && whereValue > 0) {
                             validatedBody[key] = whereValue;
                         }
                         break;
+                    }
                     default:
                         validatedBody[key] = value;
                 }

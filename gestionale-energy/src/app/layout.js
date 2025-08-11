@@ -1,5 +1,8 @@
+import React from "react";
 import localFont from "next/font/local";
 import "./globals.css";
+
+import PropTypes from 'prop-types'; // per ESLint
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,3 +36,7 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+RootLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};

@@ -1,25 +1,23 @@
 'use-client';
-import { getServerRoute, refreshPage, isWebSocketConnected } from '@/app/config';
+import { getServerRoute, refreshPage, isWebSocketConnected } from '@config';
 import React, { useState } from 'react';
-import SelectInput from './search/select';
+import SelectInput from '@main/search/select';
 import Cookies from 'js-cookie';
 import { useWebSocket } from "@@/components/main/ws/use-web-socket";
 
+import PropTypes from 'prop-types'; // per ESLint
+
 export default function InsertNewBale({ 
     type, 
-    mod, 
-    ids, 
+    mod,
     primary, 
     confirmHandle,
-    visible = false,
-    style,
+    style = "",
 }) {
     const { ws } = useWebSocket();
 
     // Stati condivisi
     const [note, setNote] = useState("");
-    const [status, setStatus] = useState("working");
-    const [showConfirm, setShowConfirm] = useState(false);
 
     // Stati Pressista
     const [plastic, setPlastic] = useState("");
@@ -78,8 +76,6 @@ export default function InsertNewBale({
         }
     };
 
-    const handleConfirmed = () => setShowConfirm(prev => !prev);
-
     /**
      * Renderizza la tabella per il Pressista
      */
@@ -129,3 +125,11 @@ export default function InsertNewBale({
 
     return type === "presser" ? renderPresserRow() : renderWheelmanRow();
 }
+
+InsertNewBale.propTypes = {
+    type: PropTypes.string.isRequired,
+    mod: PropTypes.bool.isRequired,
+    primary: PropTypes.bool.isRequired,
+    confirmHandle: PropTypes.func.isRequired,
+    style: PropTypes.string
+};

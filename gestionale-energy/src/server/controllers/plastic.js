@@ -35,7 +35,7 @@ class Plastic extends Common {
             }
         } catch (error) {
             console.error(error)
-            res.status(500).send(`Errore durante l\'esecuzione della query: ${error}`)
+            res.status(500).send(`Errore durante l'esecuzione della query: ${error}`)
         }
     }
 
@@ -43,9 +43,9 @@ class Plastic extends Common {
      * Set a new plastic code
      * 
      */
-    async set(req, res) {
-        // TODO
-    }
+    // async set(req, res) {
+    //     // TODO
+    // }
 }
 
 export default Plastic
