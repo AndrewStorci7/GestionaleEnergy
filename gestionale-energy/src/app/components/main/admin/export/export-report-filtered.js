@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from "file-saver";
-import { fetchReportData, fetchReportDataFiltered } from '@config';
+import { fetchReportDataFiltered } from '@config';
 
 /**
  * 
@@ -85,7 +85,7 @@ const reportFiltered = async (reportFor, options, showAlert) => {
             return;
         }
 
-        const gapFromTop = 3;
+        // const gapFromTop = 3;
         var char = 'A';
 
         const workbook = new ExcelJS.Workbook();

@@ -1,9 +1,7 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import ExportReport from '@admin/export/export-report';
 import Icon from '@main/get-icon';
-import { reportFiltered } from '@admin/export/export-report-filtered';
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking

@@ -73,7 +73,8 @@ const BtnReportFiltered = (
             <SelectInput 
                 id="search-input-plastic" 
                 searchFor={"plastic"} 
-                onChange={(e) => setPlastic(e.target.value)}
+                // onChange={(e) => setPlastic(e.target.value)}
+                onChange={() => {}}
                 isForSearch 
             />
             <p></p>

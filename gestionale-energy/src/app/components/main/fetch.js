@@ -140,7 +140,7 @@ async function fetchDataSingleElements(
     searchFor, 
     // setContent
 ) {
-    try {
+    // try {
         if (searchFor === undefined || searchFor === null) {
             throw new Error("searchFor is undefined or null");
         } 
@@ -168,10 +168,10 @@ async function fetchDataSingleElements(
             // setContent(["In lavorazione", "Cambiat", "Completato"]);
             return Promise.resolve(["In lavorazione", "Cambiat", "Completato"]);
         }
-    } catch (error) {
-        // console.log(error.message || "Failed to fetch data");
-        throw error;
-    }
+    // } catch (error) {
+    //     // console.log(error.message || "Failed to fetch data");
+    //     throw error;
+    // }
 }
 
 
