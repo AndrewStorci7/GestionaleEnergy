@@ -238,6 +238,9 @@ const getServerRoute = (route) => {
         // case "totale-balle": case "total-bale-count": return getSrvUrl() + "/bale/total-count";
         // case "id-balla": case "id-bale": return getSrvUrl() + "/bale/id";
 
+        case "print":
+        case "stampa":
+            return getSrvUrl() + "/bale/print";
         case 'health-check':
             return getSrvUrl() + "/health";
     }

@@ -31,6 +31,9 @@ export default (db, table) => {
     
     // Get a bale
     router.post('/bale/get', (req, res) => controller.get(req, res));
+
+    // Print bale
+    router.post('/bale/print', (req, res) => controller.print(req, res));
     
     return router;
 }

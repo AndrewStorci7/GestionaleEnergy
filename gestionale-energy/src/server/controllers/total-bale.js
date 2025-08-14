@@ -2,6 +2,7 @@ import Console from '../inc/console.js';
 import Common from './main/common.js';
 import PresserBale from './presser.js';
 import WheelmanBale from './wheelman.js';
+import Printer from '../inc/printer.js';
 
 const console = new Console("TotalBale", 1);
 
@@ -375,6 +376,10 @@ class TotalBale extends Common {
         }
     }
 
+    //#region UPDATE
+    /**     
+     * Update bale data
+     */
     async update(req, res) {
         try {
             const { body, type } = req.body;
@@ -403,6 +408,7 @@ class TotalBale extends Common {
         }
     }
 
+    //#region DELETE
     /**
      * Delete a multiple bales from ids
      * 
@@ -462,6 +468,22 @@ class TotalBale extends Common {
             res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
+
+
+    async print(req, res) {
+        try {
+            const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
+            const zpl = `^XA^FO50,50^ADN,36,20^FDHello World!^FS^XZ`; // Example ZPL command
+            const result = await printer.print(zpl);
+            // return result;
+            res.json({ code: 0, message: result });
+        } catch (error) {
+            console.error(`Errore durante la stampa: ${error.message}`);
+            // throw error;
+            res.status(500).send(`Errore durante la stampa: ${error.message}`);
+        }
+    }
+
 }
 
 export default TotalBale;
