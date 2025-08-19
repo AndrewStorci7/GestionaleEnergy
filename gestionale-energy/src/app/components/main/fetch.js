@@ -188,15 +188,36 @@ async function fetchDataSingleElements(
  * @param {function} hookConfirm - Funzione chiamata in caso di conferma dell'operazione.
  * @param {boolean} [execute=true] - Se true aggiorna lo stato a "stampato", altrimenti mostra alert di conferma.
  */
-const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
+const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCheck = false) => {
 
     if (obj.idBale) {
         if (execute) {
             try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 2000); // ⏱️ Timeout di 1s
+                
                 const body = { printed: true, where: obj.idBale }; // Body per l'update della balla del carrellista
                 const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
                 const url_update_wheelman = getServerRoute("update-bale");
                 const url_update_status = getServerRoute("update-status-bale");
+                const url_print = getServerRoute("print");
+                const url_check_printer = getServerRoute("check-printer"); 
+
+                if (!skipCheck) {
+                    const checkPrinter = await fetch(url_check_printer)
+                    const status = await checkPrinter.json();
+                    if (status.code !== 0) {
+                        hookCancel({
+                            title: "Errore nella stampante",
+                            message: <p><span style={{ fontWeight: 'bold' }}>La stampante ha presentato degli errori</span>: <br/>{status.message}. <br/>Vuoi completare ugualmente il ciclo della balla ?</p>,
+                            type: "confirm",
+                            onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, execute, true)
+                        })
+                        return;
+                    }
+                }
+
+                clearTimeout(timeout);
 
                 // Invia la richiesta per aggiornare lo stato della balla
                 const response = await fetch(url_update_wheelman, {
@@ -211,7 +232,18 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ body: body2 }),
                 });
-    
+
+                // Avvio la stampa, il server si occuperà di controllare se effettivamente la balla può essere stampata
+                if (!skipCheck) {
+                    const response3 = await fetch(url_print, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ idUnique: obj.idUnique }),
+                    });
+                    const result3 = await response3.json();
+                    console.log(result3)
+                }
+                
                 const result = await response.json();
                 const result2 = await response2.json();
 
@@ -228,9 +260,10 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
                     });
                 }
             } catch (error) {
+                const checkIfErrorPrinter = String(error.message).includes("signal") || String(error.message).includes("aborted");
                 hookCancel({
                     title: null,
-                    message: error,
+                    message: checkIfErrorPrinter ? "La stampante non è raggiungibile, contattare il tecnico oppure il capoturno." : error.message,
                     type: "error"
                 });
             }

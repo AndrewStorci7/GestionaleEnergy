@@ -241,6 +241,9 @@ const getServerRoute = (route) => {
         case "print":
         case "stampa":
             return getSrvUrl() + "/bale/print";
+        case "check-printer":
+        case "controllo-stampante":
+            return getSrvUrl() + "/checkprinter";
         case 'health-check':
             return getSrvUrl() + "/health";
     }
@@ -360,6 +363,11 @@ const fetchReportDataFiltered = async (reportFor, options) => {
         return null;
     }
 }
+
+// const parseTextLikeMarkdown = (text) => {
+//     if (typeof text !== 'string') throw new Error("parametro `text` non valido, biosgna passare una stringa");
+//     const 
+// }
 
 export { 
     getEnv, 

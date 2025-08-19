@@ -5,7 +5,7 @@ import {
     COND_GET_COUNT_PLASTIC_REPORT,
 } from '../../inc/config.js';
 
-const console = new Console("Common");
+const console = new Console("Common", 1);
 
 /**
  * 
@@ -35,7 +35,7 @@ class Common {
 
         const rangeTime = new Date();
         var _hour = rangeTime.getHours();
-        console.info("Ora calcolata: " + _hour);
+        // console.info("Ora calcolata: " + _hour);
         if (turn != 0) {
             // console.info(`Turno dentro checkTurn(): ${turn}`)
             if (turn != 1 && turn != 2 && turn != 3) {
@@ -204,13 +204,17 @@ class Common {
         }
     }
 
-    formatDate(date, onlyDate = true) {
+    formatDate(date, onlyDate = true, inverted = false, char = '-') {
         // console.debug("Data ricevuta ===> " + date);
         if (onlyDate) {
             const yyyy = date.getFullYear();
             const mm = String(date.getMonth() + 1).padStart(2, '0');
             const dd = String(date.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
+            if (inverted) {
+                return `${dd}${char}${mm}${char}${yyyy}`;
+            } else {
+                return `${yyyy}${char}${mm}${char}${dd}`;
+            }
         } else {
             const yyyy = date.getFullYear();
             const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -360,6 +364,18 @@ class Common {
             return { code: 1, message: `Errore all'interno di getIdsBale(): ${error.message}` };
         }
     }
+
+    getTurnFromDate(date) {
+        const hour = date.getUTCHours();
+        // console.info(hour);
+        if (hour >= 6 && hour < 14) {
+            return 1;
+        } else if (hour >= 14 && hour < 22) {
+            return 2;
+        } else if (hour >= 22 && hour <= 0 || hour > 0 && hour < 6) {
+            return 3;
+        }
+    } 
 }
 
 export default Common;

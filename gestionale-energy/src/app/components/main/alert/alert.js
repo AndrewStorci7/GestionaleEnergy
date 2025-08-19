@@ -13,7 +13,6 @@ import { refreshPage } from "@config";
 
 import PropTypes from 'prop-types'; // per ESLint
 
-
 /**
 * @author Daniele Zeraschi from Oppimittinetworking
 * 
@@ -28,7 +27,8 @@ export default function Alert({
     msg = null, 
     alertFor = null,
     data = null,
-    onHide
+    onHide,
+    onConfirm
 }) {
     const nodeRef = useRef(null);
     const { showAlert, hideAlert } = useAlert(); 
@@ -124,6 +124,8 @@ export default function Alert({
     const alertContent = useMemo(() => {
         const currentAlertType = internalState.alertType || sanitizedAlertType;
         const currentMessage = internalState.message || msg || "";
+        // Controllo se l'errore riguarda il websocket
+        const wsNotConnected = String(currentMessage).toLowerCase().includes("websocket");
         
         switch(currentAlertType) {
             case "error": {
@@ -134,11 +136,17 @@ export default function Alert({
                         </h1>
                         <p>Errore: {currentMessage}</p>
                         <button
-                            onClick={closeAlert}
+                            onClick={() => {
+                                if (wsNotConnected) {
+                                    window.location.reload();
+                                } else {
+                                    closeAlert()
+                                } 
+                            }}
                             className="alert-button error-button"
                             disabled={internalState.isProcessing}
                         >
-                            Chiudi
+                            {wsNotConnected ? 'Ricarica' : 'Chiudi'}
                         </button>
                     </div>
                 );
@@ -170,7 +178,7 @@ export default function Alert({
                             {title || 'Nota scritta dall\'utente'}
                         </h1>
                         <br />
-                        <p className="text-left">{currentMessage}</p>
+                        <div className="text-left">{currentMessage}</div>
                         <br />
                         <button
                             onClick={closeAlert}
@@ -210,9 +218,11 @@ export default function Alert({
                             <Icon type="working" />
                             {title}
                         </h2>
-                        <p>{currentMessage}</p>
+                        <div>{currentMessage}</div>
                         <button
-                            onClick={handlePrintConfirm}
+                            onClick={() => {
+                                onConfirm?.() ?? handlePrintConfirm
+                            }}
                             className="alert-button on-btn bg-blue-500"
                             disabled={internalState.isProcessing}
                         >

@@ -18,9 +18,10 @@ export const AlertProvider = ({ children }) => {
     const [alertState, setAlertState] = useState({
         visible: false,
         title: '',
-        message: '',
+        message: null,
         type: 'info',
         data: null,
+        onConfirm: null
     });
 
     // Callback memoizzati per evitare re-render
@@ -28,16 +29,18 @@ export const AlertProvider = ({ children }) => {
         title = '', 
         message = '', 
         type = 'info', 
-        data = null 
+        data = null,
+        onConfirm = null
     }) => {
         // console.log('Showing alert:', { title, type, hasData: !!data });
-        
+
         setAlertState({
             visible: true,
             title,
             message,
             type,
-            data
+            data,
+            onConfirm
         });
     }, []);
 
@@ -64,6 +67,7 @@ export const AlertProvider = ({ children }) => {
                     alertFor={alertState.type}
                     data={alertState.data}
                     onHide={hideAlert}
+                    onConfirm={alertState.onConfirm}
                 />
             )}
         </AlertContext.Provider>

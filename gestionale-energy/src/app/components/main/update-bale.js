@@ -27,34 +27,34 @@ export default function UpdateValuesBale({
     
     // Stati per i dati originali (per confronto)
     const [originalPresserData, setOriginalPresserData] = useState({
-        plastic: null, 
-        rei: null,
-        cdbp: null,
-        selected_b: null,
-        notes: null
+        plastic: "", 
+        rei: 0,
+        cdbp: 0,
+        selected_b: 0,
+        notes: ""
     });
     const [originalWheelmanData, setOriginalWheelmanData] = useState({
-        cdbc: null, 
-        reason: null,
-        weight: null,
-        dest_wh: null,
-        notes: null
+        cdbc: 0, 
+        reason: 0,
+        weight: 0,
+        dest_wh: 0,
+        notes: ""
     });
     
     // Stati per i dati correnti
     const [presserData, setPresserData] = useState({
-        plastic: null, 
-        rei: null,
-        cdbp: null,
-        selected_b: null,
-        notes: null
+        plastic: "", 
+        rei: 0,
+        cdbp: 0,
+        selected_b: 0,
+        notes: ""
     });
     const [wheelmanData, setWheelmanData] = useState({
-        cdbc: null, 
-        reason: null,
-        weight: null,
-        dest_wh: null,
-        notes: null
+        cdbc: 0, 
+        reason: 0,
+        weight: 0,
+        dest_wh: 0,
+        notes: ""
     });
     
     const [cacheWeight, setCacheWeight] = useState(0);
@@ -224,9 +224,7 @@ export default function UpdateValuesBale({
         try {
             if (hasChanges) {
                 const success = await saveBaleData(true);
-                if (!success) {
-                    return;
-                }
+                if (!success) return;
             }
 
             await handleStampa(objBale, showAlert, handlerClose, cacheWeight > 0);
@@ -300,7 +298,7 @@ export default function UpdateValuesBale({
                         <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Balla Selez.</label>
                         <SelectInput 
                             searchFor={"selected-b"} 
-                            value={presserData.selected_b}
+                            value={presserData.selected_b ?? ""}
                             onChange={(e) => setPresserData(prev => ({ ...prev, selected_b: e.target.value }))} 
                             fixedW 
                         />

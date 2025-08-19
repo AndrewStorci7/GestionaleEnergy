@@ -233,7 +233,7 @@ class TotalBale extends Common {
                 );
 
                 if (select !== 'undefined' || select !== null) {
-                    console.debug(select);
+                    // console.debug(select);
                     await this.createObjectArray(select, presserResult, wheelmanResult);
                 }
             }
@@ -376,6 +376,48 @@ class TotalBale extends Common {
         }
     }
 
+    /**
+     * Fetch data form a single bale.
+     * Data fetched are:
+     * - plastic ID
+     * - weight
+     * - creation data
+     * @param {*} id_bale 
+     * @returns 
+     */
+    async getSingleBale(id_bale) {
+        try {
+            const [bale] = await this.db.query(
+                `SELECT 
+                    pb.id_plastic AS plastic,
+                    wb.weight as weight,
+                    pb.data_ins AS date_pb,
+                    wb.data_ins AS date_wb,
+                    wb.id_cwb AS 'condition'
+                FROM ${this.table} 
+                LEFT JOIN presser_bale pb ON ${this.table}.id_pb = pb.id
+                LEFT JOIN wheelman_bale wb ON ${this.table}.id_wb = wb.id
+                WHERE ${this.table}.id = ?`,
+                [id_bale],
+                true
+            );
+            console.log(`Bale data retrieved: ${JSON.stringify(bale)}`);
+            if (bale[0].condition === 1) {
+                const date = new Date(bale[0].date_pb);
+                console.info(date)
+                const onlyDate = this.formatDate(date, true, true, '/');
+                const turn = this.getTurnFromDate(date)
+                // console.log(onlyDate)
+                return { ...bale[0], date_pb: onlyDate, turn };
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.error(`Errore durante il recupero della balla: ${error.message}`);
+            throw error;
+        }
+    }
+
     //#region UPDATE
     /**     
      * Update bale data
@@ -469,18 +511,27 @@ class TotalBale extends Common {
         }
     }
 
-
+    //#region PRINT
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     */
     async print(req, res) {
         try {
-            const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
-            const zpl = `^XA^FO50,50^ADN,36,20^FDHello World!^FS^XZ`; // Example ZPL command
-            const result = await printer.print(zpl);
-            // return result;
-            res.json({ code: 0, message: result });
+            const { idUnique } = req.body;
+            const data = await this.getSingleBale(idUnique);
+            if (data) {
+                const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
+                const result = await printer.print(data.plastic, data.weight, data.turn, data.date_pb);
+                // console.log(JSON.stringify(result))
+                res.json(result);
+            } else {
+                res.json({ code: 0, message: "Balla non stampata, risultava essere 'Non legata'" })
+            }
         } catch (error) {
             console.error(`Errore durante la stampa: ${error.message}`);
-            // throw error;
-            res.status(500).send(`Errore durante la stampa: ${error.message}`);
+            res.status(500).json({ code: -1, message: `Errore durante la stampa: ${error.message}` });
         }
     }
 
