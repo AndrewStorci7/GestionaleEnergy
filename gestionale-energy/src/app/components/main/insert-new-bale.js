@@ -69,10 +69,10 @@ export default function InsertNewBale({
                 confirmHandle();
                 refreshPage(ws);
             } else {
-                console.log("Errore durante l'aggiunta della balla");
+                // console.log("Errore durante l'aggiunta della balla");
             }
         } catch (error) {
-            console.error(error);
+            // console.error(error);
         }
     };
 
@@ -85,7 +85,7 @@ export default function InsertNewBale({
             <td className={style + " !p-2"}>
                 {mod && <SelectInput searchFor="plastic" value={plastic} onChange={(e) => {
                     const code = e.target.selectedOptions[0].getAttribute("data-code");
-                    console.log(typeof code);
+                    // console.log(typeof code);
                     setPlastic(e.target.value);
                     setPlastic2(code);
                     setPlasticValid(!!code);

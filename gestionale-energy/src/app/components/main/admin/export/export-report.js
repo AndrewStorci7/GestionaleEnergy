@@ -98,7 +98,7 @@ export const handleDownload = async (
 
   var count = 0; // conta per i turni
   data.forEach((report, index) => {
-    console.log(index, report);
+    // console.log(index, report);
     report.forEach((item) => {
       const productCode = item.code;
       const provvisorio = item.code.includes('MDR') ? 'Provvisorio' : 'Interno';
@@ -137,7 +137,7 @@ export const handleDownload = async (
   const indexTotalCount = new Set(); // Insieme degli indici da sommare nel conteggio totale del giorno
 
   Object.keys(prova_array).forEach((index) => {
-    console.log(prova_array[index]);
+    // console.log(prova_array[index]);
     row = worksheet.addRow({  
       desc: prova_array[index].codice,
       code: index,

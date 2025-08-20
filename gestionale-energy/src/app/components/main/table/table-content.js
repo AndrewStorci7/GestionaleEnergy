@@ -81,7 +81,7 @@ export default function TableContent({
     
     const safeType = useMemo(() => {
         if (!type || (type !== 'presser' && type !== 'wheelman')) {
-            console.warn(`Invalid type in TableContent: ${type}, defaulting to 'presser'`);
+            // console.warn(`Invalid type in TableContent: ${type}, defaulting to 'presser'`);
             return 'presser';
         }
         return type;
@@ -94,7 +94,7 @@ export default function TableContent({
             const body = { id_implant: cookies.id_implant, useFor };
             
             // Rimuovi la logica confusa di typeToFetch
-            console.log(`Fetching data for type: ${safeType}, useFor: ${useFor}`);
+            // console.log(`Fetching data for type: ${safeType}, useFor: ${useFor}`);
             
             await fetchDataTotalBale(body, safeType, setContent, setEmpty, noData, showAlert);
         } catch (error) {
@@ -115,15 +115,15 @@ export default function TableContent({
     // Separare la gestione dei messaggi WebSocket
     useEffect(() => {
         if (message) {
-            console.log('WebSocket message received, refreshing data...');
+            // console.log('WebSocket message received, refreshing data...');
             fetchData();
         }
     }, [message, fetchData]);
 
-    // Debug per verificare i valori
-    useEffect(() => {
-        console.log(`TableContent rendered with type: ${safeType}, useFor: ${useFor}, primary: ${primary}`);
-    }, [safeType, useFor, primary]);
+    // // Debug per verificare i valori
+    // useEffect(() => {
+    //     console.log(`TableContent rendered with type: ${safeType}, useFor: ${useFor}, primary: ${primary}`);
+    // }, [safeType, useFor, primary]);
 
     const handleRowClick = (id, idUnique) => {
         const newSelectedBaleId = selectedBaleId === id ? null : id;

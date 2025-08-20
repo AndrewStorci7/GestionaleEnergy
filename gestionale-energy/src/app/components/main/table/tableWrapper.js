@@ -19,7 +19,7 @@ const TableWrapper = ({
 
     const safeType = useMemo(() => {
         if (!type || (type !== 'presser' && type !== 'wheelman')) {
-            console.warn(`Invalid type received: ${type}, defaulting to 'presser'`);
+            // console.warn(`Invalid type received: ${type}, defaulting to 'presser'`);
             return 'presser';
         }
         return type;

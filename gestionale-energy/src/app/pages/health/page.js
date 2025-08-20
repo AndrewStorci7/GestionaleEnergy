@@ -96,7 +96,7 @@ export default function HealthServer() {
             return response.json();
         })
         .then(data => {
-            console.log('Health check successful:', data);
+            // console.log('Health check successful:', data);
             setResponse(data);
         })
         .catch(error => {

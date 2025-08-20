@@ -227,12 +227,11 @@ class TotalBale extends Common {
                     ORDER BY 
                         presser_bale.data_ins, wheelman_bale.data_ins ${order_by}
                     LIMIT 300`,
-                    _params.params,
-                    true
+                    _params.params
                 );
 
                 if (select !== 'undefined' || select !== null) {
-                    console.debug(select);
+                    // console.debug(select);
                     await this.createObjectArray(select, presserResult, wheelmanResult);
                 }
             }
