@@ -22,7 +22,7 @@ class Printer {
         this.yOffsetData = 700; // Y coordinate Data 
         this.yOffsetTurn = 1000 + this.yOffsetData; // Y coordinate Turno
         this.yOffsetWeight = 1500; // Y coordinate Peso 
-        this.yOffsetPlastic = 1000; // Y coordinate Plastica
+        this.yOffsetPlastic = 900; // Y coordinate Plastica
     }
 
     parseZebraStatus(raw) {
@@ -37,6 +37,7 @@ class Printer {
 
         // Mappa semplificata dei codici verso messaggi leggibili
         const codeMessages = {
+            '00010000': 'Stampante in pausa, premere il bottone per riavviarla',
             '00010002': 'Carta mancante o inceppata',
             '00000001': 'Ribbon mancante',
             '00000004': 'Porta aperta',
@@ -78,11 +79,11 @@ class Printer {
                     const status = data.toString();
                     const parsedStatus = this.parseZebraStatus(status);
                     if (parsedStatus.hasErrors) {
-                        res.json({ code: -1, message: parsedStatus.messages }); // restituisco lo stato
+                        res.json({ code: -1, message: parsedStatus.messages });
                     } else {
                         res.json({ code: 0, message: "ok" })
                     }
-                    client.destroy(); // chiudo la connessione
+                    client.destroy();
                 });
 
                 client.on('error', (err) => {

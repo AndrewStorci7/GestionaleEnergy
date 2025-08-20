@@ -184,3 +184,7 @@ body {
   width: 100%;
   /* z-index: 9999; /* opzionale per sovrapporre */
 }
+
+.consolas {
+  font-family: 'Courier New', Courier, monospace;
+}

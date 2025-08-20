@@ -2,6 +2,7 @@
 import React from "react";
 import Image from 'next/image';
 import { useAlert } from '@main/alert/alertProvider';
+import { handleStampa } from "@fetch";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -21,17 +22,18 @@ export default function BtnWheelman({
     baleObj
 }) {
 
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
 
-    const handleClick = (type) => {
+    const handleClick = async (type) => {
         if (baleObj && baleObj.idBale !== null) {
-            showAlert({ 
-                title: type === "update" ? null : "Attenzione", 
-                message: type === "update" ? null : `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`, 
-                type: type === "update" ? "update-w" : "confirm", 
-                // onConfirm: () => type === "update" ? null : handleStampa(baleObj, showAlert, hideAlert, false),
-                data: baleObj
-            });
+            await handleStampa(baleObj, showAlert, hideAlert, true)
+            // showAlert({ 
+            //     title: type === "update" ? null : "Attenzione", 
+            //     message: type === "update" ? null : `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`, 
+            //     type: type === "update" ? "update-w" : "confirm", 
+            //     onConfirm: () => type === "update" ? null : handleStampa(baleObj, showAlert, hideAlert, true),
+            //     data: baleObj
+            // });
         } else {
             showAlert({
                 title: null,

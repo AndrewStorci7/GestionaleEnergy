@@ -8,6 +8,10 @@ import { useWebSocket } from '@main/ws/use-web-socket';
 jest.mock('react-draggable', () => ({ children }) => <div>{children}</div>);
 jest.mock('@main/get-icon');
 jest.mock('@main/update-bale');
+// jest.mock('@main/fetch', () => ({
+//     handleDelete: jest.fn(),
+//     handleStampa: jest.fn()
+// }));
 jest.mock('@main/fetch');
 jest.mock('@main/ws/use-web-socket');
 jest.mock('@config');
@@ -142,6 +146,37 @@ describe('Alert Component', () => {
         // Check the last call's arguments directly
         // expect(mockHandleStampa).toHaveBeenCalled();
     });
+
+    // it('handles print confirmation', async () => {
+    //     // handleStampa.mockResolvedValue(true);
+
+    //     renderAlert({
+    //         title: "Print",
+    //         msg: "Print this item?",
+    //         alertFor: "confirm",
+    //         data: { id: '123' },
+    //         onHide: mockHideAlert
+    //     });
+
+    //     await act(async () => {
+    //         fireEvent.click(screen.getByText('Conferma'));
+    //     });
+
+    //     // Controllo che la funzione sia stata chiamata
+    //     expect(handleStampa).toHaveBeenCalled();
+
+    //     // Ora posso fare destructuring in sicurezza
+    //     const [dataArg, hideFn, showFn] = handleStampa.mock.calls[0];
+
+    //     expect(dataArg).toEqual({ id: '123' });
+    //     expect(typeof hideFn).toBe('function');
+    //     expect(typeof showFn).toBe('function');
+
+    //     await act(async () => {
+    //         await hideFn();
+    //         expect(mockHideAlert).toHaveBeenCalled();
+    //     });
+    // });
 
     it('renders update form for presser', () => {
         const mockUpdateValuesBale = require('@main/update-bale').default;

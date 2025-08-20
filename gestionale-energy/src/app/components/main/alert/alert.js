@@ -28,7 +28,7 @@ export default function Alert({
     alertFor = null,
     data = null,
     onHide,
-    onConfirm
+    onConfirm = null
 }) {
     const nodeRef = useRef(null);
     const { showAlert, hideAlert } = useAlert(); 
@@ -220,8 +220,10 @@ export default function Alert({
                         </h2>
                         <div>{currentMessage}</div>
                         <button
-                            onClick={() => {
-                                onConfirm?.() ?? handlePrintConfirm
+                            onClick={async () => {
+                                // console.log("Click conferma")
+                                await onConfirm?.() ?? await handlePrintConfirm()
+                                closeAlert()
                             }}
                             className="alert-button on-btn bg-blue-500"
                             disabled={internalState.isProcessing}

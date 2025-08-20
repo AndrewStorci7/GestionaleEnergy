@@ -59,6 +59,7 @@ export default function UpdateValuesBale({
     
     const [cacheWeight, setCacheWeight] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPrinting, setIsPrinting] = useState(false);
 
     // Verifica se ci sono state modifiche confrontando i dati originali con quelli correnti
     const hasChanges = useMemo(() => {
@@ -222,6 +223,7 @@ export default function UpdateValuesBale({
      */
     const handlePrint = async () => {
         try {
+            setIsPrinting(true);
             if (hasChanges) {
                 const success = await saveBaleData(true);
                 if (!success) return;
@@ -235,6 +237,8 @@ export default function UpdateValuesBale({
                 message: "Errore durante la stampa dell'etichetta",
                 type: "error"
             });
+        } finally {
+            setIsPrinting(false)
         }
     };
 
@@ -350,9 +354,9 @@ export default function UpdateValuesBale({
                 {type === 'wheelman' && (
                     <button 
                         className={`border px-[10px] py-[5px] rounded-xl mr-4 text-white font-semibold
-                            ${canPrint ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-no-drop'}`}
+                            ${canPrint && !isPrinting ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-no-drop'}`}
                         onClick={handlePrint}
-                        disabled={!canPrint || isLoading}
+                        disabled={!canPrint || isPrinting}
                         title={!canPrint ? "Inserisci un peso valido per stampare" : "Stampa etichetta"}
                     >
                         <div className="flex items-center p-1">
@@ -363,7 +367,7 @@ export default function UpdateValuesBale({
                                 alt="Stampa icona"
                                 className="mr-2"
                             />
-                            {isLoading ? 'Stampando...' : 'Stampa etich.'}
+                            {isPrinting ? 'Stampando...' : 'Stampa etich.'}
                         </div>
                     </button>
                 )}

@@ -364,10 +364,17 @@ const fetchReportDataFiltered = async (reportFor, options) => {
     }
 }
 
-// const parseTextLikeMarkdown = (text) => {
-//     if (typeof text !== 'string') throw new Error("parametro `text` non valido, biosgna passare una stringa");
-//     const 
-// }
+const formatText = (text) => {
+    // console.log(`${typeof text} ${text.length} ${text[0]}`)
+    // console.log()
+    if (Array.isArray(text)) {
+        return text.map((e, i) => (
+            <span key={i} className="point">• {e}<br/></span>
+        ))
+    } else {
+        return text;
+    }
+}
 
 export { 
     getEnv, 
@@ -380,5 +387,6 @@ export {
     getServerRoute,
     updateStatusTotalbale,
     fetchReportData,
-    fetchReportDataFiltered
+    fetchReportDataFiltered,
+    formatText
 };

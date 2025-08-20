@@ -402,15 +402,17 @@ class TotalBale extends Common {
                 true
             );
             console.log(`Bale data retrieved: ${JSON.stringify(bale)}`);
-            if (bale[0].condition === 1) {
+            if (bale[0].condition !== 1) {
+                return null;
+            } else if (bale[0].weight === 0 || !bale[0].weight) {
+                return { code: -1, message: "Peso pari a zero" }
+            } else {
                 const date = new Date(bale[0].date_pb);
                 console.info(date)
                 const onlyDate = this.formatDate(date, true, true, '/');
                 const turn = this.getTurnFromDate(date)
                 // console.log(onlyDate)
                 return { ...bale[0], date_pb: onlyDate, turn };
-            } else {
-                return null;
             }
         } catch (error) {
             console.error(`Errore durante il recupero della balla: ${error.message}`);
@@ -521,7 +523,9 @@ class TotalBale extends Common {
         try {
             const { idUnique } = req.body;
             const data = await this.getSingleBale(idUnique);
-            if (data) {
+            if ("code" in data && data.code === -1) {
+                res.json(data)
+            } else if (data) {
                 const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
                 const result = await printer.print(data.plastic, data.weight, data.turn, data.date_pb);
                 // console.log(JSON.stringify(result))
