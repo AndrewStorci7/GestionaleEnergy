@@ -399,12 +399,12 @@ class TotalBale extends Common {
             );
             console.log(`Bale data retrieved: ${JSON.stringify(bale)}`);
             if (bale[0].condition !== 1) {
-                return null;
+                return { code: -2, message: "Balla non stampata, risultava essere 'Non legata'" }
             } else if (bale[0].weight === 0 || !bale[0].weight) {
                 return { code: -1, message: "Peso pari a zero" }
             } else {
                 const date = new Date(bale[0].date_pb);
-                console.info(date)
+                // console.info(date)
                 const onlyDate = this.formatDate(date, true, true, '/');
                 const turn = this.getTurnFromDate(date)
                 // console.log(onlyDate)

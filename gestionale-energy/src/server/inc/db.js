@@ -55,7 +55,7 @@ const pool = mysql.createPool({
 
 // GESTIONE EVENTI DEL POOL
 pool.on('connection', function (connection) {
-    console.info(`Nuova connessione stabilita: ${connection.threadId}`);
+    // console.info(`Nuova connessione stabilita: ${connection.threadId}`);
     console.debug(`Nuova connessione stabilita: ${connection.threadId}`);
 });
 

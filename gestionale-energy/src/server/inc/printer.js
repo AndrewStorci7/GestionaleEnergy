@@ -34,7 +34,7 @@ class Printer {
         // const warningsLine = raw.trim().split('AVVERTIMENTI:');
 
         const errorsNum = errorsLine.split(/\s+/);
-        console.log(errorsNum)
+        // console.log(errorsNum)
         // const warningsNum = parseInt(warningsLine.split(' ')[1], 10);
 
         // Mappa semplificata dei codici verso messaggi leggibili
@@ -133,15 +133,15 @@ class Printer {
                             return reject({ code: -1, message: `Errore nell'invio ZPL: ${err.message}` });
                         }
 
-                        console.log("ZPL command sent");
+                        // console.log("ZPL command sent");
                         client.end();
                         return resolve({ code: 0, message: "Stampa eseguita" });
                     });
                 });
 
-                client.on("data", (data) => {
-                    console.log("Printer response:", data.toString());
-                });
+                // client.on("data", (data) => {
+                //     // console.log("Printer response:", data.toString());
+                // });
 
                 client.on("error", (err) => {
                     console.error(`Errore di connessione: ${err.message}`);
