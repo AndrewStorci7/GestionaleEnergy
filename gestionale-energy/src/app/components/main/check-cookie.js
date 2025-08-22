@@ -16,7 +16,7 @@ const CheckCookie = () => {
 
     if (!cookieValue) {
       router.push('/pages/login');
-      console.log('Redirecting to login...');
+      // console.log('Redirecting to login...');
     }
   }, [router]);
 

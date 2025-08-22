@@ -18,7 +18,7 @@ async function fetchDataBale(type = null, obj = null, hook = null) {
             throw new Error("Le prop `type`, `obj`, `hooks` non sono settate correttamente (non possono essere `null`)");
         }
 
-        console.log(obj);
+        // console.log(obj);
 
         const url = getServerRoute(type === 'presser' ? 'presser' : 'wheelman');
         const resp = await fetch(url, {
@@ -29,7 +29,7 @@ async function fetchDataBale(type = null, obj = null, hook = null) {
 
         const data = await resp.json();
 
-        console.log(data);
+        // console.log(data);
         if (data) {
             hook(data);
         } 
@@ -69,7 +69,7 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
 
         const dataJson = await resp.json();
 
-        console.log(dataJson);
+        // console.log(dataJson);
 
         if (dataJson.code === 0) {
             setEmpty(false);
@@ -92,7 +92,7 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
 
             let contentData = type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : [];
 
-            console.log("Dati ricevuti all'interno di fetchDataTotalBale: " + data.useFor + " " + type);
+            // console.log("Dati ricevuti all'interno di fetchDataTotalBale: " + data.useFor + " " + type);
 
             if (data.useFor === 'regular' || data.useFor === 'specific') {
                 if (type === 'wheelman') {
@@ -157,10 +157,9 @@ async function fetchDataSingleElements(
         }
 
         const data = await resp.json();
-
         if (data.code === 0) return Promise.resolve(data.data);
     } else {
-        return Promise.resolve(["In lavorazione", "Cambiato", "Completato"]);
+        return Promise.resolve(["In lavorazione", "Cambiat", "Completato"]);
     }
 }
 
@@ -185,8 +184,7 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
     if (obj.idBale) {
         if (execute) {
             try {
-                
-                const body = { printed: true, where: obj.idBale }; // Body per l'update della balla del carrellista
+                const body = { printed: true, data_ins: 'now', where: obj.idBale }; // Body per l'update della balla del carrellista
                 const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
                 const url_update_wheelman = getServerRoute("update-bale");
                 const url_update_status = getServerRoute("update-status-bale");
@@ -317,7 +315,7 @@ const handleDelete = async (id, handleAlertChange) => {
     }
 
     try {
-        console.log("entrato nel try/catch di `handleDelete`: id balla => " + id);
+        // console.log("entrato nel try/catch di `handleDelete`: id balla => " + id);
         const url = getServerRoute('delete-bale');
         const check = await fetch(url, {
             method: 'POST',
@@ -328,7 +326,7 @@ const handleDelete = async (id, handleAlertChange) => {
         const resp = await check.json();
 
         if (resp.code < 0) {
-            console.log("risposta ottenuta da `handleDelete`: " + resp.message);
+            // console.log("risposta ottenuta da `handleDelete`: " + resp.message);
             throw new Error(resp.message);
         } 
     } catch (error) {

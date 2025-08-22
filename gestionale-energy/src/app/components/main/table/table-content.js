@@ -47,7 +47,7 @@ export default function TableContent({
     selectedBaleId,
     style
 }) {
-    // WebSocket instance
+
     const { showAlert } = useAlert();
     const { ws, message } = useWebSocket();
 
@@ -56,10 +56,10 @@ export default function TableContent({
 
     const selectedBaleIdRef = useRef([]);
 
-    const handleNoteClick = (note) => {
+    const handleNoteClick = (value) => {
         showAlert({
             title: "Nota dell'utente",
-            message: note,
+            message: value,
             type: "note"
         })
     };
@@ -71,30 +71,24 @@ export default function TableContent({
     const handleAddChange = async (valid = true) => {
         if (valid) {
             refreshPage(ws);
-            // add.setAdd();
             add.changeAddBtn();
         } else {
-            // fai visualizzare l'alert con errore plastica vuota
             handleError();
         }
     };
     
     const safeType = useMemo(() => {
         if (!type || (type !== 'presser' && type !== 'wheelman')) {
-            console.warn(`Invalid type in TableContent: ${type}, defaulting to 'presser'`);
+            // console.warn(`Invalid type in TableContent: ${type}, defaulting to 'presser'`);
             return 'presser';
         }
         return type;
     }, [type]);
 
-    // Usa useCallback per evitare re-render non necessari
     const fetchData = useCallback(async () => {
         try {
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
-            
-            // Rimuovi la logica confusa di typeToFetch
-            console.log(`Fetching data for type: ${safeType}, useFor: ${useFor}`);
             
             await fetchDataTotalBale(body, safeType, setContent, setEmpty, noData, showAlert);
         } catch (error) {
@@ -107,23 +101,9 @@ export default function TableContent({
         }
     }, [safeType, useFor, noData, showAlert]);
 
-    // Separare gli useEffect per una migliore gestione
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
-
-    // Separare la gestione dei messaggi WebSocket
-    useEffect(() => {
-        if (message) {
-            console.log('WebSocket message received, refreshing data...');
-            fetchData();
-        }
     }, [message, fetchData]);
-
-    // Debug per verificare i valori
-    useEffect(() => {
-        console.log(`TableContent rendered with type: ${safeType}, useFor: ${useFor}, primary: ${primary}`);
-    }, [safeType, useFor, primary]);
 
     const handleRowClick = (id, idUnique) => {
         const newSelectedBaleId = selectedBaleId === id ? null : id;
@@ -167,7 +147,7 @@ export default function TableContent({
                             key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
                                 key === "notes" && value ? (
                                     <td key={idUnique + key} className={style + " !p-1"}>
-                                        <button onClick={() => handleNoteClick(id, value)}>
+                                        <button onClick={() => handleNoteClick(value)}>
                                             <Icon type="info" /> 
                                         </button>
                                     </td>

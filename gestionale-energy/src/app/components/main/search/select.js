@@ -44,17 +44,16 @@ const SelectInput = ({
     const [content, setContent] = useState([]);
     // const { showAlert } = useAlert();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // fetchDataSingleElements(searchFor, setContent);
-                const data = await fetchDataSingleElements(searchFor);
-                console.log(data);
-                setContent(data);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
+    const fetchData = async () => {
+        try {
+            const data = await fetchDataSingleElements(searchFor);
+            setContent(data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
         }
+    }
+
+    useEffect(() => {
         fetchData();
     }, [searchFor]);
 

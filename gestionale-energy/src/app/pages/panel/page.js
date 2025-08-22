@@ -47,7 +47,7 @@ export default function Admin() {
                     setSurname(cookies.surname);
                 }  
             } catch (error) {
-                console.log(`Error: ${error}`);
+                // console.log(`Error: ${error}`);
                 // showAlert({
                 //     title: "Error",
                 //     message: "Failed to load user data. Please log in again.",

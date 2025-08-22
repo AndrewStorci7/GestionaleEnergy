@@ -306,7 +306,8 @@ class Common {
                     first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
                     second: `AND (presser_bale.data_ins BETWEEN ? AND ? )`,
                     third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) AND pb_wb.status = 1`,
-                    fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                    // fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                    fourth: `AND wheelman_bale.id_cwb = 1`,
                 };
                 params = [turn3_a, turn3_b, id_implant];
             }

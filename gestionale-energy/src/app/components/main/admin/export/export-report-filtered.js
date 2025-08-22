@@ -52,7 +52,7 @@ const applyBorders = (ws, range) => {
 const reportFiltered = async (reportFor, options, showAlert) => {
     try {
         if (options && options.startDate && options.endDate) {
-            console.log("Start Date:", typeof options.startDate);
+            // console.log("Start Date:", typeof options.startDate);
             if (options.startDate > options.endDate) {
                 // console.error("La data di inizio non può essere successiva alla data di fine.");
                 showAlert({

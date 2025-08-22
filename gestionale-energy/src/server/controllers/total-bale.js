@@ -50,7 +50,6 @@ class TotalBale extends Common {
             
             const checkIfIncludesMDR = data.body.id_plastic.includes('MDR');
 
-            // CHIAMATA DIRETTA invece di fetch - PRESSER
             const presserReq = data.body;
             const presserResult = await this.PresserInstance.set(presserReq, transaction);
             
@@ -61,7 +60,6 @@ class TotalBale extends Common {
 
             const id_new_presser_bale = presserResult.message.id;
 
-            // CHIAMATA DIRETTA invece di fetch - WHEELMAN
             const wheelmanReq = checkIfIncludesMDR ? { id_wd: 2 } : null;
             const wheelmanResult = await this.WheelmanInstance.set(wheelmanReq, transaction);
             
@@ -196,10 +194,9 @@ class TotalBale extends Common {
             if (useFor === 'specific') {
                 cond_status = ' AND pb_wb.status = 1';
             } 
-            // else if (useFor === 'reverse') {
-            //     order_by = 'ASC';
-            // }
-
+            if (useFor === 'reverse') {
+                order_by = 'ASC';
+            }
             if (id_implant == 0) {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
@@ -228,8 +225,7 @@ class TotalBale extends Common {
                     ORDER BY 
                         presser_bale.data_ins, wheelman_bale.data_ins ${order_by}
                     LIMIT 300`,
-                    _params.params,
-                    true
+                    _params.params
                 );
 
                 if (select !== 'undefined' || select !== null) {

@@ -80,7 +80,7 @@ export default function Header({
                     setTotalChili(totChiliResp.message.totale_chili);
                 }
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         } 
 

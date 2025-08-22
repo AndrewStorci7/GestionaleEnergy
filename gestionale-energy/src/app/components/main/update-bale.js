@@ -100,7 +100,7 @@ export default function UpdateValuesBale({
 
     const handleData = (response) => {
         const data = response.data;
-        console.log("UpdateBale Dati dentro handleData: ", data);
+        // console.log("UpdateBale Dati dentro handleData: ", data);
         
         if (type === "presser") {
             const tmpData = { 
@@ -149,7 +149,6 @@ export default function UpdateValuesBale({
                     id_sb: presserData.selected_b ? parseInt(presserData.selected_b) : null,
                     note: presserData.notes || null,
                     where: parseInt(objBale.idBale),
-                    // where: parseInt(objBale.idUnique),
                 };
             } else {
                 body = {
@@ -160,7 +159,6 @@ export default function UpdateValuesBale({
                     note: wheelmanData.notes || null,
                     weight: parseFloat(cacheWeight),
                     where: parseInt(objBale.idBale),
-                    // where: parseInt(objBale.idUnique),
                 };
             }
 
@@ -170,17 +168,6 @@ export default function UpdateValuesBale({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ body, type }),
             });
-
-            // Aggiorna lo stato della balla totale solo se è wheelman e cdbc === 2
-            // if (type === 'wheelman') {
-            //     const status = (wheelmanData.cdbc === 2) ? 1 : -1;
-            //     const body2 = { status: status, where: objBale.idUnique };
-            //     await updateStatusTotalbale(body2);
-                
-            //     if (status === 1) {
-            //         hideAlert();
-            //     }
-            // }
 
             // Aggiorna i dati originali per evitare false modifiche
             if (type === 'presser') {

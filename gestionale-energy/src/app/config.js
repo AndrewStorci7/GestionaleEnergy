@@ -277,7 +277,7 @@ const updateStatusTotalbale = async (body, method = 'POST', url = getServerRoute
  */
 const fetchReportData = async (reportFor, dateForReport) => {
     try {
-        console.log(reportFor, dateForReport);
+        // console.log(reportFor, dateForReport);
 
         // Definisci gli impianti da considerare in base al pulsante premuto
         const implant = (reportFor === 'impianto-a') ? [1] : 
@@ -287,14 +287,14 @@ const fetchReportData = async (reportFor, dateForReport) => {
         const url = getServerRoute("report-daily");
         
         if (implant === 0) {
-            console.log("Impianto type is invalid.");
+            // console.log("Impianto type is invalid.");
             return;
         }
         
         let allData = [];
 
         for (const i in implant) {
-            console.log("Fetching data for Impianto:", implant[i]);
+            // console.log("Fetching data for Impianto:", implant[i]);
             const resp = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -302,7 +302,7 @@ const fetchReportData = async (reportFor, dateForReport) => {
             });
 
             const data = await resp.json();
-            console.log("Server Response:", data);
+            // console.log("Server Response:", data);
 
             if (data.code === 0) {
                 allData.push(data.data);
@@ -334,7 +334,7 @@ const fetchReportData = async (reportFor, dateForReport) => {
 const fetchReportDataFiltered = async (reportFor, options) => {
     try {
         // console.log(typeof reportFor, typeof options);
-        var implant;
+        let implant;
 
         if (!reportFor || reportFor <= 0 ) {
             // console.error("ID impianto non valido.");
@@ -355,7 +355,7 @@ const fetchReportDataFiltered = async (reportFor, options) => {
         });
 
         const data = await response.json();
-        console.log("Server Response:", data);
+        // console.log("Server Response:", data);
 
         return data.code === 0 ? data.data : null;
     } catch (error) {
