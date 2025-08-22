@@ -38,8 +38,9 @@ class Printer {
         // Mappa semplificata dei codici verso messaggi leggibili
         const codeMessages = {
             '00010000': 'Stampante in pausa, premere il bottone per riavviarla',
-            '00010002': 'Carta mancante o inceppata',
-            '00000001': 'Ribbon mancante',
+            '00010001': 'Etichette esaurite',
+            '00010002': 'Ribbon esaurito, oppure carta inceppata',
+            '00010005': 'Testina di stampa aperta',
             '00000004': 'Porta aperta',
             // aggiungi altri codici Zebra se vuoi
         };

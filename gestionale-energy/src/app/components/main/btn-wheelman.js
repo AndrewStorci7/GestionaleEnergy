@@ -5,6 +5,7 @@ import { useAlert } from '@main/alert/alertProvider';
 import { handleStampa } from "@fetch";
 
 import PropTypes from 'prop-types'; // per ESLint
+import { useLoader } from "./loader/loaderProvider";
 
 /**
  * Button for wheelman
@@ -22,18 +23,23 @@ export default function BtnWheelman({
     baleObj
 }) {
 
+    const { showLoader } = useLoader();
     const { showAlert, hideAlert } = useAlert();
 
     const handleClick = async (type) => {
+        showLoader(true);
         if (baleObj && baleObj.idBale !== null) {
-            await handleStampa(baleObj, showAlert, hideAlert, true)
-            // showAlert({ 
-            //     title: type === "update" ? null : "Attenzione", 
-            //     message: type === "update" ? null : `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`, 
-            //     type: type === "update" ? "update-w" : "confirm", 
-            //     onConfirm: () => type === "update" ? null : handleStampa(baleObj, showAlert, hideAlert, true),
-            //     data: baleObj
-            // });
+            if (type === "print") {
+                await handleStampa(baleObj, showAlert, hideAlert, true)
+            } else {
+                showAlert({ 
+                    title: type === "update" ? null : "Attenzione", 
+                    message: type === "update" ? null : `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`, 
+                    type: type === "update" ? "update-w" : "confirm", 
+                    onConfirm: () => type === "update" ? null : handleStampa(baleObj, showAlert, hideAlert, true),
+                    data: baleObj
+                });
+            }
         } else {
             showAlert({
                 title: null,
@@ -41,6 +47,7 @@ export default function BtnWheelman({
                 type: "error",
             });
         }
+        showLoader(false);
     }
     
     return(

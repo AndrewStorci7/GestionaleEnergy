@@ -9,6 +9,7 @@ import { useWebSocket } from '@main/ws/use-web-socket';
 import SelectInput from '@main/search/select';
 
 import PropTypes from 'prop-types'; // per ESLint
+import { useLoader } from '@main/loader/loaderProvider';
 
 /**
  * @author Andrea Storci from Oppimittinetworking.com
@@ -22,6 +23,7 @@ export default function UpdateValuesBale({
     objBale, 
     handlerClose
 }) {
+    const { showLoader } = useLoader();
     const { showAlert } = useAlert();
     const { ws, message } = useWebSocket();
     
@@ -223,6 +225,7 @@ export default function UpdateValuesBale({
      */
     const handlePrint = async () => {
         try {
+            showLoader(true);
             setIsPrinting(true);
             if (hasChanges) {
                 const success = await saveBaleData(true);
@@ -238,7 +241,8 @@ export default function UpdateValuesBale({
                 type: "error"
             });
         } finally {
-            setIsPrinting(false)
+            setIsPrinting(false);
+            showLoader(false);
         }
     };
 

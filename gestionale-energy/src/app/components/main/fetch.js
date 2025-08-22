@@ -179,12 +179,12 @@ async function fetchDataSingleElements(
  * @param {boolean} [execute=true] - Se true aggiorna lo stato a "stampato", altrimenti mostra alert di conferma.
  */
 const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCheck = false) => {
-
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000); // ⏱️ Timeout di 1s
     if (obj.idBale) {
         if (execute) {
             try {
-                const controller = new AbortController();
-                const timeout = setTimeout(() => controller.abort(), 2000); // ⏱️ Timeout di 1s
                 
                 const body = { printed: true, where: obj.idBale }; // Body per l'update della balla del carrellista
                 const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
@@ -194,7 +194,9 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
                 const url_check_printer = getServerRoute("check-printer"); 
 
                 if (!skipCheck) {
-                    const checkPrinter = await fetch(url_check_printer)
+                    const checkPrinter = await fetch(url_check_printer, {
+                        signal: controller.signal
+                    })
                     const status = await checkPrinter.json();
                     if (status.code !== 0) {
                         hookCancel({
@@ -214,9 +216,10 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ idUnique: obj.idUnique }),
+                        signal: controller.signal
                     });
                     const result3 = await response3.json();
-                    console.log(result3)
+
                     if (result3.code == -1) {
                         console.log(result3)
                         hookCancel({
@@ -230,9 +233,7 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
                     }
                 }
 
-                // // Avvio la stampa, il server si occuperà di controllare se effettivamente la balla può essere stampata
-                // if (!skipCheck) {
-                // }
+                clearTimeout(timeout);
 
                 // Invia la richiesta per aggiornare lo stato della balla
                 const response = await fetch(url_update_wheelman, {
@@ -251,8 +252,6 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
                 const result = await response.json();
                 const result2 = await response2.json();
 
-                clearTimeout(timeout);
-
                 if (result.code === 0 && result2.code === 0) {
                     // Se la risposta è positiva, mostra un messaggio di conferma
                     hookConfirm();
@@ -268,10 +267,19 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
             } catch (error) {
                 const checkIfErrorPrinter = String(error.message).includes("signal") || String(error.message).includes("aborted");
                 hookCancel({
-                    title: null,
-                    message: checkIfErrorPrinter ? "La stampante non è raggiungibile, contattare il tecnico oppure il capoturno." : error.message,
-                    type: "error"
+                    title: "Errore nella stampante",
+                    message: checkIfErrorPrinter ? 
+                            <p>
+                                <b>La stampante non è raggiungibile, contattare il tecnico oppure il capoturno</b>. <br/>
+                                Si desidera ugualmente completare la balla ?
+                            </p> : 
+                            error.message,
+                    type: checkIfErrorPrinter ? "confirm" : "error",
+                    onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
+                    data: obj
                 });
+            } finally {
+                clearTimeout(timeout);
             }
         } else {
             hookCancel({

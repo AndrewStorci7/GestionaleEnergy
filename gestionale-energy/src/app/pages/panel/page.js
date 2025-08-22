@@ -11,6 +11,7 @@ import CheckCookie from "@main/check-cookie";
 
 import { WebSocketProvider } from '@main/ws/use-web-socket';
 import { AlertProvider } from "@/app/components/main/alert/alertProvider";
+import { LoaderProvider } from "@/app/components/main/loader/loaderProvider";
 
 export default function Admin() {
 
@@ -64,24 +65,26 @@ export default function Admin() {
                 <title>Pannello – Oppimitti Energy</title>
                 <link rel="icon" href="/logoon.ico" />
             </Head>
-            <AlertProvider>
-                <div className="w-[99%] m-[0.5%] overflow-hidden">
-                    <CheckCookie/>
-                    <Header 
-                        implant={implant}
-                        username={user}
-                        type={type}
-                        name={name}
-                        surname={surname}
-                    />
-                    <MainContent 
-                        type={type}
-                        implant={idImplant}
-                        idUser={idUser}
-                    />
-                    <Footer />
-                </div>
-            </AlertProvider>
+            <LoaderProvider>
+                <AlertProvider>
+                    <div className="w-[99%] m-[0.5%] overflow-hidden">
+                        <CheckCookie/>
+                        <Header 
+                            implant={implant}
+                            username={user}
+                            type={type}
+                            name={name}
+                            surname={surname}
+                        />
+                        <MainContent 
+                            type={type}
+                            implant={idImplant}
+                            idUser={idUser}
+                        />
+                        <Footer />
+                    </div>
+                </AlertProvider>
+            </LoaderProvider>
         </WebSocketProvider>
     );
 }
