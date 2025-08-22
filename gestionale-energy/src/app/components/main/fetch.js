@@ -70,8 +70,6 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
 
         const dataJson = await resp.json();
 
-        // console.log(dataJson);
-
         if (dataJson.code === 0) {
             setEmpty(false);
 
@@ -92,26 +90,6 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
             }
 
             let contentData = type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : [];
-
-            // console.log("Dati ricevuti all'interno di fetchDataTotalBale: " + data.useFor + " " + type);
-
-            if (data.useFor === 'regular' || data.useFor === 'specific') {
-                if (type === 'wheelman') {
-                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
-                } else if (type === 'presser') {
-                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
-                }
-            } else if (data.useFor === 'reverse') {
-                if (type === 'wheelman') {
-                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
-                } else if (type === 'presser') {
-                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
-                }
-            } 
-            // else if (data.useFor === 'specific') {
-            //     // Per le balle completate, mantieni l'ordinamento del database
-            //     // o applica una logica specifica se necessario
-            // }
 
             setContent(contentData);
         } else {

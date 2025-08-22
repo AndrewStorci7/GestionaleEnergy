@@ -17,10 +17,6 @@ export default function BtnReport() {
 
   const COMMON_STYLE = "text-black font-semibold bg-sky-50 rounded-full text-sm px-2 py-2 text-center me-2 mb-3.5";
 
-  // useEffect(() => {
-  //   console.log(date);
-  // }, [date]);
-
   return (
     <>
       <input aria-label="Date input" className="border-2 border-gray-300 p-1 mb-1.5 rounded-md" type="date" onChange={(e) => setDate(e.target.value)} /><br/>

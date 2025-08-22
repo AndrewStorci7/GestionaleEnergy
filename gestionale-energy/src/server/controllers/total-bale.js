@@ -193,6 +193,7 @@ class TotalBale extends Common {
 
             if (useFor === 'specific') {
                 cond_status = ' AND pb_wb.status = 1';
+                order_by = 'DESC';
             } 
             if (useFor === 'reverse') {
                 order_by = 'ASC';
@@ -223,7 +224,7 @@ class TotalBale extends Common {
                         ${this.table}.id_implant = ? AND (${_params.condition})
                         ${cond_status}
                     ORDER BY 
-                        presser_bale.data_ins, wheelman_bale.data_ins ${order_by}
+                        presser_bale.data_ins ${order_by}
                     LIMIT 300`,
                     _params.params
                 );
