@@ -326,5 +326,6 @@ Alert.propTypes = {
     msg: PropTypes.string,
     alertFor: PropTypes.string,
     data: PropTypes.object,
-    onHide: PropTypes.func
+    onHide: PropTypes.func,
+    onConfirm: PropTypes.func,
 };

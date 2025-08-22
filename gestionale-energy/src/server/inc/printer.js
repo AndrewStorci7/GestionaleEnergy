@@ -26,6 +26,8 @@ class Printer {
     }
 
     parseZebraStatus(raw) {
+        //const regex = /\u0002|\u0003/;
+        // eslint-disable-next-line no-control-regex
         const cleaned = raw.replace(/[\u0002\u0003]/g, '').trim();
 
         const errorsLine = cleaned.split('ERRORI:')[1].split('AVVERTIMENTI:')[0].trim();

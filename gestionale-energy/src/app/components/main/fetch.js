@@ -1,3 +1,4 @@
+import React from "react";
 import { getServerRoute, formatText } from "@config";
 
 //#region Fetch Single Bale

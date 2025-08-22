@@ -37,7 +37,7 @@ export default function InsertNewBale({
      * Gestisce il click per inserire una nuova balla
      */
     const handleClick = async () => {
-        try {
+        // try {
             if (!isWebSocketConnected(ws)) {
                 console.error("WebSocket is not connected");
                 return;
@@ -71,9 +71,9 @@ export default function InsertNewBale({
             } else {
                 // console.log("Errore durante l'aggiunta della balla");
             }
-        } catch (error) {
-            // console.error(error);
-        }
+        // } catch (error) {
+        //     // console.error(error);
+        // }
     };
 
     /**

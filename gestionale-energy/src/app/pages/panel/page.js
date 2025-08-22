@@ -33,7 +33,7 @@ export default function Admin() {
     
     useEffect(() => {
         async function fetchData() {
-            try {
+            // try {
 
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 
@@ -46,14 +46,14 @@ export default function Admin() {
                     setName(cookies.name);
                     setSurname(cookies.surname);
                 }  
-            } catch (error) {
-                // console.log(`Error: ${error}`);
-                // showAlert({
-                //     title: "Error",
-                //     message: "Failed to load user data. Please log in again.",
-                //     type: "error",
-                // });
-            }
+            // } catch (error) {
+            //     // console.log(`Error: ${error}`);
+            //     // showAlert({
+            //     //     title: "Error",
+            //     //     message: "Failed to load user data. Please log in again.",
+            //     //     type: "error",
+            //     // });
+            // }
         }
 
         fetchData();
