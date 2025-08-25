@@ -14,10 +14,10 @@ import { LoaderProvider } from "@main/loader/loaderProvider";
 export default function Home() {
 
 	return (
-		<WebSocketProvider user={{ user: 'none', name: 'none', surname: 'none' }}>
-			<LoaderProvider>
+		<LoaderProvider>
+			<WebSocketProvider>
 				<LoginPage />
-			</LoaderProvider>
-		</WebSocketProvider>
+			</WebSocketProvider>
+		</LoaderProvider>
 	);
 }

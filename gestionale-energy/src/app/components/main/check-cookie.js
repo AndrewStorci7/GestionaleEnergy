@@ -1,7 +1,8 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
+import { useLoader } from '@main/loader/loaderProvider';
 
 /**
  * @author Daniele Zeraschi from Oppimittinetworking
@@ -9,14 +10,20 @@ import { useRouter } from 'next/navigation';
  */
 const CheckCookie = () => {
   const router = useRouter();
+  const { showLoader } = useLoader();
 
   useEffect(() => {
-    const cookieValue = Cookies.get('user-info');
-    // console.log('Checking cookie: ', cookieValue);
+    try {
+      showLoader(true);
+      const cookieValue = Cookies.get('user-info');
 
-    if (!cookieValue) {
-      router.push('/pages/login');
-      // console.log('Redirecting to login...');
+      if (!cookieValue) {
+        router.push('/pages/login');
+      }
+    } catch (error) {
+      console.log('Error checking cookie: ', error);
+    } finally {
+      showLoader(false);
     }
   }, [router]);
 

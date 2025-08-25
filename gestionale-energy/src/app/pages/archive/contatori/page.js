@@ -9,11 +9,8 @@ import { WebSocketProvider } from "@/app/components/main/ws/use-web-socket";
 export default function Contatori() {
 
     return (
-        <>
-            <WebSocketProvider user={{ user: 'Admin', name: 'Administrator', surname: 'counters' }}>
-                <CheckCookie />
-                <RenderCounters />
-            </WebSocketProvider>
-        </>
+        <WebSocketProvider user={{ user: 'Admin', name: 'Administrator', surname: 'counters' }}>
+            <RenderCounters />
+        </WebSocketProvider>
     );
 }

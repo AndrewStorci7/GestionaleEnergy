@@ -60,15 +60,14 @@ export default function Admin() {
     }, []);
 
     return(
-        <WebSocketProvider user={{ user, name, surname }}>
-            <Head>
-                <title>Pannello – Oppimitti Energy</title>
-                <link rel="icon" href="/logoon.ico" />
-            </Head>
-            <LoaderProvider>
+        <LoaderProvider>
+            <WebSocketProvider user={{ user, name, surname }}>
+                <Head>
+                    <title>Pannello – Oppimitti Energy</title>
+                    <link rel="icon" href="/logoon.ico" />
+                </Head>
                 <AlertProvider>
                     <div className="w-[99%] m-[0.5%] overflow-hidden">
-                        <CheckCookie/>
                         <Header 
                             implant={implant}
                             username={user}
@@ -84,7 +83,7 @@ export default function Admin() {
                         <Footer />
                     </div>
                 </AlertProvider>
-            </LoaderProvider>
-        </WebSocketProvider>
+            </WebSocketProvider>
+        </LoaderProvider>
     );
 }
