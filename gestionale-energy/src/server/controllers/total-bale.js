@@ -390,15 +390,17 @@ class TotalBale extends Common {
                     wb.weight as weight,
                     pb.data_ins AS date_pb,
                     wb.data_ins AS date_wb,
-                    wb.id_cwb AS 'condition'
+                    wb.id_cwb AS 'condition',
+                    wd.name AS wd
                 FROM ${this.table} 
                 LEFT JOIN presser_bale pb ON ${this.table}.id_pb = pb.id
                 LEFT JOIN wheelman_bale wb ON ${this.table}.id_wb = wb.id
+                LEFT JOIN warehouse_dest wd ON wb.id_wd = wd.id
                 WHERE ${this.table}.id = ?`,
                 [id_bale],
                 true
             );
-            console.log(`Bale data retrieved: ${JSON.stringify(bale)}`);
+            console.debug(`Bale data retrieved: ${JSON.stringify(bale)}`);
             if (bale[0].condition !== 1) {
                 return { code: -2, message: "Balla non stampata, risultava essere 'Non legata'" }
             } else if (bale[0].weight === 0 || !bale[0].weight) {
@@ -407,9 +409,10 @@ class TotalBale extends Common {
                 const date = new Date(bale[0].date_pb);
                 // console.info(date)
                 const onlyDate = this.formatDate(date, true, true, '/');
-                const turn = this.getTurnFromDate(date)
+                const turn = this.getTurnFromDate(date);
+                const corepla = bale[0].wd.toLowerCase() === "corepla" || bale[0].wd.toLowerCase() === "coripet" ? bale[0].wd.toLowerCase() : "";
                 // console.log(onlyDate)
-                return { ...bale[0], date_pb: onlyDate, turn };
+                return { ...bale[0], date_pb: onlyDate, turn, wd: corepla };
             }
         } catch (error) {
             console.error(`Errore durante il recupero della balla: ${error.message}`);
@@ -524,6 +527,7 @@ class TotalBale extends Common {
                 res.json(data)
             } else if (data) {
                 const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
+                // const result = await printer.print(data.plastic, data.weight, data.turn, data.date_pb, data.wd);
                 const result = await printer.print(data.plastic, data.weight, data.turn, data.date_pb);
                 // console.log(JSON.stringify(result))
                 res.json(result);

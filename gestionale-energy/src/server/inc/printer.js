@@ -12,13 +12,17 @@ class Printer {
         this.ip = ip;
         this.port = port;
         this.fontSize = 150;
+        this.fontSizeSpecificMsg = 70;
         this.rotation = 'B';
+        this.rotationSpecificMsg = 'I'
 
         // misure stampa
+        this.xOffsetSpecificMsg = 200;
         this.xOffset3rdRow = 400; // X coordinate Terza riga
         this.xOffset2ndRow = 230; // X coordinate Seconda riga
         this.xOffset1stRow = 50; // X coordinate Prima riga
 
+        this.yOffsetSpecificMsg = 500;
         this.yOffsetData = 700; // Y coordinate Data 
         this.yOffsetTurn = 1000 + this.yOffsetData; // Y coordinate Turno
         this.yOffsetWeight = 1500; // Y coordinate Peso 
@@ -42,9 +46,8 @@ class Printer {
             '00010000': 'Stampante in pausa, premere il bottone per riavviarla',
             '00010001': 'Etichette esaurite',
             '00010002': 'Ribbon esaurito, oppure carta inceppata',
-            '00010005': 'Testina di stampa aperta',
+            '00010004': 'Testina di stampa aperta',
             '00000004': 'Porta aperta',
-            // aggiungi altri codici Zebra se vuoi
         };
 
         const messages = [];
@@ -52,7 +55,7 @@ class Printer {
         errorsNum.forEach((code, index) => {
             if (index !== 0) {
                 if (codeMessages[code]) messages.push(codeMessages[code]);
-                else messages.push(`Errore sconosciuto: ${code}`);
+                else if (code !== "00000000") messages.push(`Errore sconosciuto: ${code}`);
             }
         });
 
@@ -106,7 +109,7 @@ class Printer {
      * @param {*} date Data della stampa
      * @returns 
      */
-    async print(plastic = "", weight = 0, turn = 0, date = "") {
+    async print(plastic = "", weight = 0, turn = 0, date = "", corepla = "") {
         return new Promise((resolve, reject) => {
             try {
                 if (plastic === "" || weight === 0 || turn === 0 || date === "") {
@@ -123,6 +126,7 @@ class Printer {
 ^FO${this.xOffset2ndRow},${this.yOffsetWeight}^A0${this.rotation},${this.fontSize},${this.fontSize}^FD${weight}^FS
 ^FO${this.xOffset3rdRow},${this.yOffsetTurn}^A0${this.rotation},${this.fontSize},${this.fontSize}^FD${turn}^FS
 ^FO${this.xOffset3rdRow},${this.yOffsetData}^A0${this.rotation},${this.fontSize},${this.fontSize}^FD${date}^FS
+^FO${this.xOffsetSpecificMsg},${this.yOffsetSpecificMsg}^A0${this.rotationSpecificMsg},${this.fontSizeSpecificMsg},${this.fontSizeSpecificMsg}^FD${corepla}^FS
 ^XZ
                 `;
 

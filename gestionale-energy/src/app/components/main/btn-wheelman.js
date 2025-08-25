@@ -5,7 +5,9 @@ import { useAlert } from '@main/alert/alertProvider';
 import { handleStampa } from "@fetch";
 
 import PropTypes from 'prop-types'; // per ESLint
-import { useLoader } from "./loader/loaderProvider";
+import { useLoader } from "@main/loader/loaderProvider";
+import { refreshPage } from "@config";
+import { useWebSocket } from "@main/ws/use-web-socket";
 
 /**
  * Button for wheelman
@@ -23,6 +25,7 @@ export default function BtnWheelman({
     baleObj
 }) {
 
+    const { ws } = useWebSocket();
     const { showLoader } = useLoader();
     const { showAlert, hideAlert } = useAlert();
 
@@ -40,6 +43,7 @@ export default function BtnWheelman({
                     data: baleObj
                 });
             }
+            refreshPage(ws);
         } else {
             showAlert({
                 title: null,

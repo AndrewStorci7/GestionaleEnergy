@@ -6,6 +6,7 @@ import React, {
     useState 
 } from 'react';
 import { getWsUrl } from '@config';
+import CheckCookie from '../check-cookie';
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -85,6 +86,7 @@ export const WebSocketProvider = ({
     return (
         <WebSocketContext.Provider value={{ ws, message }}>
             {children}
+            <CheckCookie />
         </WebSocketContext.Provider>
     );
 };
