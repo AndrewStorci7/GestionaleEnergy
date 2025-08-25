@@ -4,14 +4,13 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Head from "next/head";
 
-import Footer from "@/app/components/footer/footer";
-import Header from "@/app/components/header/header";
+import Footer from "@components/footer/footer";
+import Header from "@components/header/header";
 import MainContent from "@main/main-content";
-import CheckCookie from "@main/check-cookie";
 
 import { WebSocketProvider } from '@main/ws/use-web-socket';
-import { AlertProvider } from "@/app/components/main/alert/alertProvider";
-import { LoaderProvider } from "@/app/components/main/loader/loaderProvider";
+import { AlertProvider } from "@main/alert/alertProvider";
+import { LoaderProvider } from "@main/loader/loaderProvider";
 
 export default function Admin() {
 
