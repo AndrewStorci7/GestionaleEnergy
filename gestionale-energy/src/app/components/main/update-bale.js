@@ -89,14 +89,15 @@ export default function UpdateValuesBale({
         if (type === 'presser') {
             return presserData.plastic !== null && presserData.plastic !== undefined && presserData.plastic !== "";
         } else {
-            return cacheWeight > 0 || hasChanges;
+            // console.log("Dati canProceed:", wheelmanData);
+            return cacheWeight > 0 || wheelmanData.cdbc == 2 || hasChanges;
         }
-    }, [type, presserData.plastic, cacheWeight]);
+    }, [type, presserData.plastic, cacheWeight, wheelmanData.cdbc]);
 
     // Verifica se può stampare (peso > 0 e non deve necessariamente aver confermato)
     const canPrint = useMemo(() => {
         return (type === 'wheelman' && cacheWeight > 0) || wheelmanData.cdbc == 2;
-    }, [type, cacheWeight, hasChanges]);
+    }, [type, wheelmanData.cdbc, cacheWeight, hasChanges]);
 
     const handleData = (response) => {
         const data = response.data;
@@ -247,7 +248,11 @@ export default function UpdateValuesBale({
                             if (type === 'presser') {
                                 setPresserData(prev => ({ ...prev, plastic: e.target.value })); 
                             } else {
-                                setWheelmanData(prev => ({ ...prev, cdbc: e.target.value }));
+                                if (e.target.value == 1) {
+                                    setWheelmanData(prev => ({ ...prev, cdbc: e.target.value, reason: 1 }));
+                                } else {
+                                    setWheelmanData(prev => ({ ...prev, cdbc: e.target.value }));
+                                }
                             }
                         }} 
                         fixedW 
@@ -364,9 +369,9 @@ export default function UpdateValuesBale({
                 )}
                 <button 
                     className={`border px-[10px] py-[5px] rounded-xl mx-4 bg-blue-500 text-white font-semibold
-                        ${(!canProceed || !hasChanges) ? 'disabled:opacity-45 cursor-no-drop' : 'hover:bg-blue-600'}`}
+                        ${!canProceed ? 'disabled:opacity-45 cursor-no-drop' : 'hover:bg-blue-600'}`}
                     onClick={handleConfirm}
-                    disabled={!canProceed || !hasChanges || isLoading}
+                    disabled={!canProceed}
                 >
                     {isLoading ? 'Salvando...' : 'Conferma'}
                 </button>
