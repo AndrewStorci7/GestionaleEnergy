@@ -406,13 +406,12 @@ class TotalBale extends Common {
             } else if (bale[0].weight === 0 || !bale[0].weight) {
                 return { code: -1, message: "Peso pari a zero" }
             } else {
-                const date = new Date(bale[0].date_pb);
-                // console.info(date)
-                const onlyDate = this.formatDate(date, true, true, '/');
-                const turn = this.getTurnFromDate(date);
+                const date = new Date();
+                const onlyDate = this.formatDate(date, { format: "date-only", inverted: true, char: '/' });
+                const onlyTime = this.formatDate(date, { format: "time-only", noSeconds: true });
+                const turn = this.getTurnFromDate(date)
                 const corepla = bale[0].wd.toLowerCase() === "corepla" || bale[0].wd.toLowerCase() === "coripet" ? bale[0].wd.toLowerCase() : "";
-                // console.log(onlyDate)
-                return { ...bale[0], date_pb: onlyDate, turn, wd: corepla };
+                return { ...bale[0], date_print: onlyDate, time_print: onlyTime, turn, wd: corepla };
             }
         } catch (error) {
             console.error(`Errore durante il recupero della balla: ${error.message}`);
@@ -527,8 +526,8 @@ class TotalBale extends Common {
                 res.json(data)
             } else if (data) {
                 const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
-                // const result = await printer.print(data.plastic, data.weight, data.turn, data.date_pb, data.wd);
-                const result = await printer.print(data.plastic, data.weight, data.turn, data.date_pb);
+                // const result = await printer.print(data.plastic, data.weight, data.turn, data.date_print, data.time_print, data.wd);
+                const result = await printer.print(data.plastic, data.weight, data.turn, data.date_print, data.time_print);
                 // console.log(JSON.stringify(result))
                 res.json(result);
             } else {
