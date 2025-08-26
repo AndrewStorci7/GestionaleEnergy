@@ -204,25 +204,39 @@ class Common {
         }
     }
 
-    formatDate(date, onlyDate = true, inverted = false, char = '-') {
+    formatDate(date, options = { format: "date-only", inverted: false, char: '-' }) {
         // console.debug("Data ricevuta ===> " + date);
-        if (onlyDate) {
-            const yyyy = date.getFullYear();
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            if (inverted) {
-                return `${dd}${char}${mm}${char}${yyyy}`;
-            } else {
-                return `${yyyy}${char}${mm}${char}${dd}`;
+        switch (options.format.toLowerCase()) {
+            case "time-only": {
+                const hh = String(date.getHours()).padStart(2, '0');
+                const min = String(date.getMinutes()).padStart(2, '0');
+                const ss = String(date.getSeconds()).padStart(2, '0');
+                if (options.noSeconds) {
+                    return `${hh}:${min}`;
+                } else {
+                    return `${hh}:${min}:${ss}`;
+                }
             }
-        } else {
-            const yyyy = date.getFullYear();
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            const hh = String(date.getHours()).padStart(2, '0');
-            const min = String(date.getMinutes()).padStart(2, '0');
-            const ss = String(date.getSeconds()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+            case "full-date": {
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const hh = String(date.getHours()).padStart(2, '0');
+                const min = String(date.getMinutes()).padStart(2, '0');
+                const ss = String(date.getSeconds()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+            }
+            default:
+            case "date-only": {
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                if (options.inverted) {
+                    return `${dd}${options.char}${mm}${options.char}${yyyy}`;
+                } else {
+                    return `${yyyy}${options.char}${mm}${options.char}${dd}`;
+                }
+            }
         }
     }
 
@@ -259,8 +273,8 @@ class Common {
             currentDate = new Date();
             yesterday = new Date();
             yesterday.setDate(currentDate.getDate() - 1);
-            yesterday = this.formatDate(yesterday);
-            currentDate = this.formatDate(currentDate);
+            yesterday = this.formatDate(yesterday); // 'YYYY-MM-DD'
+            currentDate = this.formatDate(currentDate); // 'YYYY-MM-DD'
         }
 
         // var condition = `(DATE(presser_bale.data_ins) = ${!check ? `'${tomorrow}'` : 'CURDATE()'} 
