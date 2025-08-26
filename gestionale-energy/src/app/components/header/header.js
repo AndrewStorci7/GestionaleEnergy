@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { getEnv, getServerRoute } from "@config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { useWebSocket } from "@@/components/main/ws/use-web-socket";
+import { useWebSocket } from "@main/ws/use-web-socket";
 import PropTypes from "prop-types"; // per ESLint
 
 /**
@@ -50,7 +50,7 @@ export default function Header({
      */
     useEffect(() => {
         const fetchData = async () => {
-            try {
+            // try {
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 const url = getServerRoute("total-bale-count");
                 const urlTotChili = getServerRoute("totale-chili");
@@ -79,9 +79,9 @@ export default function Header({
                     setTotalBalesLavorate(data.message2);
                     setTotalChili(totChiliResp.message.totale_chili);
                 }
-            } catch (error) {
-                // console.log(error);
-            }
+            // } catch (error) {
+            //     // console.log(error);
+            // }
         } 
 
         const interval = setInterval(() => {

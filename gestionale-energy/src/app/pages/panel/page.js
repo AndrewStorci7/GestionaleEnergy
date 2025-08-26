@@ -4,14 +4,13 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Head from "next/head";
 
-import Footer from "@/app/components/footer/footer";
-import Header from "@/app/components/header/header";
+import Footer from "@components/footer/footer";
+import Header from "@components/header/header";
 import MainContent from "@main/main-content";
-import CheckCookie from "@main/check-cookie";
 
 import { WebSocketProvider } from '@main/ws/use-web-socket';
-import { AlertProvider } from "@/app/components/main/alert/alertProvider";
-import { LoaderProvider } from "@/app/components/main/loader/loaderProvider";
+import { AlertProvider } from "@main/alert/alertProvider";
+import { LoaderProvider } from "@main/loader/loaderProvider";
 
 export default function Admin() {
 
@@ -33,7 +32,7 @@ export default function Admin() {
     
     useEffect(() => {
         async function fetchData() {
-            try {
+            // try {
 
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 
@@ -46,29 +45,28 @@ export default function Admin() {
                     setName(cookies.name);
                     setSurname(cookies.surname);
                 }  
-            } catch (error) {
-                // console.log(`Error: ${error}`);
-                // showAlert({
-                //     title: "Error",
-                //     message: "Failed to load user data. Please log in again.",
-                //     type: "error",
-                // });
-            }
+            // } catch (error) {
+            //     // console.log(`Error: ${error}`);
+            //     // showAlert({
+            //     //     title: "Error",
+            //     //     message: "Failed to load user data. Please log in again.",
+            //     //     type: "error",
+            //     // });
+            // }
         }
 
         fetchData();
     }, []);
 
     return(
-        <WebSocketProvider user={{ user, name, surname }}>
-            <Head>
-                <title>Pannello – Oppimitti Energy</title>
-                <link rel="icon" href="/logoon.ico" />
-            </Head>
-            <LoaderProvider>
+        <LoaderProvider>
+            <WebSocketProvider user={{ user, name, surname }}>
+                <Head>
+                    <title>Pannello – Oppimitti Energy</title>
+                    <link rel="icon" href="/logoon.ico" />
+                </Head>
                 <AlertProvider>
                     <div className="w-[99%] m-[0.5%] overflow-hidden">
-                        <CheckCookie/>
                         <Header 
                             implant={implant}
                             username={user}
@@ -84,7 +82,7 @@ export default function Admin() {
                         <Footer />
                     </div>
                 </AlertProvider>
-            </LoaderProvider>
-        </WebSocketProvider>
+            </WebSocketProvider>
+        </LoaderProvider>
     );
 }

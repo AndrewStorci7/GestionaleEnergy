@@ -13,11 +13,14 @@ class Printer {
         this.port = port;
         this.fontSize = 150;
         this.fontSizeDate = 110;
+        this.fontSizeSpecificMsg = 70;
         this.rotation = 'B';
+        this.rotationSpecificMsg = 'I'
 
         // misure stampa
         // this.xOffset4thRow = 460; // X coordinate Quarta riga
         this.xOffset3rdRowDate = 420; // X coordinate Terza riga
+        this.xOffsetSpecificMsg = 200;
         this.xOffset3rdRow = 400; // X coordinate Terza riga
         this.xOffset2ndRow = 230; // X coordinate Seconda riga
         this.xOffset1stRow = 50; // X coordinate Prima riga
@@ -25,18 +28,21 @@ class Printer {
         // this.yOffsetHour = 1050; // Y coordinate Ora
         this.yOffsetDate = 550; // Y coordinate Data 
         this.yOffsetTurn = 1700; // Y coordinate Turno
+        this.yOffsetSpecificMsg = 500;
         this.yOffsetWeight = 1500; // Y coordinate Peso 
         this.yOffsetPlastic = 900; // Y coordinate Plastica
     }
 
     parseZebraStatus(raw) {
+        //const regex = /\u0002|\u0003/;
+        // eslint-disable-next-line no-control-regex
         const cleaned = raw.replace(/[\u0002\u0003]/g, '').trim();
 
         const errorsLine = cleaned.split('ERRORI:')[1].split('AVVERTIMENTI:')[0].trim();
         // const warningsLine = raw.trim().split('AVVERTIMENTI:');
 
         const errorsNum = errorsLine.split(/\s+/);
-        console.log(errorsNum)
+        // console.log(errorsNum)
         // const warningsNum = parseInt(warningsLine.split(' ')[1], 10);
 
         // Mappa semplificata dei codici verso messaggi leggibili
@@ -44,9 +50,8 @@ class Printer {
             '00010000': 'Stampante in pausa, premere il bottone per riavviarla',
             '00010001': 'Etichette esaurite',
             '00010002': 'Ribbon esaurito, oppure carta inceppata',
-            '00010005': 'Testina di stampa aperta',
+            '00010004': 'Testina di stampa aperta',
             '00000004': 'Porta aperta',
-            // aggiungi altri codici Zebra se vuoi
         };
 
         const messages = [];
@@ -54,7 +59,7 @@ class Printer {
         errorsNum.forEach((code, index) => {
             if (index !== 0) {
                 if (codeMessages[code]) messages.push(codeMessages[code]);
-                else messages.push(`Errore sconosciuto: ${code}`);
+                else if (code !== "00000000") messages.push(`Errore sconosciuto: ${code}`);
             }
         });
 
@@ -108,7 +113,7 @@ class Printer {
      * @param {*} date Data della stampa
      * @returns 
      */
-    async print(plastic = "", weight = 0, turn = 0, date = "", hour = "") {
+    async print(plastic = "", weight = 0, turn = 0, date = "", hour = "", corepla = "") {
         return new Promise((resolve, reject) => {
             try {
                 if (plastic === "" || weight === 0 || turn === 0 || date === "" || hour === "") {
@@ -125,11 +130,10 @@ class Printer {
 ^FO${this.xOffset2ndRow},${this.yOffsetWeight}^A0${this.rotation},${this.fontSize},${this.fontSize}^FD${weight}^FS
 ^FO${this.xOffset3rdRow},${this.yOffsetTurn}^A0${this.rotation},${this.fontSize},${this.fontSize}^FD${turn}^FS
 ^FO${this.xOffset3rdRowDate},${this.yOffsetDate}^A0${this.rotation},${this.fontSizeDate},${this.fontSizeDate}^FD${date}|${hour}^FS
+^FO${this.xOffsetSpecificMsg},${this.yOffsetSpecificMsg}^A0${this.rotationSpecificMsg},${this.fontSizeSpecificMsg},${this.fontSizeSpecificMsg}^FD${corepla}^FS
 ^XZ
                 `;
-
-                // ^FO${this.xOffset4thRow},${this.yOffsetHour}^A0${this.rotation},${this.fontSizeDate},${this.fontSizeDate}^FD${hour}^FS
-
+              
                 client.connect(this.port, this.ip, () => {
                     client.write(zpl, (err) => {
                         if (err) {
@@ -137,15 +141,15 @@ class Printer {
                             return reject({ code: -1, message: `Errore nell'invio ZPL: ${err.message}` });
                         }
 
-                        console.log("ZPL command sent");
+                        // console.log("ZPL command sent");
                         client.end();
                         return resolve({ code: 0, message: "Stampa eseguita" });
                     });
                 });
 
-                client.on("data", (data) => {
-                    console.log("Printer response:", data.toString());
-                });
+                // client.on("data", (data) => {
+                //     // console.log("Printer response:", data.toString());
+                // });
 
                 client.on("error", (err) => {
                     console.error(`Errore di connessione: ${err.message}`);

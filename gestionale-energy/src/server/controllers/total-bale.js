@@ -193,6 +193,7 @@ class TotalBale extends Common {
 
             if (useFor === 'specific') {
                 cond_status = ' AND pb_wb.status = 1';
+                order_by = 'DESC';
             } 
             if (useFor === 'reverse') {
                 order_by = 'ASC';
@@ -223,7 +224,7 @@ class TotalBale extends Common {
                         ${this.table}.id_implant = ? AND (${_params.condition})
                         ${cond_status}
                     ORDER BY 
-                        presser_bale.data_ins, wheelman_bale.data_ins ${order_by}
+                        presser_bale.data_ins ${order_by}
                     LIMIT 300`,
                     _params.params
                 );
@@ -388,18 +389,20 @@ class TotalBale extends Common {
                     pb.id_plastic AS plastic,
                     wb.weight as weight,
                     pb.data_ins AS date_pb,
-                    -- wb.data_ins AS date_wb,
-                    wb.id_cwb AS 'condition'
+                    wb.data_ins AS date_wb,
+                    wb.id_cwb AS 'condition',
+                    wd.name AS wd
                 FROM ${this.table} 
                 LEFT JOIN presser_bale pb ON ${this.table}.id_pb = pb.id
                 LEFT JOIN wheelman_bale wb ON ${this.table}.id_wb = wb.id
+                LEFT JOIN warehouse_dest wd ON wb.id_wd = wd.id
                 WHERE ${this.table}.id = ?`,
                 [id_bale],
                 true
             );
-            console.log(`Bale data retrieved: ${JSON.stringify(bale)}`);
+            console.debug(`Bale data retrieved: ${JSON.stringify(bale)}`);
             if (bale[0].condition !== 1) {
-                return null;
+                return { code: -2, message: "Balla non stampata, risultava essere 'Non legata'" }
             } else if (bale[0].weight === 0 || !bale[0].weight) {
                 return { code: -1, message: "Peso pari a zero" }
             } else {
@@ -407,7 +410,8 @@ class TotalBale extends Common {
                 const onlyDate = this.formatDate(date, { format: "date-only", inverted: true, char: '/' });
                 const onlyTime = this.formatDate(date, { format: "time-only", noSeconds: true });
                 const turn = this.getTurnFromDate(date)
-                return { ...bale[0], date_print: onlyDate, time_print: onlyTime, turn };
+                const corepla = bale[0].wd.toLowerCase() === "corepla" || bale[0].wd.toLowerCase() === "coripet" ? bale[0].wd.toLowerCase() : "";
+                return { ...bale[0], date_print: onlyDate, time_print: onlyTime, turn, wd: corepla };
             }
         } catch (error) {
             console.error(`Errore durante il recupero della balla: ${error.message}`);
@@ -522,6 +526,7 @@ class TotalBale extends Common {
                 res.json(data)
             } else if (data) {
                 const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
+                // const result = await printer.print(data.plastic, data.weight, data.turn, data.date_print, data.time_print, data.wd);
                 const result = await printer.print(data.plastic, data.weight, data.turn, data.date_print, data.time_print);
                 // console.log(JSON.stringify(result))
                 res.json(result);

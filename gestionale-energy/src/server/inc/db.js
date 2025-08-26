@@ -56,7 +56,7 @@ const pool = mysql.createPool({
 // GESTIONE EVENTI DEL POOL
 pool.on('connection', function (connection) {
     // console.info(`Nuova connessione stabilita: ${connection.threadId}`);
-    // console.debug(`Nuova connessione stabilita: ${connection.threadId}`);
+    console.debug(`Nuova connessione stabilita: ${connection.threadId}`);
 });
 
 pool.on('error', function(err) {
@@ -67,15 +67,15 @@ pool.on('error', function(err) {
 });
 
 pool.on('acquire', function (connection) {
-    // console.debug(`Connessione ${connection.threadId} acquisita`);
+    console.debug(`Connessione ${connection.threadId} acquisita`);
 });
 
 pool.on('release', function (connection) {
-    // console.debug(`Connessione ${connection.threadId} rilasciata`);
+    console.debug(`Connessione ${connection.threadId} rilasciata`);
 });
 
 pool.on('enqueue', function () {
-    // console.debug('In attesa di una connessione disponibile');
+    console.debug('In attesa di una connessione disponibile');
 });
 
 const promisePool = pool.promise();
