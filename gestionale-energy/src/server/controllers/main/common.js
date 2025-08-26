@@ -340,16 +340,16 @@ class Common {
      * @param {any}     params      Array con i parametri per la query
      * @param {number}  id_implant  ID dell'impianto di lavorazione
      */
-    updateIdImplant(params, id_implant) {
-        if (params !== null && id_implant !== 0) {
-            // aggiorno l'id
-            const updated_idImplant = id_implant == 1 ? 2 : 1;
-            // lo aggiungo in seconda posizione 
-            params.splice(1, 0, updated_idImplant);
-        } else {
-            throw new Error("Parametri non definiti {`params` e `id_implant`}"); 
-        }
-    }
+    // updateIdImplant(params, id_implant) {
+    //     if (params !== null && id_implant !== 0) {
+    //         // aggiorno l'id
+    //         const updated_idImplant = id_implant == 1 ? 2 : 1;
+    //         // lo aggiungo in seconda posizione 
+    //         params.splice(1, 0, updated_idImplant);
+    //     } else {
+    //         throw new Error("Parametri non definiti {`params` e `id_implant`}"); 
+    //     }
+    // }
 
     async getIdsBale(id, type) {
         try {
