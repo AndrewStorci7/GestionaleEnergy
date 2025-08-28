@@ -381,7 +381,7 @@ class Common {
     }
 
     getTurnFromDate(date) {
-        const hour = date.getUTCHours();
+        const hour = date.getHours();
         // console.info(hour);
         if (hour >= 6 && hour < 14) {
             return 1;
