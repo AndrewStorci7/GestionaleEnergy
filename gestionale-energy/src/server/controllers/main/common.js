@@ -387,9 +387,13 @@ class Common {
             return 1;
         } else if (hour >= 14 && hour < 22) {
             return 2;
-        } else if (hour >= 22 && hour <= 0 || hour > 0 && hour < 6) {
+        } else {
             return 3;
         }
+        
+        // else if (hour >= 22 && hour <= 0 || hour > 0 && hour < 6) {
+        //     return 3;
+        // }
     } 
 }
 
