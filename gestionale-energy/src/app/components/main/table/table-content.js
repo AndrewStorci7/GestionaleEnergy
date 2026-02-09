@@ -11,6 +11,7 @@ import { fetchDataTotalBale } from '../fetch';
 
 import PropTypes from 'prop-types'; // per ESLint
 
+//commento di prova
 /**
  * Custom component for handling the data of a bale
  * 
