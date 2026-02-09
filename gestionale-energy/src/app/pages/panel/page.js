@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
@@ -65,6 +65,7 @@ export default function Admin() {
                     <title>Pannello – Oppimitti Energy</title>
                     <link rel="icon" href="/logoon.ico" />
                 </Head>
+
                 <AlertProvider>
                     <div className="w-[99%] m-[0.5%] overflow-hidden">
                         <Header 

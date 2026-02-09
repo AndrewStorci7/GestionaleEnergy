@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+﻿import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
@@ -118,7 +118,7 @@ export default function TableContent({
             )}
 
             {!isEmpty && content.map((bale) => {
-                const plastic = bale.plasticPresser;
+                const plastic = type === "wheelman" ? bale.plasticPresser : bale.plastic;
                 const id = bale.id;
                 const idUnique = bale.idUnique;
                 const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
@@ -128,7 +128,7 @@ export default function TableContent({
                                 (bale.status === 1) ? "completed" : "warning";
                 
                 return (
-                    <tr key={idUnique} data-bale-id={id} className='max-h-[45px] h-[45px]'>
+                    <tr key={idUnique} data-bale-id={id} className={`max-h-[45px] h-[45px] ${plastic === "ALLUM." || plastic === "FERRO" ? "bg-gray-400" : "bg-gray-200"}`}>
                         {primary && (
                             <>
                                 {!admin && 
