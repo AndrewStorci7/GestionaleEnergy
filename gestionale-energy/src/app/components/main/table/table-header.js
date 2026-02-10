@@ -1,6 +1,7 @@
 import React from "react";
 
 import PropTypes from 'prop-types'; // per ESLint
+import Script from "next/script";
 
 /**
  * @param {boolean} admin   Serve per gestire la visibilità di alcune colonne nel caso in cui la tabella venga vista da un amministratore; Default: false
@@ -19,27 +20,21 @@ export default function TableHeader({
     
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
-    const fixStyle = " !text-left";
-
+    const fixStyle = "resize-none !text-left";
+    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "", "Data", "Ora","Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "Data", "Ora"];
+    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "","Data", "Ora", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "Data", "Ora"];
+    function ColumnName (Array) {
+        return Array.map((col, index) => (
+            <th key={index} className={style + fixStyle +fixColor}>{col}</th>
+        ));
+    }
     switch (type) {
-        case 'presser': {
+        case 'presser': 
+        {
             return (
                 <>
                     <thead className="h-[52px]">
-                        <tr>
-                            {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
-                            {(primary) && <th className={style + fixColor}>N°</th>}
-                            {(primary) && <th className={style + fixColor}>Stato</th>}
-                            <th className={style + fixStyle + fixColor}>Plastica</th>
-                            <th className={style + fixStyle + fixColor}>Codice</th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Utiliz. REI</p></th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Balla alla pressa</p></th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Balla Selez.</p></th>
-                            <th className={style + fixStyle + fixColor}>Note</th>
-                            {(primary) && <th className={style + fixStyle + fixColor + " w-[40px]"}></th>}
-                            <th className={style + fixStyle + fixColor}>Data</th>
-                            <th className={style + fixStyle + fixColor}>Ora</th>
-                        </tr>
+                        {ColumnName(ArrayPresser)}                        
                     </thead>
                 </>
             );
@@ -48,7 +43,8 @@ export default function TableHeader({
             return (
                 <>
                     <thead className="h-[52px]">
-                        <tr>
+                        {ColumnName(ArrayWheelman)}
+                        {/* <tr>
                             {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
                             {(primary) && <th className={style + fixColor}>N°</th>}
                             {(primary) && <th className={style + fixColor}>Stato</th>}
@@ -62,7 +58,7 @@ export default function TableHeader({
                             {(primary) && <th className={style + fixStyle + fixColor + "w-[40px]"}></th>}
                             <th className={style + fixStyle + fixColor}>Data</th>
                             <th className={style + fixStyle + fixColor}>Ora</th>
-                        </tr>
+                        </tr> */}
                     </thead>
                 </>
             );

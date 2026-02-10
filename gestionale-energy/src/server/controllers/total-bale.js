@@ -189,11 +189,12 @@ class TotalBale extends Common {
             var order_by = 'DESC';
 
             // console.debug();
-
+            //condizioni per stampa balle completate
             if (useFor === 'specific') {
-                cond_status = ' AND pb_wb.status = 1';
+                cond_status = ' AND pb_wb.status = 1'; //= 1 balle completate
                 order_by = 'DESC';
             } 
+            //condizioni per stampa balle IFO
             if (useFor === 'reverse') {
                 order_by = 'ASC';
             }

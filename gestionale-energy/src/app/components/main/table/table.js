@@ -88,9 +88,9 @@ export default function Table({
         case "presser": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner">
+                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner w-full">
                         <TableWrapper 
-                            className="col-span-5"
+                            className="col-span-12"
                             type={"presser"}
                             tableContent={{
                                 handleSelect: (i, y) => handleSelect(i, y),
@@ -100,10 +100,10 @@ export default function Table({
                             }}
                             primary />
 
-                        <TableWrapper 
+                        {/* <TableWrapper 
                             className="col-span-4" 
                             type={"wheelman"} 
-                            tableContent={{ objAdd: objAdd }} />
+                            tableContent={{ objAdd: objAdd }} /> */}
                     </div>
 
                     <BtnPresser 
@@ -127,9 +127,10 @@ export default function Table({
         case "wheelman": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner">
+                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner w-full">
                         <TableWrapper 
-                            className="col-span-5"
+                            // className="col-span-5"
+                            className="col-span-12"
                             type={"wheelman"}
                             tableContent={{
                                 handleSelect: (i, y) => handleSelect(i, y),
@@ -139,10 +140,10 @@ export default function Table({
                             }}
                             primary />
 
-                        <TableWrapper 
+                        {/* <TableWrapper 
                             className="col-span-4" 
                             type={"presser"} 
-                            tableContent={{ objAdd: objAdd }} />
+                            tableContent={{ objAdd: objAdd }} /> */}
                     </div>
 
                     <BtnWheelman 
