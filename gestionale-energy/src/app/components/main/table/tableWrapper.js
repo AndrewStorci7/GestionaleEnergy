@@ -64,7 +64,7 @@ const TableWrapper = ({
                                     noData={(e) => tableContent.noData(e)} 
                                     primary={primary}
                                     admin={admin}
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400" 
+                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400," 
                                 />
                             ) : (
                                 <TableContent 

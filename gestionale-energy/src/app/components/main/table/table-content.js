@@ -21,9 +21,9 @@ import PropTypes from 'prop-types'; // per ESLint
  *                              [ `true` | `false` ]
  *                              True se il bottone di aggiunta è stato premuto, altrimenti false
  * @param {Object}      useFor  [ `regular` | `specific` | `reverse` ]
- *                              Di default è impostato su `regolar`, ovvero, che stampa tutte le alle ancora in lavorazione.
+ *                              Di default è impostato su `regular`, ovvero, che stampa tutte le alle ancora in lavorazione.
  *                              Se invece viene impostato su `specific`, allora stamperà le balle completate.
- *                              Se impostato su `reverse` verranno stampate le balle al contrario.
+ *                              Se impostato su `reverse` verranno stampate le balle al contrario in ordine di inserimento.
  * 
  * @param {Function}    noData  Funzione che aggiorna lo stato della variabile noData.
  *                              Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
@@ -53,6 +53,8 @@ export default function TableContent({
     const { ws, message } = useWebSocket();
 
     const [content, setContent] = useState([]);
+    const [content1, setContent1] = useState([]);
+
     const [isEmpty, setEmpty] = useState(false);
 
     const selectedBaleIdRef = useRef([]);
@@ -85,13 +87,15 @@ export default function TableContent({
         }
         return type;
     }, [type]);
-
+    const Opposite = safeType === "presser" ? "wheelman" : "presser";
     const fetchData = useCallback(async () => {
         try {
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
             
             await fetchDataTotalBale(body, safeType, setContent, setEmpty, noData, showAlert);
+            await fetchDataTotalBale(body, Opposite, setContent1, setEmpty, noData, showAlert);
+
         } catch (error) {
             console.error('Error fetching data:', error);
             showAlert({
@@ -101,6 +105,8 @@ export default function TableContent({
             });
         }
     }, [safeType, useFor, noData, showAlert]);
+
+   
 
     useEffect(() => {
         fetchData();
@@ -118,16 +124,20 @@ export default function TableContent({
                 <InsertNewBale style={style} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
 
-            {!isEmpty && content.map((bale) => {
+            {!isEmpty && content.length > 0 && content1.length > 0 && content.map((bale) => {
+                const selectedBale = content1.find(bale1 => bale1.idUnique === bale.idUnique);
                 const plastic = type === "wheelman" ? bale.plasticPresser : bale.plastic;
                 const id = bale.id;
                 const idUnique = bale.idUnique;
                 const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+                const selectedDate = selectedBale?.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+                const selectedHour = selectedBale?.data_ins?.substr(11, 8) || "";
                 const hour = bale.data_ins?.substr(11, 8) || "";
                 const status =  (bale.status === 1 && bale._idCwb === 2) ? "rei" : 
                                 (bale.status === 0) ? "working" : 
                                 (bale.status === 1) ? "completed" : "warning";
-                
+                const style1 = style + " bg-blue-200";
+                console.log ("nuovo stile", style1);
                 return (
                     <tr key={idUnique} data-bale-id={id} className={`max-h-[45px] h-[45px] ${plastic === "ALLUM." || plastic === "FERRO" ? "bg-gray-400" : "bg-gray-200"}`}>
                         {primary && (
@@ -166,9 +176,32 @@ export default function TableContent({
                                 ) : null
                             )
                         ))}
-                        {primary && <td className={style}></td>}  
+                        {primary && <td className={style}></td>}
                         <td className={style + " font-bold"}>{date}</td>
                         <td className={style + " font-bold"}>{hour}</td>
+                        {safeType === "presser" && (
+                        <>
+                        
+                        <td className={style1 + " font-bold"}>{selectedBale?.condition || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale?.reason || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale?.weight || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale?.warehouse || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale?.note || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale?.is_printed ? "Stampato" : "Da stampare"}</td>
+                        <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedHour ||"-"}</td>
+                        </>)
+                    }
+                    {safeType === "wheelman" && (
+                        <>
+                        <td className={style1 + " font-bold"}>{selectedBale?.rei || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale.condition || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale?.selected_bale || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedBale?.notes || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
+                        <td className={style1 + " font-bold"}>{selectedHour || "-"}</td>
+                        </>)
+                    }
                     </tr>
                 );
             })}

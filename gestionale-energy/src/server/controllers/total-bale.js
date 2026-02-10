@@ -3,6 +3,7 @@ import Common from './main/common.js';
 import PresserBale from './presser.js';
 import WheelmanBale from './wheelman.js';
 import Printer from '../inc/printer.js';
+import { Result } from 'postcss/lib/postcss';
 
 const console = new Console("TotalBale", 1);
 
@@ -190,11 +191,12 @@ class TotalBale extends Common {
             var order_by = 'DESC';
 
             // console.debug();
-
+            //condizioni per stampa balle completate
             if (useFor === 'specific') {
-                cond_status = ' AND pb_wb.status = 1';
+                cond_status = ' AND pb_wb.status = 1'; //= 1 balle completate
                 order_by = 'DESC';
             } 
+            //condizioni per stampa balle IFO
             if (useFor === 'reverse') {
                 order_by = 'ASC';
             }
@@ -202,8 +204,7 @@ class TotalBale extends Common {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
 
-            const presserResult = [];
-            const wheelmanResult = [];
+            const Result = [];
             const _params = super.checkConditionForTurn(id_implant);
 
             // balle completate
@@ -236,7 +237,7 @@ class TotalBale extends Common {
             }
 
             if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
-                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
+                res.json({ code: 0, presser: Result, wheelman: Result });
             } else {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
