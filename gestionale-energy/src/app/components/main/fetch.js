@@ -70,32 +70,31 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
 
         const dataJson = await resp.json();
 
-        if (dataJson.code === 0) {
-            setEmpty(false);
+        /**
+         * forma del dato `data`:
+         * Array(
+         *   Object({
+         *      code: number // codice di ritorno dell'operazione, 0 equivale a OK
+         *      data: Array(
+         *          Object({
+         *              idUnique: number // numero identificativo della balla 
+         *              status: number   // stato della stampa 
+         *              presser: Object() // dati del pressista
+         *              wheelman: Object() // dati del carrellista
+         *          })
+         *      )
+         *   })
+         * )
+         */
 
-            if (dataJson.presser && Array.isArray(dataJson.presser) && dataJson.presser.length > 0) {
-                dataJson.presser.map((bale, index) => {
-                    if (dataJson.wheelman[index]) {
-                        dataJson.wheelman[index].plasticPresser = bale.plastic;
-                    }
-                });
-            }
-
-            if (dataJson.wheelman && Array.isArray(dataJson.wheelman) && dataJson.wheelman.length > 0) {
-                dataJson.wheelman.map((bale, index) => {
-                    if (dataJson.presser[index]) {
-                        dataJson.presser[index]._idCwb = bale._idCwb;
-                    }
-                });
-            }
-
-            let contentData = type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : [];
-
-            setContent(contentData);
-        } else {
+        if (dataJson.code !== 0) {   
             setEmpty(true);
             hook && hook(dataJson.message);
         }
+
+        setEmpty(false);
+        // console.log(dataJson.data);
+        setContent(dataJson.data);
     } catch (error) {
         console.error("Errore in fetchDataTotalBale:", error);
         showAlert({
