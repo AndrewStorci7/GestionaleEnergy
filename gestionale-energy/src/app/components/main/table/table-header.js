@@ -21,22 +21,31 @@ export default function TableHeader({
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
     const fixStyle = "resize-none !text-left";
-    const bgColorPresserExtension = " bg-blue-400";
-    const bgColorWheelmanExtension = " bg-blue-800";
+    const bgColorPresserExtension = " bg--bg-wheelman";
+    const bgColorWheelmanExtension = " bg--bg-presser";
     const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "", "Data Ora Pressista"];
     const ArrayPresserExtension = ["Stato carrello", "Motivaz.", "Peso (Kg)", "Note", "Etichetta", "Data Ora Carrellista"];
     const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato carrello", "Motivaz.", "Peso (Kg)", "Arrivo", "Note", "Stato stampa", "","Data Ora Carrellista"];
     const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Pressista"];
     function ColumnName (Array, bgExtension) {
-        return Array.map((col, index) => {
+   return (
+    <tr>
+        {Array.map((col, index) => {
             if (col === "Sel." && admin) {
                 return null;
+            } else {
+                return (
+                    <th
+                        key={index}
+                        className={style + fixStyle + fixColor + bgExtension}
+                    >
+                        {col}
+                    </th>
+                );
             }
-            else {
-            return (<th key={index} className={style + fixStyle +fixColor + bgExtension}>{col}</th>)
-            }
-        })
-    }
+        })}
+    </tr>
+)}
 
     switch (type) {
         case 'presser': 

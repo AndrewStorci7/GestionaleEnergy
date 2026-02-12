@@ -69,7 +69,7 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
         });
 
         const dataJson = await resp.json();
-
+        console.log(dataJson);
         /**
          * forma del dato `data`:
          * Array(
