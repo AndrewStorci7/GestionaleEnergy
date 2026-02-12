@@ -21,20 +21,24 @@ export default function TableHeader({
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
     const fixStyle = "resize-none !text-left";
-    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "", "Data", "Ora","Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "Data", "Ora"];
-    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "","Data", "Ora", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "Data", "Ora"];
+    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "", "Data Ora Prod.","Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "Data Ora Stampa"];
+    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "","Data Ora Prod.", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "Data Ora Stampa"];
+    
     function ColumnName (Array) {
-        return Array.map((col, index) => (
-            <th key={index} className={style + fixStyle +fixColor}>{col}</th>
-        ));
+        return <tr>{
+            Array.map((col, index) => (
+                <th key={index} className={style + fixStyle +fixColor}>{col}</th>
+            ))}
+        </tr>
     }
+
     switch (type) {
         case 'presser': 
         {
             return (
                 <>
                     <thead className="h-[52px]">
-                        {ColumnName(ArrayPresser)}                        
+                        {ColumnName(ArrayPresser)}
                     </thead>
                 </>
             );

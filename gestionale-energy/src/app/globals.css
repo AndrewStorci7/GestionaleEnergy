@@ -44,6 +44,8 @@
 :root {
   --background: #EEEEEE;
   --foreground: #171717;
+  --bg-presser: #23558A;
+  --bg-wheelman: #4A90E2;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -60,7 +62,7 @@ body {
 }
 
 .bgPresser {
-  background-color: #23558A;
+  background-color: var(--bg-presser);
 }
 
 .bgPresser300 {
@@ -68,7 +70,7 @@ body {
 }
 
 .bgWheelman {
-  background-color: #4A90E2;
+  background-color: var(--bg-wheelman);
 }
 
 .bgWheelman300 {
