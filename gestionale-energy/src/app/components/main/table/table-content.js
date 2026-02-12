@@ -177,29 +177,28 @@ export default function TableContent({
                             )
                         ))}
                         {primary && <td className={style}></td>}
-                        <td className={style + " font-bold"}>{date}</td>
-                        <td className={style + " font-bold"}>{hour}</td>
+                        <td className={style + " font-bold"}>{date + " "+ hour}</td>
+                        {/* <td className={style + " font-bold"}>{hour}</td> */}
                         {safeType === "presser" && (
                         <>
                         
-                        <td className={style1 + " font-bold"}>{selectedBale?.condition || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale?.reason || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale?.weight || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale?.warehouse || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale?.note || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale?.is_printed ? "Stampato" : "Da stampare"}</td>
-                        <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedHour ||"-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.condition || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.reason || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.weight || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.note || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style +  " font-bold": style1 + " font-bold"}>{selectedBale?.is_printed ? "Stampato" : "Da stampare"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedDate + " " + selectedHour}</td>
+                        {/* <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedHour ||"-"}</td> */}
                         </>)
                     }
                     {safeType === "wheelman" && (
                         <>
-                        <td className={style1 + " font-bold"}>{selectedBale?.rei || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale.condition || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale?.selected_bale || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedBale?.notes || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
-                        <td className={style1 + " font-bold"}>{selectedHour || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.rei || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale.condition || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.selected_bale || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.notes || "-"}</td>
+                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style +  " font-bold": style1 + " font-bold"}>{selectedDate + " " + selectedHour}</td>
+                        {/* <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style + " font-bold" : style1 + " font-bold"}>{selectedHour || "-"}</td> */}
                         </>)
                     }
                     </tr>

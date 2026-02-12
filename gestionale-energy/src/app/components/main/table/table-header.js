@@ -21,12 +21,21 @@ export default function TableHeader({
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
     const fixStyle = "resize-none !text-left";
-    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "", "Data", "Ora","Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "Data", "Ora"];
-    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Balla al carrello", "Motivaz.", "Peso (Kg)", "Mag. Destinazione", "Note", "Stato stampa", "","Data", "Ora", "Utiliz. REI", "Balla alla pressa", "Balla Selez.", "Note", "Data", "Ora"];
-    function ColumnName (Array) {
-        return Array.map((col, index) => (
-            <th key={index} className={style + fixStyle +fixColor}>{col}</th>
-        ));
+    const bgColorPresserExtension = " bg-blue-400";
+    const bgColorWheelmanExtension = " bg-blue-800";
+    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "", "Data Ora Pressista"];
+    const ArrayPresserExtension = ["Stato carrello", "Motivaz.", "Peso (Kg)", "Note", "Etichetta", "Data Ora Carrellista"];
+    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato carrello", "Motivaz.", "Peso (Kg)", "Arrivo", "Note", "Stato stampa", "","Data Ora Carrellista"];
+    const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Pressista"];
+    function ColumnName (Array, bgExtension) {
+        return Array.map((col, index) => {
+            if (col === "Sel." && admin) {
+                return null;
+            }
+            else {
+            return (<th key={index} className={style + fixStyle +fixColor + bgExtension}>{col}</th>)
+            }
+        })
     }
     switch (type) {
         case 'presser': 
@@ -34,7 +43,8 @@ export default function TableHeader({
             return (
                 <>
                     <thead className="h-[52px]">
-                        {ColumnName(ArrayPresser)}                        
+                        {ColumnName(ArrayPresser, "")} 
+                        {ColumnName(ArrayPresserExtension, bgColorPresserExtension)}                       
                     </thead>
                 </>
             );
@@ -43,7 +53,9 @@ export default function TableHeader({
             return (
                 <>
                     <thead className="h-[52px]">
-                        {ColumnName(ArrayWheelman)}
+                        {ColumnName(ArrayWheelman, "")}
+                        {ColumnName(ArrayWheelmanExtension, bgColorWheelmanExtension)}
+                        
                         {/* <tr>
                             {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
                             {(primary) && <th className={style + fixColor}>N°</th>}

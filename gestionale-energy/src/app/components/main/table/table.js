@@ -223,7 +223,7 @@ export default function Table({
                     ) : (
                         <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[58vh] overflow-y-scroll shadow-inner mb-[40px]">
                             <TableWrapper 
-                                className="col-span-5"
+                                className="col-span-12"
                                 type={"presser"}
                                 tableContent={{
                                     handleSelect: (i, y) => handleSelect(i, y),
@@ -234,7 +234,7 @@ export default function Table({
                                 primary
                                 admin
                             />
-                            <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} />
+                            {/* <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} /> */}
                         </div>
                     )}
                 </>
