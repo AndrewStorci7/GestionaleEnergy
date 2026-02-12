@@ -43,7 +43,7 @@ class PresserBale extends Bale {
                 `SELECT 
                     ${this.table}.id AS 'id', 
                     code_plastic.code AS 'plastic',
-                    code_plastic.desc AS 'code',
+                    code_plastic.desc AS 'codePlastic',
                     rei.name AS 'rei',
                     ${this.table}.id_rei AS '_idRei',
                     cond_${this.table}.type AS 'condition',
@@ -52,11 +52,16 @@ class PresserBale extends Bale {
                     ${this.table}.id_sb AS '_idSb',
                     ${this.table}.note AS 'notes',
                     ${this.table}.data_ins AS 'data_ins'
-                FROM ${this.table} 
-                JOIN code_plastic ON ${this.table}.id_plastic = code_plastic.code
-                JOIN cond_${this.table} ON ${this.table}.id_cpb = cond_${this.table}.id
-                JOIN rei ON ${this.table}.id_rei = rei.id 
-                JOIN selected_bale ON ${this.table}.id_sb = selected_bale.id
+                FROM 
+                    ${this.table} 
+                JOIN 
+                    code_plastic ON ${this.table}.id_plastic = code_plastic.code
+                JOIN 
+                    cond_${this.table} ON ${this.table}.id_cpb = cond_${this.table}.id
+                JOIN 
+                    rei ON ${this.table}.id_rei = rei.id 
+                JOIN 
+                    selected_bale ON ${this.table}.id_sb = selected_bale.id
                 WHERE 
                     ${this.table}.id = ? LIMIT 1`,
                 [id] 

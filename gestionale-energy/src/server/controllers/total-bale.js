@@ -3,7 +3,6 @@ import Common from './main/common.js';
 import PresserBale from './presser.js';
 import WheelmanBale from './wheelman.js';
 import Printer from '../inc/printer.js';
-import { Result } from 'postcss/lib/postcss';
 
 const console = new Console("TotalBale", 1);
 
@@ -127,7 +126,8 @@ class TotalBale extends Common {
      * @param {object[]} presserResult     Array sul quale aggiugnere i dait del pressista
      * @param {object[]} wheelmanResult    Array sul quale aggiugnere i dait del carrellista
      */
-    createObjectArray = async (select, presserResult, wheelmanResult) => {
+    // createObjectArray = async (select, presserResult, wheelmanResult) => {
+    createObjectArray = async (select, totalBaleResult) => {
         console.debug("Select data ricevuto:", select);
         
         try {
@@ -144,23 +144,21 @@ class TotalBale extends Common {
                     continue;
                 }
 
-                const data_presser = await this.PresserInstance.get({ body: { id: id_presser } }, null, true);
-                if (data_presser === -1) {
-                    console.error(`Errore nel recupero dati presser per ID: ${id_presser}`);
-                    continue;
-                }
-                data_presser.status = status;
-                data_presser.idUnique = id;
-                presserResult.push(data_presser);
+                const [presserRes, wheelmanRes] = await Promise.all([
+                    this.PresserInstance.get({ body: { id: id_presser } }, null, true),
+                    this.WheelmanInstance.get({ body: { id: id_wheelman } }, null, true)
+                ])
 
-                const data_wheelman = await this.WheelmanInstance.get({ body: { id: id_wheelman } }, null, true);
-                if (data_wheelman === -1) {
-                    console.error(`Errore nel recupero dati wheelman per ID: ${id_wheelman}`);
-                    continue;
-                }
-                data_wheelman.status = status;
-                data_wheelman.idUnique = id;
-                wheelmanResult.push(data_wheelman);
+                // nel caso ci sia un errore nei dati li salto
+                if (presserRes === -1 || wheelmanRes === -1) continue;
+
+                // console.debug(presserRes)
+                totalBaleResult.push({
+                    idUnique: id,
+                    status,
+                    presser: presserRes,
+                    wheelman: wheelmanRes
+                });
             }
         } catch (error) {
             console.error("Errore in createObjectArray:", error);
@@ -204,12 +202,16 @@ class TotalBale extends Common {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
 
-            const Result = [];
+            // const presserResult = [];
+            // const wheelmanResult = [];
+            const totalBaleResult = [];
             const _params = super.checkConditionForTurn(id_implant);
 
-            // balle completate
+            // balle non completate
             if (useFor === 'regular' || useFor === 'reverse' || useFor === 'undefined') {
-                await this.getBalesNotCompleted(id_implant, order_by, presserResult, wheelmanResult);
+                // ottengo le balle non completate
+                // await this.getBalesNotCompleted(id_implant, order_by, presserResult, wheelmanResult);
+                await this.getBalesNotCompleted(id_implant, order_by, totalBaleResult);
             } else {
                 const [select] = await this.db.query(
                     `SELECT 
@@ -232,15 +234,22 @@ class TotalBale extends Common {
 
                 if (select !== 'undefined' || select !== null) {
                     // console.debug(select);
-                    await this.createObjectArray(select, presserResult, wheelmanResult);
+                    // await this.createObjectArray(select, presserResult, wheelmanResult);
+                    await this.createObjectArray(select, totalBaleResult);
                 }
             }
 
-            if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
-                res.json({ code: 0, presser: Result, wheelman: Result });
+            if (totalBaleResult && totalBaleResult.length > 0) {
+                res.json({ code: 0, data: totalBaleResult });
             } else {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
+
+            // if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
+            //     res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
+            // } else {
+            //     res.json({ code: 1, message: "Nessuna balla trovata" });
+            // }
         } catch (error) {
             console.error(error);
             res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
@@ -254,7 +263,7 @@ class TotalBale extends Common {
      * @param {object[]}    presserResult  Array al quale verranno aggiunto il risultato (pressista)
      * @param {object[]}    wheelmanResult Array al quale verranno aggiunto il risultato (carrellista)
      */
-    async getBalesNotCompleted(implant, order_by, presserResult, wheelmanResult) {
+    async getBalesNotCompleted(implant, order_by, totalBaleResult) {
         // try {
             const [select] = await this.db.query(
                 `SELECT 
@@ -276,7 +285,7 @@ class TotalBale extends Common {
             );
 
             if (select !== 'undefined' || select !== null) {
-                await this.createObjectArray(select, presserResult, wheelmanResult);
+                await this.createObjectArray(select, totalBaleResult);
             }
         // } catch (error) {
         //     // res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);

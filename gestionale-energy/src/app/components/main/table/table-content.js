@@ -5,7 +5,7 @@ import Icon from "../get-icon";
 import InsertNewBale from '../insert-new-bale';
 import { useAlert } from "@alert/alertProvider";
 
-import { useWebSocket } from "@@/components/main/ws/use-web-socket";
+import { useWebSocket } from "@components/main/ws/use-web-socket";
 import { refreshPage } from '@config';
 import { fetchDataTotalBale } from '../fetch';
 
@@ -53,7 +53,7 @@ export default function TableContent({
     const { ws, message } = useWebSocket();
 
     const [content, setContent] = useState([]);
-    const [content1, setContent1] = useState([]);
+    // const [content1, setContent1] = useState([]);
 
     const [isEmpty, setEmpty] = useState(false);
 
@@ -87,14 +87,16 @@ export default function TableContent({
         }
         return type;
     }, [type]);
-    const Opposite = safeType === "presser" ? "wheelman" : "presser";
+    
+    // const Opposite = safeType === "presser" ? "wheelman" : "presser";
+
     const fetchData = useCallback(async () => {
         try {
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
             
             await fetchDataTotalBale(body, safeType, setContent, setEmpty, noData, showAlert);
-            await fetchDataTotalBale(body, Opposite, setContent1, setEmpty, noData, showAlert);
+            // await fetchDataTotalBale(body, Opposite, setContent1, setEmpty, noData, showAlert);
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -119,42 +121,58 @@ export default function TableContent({
     };
 
     return (
-        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll">            
+        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll">
             {useFor === 'regular' && add.state && (
                 <InsertNewBale style={style} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
 
-            {!isEmpty && content.length > 0 && content1.length > 0 && content.map((bale) => {
-                const selectedBale = content1.find(bale1 => bale1.idUnique === bale.idUnique);
-                const plastic = type === "wheelman" ? bale.plasticPresser : bale.plastic;
-                const id = bale.id;
+            {!isEmpty && content && content.map((bale) => {
+                console.log(bale)
+                // const selectedBale = content1.find(bale1 => bale1.idUnique === bale.idUnique);
+                const plastic = bale.presser.plastic;
+                const id = type === "presser" ? bale.presser.id : bale.wheelman.id;
                 const idUnique = bale.idUnique;
-                const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
-                const selectedDate = selectedBale?.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
-                const selectedHour = selectedBale?.data_ins?.substr(11, 8) || "";
-                const hour = bale.data_ins?.substr(11, 8) || "";
-                const status =  (bale.status === 1 && bale._idCwb === 2) ? "rei" : 
+                const datePreser = bale.presser.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+                const hourPresser = bale.presser.data_ins?.substr(11, 5) || "";
+                const dateWheelman = bale.wheelman.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+                const hourWheelman = bale.wheelman.data_ins?.substr(11, 5) || "";
+                // const selectedDate = selectedBale?.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+                // const selectedHour = selectedBale?.data_ins?.substr(11, 8) || "";
+                const status =  (bale.status === 1 && bale.wheelman._idCwb === 2) ? "rei" : 
                                 (bale.status === 0) ? "working" : 
                                 (bale.status === 1) ? "completed" : "warning";
                 const style1 = style + " bg-blue-200";
-                console.log ("nuovo stile", style1);
+
                 return (
-                    <tr key={idUnique} data-bale-id={id} className={`max-h-[45px] h-[45px] ${plastic === "ALLUM." || plastic === "FERRO" ? "bg-gray-400" : "bg-gray-200"}`}>
-                        {primary && (
-                            <>
-                                {!admin && 
-                                    <td key={idUnique + "_checkbtn"} className={style}>
-                                        {(useFor === 'regular' || useFor === 'reverse') && (
-                                            <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
-                                        )}
-                                    </td>
-                                }
-                                <td className={style + " font-bold"} >{idUnique}</td>
-                                <td className={style}><Icon type={status} /></td>
-                                {type === 'wheelman' ? <td className={style}>{plastic}</td> : <></>}
-                            </>
-                        )}
-                        {Object.entries(bale).map(([key, value]) => (
+                    <tr 
+                    key={idUnique} 
+                    data-bale-id={
+                        safeType === "wheelman" ? 
+                        bale.wheelman.id : 
+                        bale.presser.id
+                    } 
+                    className={`max-h-[45px] h-[45px] ${plastic === "ALLUM." || plastic === "FERRO" ? "bg-gray-400" : "bg-gray-200"}`}
+                    >
+                        {/* Nel caso in cui viene chiamata la componente con la prop `primary` a `true`
+                        Verranno visualizzati il bottone di selezione, l'id e lo stato */}
+                        {primary && (<>
+                            {!admin && 
+                                <td key={idUnique + "_checkbtn"} className={style}>
+                                    {(useFor === 'regular' || useFor === 'reverse') && (
+                                        <CheckButton 
+                                        isSelected={selectedBaleId === id} 
+                                        handleClick={() => handleRowClick(id, idUnique)} 
+                                        />
+                                    )}
+                                </td>
+                            }
+                            <td className={style + " font-bold"} >{idUnique}</td>
+                            <td className={style}><Icon type={status} /></td>
+                            {type === 'wheelman' ? <td className={style}>{plastic}</td> : <></>}
+                        </>)}
+
+                        {/* Dati del pressista */}
+                        {Object.entries(bale.presser).map(([key, value]) => (
                             key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
                                 key === "notes" && value ? (
                                     <td key={idUnique + key} className={style + " !p-1"}>
@@ -177,30 +195,58 @@ export default function TableContent({
                             )
                         ))}
                         {primary && <td className={style}></td>}
-                        <td className={style + " font-bold"}>{date + " "+ hour}</td>
+                        <td className={style + " font-bold"}>{datePreser + " " + hourPresser}</td>
                         {/* <td className={style + " font-bold"}>{hour}</td> */}
-                        {safeType === "presser" && (
-                        <>
                         
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.condition || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.reason || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.weight || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.note || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style +  " font-bold": style1 + " font-bold"}>{selectedBale?.is_printed ? "Stampato" : "Da stampare"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedDate + " " + selectedHour}</td>
-                        {/* <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedHour ||"-"}</td> */}
-                        </>)
-                    }
-                    {safeType === "wheelman" && (
-                        <>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.rei || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale.condition || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.selected_bale || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style : style1}>{selectedBale?.notes || "-"}</td>
-                        <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style +  " font-bold": style1 + " font-bold"}>{selectedDate + " " + selectedHour}</td>
-                        {/* <td className={plastic === "ALLUM." || plastic  === "FERRO" ? style + " font-bold" : style1 + " font-bold"}>{selectedHour || "-"}</td> */}
-                        </>)
-                    }
+                        {/* Dati del pressista */}
+                        {Object.entries(bale.wheelman).map(([key, value]) => (
+                            key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
+                                key === "notes" && value ? (
+                                    <td key={idUnique + key} className={style1 + " !p-1"}>
+                                        <button onClick={() => handleNoteClick(value)}>
+                                            <Icon type="info" /> 
+                                        </button>
+                                    </td>
+                                ) : (key === "is_printed") ? (
+                                    <td key={idUnique + key} className={style1 + " font-bold"}>{value == 0 ? "Da stamp." : "Stampato"}</td>
+                                ) : (key === "weight") ? (
+                                    <td 
+                                        className={style1}
+                                        key={idUnique + key}
+                                    >
+                                        {value}
+                                    </td>
+                                ) : (key !== "data_ins") ? (
+                                    <td key={idUnique + key} className={style1}>{value}</td>
+                                ) : null
+                            )
+                        ))}
+                        {primary && <td className={style1}></td>}
+                        <td className={style1 + " font-bold"}>{dateWheelman + " " + hourWheelman}</td>
+
+                        {/* {safeType === "presser" && (
+                            <>
+                            
+                            <td className={style1 + " font-bold"}>{selectedBale?.condition || "-"}</td>
+                            <td className={style1 + " font-bold"}>{selectedBale?.reason || "-"}</td>
+                            <td className={style1 + " font-bold"}>{selectedBale?.weight || "-"}</td>
+                            <td className={style1 + " font-bold"}>{selectedBale?.warehouse || "-"}</td>
+                            <td className={style1 + " font-bold"}>{selectedBale?.note || "-"}</td>
+                            <td className={style1 + " font-bold"}>{selectedBale?.is_printed ? "Stampato" : "Da stampare"}</td>
+                            <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
+                            <td className={style1 + " font-bold"}>{selectedHour ||"-"}</td>
+                            </>)
+                        } */}
+                        {/* {safeType === "wheelman" && (
+                            <>
+                                <td className={style1 + " font-bold"}>{selectedBale?.rei || "-"}</td>
+                                <td className={style1 + " font-bold"}>{selectedBale.condition || "-"}</td>
+                                <td className={style1 + " font-bold"}>{selectedBale?.selected_bale || "-"}</td>
+                                <td className={style1 + " font-bold"}>{selectedBale?.notes || "-"}</td>
+                                <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
+                                <td className={style1 + " font-bold"}>{selectedHour || "-"}</td>
+                            </>)
+                        } */}
                     </tr>
                 );
             })}
