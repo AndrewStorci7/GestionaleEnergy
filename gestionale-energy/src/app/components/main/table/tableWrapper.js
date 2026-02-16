@@ -33,8 +33,8 @@ const TableWrapper = ({
 
     return (
         <div {...props}>
-            <div className={`not-prose shadow-sm relative rounded-xl overflow-hidden ${backgroundColor}`}>
-                <div className="absolute inset-0 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
+            <div className={`not-prose shadow-sm relative z-0 rounded-xl overflow-hidden ${backgroundColor}`}>
+                <div className="absolute inset-0 -z-10 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
                     <h2 className='grid grid-cols-16 font-bold text-xl  text-white'>
                         <span className='text-left px-4 pt-[5px]'>
                         {safeType === 'presser' ? 'Pressista' : 'Carrellista'}
@@ -128,7 +128,7 @@ const TableWrapper = ({
                         </table>
                     </div>
                 </div>
-                <div className="absolute inset-0 pointer-events-none border border-black/5 rounded-xl dark:border-white/5"></div>
+                <div className="absolute inset-0 z-10 pointer-events-none border border-black/5 rounded-xl dark:border-white/5"></div>
             </div>
         </div>
     )

@@ -11,7 +11,8 @@ function SearchInput({ type }) {
     const [bg_color, setBgColor] = useState("");
     const [searchFor, setSearchFor] = useState([]);
     const [label_title, setLabelTitle] = useState([]);
-    const [attivo, setAttivo] = useState(true); // stato per attiva/disattiva
+    const [attivo, setAttivo] = useState(false); // stato per attiva/disattiva
+
 
     const setData = (type) => {
         switch (type) {

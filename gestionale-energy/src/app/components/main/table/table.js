@@ -89,7 +89,7 @@ export default function Table({
             return (
                 <>
                     <div className="grid grid-cols-9 gap-2 mt-[10px] relative overflow-y-scroll shadow-inner w-full 
-                                    sm:h-[50vh]
+                                    sm:h-[60vh]
                                     md:h-[65vh]
                                     lg:h-[70vh]">
                         <TableWrapper 
@@ -108,14 +108,15 @@ export default function Table({
                             type={"wheelman"} 
                             tableContent={{ objAdd: objAdd }} /> */}
                     </div>
-                    
+                    <div>           
                     <BtnPresser 
                         implant={implant}
                         idUser={idUser}
                         clickAddHandle={handleAddPressed}
                         handleConfirmAdd={confirmedAdd}
                         baleObj={objIdBale}
-                        />
+                    />
+
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
                             <h1 className={`${_CMNSTYLE_EMPTY}`}>
@@ -123,6 +124,7 @@ export default function Table({
                             </h1>
                         </div>
                     ) : null }
+                    </div>
                 </>
             );
         }
@@ -130,7 +132,7 @@ export default function Table({
             return (
                 <>
                             <div className="grid grid-cols-3 gap-2 mt-2 relative overflow-y-scroll shadow-inner w-full
-                                    sm:h-[50vh]
+                                    sm:h-[60vh]
                                     md:h-[65vh]
                                     lg:h-[70vh]">                        
                             <TableWrapper 
@@ -150,7 +152,8 @@ export default function Table({
                             type={"presser"} 
                             tableContent={{ objAdd: objAdd }} /> */}
                         </div>
-                    <div>        
+                     
+                            
                     <BtnWheelman 
                         implant={implant}
                         idUser={idUser}
@@ -164,7 +167,6 @@ export default function Table({
                             </h1>
                         </div>
                     ) : null }
-                    </div>
                 </>
             );
         }
