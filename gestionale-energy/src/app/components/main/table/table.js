@@ -88,7 +88,10 @@ export default function Table({
         case "presser": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner w-full">
+                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative overflow-y-scroll shadow-inner w-full 
+                                    sm:h-[50vh]
+                                    md:h-[65vh]
+                                    lg:h-[70vh]">
                         <TableWrapper 
                             className="col-span-12"
                             type={"presser"}
@@ -105,15 +108,14 @@ export default function Table({
                             type={"wheelman"} 
                             tableContent={{ objAdd: objAdd }} /> */}
                     </div>
-
+                    
                     <BtnPresser 
                         implant={implant}
                         idUser={idUser}
                         clickAddHandle={handleAddPressed}
                         handleConfirmAdd={confirmedAdd}
                         baleObj={objIdBale}
-                    />
-
+                        />
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
                             <h1 className={`${_CMNSTYLE_EMPTY}`}>
@@ -127,8 +129,11 @@ export default function Table({
         case "wheelman": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner w-full">
-                        <TableWrapper 
+                            <div className="grid grid-cols-3 gap-2 mt-2 relative overflow-y-scroll shadow-inner w-full
+                                    sm:h-[50vh]
+                                    md:h-[65vh]
+                                    lg:h-[70vh]">                        
+                            <TableWrapper 
                             // className="col-span-5"
                             className="col-span-12"
                             type={"wheelman"}
@@ -144,8 +149,8 @@ export default function Table({
                             className="col-span-4" 
                             type={"presser"} 
                             tableContent={{ objAdd: objAdd }} /> */}
-                    </div>
-
+                        </div>
+                    <div>        
                     <BtnWheelman 
                         implant={implant}
                         idUser={idUser}
@@ -159,6 +164,7 @@ export default function Table({
                             </h1>
                         </div>
                     ) : null }
+                    </div>
                 </>
             );
         }
@@ -202,7 +208,10 @@ export default function Table({
                     </div>
                     
                     {!handleToggleSwitch ? (
-                        <div className="grid grid-cols-2 gap-2 relative h-[60vh] rounded-lg">
+                        <div className="grid grid-cols-2 gap-2 relative rounded-lg
+                                        sm:h-[40vh]
+                                        md:h-[55vh]
+                                        lg:h-[80vh]">
                             <div className="bg-blue-100 mt-[10px] border-[0.1px] border-slate-200 shadow-lg rounded-lg">
                                 <h1 className="text-center bg-blue-300 font-bold text-xl py-[15px] rounded-t-lg">
                                     REPORT PREDEFINITI

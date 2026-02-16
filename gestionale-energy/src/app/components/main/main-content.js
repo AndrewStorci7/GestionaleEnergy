@@ -29,6 +29,7 @@ export default function MainContent({
                 implant={implant}
                 idUser={idUser}
             />
+            
         </div>
     );
 }

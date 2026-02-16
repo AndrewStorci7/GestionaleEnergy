@@ -74,7 +74,7 @@ export default function BtnPresser({
 
     return (
         <>
-            <div className="fixed bottom-10 left-0 w-full md:w-1/2  w-1/2 font-bold on-fix-index">
+            <div className="fixed bottom-10 left-0 w-full md:w-1/2  w-1/2 font-bold on-fix-index ">
                 <div className="flex flex-row-reverse">
                     <button 
                     className="on-btn-presser" 
