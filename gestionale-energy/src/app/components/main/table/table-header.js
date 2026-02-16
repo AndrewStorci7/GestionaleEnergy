@@ -1,7 +1,6 @@
 import React from "react";
 
 import PropTypes from 'prop-types'; // per ESLint
-import Script from "next/script";
 
 /**
  * @param {boolean} admin   Serve per gestire la visibilità di alcune colonne nel caso in cui la tabella venga vista da un amministratore; Default: false
@@ -14,38 +13,47 @@ import Script from "next/script";
 export default function TableHeader({ 
     admin = false,
     type, 
-    primary = false,
+    // primary = false,
     style
 }) {
     
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
     const fixStyle = "resize-none !text-left";
-    const bgColorPresserExtension = " bg--bg-wheelman";
-    const bgColorWheelmanExtension = " bg--bg-presser";
-    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "", "Data Ora Pressista"];
-    const ArrayPresserExtension = ["Stato carrello", "Motivaz.", "Peso (Kg)", "Note", "Etichetta", "Data Ora Carrellista"];
-    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato carrello", "Motivaz.", "Peso (Kg)", "Arrivo", "Note", "Stato stampa", "","Data Ora Carrellista"];
-    const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Pressista"];
-    function ColumnName (Array, bgExtension) {
-   return (
-    <tr>
-        {Array.map((col, index) => {
-            if (col === "Sel." && admin) {
-                return null;
-            } else {
-                return (
-                    <th
-                        key={index}
-                        className={style + fixStyle + fixColor + bgExtension}
-                    >
-                        {col}
-                    </th>
-                );
-            }
-        })}
-    </tr>
-)}
+    const bgColorPresserExtension = " bg-wheelman";
+    const bgColorWheelmanExtension = " bg-presser";
+
+
+    // Voci dell'interfaccia Pressista
+    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "", "Data Ora Press."];
+    const ArrayPresserExtension = ["Stato car.", "Motivaz.", "Peso (Kg)", "Note", "Etichetta", "Data Ora Carr"];
+    
+    // Voci dell'interfaccia Carrellista
+    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato car.", "Motivaz.", "Peso (Kg)", "Note", "Etichetta", "","Data Ora Carr"];
+    const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Press"];
+
+    /**
+     * ColumnName
+     * funzione che renderizza, ovvero stampa le voci della tabella basandosi su
+     * un array di stringhe che equivalgono alle voci.
+     * Il colore di background viene impostato con il parametro `bgExtension`
+     * 
+     * @param {string[]}    voci Array contente le voci dell'header
+     * @param {string}      bgExtension 
+     */
+    function ColumnName (voci, bgExtension) {
+        return voci.map((col, index) => {
+            if (col == "Sel." && admin) return null;
+            return (
+                <th
+                    key={index}
+                    className={style + fixStyle + fixColor + bgExtension}
+                >
+                    {col}
+                </th>
+            );
+        })
+    }
 
     switch (type) {
         case 'presser': 
@@ -53,8 +61,10 @@ export default function TableHeader({
             return (
                 <>
                     <thead className="h-[52px]">
-                        {ColumnName(ArrayPresser, "")} 
-                        {ColumnName(ArrayPresserExtension, bgColorPresserExtension)}                       
+                        <tr>
+                            {ColumnName(ArrayPresser, "")} 
+                            {ColumnName(ArrayPresserExtension, bgColorPresserExtension)}                       
+                        </tr>
                     </thead>
                 </>
             );
@@ -63,24 +73,10 @@ export default function TableHeader({
             return (
                 <>
                     <thead className="h-[52px]">
-                        {ColumnName(ArrayWheelman, "")}
-                        {ColumnName(ArrayWheelmanExtension, bgColorWheelmanExtension)}
-                        
-                        {/* <tr>
-                            {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
-                            {(primary) && <th className={style + fixColor}>N°</th>}
-                            {(primary) && <th className={style + fixColor}>Stato</th>}
-                            {(primary) && <th className={style + fixStyle + fixColor}>Plastica</th>}
-                            <th className={style + fixStyle + fixColor + fixStyle}><p className="truncate">Balla al carrello</p></th>
-                            <th className={style + fixStyle + fixColor}>Motivaz.</th>
-                            <th className={style + fixStyle + fixColor}>Peso (Kg)</th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Mag. Destinazione</p></th>
-                            <th className={style + fixStyle + fixColor}>Note</th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Stato stampa</p></th>
-                            {(primary) && <th className={style + fixStyle + fixColor + "w-[40px]"}></th>}
-                            <th className={style + fixStyle + fixColor}>Data</th>
-                            <th className={style + fixStyle + fixColor}>Ora</th>
-                        </tr> */}
+                        <tr>
+                            {ColumnName(ArrayWheelman, "")}
+                            {ColumnName(ArrayWheelmanExtension, bgColorWheelmanExtension)}
+                        </tr>
                     </thead>
                 </>
             );
@@ -91,6 +87,6 @@ export default function TableHeader({
 TableHeader.propTypes = {
     admin: PropTypes.bool,
     type: PropTypes.string.isRequired,
-    primary: PropTypes.bool,
+    // primary: PropTypes.bool,
     style: PropTypes.string
 };

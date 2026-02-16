@@ -40,7 +40,7 @@ const TableWrapper = ({
                     </h2>
                 </div>
                 <div className="relative rounded-xl overflow-auto shadow-inner">
-                    <div className="shadow-sm overflow-hidden my-8">
+                    <div className="shadow-sm overflow-hidden overflow-x-visible my-8 select-none">
                         <table 
                             id="gest-on-table" 
                             className="border-collapse table-auto w-full text-sm"
@@ -53,7 +53,19 @@ const TableWrapper = ({
                             />
                             
                             {/* BALLE IN LAVORAZIONE */}
-                            {primary ? (
+                            <TableContent 
+                                key={`${safeType}-primary-regular`}
+                                type={safeType} 
+                                handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
+                                selectedBaleId={tableContent.selectedBaleId}
+                                add={tableContent.objAdd}  
+                                useFor={safeType === "wheelman" ? "reverse" : "regular"}
+                                noData={(e) => tableContent.noData(e)} 
+                                primary={primary}
+                                admin={admin}
+                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400," 
+                            />
+                            {/* {primary ? ( 
                                 <TableContent 
                                     key={`${safeType}-primary-regular`}
                                     type={safeType} 
@@ -74,10 +86,21 @@ const TableWrapper = ({
                                     add={tableContent.objAdd} 
                                     style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                                 />
-                            )}
+                            )} */}
 
                             {/* BALLE COMPLETATE */}
-                            {primary ? (
+                            <TableContent 
+                                key={`${safeType}-primary-specific`}
+                                type={safeType} 
+                                handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
+                                selectedBaleId={tableContent.selectedBaleId} 
+                                useFor={"specific"}
+                                noData={(e) => tableContent.noData(e)} 
+                                primary={primary}
+                                admin={admin}
+                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
+                            />
+                            {/* {primary ? (
                                 <TableContent 
                                     key={`${safeType}-primary-specific`}
                                     type={safeType} 
@@ -96,7 +119,7 @@ const TableWrapper = ({
                                     useFor={"specific"} 
                                     style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                                 />
-                            )}          
+                            )} */}
                         </table>
                     </div>
                 </div>

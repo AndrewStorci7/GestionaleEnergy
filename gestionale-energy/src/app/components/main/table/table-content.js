@@ -2,7 +2,7 @@
 import Cookies from 'js-cookie';
 import CheckButton from "../select-button";
 import Icon from "../get-icon";
-import InsertNewBale from '../insert-new-bale';
+import InsertNewBale from './insert-new-bale';
 import { useAlert } from "@alert/alertProvider";
 
 import { useWebSocket } from "@components/main/ws/use-web-socket";
@@ -10,6 +10,7 @@ import { refreshPage } from '@config';
 import { fetchDataTotalBale } from '../fetch';
 
 import PropTypes from 'prop-types'; // per ESLint
+import { checkIfAttributeIsValid } from '@functions';
 
 //commento di prova
 /**
@@ -53,7 +54,6 @@ export default function TableContent({
     const { ws, message } = useWebSocket();
 
     const [content, setContent] = useState([]);
-    // const [content1, setContent1] = useState([]);
 
     const [isEmpty, setEmpty] = useState(false);
 
@@ -87,8 +87,6 @@ export default function TableContent({
         }
         return type;
     }, [type]);
-    
-    // const Opposite = safeType === "presser" ? "wheelman" : "presser";
 
     const fetchData = useCallback(async () => {
         try {
@@ -96,7 +94,6 @@ export default function TableContent({
             const body = { id_implant: cookies.id_implant, useFor };
             
             await fetchDataTotalBale(body, safeType, setContent, setEmpty, noData, showAlert);
-            // await fetchDataTotalBale(body, Opposite, setContent1, setEmpty, noData, showAlert);
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -108,7 +105,54 @@ export default function TableContent({
         }
     }, [safeType, useFor, noData, showAlert]);
 
-   
+    /**
+     * renderDataContent
+     * 
+     * Renderizza i dati del carrellista e del pressista in un'unica riga
+     * 
+     * @param {Object}  data dati provenienti dal database che possono essere del pressista ("presser") o del carrellista ("wheelman")
+     * @param {string}  style stile del background da applicare a tutta la riga
+     * @param {number}  idUnique Id univoco della balla totale
+     * @param {boolean} showBtnOk se true inserirà uno spazio per il bottone di conferma aggiunta, altrimenti no
+     * @returns 
+     */
+    const renderDataContent = (data, style, idUnique, showBtnOk) => {
+
+        // gestire meglio l'errore
+        if (typeof data !== "object") return;
+
+        // Data e ora del pressista
+        const date = data.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+        const hour = data.data_ins?.substr(11, 5) || "";
+
+        return (<>
+            {/* Dati del pressista */}
+            {Object.entries(data).map(([key, value]) => (
+                checkIfAttributeIsValid(key) ? (
+                    key === "notes" && value ? (
+                        <td key={idUnique + key} className={style + " !p-1"}>
+                            <button onClick={() => handleNoteClick(value)}>
+                                <Icon type="info" /> 
+                            </button>
+                        </td>
+                    ) : (key === "is_printed") ? (
+                        <td key={idUnique + key} className={style + " !p-2" + " font-bold"}>{value == 0 ? "Da stamp." : "Stampato"}</td>
+                    ) : (key === "weight") ? (
+                        <td 
+                            className={style + " !p-2"}
+                            key={idUnique + key}
+                        >
+                            {value}
+                        </td>
+                    ) : (key !== "data_ins") ? (
+                        <td key={idUnique + key} className={style + " !p-2"}>{value}</td>
+                    ) : null
+                ) : null
+            ))}
+            {showBtnOk && <td className={style + " !p-2"}></td>}{/* spazio del bottone dell'OK per la conferma dell'aggiunta */}
+            <td className={style + " !p-2" + " font-bold"}>{date + " " + hour}</td>
+        </>)
+    }
 
     useEffect(() => {
         fetchData();
@@ -127,21 +171,18 @@ export default function TableContent({
             )}
 
             {!isEmpty && content && content.map((bale) => {
-                console.log(bale)
-                // const selectedBale = content1.find(bale1 => bale1.idUnique === bale.idUnique);
+
                 const plastic = bale.presser.plastic;
                 const id = type === "presser" ? bale.presser.id : bale.wheelman.id;
                 const idUnique = bale.idUnique;
-                const datePreser = bale.presser.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
-                const hourPresser = bale.presser.data_ins?.substr(11, 5) || "";
-                const dateWheelman = bale.wheelman.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
-                const hourWheelman = bale.wheelman.data_ins?.substr(11, 5) || "";
-                // const selectedDate = selectedBale?.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
-                // const selectedHour = selectedBale?.data_ins?.substr(11, 8) || "";
+
                 const status =  (bale.status === 1 && bale.wheelman._idCwb === 2) ? "rei" : 
                                 (bale.status === 0) ? "working" : 
                                 (bale.status === 1) ? "completed" : "warning";
-                const style1 = style + " bg-blue-200";
+                
+                // variabile che controlla se la balla corrente è ferro o allum, 
+                // qualora sia vero la riga verrà colorato di grigio
+                const bgAllumFerro = plastic === "ALLUM." || plastic === "FERRO" ? "!bg-gray-400" : "";
 
                 return (
                     <tr 
@@ -151,102 +192,36 @@ export default function TableContent({
                         bale.wheelman.id : 
                         bale.presser.id
                     } 
-                    className={`max-h-[45px] h-[45px] ${plastic === "ALLUM." || plastic === "FERRO" ? "bg-gray-400" : "bg-gray-200"}`}
+                    className={`max-h-[45px] h-[45px] bg-gray-200 ${bgAllumFerro}`}
                     >
                         {/* Nel caso in cui viene chiamata la componente con la prop `primary` a `true`
                         Verranno visualizzati il bottone di selezione, l'id e lo stato */}
-                        {primary && (<>
-                            {!admin && 
-                                <td key={idUnique + "_checkbtn"} className={style}>
-                                    {(useFor === 'regular' || useFor === 'reverse') && (
-                                        <CheckButton 
-                                        isSelected={selectedBaleId === id} 
-                                        handleClick={() => handleRowClick(id, idUnique)} 
-                                        />
-                                    )}
-                                </td>
-                            }
-                            <td className={style + " font-bold"} >{idUnique}</td>
-                            <td className={style}><Icon type={status} /></td>
-                            {type === 'wheelman' ? <td className={style}>{plastic}</td> : <></>}
-                        </>)}
+                        {!admin && 
+                            <td key={idUnique + "_checkbtn"} className={style}>
+                                {(useFor === 'regular' || useFor === 'reverse') && (
+                                    <CheckButton 
+                                    isSelected={selectedBaleId === id} 
+                                    handleClick={() => handleRowClick(id, idUnique)} 
+                                    />
+                                )}
+                            </td>
+                        }
+                        <td className={style + " font-bold"} >{idUnique}</td>
+                        <td className={style}><Icon type={status} /></td>
+                        <td className={style}>{plastic}</td>
 
-                        {/* Dati del pressista */}
-                        {Object.entries(bale.presser).map(([key, value]) => (
-                            key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
-                                key === "notes" && value ? (
-                                    <td key={idUnique + key} className={style + " !p-1"}>
-                                        <button onClick={() => handleNoteClick(value)}>
-                                            <Icon type="info" /> 
-                                        </button>
-                                    </td>
-                                ) : (key === "is_printed") ? (
-                                    <td key={idUnique + key} className={style + " font-bold"}>{value == 0 ? "Da stamp." : "Stampato"}</td>
-                                ) : (key === "weight") ? (
-                                    <td 
-                                        className={style}
-                                        key={idUnique + key}
-                                    >
-                                        {value}
-                                    </td>
-                                ) : (key !== "data_ins") ? (
-                                    <td key={idUnique + key} className={style}>{value}</td>
-                                ) : null
-                            )
-                        ))}
-                        {primary && <td className={style}></td>}
-                        <td className={style + " font-bold"}>{datePreser + " " + hourPresser}</td>
-                        {/* <td className={style + " font-bold"}>{hour}</td> */}
-                        
-                        {/* Dati del pressista */}
-                        {Object.entries(bale.wheelman).map(([key, value]) => (
-                            key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
-                                key === "notes" && value ? (
-                                    <td key={idUnique + key} className={style1 + " !p-1"}>
-                                        <button onClick={() => handleNoteClick(value)}>
-                                            <Icon type="info" /> 
-                                        </button>
-                                    </td>
-                                ) : (key === "is_printed") ? (
-                                    <td key={idUnique + key} className={style1 + " font-bold"}>{value == 0 ? "Da stamp." : "Stampato"}</td>
-                                ) : (key === "weight") ? (
-                                    <td 
-                                        className={style1}
-                                        key={idUnique + key}
-                                    >
-                                        {value}
-                                    </td>
-                                ) : (key !== "data_ins") ? (
-                                    <td key={idUnique + key} className={style1}>{value}</td>
-                                ) : null
-                            )
-                        ))}
-                        {primary && <td className={style1}></td>}
-                        <td className={style1 + " font-bold"}>{dateWheelman + " " + hourWheelman}</td>
-
-                        {/* {safeType === "presser" && (
-                            <>
-                            
-                            <td className={style1 + " font-bold"}>{selectedBale?.condition || "-"}</td>
-                            <td className={style1 + " font-bold"}>{selectedBale?.reason || "-"}</td>
-                            <td className={style1 + " font-bold"}>{selectedBale?.weight || "-"}</td>
-                            <td className={style1 + " font-bold"}>{selectedBale?.warehouse || "-"}</td>
-                            <td className={style1 + " font-bold"}>{selectedBale?.note || "-"}</td>
-                            <td className={style1 + " font-bold"}>{selectedBale?.is_printed ? "Stampato" : "Da stampare"}</td>
-                            <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
-                            <td className={style1 + " font-bold"}>{selectedHour ||"-"}</td>
-                            </>)
-                        } */}
-                        {/* {safeType === "wheelman" && (
-                            <>
-                                <td className={style1 + " font-bold"}>{selectedBale?.rei || "-"}</td>
-                                <td className={style1 + " font-bold"}>{selectedBale.condition || "-"}</td>
-                                <td className={style1 + " font-bold"}>{selectedBale?.selected_bale || "-"}</td>
-                                <td className={style1 + " font-bold"}>{selectedBale?.notes || "-"}</td>
-                                <td className={style1 + " font-bold"}>{selectedDate || "-"}</td>
-                                <td className={style1 + " font-bold"}>{selectedHour || "-"}</td>
-                            </>)
-                        } */}
+                        {renderDataContent(
+                            type === "presser" ? bale.presser : bale.wheelman,
+                            `${style} ${bgAllumFerro}`,
+                            idUnique,
+                            (type === "presser")
+                        )}
+                        {renderDataContent(
+                            type === "presser" ? bale.wheelman : bale.presser,
+                            type === "presser" ? `${bgAllumFerro} bgWheelman300 ${style}`: `bgPresser300 ${style} ${bgAllumFerro}`,
+                            idUnique,
+                            false
+                        )}
                     </tr>
                 );
             })}

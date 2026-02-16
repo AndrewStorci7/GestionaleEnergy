@@ -99,9 +99,18 @@ export default function InsertNewBale({
             <td className={style + " !p-2"}>{mod && <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Inserisci note" />}</td>
             {primary && (
                 <td className={style + " !p-2"}>
-                    <button className={`border-b text-white font-bold px-[6px] py-[3px] rounded-xl bg-blue-500 ${!isPlasticValid && 'disabled:opacity-45 cursor-no-drop'}`} onClick={handleClick} disabled={!isPlasticValid}>OK</button>
+                    <button className={`border-b text-white font-bold px-[6px] py-[3px] rounded-xl bg-blue-500 ${!isPlasticValid && 'disabled:opacity-45 cursor-no-drop'}`} onClick={handleClick} disabled={!isPlasticValid}>
+                        CONFERMA
+                    </button>
                 </td>
             )}
+            {/* Data e ora*/}
+            <td className={style + " !p-2"}></td>
+            {/* "Buchi" per i dati del carrellista */}
+            <td className={style + " !p-2"}></td>
+            <td className={style + " !p-2"}></td>
+            <td className={style + " !p-2"}></td>
+            <td className={style + " !p-2"}></td>
             <td className={style + " !p-2"}></td>
             <td className={style + " !p-2"}></td>
         </tr>

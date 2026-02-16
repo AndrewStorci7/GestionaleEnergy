@@ -1,0 +1,21 @@
+// Array dei valori da escludere
+const VAL_TO_ESCLUDE = ["id", "status", "idUnique", "plastic", "plasticPresser", "warehouse"];
+
+/**
+ * CheckIfAttributeIsValid
+ * Controlla che la chaive passata come parametro sia valida e che non sia presente
+ * nell'array degli attirbuti da escludere. \
+ * **Di default per convenzione, tutti i dati che si vogliono escludere dal database
+ * iniziano con il carattere `-`**.
+ * 
+ * @param {string} key Chiave dell'array dell'oggetto
+ * 
+ * @returns true se è valido, false altrimenti
+ */
+const checkIfAttributeIsValid = (key) => {
+    return !key.startsWith("_") && !VAL_TO_ESCLUDE.includes(key);
+}
+
+export {
+    checkIfAttributeIsValid,
+}
