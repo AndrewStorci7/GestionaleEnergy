@@ -120,11 +120,11 @@ export default function TableContent({
 
         // gestire meglio l'errore
         if (typeof data !== "object") return;
-
+        console.log (data);
         // Data e ora del pressista
         const date = data.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
         const hour = data.data_ins?.substr(11, 5) || "";
-
+        console.log ("data ", data.data_ins);
         return (<>
             {/* Dati del pressista */}
             {Object.entries(data).map(([key, value]) => (
@@ -149,6 +149,7 @@ export default function TableContent({
                     ) : null
                 ) : null
             ))}
+            
             {showBtnOk && <td className={style + " !p-2"}></td>}{/* spazio del bottone dell'OK per la conferma dell'aggiunta */}
             <td className={style + " !p-2" + " font-bold"}>{date + " " + hour}</td>
         </>)
@@ -173,6 +174,7 @@ export default function TableContent({
             {!isEmpty && content && content.map((bale) => {
 
                 const plastic = bale.presser.plastic;
+                const code = bale.presser.codePlastic;
                 const id = type === "presser" ? bale.presser.id : bale.wheelman.id;
                 const idUnique = bale.idUnique;
 
@@ -210,6 +212,9 @@ export default function TableContent({
                         <td className={style}><Icon type={status} /></td>
                         <td className={style}>{plastic}</td>
 
+                        {type === "presser" ? <td className={style}>{code}</td> : ""
+                        }
+
                         {renderDataContent(
                             type === "presser" ? bale.presser : bale.wheelman,
                             `${style} ${bgAllumFerro}`,
@@ -222,6 +227,7 @@ export default function TableContent({
                             idUnique,
                             false
                         )}
+
                     </tr>
                 );
             })}

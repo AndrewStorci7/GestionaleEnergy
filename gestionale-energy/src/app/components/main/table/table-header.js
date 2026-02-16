@@ -20,8 +20,8 @@ export default function TableHeader({
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
     const fixStyle = "resize-none !text-left";
-    const bgColorPresserExtension = " bg-wheelman";
-    const bgColorWheelmanExtension = " bg-presser";
+    const bgColorPresser = " bgWheelman";
+    const bgColorWheelman = " bgPresser";
 
 
     // Voci dell'interfaccia Pressista
@@ -29,8 +29,8 @@ export default function TableHeader({
     const ArrayPresserExtension = ["Stato car.", "Motivaz.", "Peso (Kg)", "Note", "Etichetta", "Data Ora Carr"];
     
     // Voci dell'interfaccia Carrellista
-    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato car.", "Motivaz.", "Peso (Kg)", "Note", "Etichetta", "","Data Ora Carr"];
-    const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Press"];
+    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato car.", "Motivaz.", "Peso (Kg)", "Note", "Stato stampa","Data Ora Carr"];
+    const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Pressista"];
 
     /**
      * ColumnName
@@ -62,8 +62,8 @@ export default function TableHeader({
                 <>
                     <thead className="h-[52px]">
                         <tr>
-                            {ColumnName(ArrayPresser, "")} 
-                            {ColumnName(ArrayPresserExtension, bgColorPresserExtension)}                       
+                            {ColumnName(ArrayPresser, bgColorWheelman)} 
+                            {ColumnName(ArrayPresserExtension, bgColorPresser)}                       
                         </tr>
                     </thead>
                 </>
@@ -74,8 +74,8 @@ export default function TableHeader({
                 <>
                     <thead className="h-[52px]">
                         <tr>
-                            {ColumnName(ArrayWheelman, "")}
-                            {ColumnName(ArrayWheelmanExtension, bgColorWheelmanExtension)}
+                            {ColumnName(ArrayWheelman, bgColorPresser)}
+                            {ColumnName(ArrayWheelmanExtension, bgColorWheelman)}
                         </tr>
                     </thead>
                 </>

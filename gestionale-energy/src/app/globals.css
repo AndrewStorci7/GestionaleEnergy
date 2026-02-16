@@ -29,11 +29,11 @@
   }
 
   .on-btn-presser {
-    @apply on-btn bgPresser300;
+    @apply on-btn bgPresser;
   }
 
   .on-btn-wheelman {
-    @apply on-btn bgWheelman300 !border-sky-100;
+    @apply on-btn bgWheelman !border-sky-100;
   }
 
   .on-table-td {
@@ -66,7 +66,7 @@ body {
 }
 
 .bgPresser300 {
-  background-color: #8DB6E2;
+  background-color: #A7CAF1;
 }
 
 .bgWheelman {

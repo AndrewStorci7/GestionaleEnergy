@@ -57,7 +57,7 @@ function SearchInput({ type }) {
                     <h1 className="text-xl">Filtra per</h1>
                 </div>
                 {/* The dropdowns in the same row */}
-                <div className="grid grid-cols-6 gap-4 w-full">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 w-full">
                     <div>
                         <label 
                             className={`${_CMNSTYLE_LABEL}`}

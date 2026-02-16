@@ -1,5 +1,5 @@
 // Array dei valori da escludere
-const VAL_TO_ESCLUDE = ["id", "status", "idUnique", "plastic", "plasticPresser", "warehouse"];
+const VAL_TO_ESCLUDE = ["id", "status", "idUnique", "plastic", "plasticPresser", "warehouse", "codePlastic"];
 
 /**
  * CheckIfAttributeIsValid

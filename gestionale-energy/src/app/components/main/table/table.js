@@ -34,8 +34,8 @@ export default function Table({
     // WebSocket instance
     const { ws } = useWebSocket();
     /// Common style
-    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
-    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
+    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 min-h-screen w-screen";
+    const _CMNSTYLE_EMPTY = "text-2xl w-screen min-h-screen flex justify-center items-center";
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
 
     const [addWasClicked, setAddClick] = useState(false); // gestisce il click del bottone "aggiungi"
