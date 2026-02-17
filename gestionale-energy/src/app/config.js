@@ -1,6 +1,12 @@
 import React from "react";
 
 /**
+ * costanti globali
+ */
+const COOKIES_SETTINGS = { sameSite: 'Strict', path: '/', expires: 1 };
+const COOKIE_NAME_USERINFO = "user-info";
+
+/**
  * Getter of the Key from .env file
  * 
  * @param {*} key           [ 'srvurl' | 'srvport' ]
@@ -379,6 +385,8 @@ const formatText = (text) => {
 }
 
 export { 
+    COOKIES_SETTINGS,
+    COOKIE_NAME_USERINFO,
     getEnv, 
     getSrvUrl, 
     getWsUrl, 
