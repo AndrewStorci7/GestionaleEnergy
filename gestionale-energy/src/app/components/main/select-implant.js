@@ -11,18 +11,23 @@ import PropTypes from 'prop-types'; // per ESLint
  *  
  * @author Andrea Storci from Oppimittinetworking.com
  * 
- * @param {Function}    onCHange 
- * @param {Object}      ref
+ * @param {number}      currentValue Valore di default della select
+ * @param {boolean}     showDefaultValue Se `true` farà visualizzare il valore di defualt con valore "" (vuoto), altrimenti no
+ * @param {Function}    onChange Funzione che si attiva quando avviene un cambio di selezione  
+ * @param {Object}      ref Oggetto riferimento
  * @param {*}           props
  */
 export default function SelectImplants({ 
+    currentValue,
+    showDefaultValue = true,
     onChange, 
     ref, 
     ...props
 }) {
 
+    const [value, setValue] = useState(currentValue);
     const [content, setContent] = useState([])
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,15 +58,47 @@ export default function SelectImplants({
         }
 
         fetchData();
-    }, [onChange])
-    
+    }, [])
+
+    useEffect(() => {
+        console.log(currentValue)
+        if (currentValue) {
+            setValue(currentValue);
+            // console.log(value);
+        }
+    }, [currentValue]);
+
+    /**
+     * Funzione per gestione cambio valore
+     * 
+     * @param {number} id ID dell'impianto 
+     * @param {string} name Nome dell'impianto
+     * @returns 
+     */
+    const handleChange = (id, name) => {
+        if (id === "") {
+            showAlert({
+                title: "Non puoi selezionare quell'opzione",
+                message: "L'opzione selezionata è solo a scopo informativo, devi selezionare un impianto valido",
+                type: "error",
+                onConfirm: hideAlert
+            })
+            return;
+        }
+
+        setValue(id);
+        onChange?.(id, name)
+    }
+
     return (
         <select
             ref={ref}
-            onChange={onChange}
+            onChange={(e) => handleChange(e.target.value, content[e.target.value - 1]?.name)}
+            value={value}
+            className={`rounded-md w-full text-black border-2 border-gray-300 p-1`}
             {...props}
         >
-            <option value={""}>Seleziona un&apos;impianto</option>
+            {showDefaultValue && <option value={""}>Seleziona un&apos;impianto</option>}
             {content.map((_m) => {
                 let value = "", text = "";
                 
@@ -73,8 +110,8 @@ export default function SelectImplants({
                 
                 return ( 
                     <option
-                        key={value + text}
-                        value={value}
+                    key={value + text}
+                    value={value}
                     >
                         {text}
                     </option>
