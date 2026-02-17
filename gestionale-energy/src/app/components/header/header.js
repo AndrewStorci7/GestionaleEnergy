@@ -2,11 +2,15 @@
 
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { getEnv, getServerRoute } from "@config";
+import { refreshPage, getEnv, getServerRoute, COOKIE_NAME_USERINFO, COOKIES_SETTINGS } from "@config";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { useWebSocket } from "@main/ws/use-web-socket";
 import PropTypes from "prop-types"; // per ESLint
+import SelectImplants from "@main/select-implant";
+import { useAlert } from "@alert/alertProvider";
+import { useLoader } from "@main/loader/loaderProvider";
+import { sleep } from "@functions";
 
 /**
  * Header
@@ -19,12 +23,15 @@ export default function Header({
     type
 }) {
 
-    const { message } = useWebSocket();
+    const { message, ws } = useWebSocket();
+    const { showLoader } = useLoader();
+    const { showAlert, hideAlert } = useAlert();
     
     const _CMN_PLACE_CENTER = "place-content-center";
     
     const router = useRouter();
 
+    const [idImplant, setIdImplant] = useState(0);
     const [date, setDate] = useState(new Date().toLocaleDateString());
     const [time, setTime] = useState(new Date().toLocaleTimeString());
     const [turn, setTurn] = useState("Turno 1");
@@ -41,8 +48,41 @@ export default function Header({
      * Remove the setted Cookie 'user-info'
      */
     const logout = () => {
-        Cookies.remove('user-info', { path: '/', domain: getEnv('NEXT_PUBLIC_APP_DOMAIN') })
+        Cookies.remove(COOKIE_NAME_USERINFO, { path: '/', domain: getEnv('NEXT_PUBLIC_APP_DOMAIN') })
         router.push('/pages/login');
+    }
+
+    /**
+     * Funzione di gestione cambio impianto
+     * 
+     * @param {number} id ID dell'impianto
+     * @param {string} name Nome dell'impianto
+     */
+    const changeImplant = async (id, name) => {
+        showLoader(true, "Cambio dell'impianto in corso ...");
+        
+        try {
+            const oldCookie = JSON.parse(Cookies.get(COOKIE_NAME_USERINFO));
+            oldCookie.id_implant = id;
+            oldCookie.implant = name;
+            Cookies.set(
+                COOKIE_NAME_USERINFO, 
+                JSON.stringify(oldCookie), 
+                COOKIES_SETTINGS
+            )
+        
+        } catch (err) { 
+            showAlert({
+                title: "Errore durante il cambio di impianto",
+                message: `C'è stato un errore durante il cambio dell'impianto: ${err}`,
+                type: "error",
+                onConfirm: hideAlert
+            })
+        } finally {
+            await sleep(2000);
+            refreshPage(ws);
+            showLoader(false);
+        }
     }
 
     /**
@@ -54,6 +94,7 @@ export default function Header({
                 const cookies = await JSON.parse(Cookies.get('user-info'));
                 const url = getServerRoute("total-bale-count");
                 const urlTotChili = getServerRoute("totale-chili");
+                setIdImplant(cookies.id_implant);
                 const implant = cookies.id_implant;
                 
                 const resp = await fetch(url, {
@@ -115,7 +156,8 @@ export default function Header({
                 </div> {/* end logo */}
                 <div className={`${_CMN_PLACE_CENTER}`}>
                     <div className="border w-fit py-1 px-2 rounded-xl bg-zinc-200 shadow-sm">
-                        {implant}
+                        {/* {implant} */}
+                        <SelectImplants showDefaultValue={false} currentValue={idImplant} onChange={changeImplant} />
                     </div>
                 </div>
                 <div className={`${_CMN_PLACE_CENTER} col-span-2 rounded-lg bg-gray-200 px-2`}>
@@ -123,12 +165,6 @@ export default function Header({
                         Produzione sul turno
                     </h3>
                     <div className="grid grid-cols-3 gap-2">
-                        {/* <div className={`font-thin mr-[10px] ${type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}`}>
-                            Balle totali lavorate: {totalbalesLavorate}
-                            </div>
-                            <div className={`font-thin ${type === 'wheelman' ? "border w-fit py-1 px-2 rounded-xl bg-green-200 shadow-sm" : "font-thin"}`}>
-                            Balle totali a mag.: {totalbales}
-                        </div> */}
                         <div className={`font-thin mr-[10px] ${type === 'presser' ? "!font-bold" : ""}`}>
                             Balle inserite: {totalbalesLavorate}
                         </div>

@@ -11,8 +11,8 @@ import { fetchDataTotalBale } from '../fetch';
 
 import PropTypes from 'prop-types'; // per ESLint
 import { checkIfAttributeIsValid } from '@functions';
+import { useLoader } from '../loader/loaderProvider';
 
-//commento di prova
 /**
  * Custom component for handling the data of a bale
  * 
@@ -50,6 +50,10 @@ export default function TableContent({
     style
 }) {
 
+    // serve solo per il conteggio dei render
+    // viene utilizzato per far visualizzare il caricamento dei dati
+    const [countRender, setRender] = useState(0);
+    const { showLoader } = useLoader();
     const { showAlert } = useAlert();
     const { ws, message } = useWebSocket();
 
@@ -89,6 +93,10 @@ export default function TableContent({
     }, [type]);
 
     const fetchData = useCallback(async () => {
+        if (countRender === 0) {    
+            showLoader(true, "Caricamento dei dati")
+        } 
+
         try {
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
@@ -102,6 +110,8 @@ export default function TableContent({
                 message: error.message,
                 type: "error"
             });
+        } finally {
+            showLoader(false)
         }
     }, [safeType, useFor, noData, showAlert]);
 
@@ -156,8 +166,12 @@ export default function TableContent({
     }
 
     useEffect(() => {
+        // prelevo i dati
         fetchData();
-    }, [message, fetchData]);
+
+        // incremento il contatore dei render
+        setRender(prev => prev + 1);
+    }, [message]);
 
     const handleRowClick = (id, idUnique) => {
         const newSelectedBaleId = selectedBaleId === id ? null : id;

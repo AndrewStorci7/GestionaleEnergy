@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import TableWrapper from "@main/table/tableWrapper";
 import DownloadReport from "@admin/buttons/btn-report";
-import BtnWheelman from "@main/btn-wheelman";
-import BtnPresser from "@main/btn-presser";
+import BtnWheelman from "@/app/components/main/buttons/btn-wheelman";
+import BtnPresser from "@/app/components/main/buttons/btn-presser";
 import Switch from "@admin/switch";
 import { useWebSocket } from "@main/ws/use-web-socket";
 import Image from "next/image";
@@ -88,11 +88,16 @@ export default function Table({
         case "presser": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative overflow-y-scroll shadow-inner w-full">
-                        <div className = "col-span-12">
-
-                        <TableWrapper
-                            className="table-wrapper"
+                    <BtnPresser 
+                        implant={implant}
+                        idUser={idUser}
+                        clickAddHandle={handleAddPressed}
+                        handleConfirmAdd={confirmedAdd}
+                        baleObj={objIdBale}
+                    />
+                    <div className="grid grid-cols-9 gap-2 relative h-[60vh] overflow-y-scroll shadow-inner w-full" >
+                        <TableWrapper 
+                            className="col-span-12"
                             type={"presser"}
                             tableContent={{
                                 handleSelect: (i, y) => handleSelect(i, y),
@@ -101,20 +106,7 @@ export default function Table({
                                 noData: (e) => noData(e)
                             }}
                             primary />
-
-                            </div>
-                        {/* <TableWrapper 
-                            className="col-span-4" 
-                            type={"wheelman"} 
-                            tableContent={{ objAdd: objAdd }} /> */}
                     </div>
-                    <BtnPresser 
-                        implant={implant}
-                        idUser={idUser}
-                        clickAddHandle={handleAddPressed}
-                        handleConfirmAdd={confirmedAdd}
-                        baleObj={objIdBale}
-                    />
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
@@ -129,10 +121,14 @@ export default function Table({
         case "wheelman": {
             return (
                 <>
-                            <div className="grid grid-cols-3 gap-2 mt-2 relative overflow-y-scroll shadow-inner w-full">                        
-                            <div className = "col-span-12">
-                            <TableWrapper 
-                            className="table-wrapper"
+                    <BtnWheelman 
+                        implant={implant}
+                        idUser={idUser}
+                        baleObj={objIdBale}
+                    />
+
+                    <div className="grid grid-cols-9 gap-2 relative h-[60vh] overflow-y-scroll shadow-inner w-full">
+                        <TableWrapper 
                             // className="col-span-5"
                             type={"wheelman"}
                             tableContent={{
@@ -142,19 +138,7 @@ export default function Table({
                                 noData: (e) => noData(e)
                             }}
                             primary />
-                            </div>
-                        {/* <TableWrapper 
-                            className="col-span-4" 
-                            type={"presser"} 
-                            tableContent={{ objAdd: objAdd }} /> */}
-                        </div>
-                     
-                            
-                    <BtnWheelman 
-                        implant={implant}
-                        idUser={idUser}
-                        baleObj={objIdBale}
-                    />
+                    </div>
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
@@ -241,7 +225,6 @@ export default function Table({
                                 primary
                                 admin
                             />
-                            {/* <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} /> */}
                         </div>
                     )}
                 </>

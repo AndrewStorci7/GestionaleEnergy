@@ -19,17 +19,17 @@ const TableWrapper = ({
 
     const safeType = useMemo(() => {
         if (!type || (type !== 'presser' && type !== 'wheelman')) {
-            // console.warn(`Invalid type received: ${type}, defaulting to 'presser'`);
             return 'presser';
         }
+
         return type;
     }, [type]);
 
-    useEffect(() => {
-        if (!tableContent) {
-            console.error("TableContent non definito");
-        }
-    }, [tableContent]);
+    // useEffect(() => {
+    //     if (!tableContent) {
+    //         console.error("TableContent non definito");
+    //     }
+    // }, [tableContent]);
 
     return (
         <div {...props}>
@@ -70,28 +70,6 @@ const TableWrapper = ({
                                 admin={admin}
                                 style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400," 
                             />
-                            {/* {primary ? ( 
-                                <TableContent 
-                                    key={`${safeType}-primary-regular`}
-                                    type={safeType} 
-                                    handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
-                                    selectedBaleId={tableContent.selectedBaleId}
-                                    add={tableContent.objAdd}  
-                                    useFor={safeType === "wheelman" ? "reverse" : "regular"}
-                                    noData={(e) => tableContent.noData(e)} 
-                                    primary={primary}
-                                    admin={admin}
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400," 
-                                />
-                            ) : (
-                                <TableContent 
-                                    key={`${safeType}-secondary-regular`}
-                                    type={safeType} 
-                                    useFor={safeType === "presser" ? "reverse" : "regular"}
-                                    add={tableContent.objAdd} 
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
-                                />
-                            )} */}
 
                             {/* BALLE COMPLETATE */}
                             <TableContent 
@@ -105,26 +83,6 @@ const TableWrapper = ({
                                 admin={admin}
                                 style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
                             />
-                            {/* {primary ? (
-                                <TableContent 
-                                    key={`${safeType}-primary-specific`}
-                                    type={safeType} 
-                                    handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
-                                    selectedBaleId={tableContent.selectedBaleId} 
-                                    useFor={"specific"}
-                                    noData={(e) => tableContent.noData(e)} 
-                                    primary={primary}
-                                    admin={admin}
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
-                                />
-                            ) : (
-                                <TableContent 
-                                    key={`${safeType}-secondary-specific`}
-                                    type={safeType} 
-                                    useFor={"specific"} 
-                                    style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
-                                />
-                            )} */}
                         </table>
                     </div>
                 </div>

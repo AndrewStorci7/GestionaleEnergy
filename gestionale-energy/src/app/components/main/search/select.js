@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchDataSingleElements } from "@fetch";
-// import { useAlert } from "@alert/alertProvider";
+import { useAlert } from "@alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -37,19 +37,27 @@ const SelectInput = ({
     isForSearch = false
 }) => {
 
+    const { showAlert } = useAlert();
     const fixed_width = (fixedW) && "w-full";
     const _CMNSTYLE_SELECT = `rounded-md ${fixed_width} text-black border-2 border-gray-300 p-1`;
 
     // Risposta ottenuta dal server
     const [content, setContent] = useState([]);
-    // const { showAlert } = useAlert();
 
     const fetchData = async () => {
         try {
             const data = await fetchDataSingleElements(searchFor);
-            setContent(data);
+            if (data !== null)
+                setContent(data);
+
         } catch (error) {
             console.error("Error fetching data:", error);
+            showAlert({
+                title: "Errore fetching data",
+                message: `Errore: ${error}`,
+                type: "error",
+                onConfirm: () => window.location.reload()
+            })
         }
     }
 
@@ -70,7 +78,7 @@ const SelectInput = ({
             {(isForSearch || searchFor === "plastic") && <option value={""}>-</option>}
 
             {/* Iterate the content data */}
-            {content.map((_m, _i) => {
+            {content && content.map((_m, _i) => {
                 if (typeof _m === "object" && _m !== null) {
 
                     // Variabili locali 

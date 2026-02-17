@@ -16,6 +16,17 @@ const checkIfAttributeIsValid = (key) => {
     return !key.startsWith("_") && !VAL_TO_ESCLUDE.includes(key);
 }
 
+/**
+ * Mette in "pausa" per n secondi
+ * 
+ * @param {*} ms I secondi che verrà messo in pausa 
+ * @returns 
+ */
+const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export {
     checkIfAttributeIsValid,
+    sleep
 }

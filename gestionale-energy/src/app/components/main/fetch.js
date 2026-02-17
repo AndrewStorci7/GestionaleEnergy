@@ -19,8 +19,6 @@ async function fetchDataBale(type = null, obj = null, hook = null) {
             throw new Error("Le prop `type`, `obj`, `hooks` non sono settate correttamente (non possono essere `null`)");
         }
 
-        // console.log(obj);
-
         const url = getServerRoute(type === 'presser' ? 'presser' : 'wheelman');
         const resp = await fetch(url, {
             method: 'POST',
@@ -30,13 +28,9 @@ async function fetchDataBale(type = null, obj = null, hook = null) {
 
         const data = await resp.json();
 
-        // console.log(data);
         if (data) {
             hook(data);
         } 
-        // else {
-        //     throw new Error("SALAMALEKU")
-        // }
     } catch (error) {
         throw new Error(error.message);
     }
@@ -69,7 +63,7 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
         });
 
         const dataJson = await resp.json();
-        console.log(dataJson);
+
         /**
          * forma del dato `data`:
          * Array(
@@ -119,7 +113,8 @@ async function fetchDataSingleElements(
     // setContent
 ) {
     if (searchFor === undefined || searchFor === null) {
-        throw new Error("searchFor is undefined or null");
+        // throw new Error("searchFor is undefined or null");
+        return null;
     } 
 
     const url = getServerRoute(searchFor);
@@ -325,7 +320,9 @@ const fetchTotaleChili = async (implant) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ implant })
         });
+        
         const data = await response.json();
+        
         if (data.code === 0) {
             return data.message;
         } else {

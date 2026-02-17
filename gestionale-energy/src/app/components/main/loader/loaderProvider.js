@@ -8,14 +8,18 @@ const LoaderContext = createContext();
 export const LoaderProvider = ({ children }) => {
 
     const [visible, setVisibility] = useState(false)
+    const [message, setMessage] = useState("");
 
-    const showLoader = (val) => setVisibility(val)
+    const showLoader = (val, msg = "") => {
+        setVisibility(val)
+        setMessage(msg)
+    }
 
     return (
         <LoaderContext.Provider value={{ showLoader }}>
             {children}
             {visible && (
-                <Loader />
+                <Loader message={message} />
             )}
         </LoaderContext.Provider>
     )
