@@ -18,7 +18,7 @@ import { sleep } from "@functions";
  * @returns 
  */
 export default function Header({ 
-    implant, 
+    // implant, 
     username, 
     type
 }) {

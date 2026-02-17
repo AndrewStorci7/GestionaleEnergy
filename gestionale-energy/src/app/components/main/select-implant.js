@@ -122,6 +122,8 @@ export default function SelectImplants({
 }
 
 SelectImplants.propTypes = {
+    currentValue:PropTypes.number,
+    showDefaultValue:PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     ref: PropTypes.object
 };

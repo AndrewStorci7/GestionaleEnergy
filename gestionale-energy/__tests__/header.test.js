@@ -3,7 +3,7 @@ import { act, render, screen, fireEvent } from "@testing-library/react";
 import Header from "@header/header";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-
+import { sleep } from "@/app/functions";
 // Mocks
 jest.mock("next/navigation", () => ({
     useRouter: jest.fn(),

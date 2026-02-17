@@ -181,10 +181,11 @@ body {
 
 .draggable-wrapper {
   position: relative;
-  top: auto;
+  /* top: auto; */
   /* left: 50%; */
   transform: none; 
   width: 100%;
+  height: 100%;
   /* z-index: 9999; /* opzionale per sovrapporre */
 }
 
@@ -244,7 +245,7 @@ body {
     font-size: 15px;
   }
   .table-wrapper {
-      height: 65vh;
+      height: 70vh;
   }
 
 }

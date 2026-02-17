@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useMemo } from 'react';
+import React, {useMemo } from 'react';
 import TableContent from './table-content';
 import TableHeader from './table-header';
 

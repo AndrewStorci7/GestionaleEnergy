@@ -95,7 +95,7 @@ export default function Table({
                         handleConfirmAdd={confirmedAdd}
                         baleObj={objIdBale}
                     />
-                    <div className="grid grid-cols-9 gap-2 relative h-[60vh] overflow-y-scroll shadow-inner w-full" >
+                    <div className="table-wrapper grid grid-cols-9 gap-2 relative overflow-y-scroll shadow-inner w-full" >
                         <TableWrapper 
                             className="col-span-12"
                             type={"presser"}
@@ -127,9 +127,9 @@ export default function Table({
                         baleObj={objIdBale}
                     />
 
-                    <div className="grid grid-cols-9 gap-2 relative h-[60vh] overflow-y-scroll shadow-inner w-full">
+                    <div className="table-wrapper grid grid-cols-9 gap-2 relative overflow-y-scroll shadow-inner w-full">
                         <TableWrapper 
-                            // className="col-span-5"
+                            className="col-span-12"
                             type={"wheelman"}
                             tableContent={{
                                 handleSelect: (i, y) => handleSelect(i, y),
