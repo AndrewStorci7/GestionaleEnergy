@@ -1,9 +1,17 @@
 import React from "react";
 
-const Loader = () => {
+const Loader = ({
+    message
+}) => {
     return (
-        <div className="loader-container" role="status" aria-live="polite">
+        <div 
+        className="loader-container flex center" 
+        role="status" 
+        aria-live="polite">
             <div className="spinner" />
+            <div className="bg-white p-[5px] rounded-md">
+                <p>{message}</p>
+            </div>
         </div>
     )
 }
