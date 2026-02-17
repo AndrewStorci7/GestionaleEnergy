@@ -125,8 +125,8 @@ export default function Header({
                     <div className="grid grid-cols-3 gap-2">
                         {/* <div className={`font-thin mr-[10px] ${type === 'presser' ? "border w-fit py-1 px-2 rounded-xl bg-red-200 shadow-sm text-neutral-600" : ""}`}>
                             Balle totali lavorate: {totalbalesLavorate}
-                        </div>
-                        <div className={`font-thin ${type === 'wheelman' ? "border w-fit py-1 px-2 rounded-xl bg-green-200 shadow-sm" : "font-thin"}`}>
+                            </div>
+                            <div className={`font-thin ${type === 'wheelman' ? "border w-fit py-1 px-2 rounded-xl bg-green-200 shadow-sm" : "font-thin"}`}>
                             Balle totali a mag.: {totalbales}
                         </div> */}
                         <div className={`font-thin mr-[10px] ${type === 'presser' ? "!font-bold" : ""}`}>

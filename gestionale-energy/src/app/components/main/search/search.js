@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import SelectInput from "./select";
 import PropTypes from 'prop-types';
+import Image from "next/image";
+
 
 function SearchInput({ type }) {
 
@@ -44,12 +46,35 @@ function SearchInput({ type }) {
     return(
         <div className={`${_CMNSTYLE_DIV_MAIN} ${bg_color}`}>
             {/* Bottone attiva/disattiva */}
-            <button
-                className="mb-2 px-10 py-2 bg-green-500 rounded hover:bg-green-400 font-bold"
-                onClick={() => setAttivo(!attivo)}
-            >
-                {!attivo ? "Attiva filtro" : "Disattiva filtro"}
-            </button>
+            {type === "wheelman"  ? (<button
+                    className="on-btn-wheelman font-bold "
+                    onClick={() => setAttivo(!attivo)}>
+                    <div className="flex items-center p-1">
+                        <Image 
+                        src={"/filled/aggiungi-bianco-filled.png"}
+                        width={25}
+                        height={25}
+                        alt="Aggiungi icona"
+                        className={"mr-2"}
+                        />
+                        {!attivo ? "Attiva filtro" : "Disattiva filtro"}
+                    </div>
+                </button>):
+                (<button
+                    className="on-btn-presser font-bold"
+                    onClick={() => setAttivo(!attivo)}>
+                    <div className="flex items-center p-1">
+                    <Image 
+                        src={"/filled/aggiungi-bianco-filled.png"}
+                        width={25}
+                        height={25}
+                        alt="Aggiungi icona"
+                        className={"mr-2"}
+                        />
+                        {!attivo ? "Attiva filtro" : "Disattiva filtro"}
+                    </div>
+                </button>)
+            }
 
             {/* Rendering condizionale */}
             {attivo && (

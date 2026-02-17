@@ -55,8 +55,8 @@ export default function BtnWheelman({
     }
     
     return(
-        <div className="fixed bottom-10 left-0  w-full md:w-1/2 font-bold on-fix-index">
-            <div className="flex flex-row-reverse flex-wrap px-11">
+        <div className="w-full md:w-1/2 font-bold on-fix-index">
+            <div className="flex flex-row-reverse">
                 <button className="on-btn-wheelman" onClick={() => handleClick("update")}>
                     <div className="flex items-center p-1">
                         <Image 

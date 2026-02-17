@@ -67,8 +67,9 @@ export default function Admin() {
                 </Head>
 
                 <AlertProvider>
-                    <div className="w-[99%] m-[0.5%] overflow-auto">
+                    <div className="w-[99%] m-[0.5%]">
                         <Header 
+                            className = "header"
                             implant={implant}
                             username={user}
                             type={type}

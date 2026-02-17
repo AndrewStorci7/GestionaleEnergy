@@ -88,12 +88,11 @@ export default function Table({
         case "presser": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative overflow-y-scroll shadow-inner w-full 
-                                    sm:h-[60vh]
-                                    md:h-[65vh]
-                                    lg:h-[70vh]">
-                        <TableWrapper 
-                            className="col-span-12"
+                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative overflow-y-scroll shadow-inner w-full">
+                        <div className = "col-span-12">
+
+                        <TableWrapper
+                            className="table-wrapper"
                             type={"presser"}
                             tableContent={{
                                 handleSelect: (i, y) => handleSelect(i, y),
@@ -103,12 +102,12 @@ export default function Table({
                             }}
                             primary />
 
+                            </div>
                         {/* <TableWrapper 
                             className="col-span-4" 
                             type={"wheelman"} 
                             tableContent={{ objAdd: objAdd }} /> */}
                     </div>
-                    <div>           
                     <BtnPresser 
                         implant={implant}
                         idUser={idUser}
@@ -124,20 +123,17 @@ export default function Table({
                             </h1>
                         </div>
                     ) : null }
-                    </div>
-                </>
+                                    </>
             );
         }
         case "wheelman": {
             return (
                 <>
-                            <div className="grid grid-cols-3 gap-2 mt-2 relative overflow-y-scroll shadow-inner w-full
-                                    sm:h-[60vh]
-                                    md:h-[65vh]
-                                    lg:h-[70vh]">                        
+                            <div className="grid grid-cols-3 gap-2 mt-2 relative overflow-y-scroll shadow-inner w-full">                        
+                            <div className = "col-span-12">
                             <TableWrapper 
+                            className="table-wrapper"
                             // className="col-span-5"
-                            className="col-span-12"
                             type={"wheelman"}
                             tableContent={{
                                 handleSelect: (i, y) => handleSelect(i, y),
@@ -146,7 +142,7 @@ export default function Table({
                                 noData: (e) => noData(e)
                             }}
                             primary />
-
+                            </div>
                         {/* <TableWrapper 
                             className="col-span-4" 
                             type={"presser"} 
