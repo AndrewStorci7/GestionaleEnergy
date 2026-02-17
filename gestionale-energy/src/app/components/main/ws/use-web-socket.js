@@ -33,6 +33,7 @@ export const WebSocketProvider = ({
      * @returns oggetto contenente le informazioni del dispositivo e del browser 
      */
     async function getUserDeviceInfo() {
+        
         let userInfo = {
             user: user,
             userAgent: navigator.userAgent, // Info generali
@@ -50,6 +51,7 @@ export const WebSocketProvider = ({
             userInfo.device = userAgentData.model || "Unknown"; // Modello dispositivo (solo mobile)
             userInfo.browserVersion = userAgentData.uaFullVersion;
         }
+
         return userInfo;
     }
 

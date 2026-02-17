@@ -10,7 +10,41 @@ import MainContent from "@main/main-content";
 
 import { WebSocketProvider } from '@main/ws/use-web-socket';
 import { AlertProvider } from "@main/alert/alertProvider";
-import { LoaderProvider } from "@main/loader/loaderProvider";
+import { LoaderProvider, useLoader } from "@main/loader/loaderProvider";
+
+const AdminContent = ({
+    data
+}) => {
+
+    const { showLoader } = useLoader();
+    const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        showLoader(!loaded)
+    }, [loaded])
+
+    useEffect(() => {
+        setLoaded(true)
+    }, [])
+
+    return (
+        <div className="w-[99%] m-[0.5%] overflow-hidden">
+            <Header 
+                implant={data.implant}
+                username={data.user}
+                type={data.type}
+                name={data.name}
+                surname={data.surname}
+            />
+            <MainContent 
+                type={data.type}
+                implant={data.idImplant}
+                idUser={data.idUser}
+            />
+            <Footer />
+        </div>
+    )
+}
 
 export default function Admin() {
 
@@ -32,27 +66,17 @@ export default function Admin() {
     
     useEffect(() => {
         async function fetchData() {
-            // try {
-
-                const cookies = await JSON.parse(Cookies.get('user-info'));
-                
-                if (cookies) {
-                    setImplant(cookies.implant);
-                    setIdImplant(cookies.id_implant);
-                    setIdUser(cookies.id_user);
-                    setUser(cookies.username);
-                    setType(cookies.type);
-                    setName(cookies.name);
-                    setSurname(cookies.surname);
-                }  
-            // } catch (error) {
-            //     // console.log(`Error: ${error}`);
-            //     // showAlert({
-            //     //     title: "Error",
-            //     //     message: "Failed to load user data. Please log in again.",
-            //     //     type: "error",
-            //     // });
-            // }
+            const cookies = await JSON.parse(Cookies.get('user-info'));
+            
+            if (cookies) {
+                setImplant(cookies.implant);
+                setIdImplant(cookies.id_implant);
+                setIdUser(cookies.id_user);
+                setUser(cookies.username);
+                setType(cookies.type);
+                setName(cookies.name);
+                setSurname(cookies.surname);
+            }  
         }
 
         fetchData();
@@ -67,21 +91,15 @@ export default function Admin() {
                 </Head>
 
                 <AlertProvider>
-                    <div className="w-[99%] m-[0.5%] overflow-hidden">
-                        <Header 
-                            implant={implant}
-                            username={user}
-                            type={type}
-                            name={name}
-                            surname={surname}
-                        />
-                        <MainContent 
-                            type={type}
-                            implant={idImplant}
-                            idUser={idUser}
-                        />
-                        <Footer />
-                    </div>
+                    <AdminContent data={{
+                        implant,
+                        idImplant,
+                        idUser,
+                        user,
+                        name,
+                        surname,
+                        type
+                    }} />
                 </AlertProvider>
             </WebSocketProvider>
         </LoaderProvider>
