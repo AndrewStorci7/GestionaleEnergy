@@ -278,7 +278,7 @@ export default function UpdateValuesBale({
                 </div>
                 <div className='relative px-[5px]'>
                     <label className='text-black absolute top-[-30px] left-[5px] font-bold'>
-                        {(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}
+                        {(type === 'presser') ? "Cond. Balla Press." : "Magazzino"}
                     </label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
