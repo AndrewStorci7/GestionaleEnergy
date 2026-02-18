@@ -1,53 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="19" failures="1" errors="0" time="9.751">
-  <testsuite name="Footer" errors="0" failures="0" skipped="0" timestamp="2025-08-19T10:21:50" time="5.114" tests="4">
-    <testcase classname="Footer renders the logo image" name="Footer renders the logo image" time="0.166">
+<testsuites name="jest tests" tests="4" failures="0" errors="0" time="3.948">
+  <testsuite name="Componente BtnPresser" errors="0" failures="0" skipped="0" timestamp="2026-02-18T15:51:19" time="2.482" tests="4">
+    <testcase classname="Componente BtnPresser Renderizza correttamente i tre bottoni" name="Componente BtnPresser Renderizza correttamente i tre bottoni" time="0.127">
     </testcase>
-    <testcase classname="Footer displays &apos;Powered by&apos; text" name="Footer displays &apos;Powered by&apos; text" time="0.029">
+    <testcase classname="Componente BtnPresser Click su Aggiungi: deve chiamare la funzione clickAddHandle" name="Componente BtnPresser Click su Aggiungi: deve chiamare la funzione clickAddHandle" time="0.018">
     </testcase>
-    <testcase classname="Footer shows current year" name="Footer shows current year" time="0.031">
+    <testcase classname="Componente BtnPresser Click su Elimina SENZA aver selezionato una balla: mostra errore" name="Componente BtnPresser Click su Elimina SENZA aver selezionato una balla: mostra errore" time="0.011">
     </testcase>
-    <testcase classname="Footer shows the current version from package.json" name="Footer shows the current version from package.json" time="0.015">
-    </testcase>
-  </testsuite>
-  <testsuite name="BtnReport Component" errors="0" failures="0" skipped="0" timestamp="2025-08-19T10:21:50" time="5.293" tests="3">
-    <testcase classname="BtnReport Component renders correctly" name="BtnReport Component renders correctly" time="0.208">
-    </testcase>
-    <testcase classname="BtnReport Component updates the date state and passes it to ExportReport components" name="BtnReport Component updates the date state and passes it to ExportReport components" time="0.057">
-    </testcase>
-    <testcase classname="BtnReport Component passes correct disabled prop to tempo reports" name="BtnReport Component passes correct disabled prop to tempo reports" time="0.025">
-    </testcase>
-  </testsuite>
-  <testsuite name="Header component" errors="0" failures="0" skipped="0" timestamp="2025-08-19T10:21:50" time="5.814" tests="1">
-    <testcase classname="Header component calls logout on button click" name="Header component calls logout on button click" time="0.461">
-    </testcase>
-  </testsuite>
-  <testsuite name="Alert Component" errors="0" failures="1" skipped="0" timestamp="2025-08-19T10:21:50" time="7.133" tests="9">
-    <testcase classname="Alert Component renders error alert correctly" name="Alert Component renders error alert correctly" time="0.108">
-    </testcase>
-    <testcase classname="Alert Component renders confirmation alert correctly" name="Alert Component renders confirmation alert correctly" time="0.012">
-    </testcase>
-    <testcase classname="Alert Component calls onHide when close button is clicked" name="Alert Component calls onHide when close button is clicked" time="0.018">
-    </testcase>
-    <testcase classname="Alert Component handles delete confirmation" name="Alert Component handles delete confirmation" time="0.016">
-    </testcase>
-    <testcase classname="Alert Component handles print confirmation" name="Alert Component handles print confirmation" time="0.009">
-      <failure>TypeError: undefined is not iterable (cannot read property Symbol(Symbol.iterator))
-    at Object.mockHandleStampa (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\__tests__\alert.test.js:129:43)</failure>
-    </testcase>
-    <testcase classname="Alert Component renders update form for presser" name="Alert Component renders update form for presser" time="0.021">
-    </testcase>
-    <testcase classname="AlertProvider provides alert context to children" name="AlertProvider provides alert context to children" time="0.004">
-    </testcase>
-    <testcase classname="AlertProvider shows and hides alerts" name="AlertProvider shows and hides alerts" time="0.04">
-    </testcase>
-    <testcase classname="AlertProvider throws error when used outside provider" name="AlertProvider throws error when used outside provider" time="0.004">
-    </testcase>
-  </testsuite>
-  <testsuite name="BtnReportFiltered Component" errors="0" failures="0" skipped="0" timestamp="2025-08-19T10:21:50" time="7.276" tests="2">
-    <testcase classname="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" name="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" time="0.119">
-    </testcase>
-    <testcase classname="BtnReportFiltered Component Check update of date inputs" name="BtnReportFiltered Component Check update of date inputs" time="0.257">
+    <testcase classname="Componente BtnPresser Click su Elimina CON una balla selezionata: mostra conferma" name="Componente BtnPresser Click su Elimina CON una balla selezionata: mostra conferma" time="0.01">
     </testcase>
   </testsuite>
 </testsuites>

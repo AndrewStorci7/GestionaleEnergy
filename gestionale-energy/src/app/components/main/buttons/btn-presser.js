@@ -77,6 +77,7 @@ export default function BtnPresser({
             <div className="w-1/2 font-bold on-fix-index">
                 <div className="flex flex-row-reverse">
                     <button 
+                    data-testid="delete"
                     className="on-btn-presser" 
                     onClick={() => handleClick("delete")}>
                         <div className="flex items-center p-1">
@@ -91,6 +92,7 @@ export default function BtnPresser({
                         </div>
                     </button>
                     <button 
+                    data-testid="update"
                     className="on-btn-presser mr-[50px]" 
                     onClick={() => handleClick("update")}>
                         <div className="flex items-center p-1">
@@ -105,6 +107,7 @@ export default function BtnPresser({
                         </div>
                     </button>
                     <button 
+                    data-testid="add"
                     className={`on-btn-presser ${(addWasClicked && !handleConfirmAdd) && "bg-red-400 text-neutral-50"}`} 
                     onClick={addNewBale}>
                         {(addWasClicked && !handleConfirmAdd) ? 

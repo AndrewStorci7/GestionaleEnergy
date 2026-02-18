@@ -57,7 +57,9 @@ export default function BtnWheelman({
     return(
         <div className="w-1/2 font-bold on-fix-index">
             <div className="flex flex-row-reverse px-11">
-                <button className="on-btn-wheelman" onClick={() => handleClick("update")}>
+                <button 
+                data-testid="update"
+                className="on-btn-wheelman" onClick={() => handleClick("update")}>
                     <div className="flex items-center p-1">
                         <Image 
                             src={"/filled/modifica-bianco-filled.png"}
@@ -69,7 +71,9 @@ export default function BtnWheelman({
                         Modifica
                     </div>
                 </button>
-                <button className="on-btn-wheelman" onClick={() => handleClick("print")}>
+                <button 
+                data-testid="print"
+                className="on-btn-wheelman" onClick={() => handleClick("print")}>
                     <div className="flex items-center p-1">
                         <Image 
                             src={"/filled/stampa-bianco-filled.png"}
