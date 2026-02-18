@@ -26,10 +26,10 @@ export default function TableHeader({
 
     // Voci dell'interfaccia Pressista
     const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "", "Data Ora Press."];
-    const ArrayPresserExtension = ["Stato car.", "Motivaz.", "Peso (Kg)","Magazzino Dest.", "Note", "Etichetta", "Data Ora Carr"];
+    const ArrayPresserExtension = ["Stato car.", "Motivaz.", "Peso (Kg)","Magazzino", "Note", "Etichetta", "Data Ora Carr"];
     
     // Voci dell'interfaccia Carrellista
-    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato car.", "Motivaz.", "Peso (Kg)","Magazzino Dest.", "Note", "Etichetta","Data Ora Carr"];
+    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato car.", "Motivaz.", "Peso (Kg)","Magazzino", "Note", "Etichetta","Data Ora Carr"];
     const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Pressista"];
 
     /**
