@@ -45,7 +45,7 @@ const TableWrapper = ({
                     </h2>
                 </div>
                 <div className="relative rounded-xl overflow-auto shadow-inner">
-                    <div className="shadow-sm overflow-hidden overflow-x-visible my-8 select-none">
+                    <div className="shadow-sm overflow-hidden overflow-x-visible my-8">
                         <table 
                             id="gest-on-table" 
                             className="border-collapse table-auto w-full text-sm"
@@ -68,7 +68,7 @@ const TableWrapper = ({
                                 noData={(e) => tableContent.noData(e)} 
                                 primary={primary}
                                 admin={admin}
-                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400," 
+                                style="border-b border-slate-100 dark:border-slate-700 p-2 text" 
                             />
 
                             {/* BALLE COMPLETATE */}
@@ -81,7 +81,7 @@ const TableWrapper = ({
                                 noData={(e) => tableContent.noData(e)} 
                                 primary={primary}
                                 admin={admin}
-                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
+                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400 !bg-[#DAE7DA] "
                             />
                         </table>
                     </div>

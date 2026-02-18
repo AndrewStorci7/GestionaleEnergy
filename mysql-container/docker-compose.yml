@@ -12,7 +12,9 @@ services:
       MYSQL_DATABASE: on_gestionale_balle
       MYSQL_USER: admin
       MYSQL_PASSWORD: admin
+      TZ: Europe/Rome
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - mysql_data:/var/lib/mysql
       - ./mysql/init:/docker-entrypoint-initdb.d
 

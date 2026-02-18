@@ -180,7 +180,7 @@ export default function TableContent({
     };
 
     return (
-        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll">
+        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll select-text">
             {useFor === 'regular' && add.state && (
                 <InsertNewBale style={style} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
@@ -198,7 +198,7 @@ export default function TableContent({
                 
                 // variabile che controlla se la balla corrente è ferro o allum, 
                 // qualora sia vero la riga verrà colorato di grigio
-                const bgAllumFerro = plastic === "ALLUM." || plastic === "FERRO" ? "!bg-gray-400" : "";
+                const bgAllumFerro = (useFor !== "specific" && (plastic === "ALLUM." || plastic === "FERRO")) ? "!bg-gray-400" : "";
 
                 return (
                     <tr 
@@ -222,12 +222,11 @@ export default function TableContent({
                                 )}
                             </td>
                         }
-                        <td className={style + " font-bold"} >{idUnique}</td>
-                        <td className={style}><Icon type={status} /></td>
-                        <td className={style}>{plastic}</td>
+                        <td className={style + bgAllumFerro + " font-bold"} >{idUnique}</td>
+                        <td className={style + bgAllumFerro}><Icon type={status} /></td>
+                        <td className={style + bgAllumFerro}>{plastic}</td>
 
-                        {type === "presser" ? <td className={style}>{code}</td> : ""
-                        }
+                        {type === "presser" ? <td className={style + bgAllumFerro}>{code}</td> : ""}
 
                         {renderDataContent(
                             type === "presser" ? bale.presser : bale.wheelman,
@@ -237,7 +236,7 @@ export default function TableContent({
                         )}
                         {renderDataContent(
                             type === "presser" ? bale.wheelman : bale.presser,
-                            type === "presser" ? `${bgAllumFerro} bgWheelman300 ${style}`: `bgPresser300 ${style} ${bgAllumFerro}`,
+                            type === "presser" ? `  ${style} bgWheelman300 ${bgAllumFerro}`: `bgPresser300 ${style} ${bgAllumFerro}`,
                             idUnique,
                             false
                         )}
