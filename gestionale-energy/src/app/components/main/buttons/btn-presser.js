@@ -1,7 +1,8 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { useAlert } from "@main/alert/alertProvider";
 import Image from "next/image";
+
+import { useAlert } from "@main/alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint
 

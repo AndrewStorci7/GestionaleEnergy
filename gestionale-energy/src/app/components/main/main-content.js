@@ -1,8 +1,9 @@
 'use client';
 
 import React from "react";
-import SearchInput from "./search/search";
-import Table from "./table/table";
+
+import SearchInput from "@main/search/search";
+import Table from "@main/table/table";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -25,9 +26,9 @@ export default function MainContent({
         <div {...props} >
             <SearchInput type={type} />
             <Table
-                type={type}
-                implant={implant}
-                idUser={idUser}
+            type={type}
+            implant={implant}
+            idUser={idUser}
             />
             
         </div>

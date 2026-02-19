@@ -1,13 +1,14 @@
 'use client'
 import React from "react";
 import Image from 'next/image';
-import { useAlert } from '@main/alert/alertProvider';
 import { handleStampa } from "@fetch";
+import { refreshPage } from "@config";
+
+import { useAlert } from '@main/alert/alertProvider';
+import { useLoader } from "@main/loader/loaderProvider";
+import { useWebSocket } from "@main/ws/use-web-socket";
 
 import PropTypes from 'prop-types'; // per ESLint
-import { useLoader } from "@main/loader/loaderProvider";
-import { refreshPage } from "@config";
-import { useWebSocket } from "@main/ws/use-web-socket";
 
 /**
  * Button for wheelman

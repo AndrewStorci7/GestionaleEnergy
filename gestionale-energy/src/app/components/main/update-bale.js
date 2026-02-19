@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-
 import { updateStatusTotalbale, getServerRoute, refreshPage } from '@config';
+
 import { fetchDataBale, handleStampa } from '@main/fetch';
-import { useAlert } from '@main/alert/alertProvider';
+import { useLoader } from '@main/loader/loaderProvider';
 import { useWebSocket } from '@main/ws/use-web-socket';
+import { useAlert } from '@main/alert/alertProvider';
 import SelectInput from '@main/search/select';
 
 import PropTypes from 'prop-types'; // per ESLint
-import { useLoader } from '@main/loader/loaderProvider';
 
 /**
  * @author Andrea Storci from Oppimittinetworking.com

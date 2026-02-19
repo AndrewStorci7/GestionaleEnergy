@@ -2,14 +2,14 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import Draggable from "react-draggable";
 import { IoClose } from "react-icons/io5";
-import Icon from "@main/get-icon";
+import { handleDelete, handleStampa } from "@fetch";
+import { refreshPage } from "@config";
 
+import Icon from "@main/get-icon";
 import UpdateValuesBale from "@main/update-bale";
 import { useWebSocket } from "@main/ws/use-web-socket";
 import { useAlert } from "@main/alert/alertProvider";
-import { handleDelete, handleStampa } from "@main/fetch";
 
-import { refreshPage } from "@config";
 
 import PropTypes from 'prop-types'; // per ESLint
 

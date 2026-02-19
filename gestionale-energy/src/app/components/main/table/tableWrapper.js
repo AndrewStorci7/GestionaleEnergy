@@ -1,7 +1,9 @@
 'use client';
+
 import React, {useMemo } from 'react';
-import TableContent from './table-content';
-import TableHeader from './table-header';
+
+import TableContent from '@main/table/table-content';
+import TableHeader from '@main/table/table-header';
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -35,11 +37,11 @@ const TableWrapper = ({
         <div {...props}>
             <div className={`not-prose shadow-sm relative z-0 rounded-xl overflow-hidden ${backgroundColor}`}>
                 <div className="absolute inset-0 -z-10 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
-                    <h2 className='grid grid-cols-16 font-bold text-xl  text-white'>
+                    <h2 className='grid grid-cols-16 font-bold text-xl text-white'>
                         <span className='text-left px-4 pt-[5px]'>
                         {safeType === 'presser' ? 'Pressista' : 'Carrellista'}
                         </span>
-                        <span className = "col-start-13 col-span-4  px-4 pt-[5px]text-left">
+                        <span className = "col-start-13 col-span-4 px-4 pt-[5px] text-left">
                         {safeType === 'presser' ? 'Carrellista' : 'Pressista'}
                         </span>
                     </h2>

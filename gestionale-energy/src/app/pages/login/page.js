@@ -5,11 +5,12 @@ import React, { useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import styles from './Login.module.css'; // Optional CSS styling (create styles if needed)
-import { getServerRoute } from '@config';
+import styles from './Login.module.css';
 import md5 from 'md5';
-import SelectImplants from '@/app/components/main/select-implant';
-import { AlertProvider } from "@/app/components/main/alert/alertProvider";
+import { getServerRoute } from '@config';
+
+import SelectImplants from '@main/select-implant';
+import { AlertProvider } from "@main/alert/alertProvider";
 
 /**
  * Login page

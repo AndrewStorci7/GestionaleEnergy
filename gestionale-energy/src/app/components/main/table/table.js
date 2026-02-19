@@ -1,15 +1,18 @@
 'use client'
 
 import React, { useState } from "react";
-import TableWrapper from "@main/table/tableWrapper";
-import DownloadReport from "@admin/buttons/btn-report";
-import BtnWheelman from "@/app/components/main/buttons/btn-wheelman";
-import BtnPresser from "@/app/components/main/buttons/btn-presser";
-import Switch from "@admin/switch";
-import { useWebSocket } from "@main/ws/use-web-socket";
 import Image from "next/image";
-import { refreshPage } from "@config";
+
+import TableWrapper from "@main/table/tableWrapper";
+import BtnWheelman from "@main/buttons/btn-wheelman";
+import BtnPresser from "@main/buttons/btn-presser";
+import { useWebSocket } from "@main/ws/use-web-socket";
+
 import BtnReportFiltered from "@admin/buttons/btn-report-filtered";
+import DownloadReport from "@admin/buttons/btn-report";
+import Switch from "@admin/switch";
+
+import { refreshPage } from "@config";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -89,23 +92,24 @@ export default function Table({
             return (
                 <>
                     <BtnPresser 
-                        implant={implant}
-                        idUser={idUser}
-                        clickAddHandle={handleAddPressed}
-                        handleConfirmAdd={confirmedAdd}
-                        baleObj={objIdBale}
+                    implant={implant}
+                    idUser={idUser}
+                    clickAddHandle={handleAddPressed}
+                    handleConfirmAdd={confirmedAdd}
+                    baleObj={objIdBale}
                     />
+
                     <div className="table-wrapper grid grid-cols-9 gap-2 relative overflow-y-scroll shadow-inner w-full" >
                         <TableWrapper 
-                            className="col-span-12"
-                            type={"presser"}
-                            tableContent={{
-                                handleSelect: (i, y) => handleSelect(i, y),
-                                selectedBaleId: isSelected,
-                                objAdd: objAdd,
-                                noData: (e) => noData(e)
-                            }}
-                            primary />
+                        className="col-span-12"
+                        type={"presser"}
+                        tableContent={{
+                            handleSelect: (i, y) => handleSelect(i, y),
+                            selectedBaleId: isSelected,
+                            objAdd: objAdd,
+                            noData: (e) => noData(e)
+                        }}
+                        primary />
                     </div>
 
                     {(!addWasClicked) ? (
@@ -115,29 +119,29 @@ export default function Table({
                             </h1>
                         </div>
                     ) : null }
-                                    </>
+                </>
             );
         }
         case "wheelman": {
             return (
                 <>
                     <BtnWheelman 
-                        implant={implant}
-                        idUser={idUser}
-                        baleObj={objIdBale}
+                    implant={implant}
+                    idUser={idUser}
+                    baleObj={objIdBale}
                     />
 
                     <div className="table-wrapper grid grid-cols-9 gap-2 relative overflow-y-scroll shadow-inner w-full">
                         <TableWrapper 
-                            className="col-span-12"
-                            type={"wheelman"}
-                            tableContent={{
-                                handleSelect: (i, y) => handleSelect(i, y),
-                                selectedBaleId: isSelected,
-                                objAdd: objAdd,
-                                noData: (e) => noData(e)
-                            }}
-                            primary />
+                        className="col-span-12"
+                        type={"wheelman"}
+                        tableContent={{
+                            handleSelect: (i, y) => handleSelect(i, y),
+                            selectedBaleId: isSelected,
+                            objAdd: objAdd,
+                            noData: (e) => noData(e)
+                        }}
+                        primary />
                     </div>
 
                     {(!addWasClicked) ? (
