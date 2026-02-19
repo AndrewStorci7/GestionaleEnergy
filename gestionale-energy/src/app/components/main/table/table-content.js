@@ -131,11 +131,10 @@ export default function TableContent({
 
         // gestire meglio l'errore
         if (typeof data !== "object") return;
-        console.log (data);
+        
         // Data e ora del pressista
         const date = data.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
         const hour = data.data_ins?.substr(11, 5) || "";
-        console.log ("data ", data.data_ins);
         return (<>
             {/* Dati del pressista */}
             {Object.entries(data).map(([key, value]) => (

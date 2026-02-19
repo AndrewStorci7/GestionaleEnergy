@@ -3,7 +3,7 @@ import { act, render, screen, fireEvent } from "@testing-library/react";
 import Header from "@header/header";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { sleep } from "@/app/functions";
+
 // Mocks
 jest.mock("next/navigation", () => ({
     useRouter: jest.fn(),
@@ -17,6 +17,19 @@ jest.mock("js-cookie", () => ({
 jest.mock("@main/ws/use-web-socket", () => ({
     useWebSocket: () => ({ message: "test message" }),
 }));
+
+jest.mock("@main/loader/loaderProvider", () => ({
+    useLoader: () => ({
+        showLoader: jest.fn()
+    })
+}));
+
+jest.mock("@main/alert/alertProvider", () => ({
+    useAlert: () => ({
+        showAlert: jest.fn(),
+        hideAlert: jest.fn()
+    })
+}))
 
 global.fetch = jest.fn((url) =>
     Promise.resolve({
@@ -34,6 +47,7 @@ describe("Header component", () => {
     const mockPush = jest.fn();
 
     beforeEach(() => {
+        jest.clearAllMocks();
         useRouter.mockReturnValue({ push: mockPush });
     });
 

@@ -89,7 +89,6 @@ export default function UpdateValuesBale({
         if (type === 'presser') {
             return presserData.plastic !== null && presserData.plastic !== undefined && presserData.plastic !== "";
         } else {
-            // console.log("Dati canProceed:", wheelmanData);
             return cacheWeight > 0 || wheelmanData.cdbc == 2 || hasChanges;
         }
     }, [type, presserData.plastic, cacheWeight, wheelmanData.cdbc]);
@@ -101,7 +100,6 @@ export default function UpdateValuesBale({
 
     const handleData = (response) => {
         const data = response.data;
-        // console.log("UpdateBale Dati dentro handleData: ", data);
         
         if (type === "presser") {
             const tmpData = { 

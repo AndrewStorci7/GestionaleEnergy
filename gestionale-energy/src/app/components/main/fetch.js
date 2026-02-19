@@ -87,7 +87,6 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
         }
 
         setEmpty(false);
-        // console.log(dataJson.data);
         setContent(dataJson.data);
     } catch (error) {
         console.error("Errore in fetchDataTotalBale:", error);
@@ -192,7 +191,6 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
                     const result3 = await response3.json();
 
                     if (result3.code == -1) {
-                        console.log(result3)
                         hookCancel({
                             title: "Attenzione",
                             message: "Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?", 
@@ -288,7 +286,6 @@ const handleDelete = async (id, handleAlertChange) => {
     }
 
     try {
-        // console.log("entrato nel try/catch di `handleDelete`: id balla => " + id);
         const url = getServerRoute('delete-bale');
         const check = await fetch(url, {
             method: 'POST',
@@ -299,7 +296,6 @@ const handleDelete = async (id, handleAlertChange) => {
         const resp = await check.json();
 
         if (resp.code < 0) {
-            // console.log("risposta ottenuta da `handleDelete`: " + resp.message);
             throw new Error(resp.message);
         } 
     } catch (error) {

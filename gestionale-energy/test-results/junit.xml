@@ -1,67 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="19" failures="1" errors="0" time="10.506">
-  <testsuite name="Footer" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:05:40" time="5.63" tests="4">
-    <testcase classname="Footer renders the logo image" name="Footer renders the logo image" time="0.168">
-    </testcase>
-    <testcase classname="Footer displays &apos;Powered by&apos; text" name="Footer displays &apos;Powered by&apos; text" time="0.031">
-    </testcase>
-    <testcase classname="Footer shows current year" name="Footer shows current year" time="0.017">
-    </testcase>
-    <testcase classname="Footer shows the current version from package.json" name="Footer shows the current version from package.json" time="0.046">
-    </testcase>
-  </testsuite>
-  <testsuite name="BtnReport Component" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:05:40" time="5.636" tests="3">
-    <testcase classname="BtnReport Component renders correctly" name="BtnReport Component renders correctly" time="0.172">
-    </testcase>
-    <testcase classname="BtnReport Component updates the date state and passes it to ExportReport components" name="BtnReport Component updates the date state and passes it to ExportReport components" time="0.055">
-    </testcase>
-    <testcase classname="BtnReport Component passes correct disabled prop to tempo reports" name="BtnReport Component passes correct disabled prop to tempo reports" time="0.032">
-    </testcase>
-  </testsuite>
-  <testsuite name="Header component" errors="0" failures="1" skipped="0" timestamp="2026-02-17T11:05:40" time="7.457" tests="1">
-    <testcase classname="Header component calls logout on button click" name="Header component calls logout on button click" time="0.064">
-      <failure>Error: useLoader deve essere usato dentro a LoaderProvider
-    at useLoader (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\src\app\components\main\loader\loaderProvider.js:35:15)
-    at Header (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\src\app\components\header\header.js:27:37)
-    at Object.react-stack-bottom-frame (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:22338:20)
-    at renderWithHooks (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:5730:22)
-    at updateFunctionComponent (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:7991:19)
-    at beginWork (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:9656:18)
-    at runWithFiberInDEV (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:543:16)
-    at performUnitOfWork (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:14993:22)
-    at workLoopSync (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:14815:41)
-    at renderRootSync (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:14793:11)
-    at performWorkOnRoot (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:14328:46)
-    at performWorkOnRootViaSchedulerTask (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react-dom\cjs\react-dom-client.development.js:15842:7)
-    at flushActQueue (C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react\cjs\react.development.js:862:34)
-    at C:\Users\Utente\Desktop\OppimittiEnergy - GestionalePressa\GestionaleEnergy\gestionale-energy\node_modules\react\cjs\react.development.js:1114:21
-    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
-    </testcase>
-  </testsuite>
-  <testsuite name="Alert Component" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:05:40" time="7.8" tests="9">
-    <testcase classname="Alert Component renders error alert correctly" name="Alert Component renders error alert correctly" time="0.114">
-    </testcase>
-    <testcase classname="Alert Component renders confirmation alert correctly" name="Alert Component renders confirmation alert correctly" time="0.012">
-    </testcase>
-    <testcase classname="Alert Component calls onHide when close button is clicked" name="Alert Component calls onHide when close button is clicked" time="0.018">
-    </testcase>
-    <testcase classname="Alert Component handles delete confirmation" name="Alert Component handles delete confirmation" time="0.017">
-    </testcase>
-    <testcase classname="Alert Component handles print confirmation" name="Alert Component handles print confirmation" time="0.013">
-    </testcase>
-    <testcase classname="Alert Component renders update form for presser" name="Alert Component renders update form for presser" time="0.018">
-    </testcase>
-    <testcase classname="AlertProvider provides alert context to children" name="AlertProvider provides alert context to children" time="0.004">
-    </testcase>
-    <testcase classname="AlertProvider shows and hides alerts" name="AlertProvider shows and hides alerts" time="0.041">
-    </testcase>
-    <testcase classname="AlertProvider throws error when used outside provider" name="AlertProvider throws error when used outside provider" time="0.006">
-    </testcase>
-  </testsuite>
-  <testsuite name="BtnReportFiltered Component" errors="0" failures="0" skipped="0" timestamp="2026-02-17T11:05:40" time="7.954" tests="2">
-    <testcase classname="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" name="BtnReportFiltered Component Render &lt;BtnReportFiltered /&gt;" time="0.13">
-    </testcase>
-    <testcase classname="BtnReportFiltered Component Check update of date inputs" name="BtnReportFiltered Component Check update of date inputs" time="0.29">
+<testsuites name="jest tests" tests="1" failures="0" errors="0" time="6.133">
+  <testsuite name="Header component" errors="0" failures="0" skipped="0" timestamp="2026-02-19T11:02:29" time="4.182" tests="1">
+    <testcase classname="Header component calls logout on button click" name="Header component calls logout on button click" time="0.386">
     </testcase>
   </testsuite>
 </testsuites>

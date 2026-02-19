@@ -43,8 +43,6 @@ const BtnReportFiltered = (
         reportFiltered(implant, { startDate, endDate }, showAlert)
     }
 
-    // console.log("implant inside btn-report-filtered:", implant);
-
     return (
         <>
             <p className="ml-3 mb-1.5 font-bold">PERIODO</p>

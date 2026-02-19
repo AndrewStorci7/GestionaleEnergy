@@ -92,39 +92,35 @@ export default function Header({
      */
     useEffect(() => {
         const fetchData = async () => {
-            // try {
-                const cookies = await JSON.parse(Cookies.get('user-info'));
-                const url = getServerRoute("total-bale-count");
-                const urlTotChili = getServerRoute("totale-chili");
-                setIdImplant(cookies.id_implant);
-                const implant = cookies.id_implant;
-                
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ implant }),
-                });
-                const totChili = await fetch(urlTotChili, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ implant }),
-                });
-                const totChiliResp = await totChili.json();
+            const cookies = await JSON.parse(Cookies.get('user-info'));
+            const url = getServerRoute("total-bale-count");
+            const urlTotChili = getServerRoute("totale-chili");
+            setIdImplant(cookies.id_implant);
+            const implant = cookies.id_implant;
+            
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ implant }),
+            });
+            const totChili = await fetch(urlTotChili, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ implant }),
+            });
+            const totChiliResp = await totChili.json();
 
-                if (!resp.ok) {
-                    throw new Error("Network response was not ok");
-                }
+            if (!resp.ok) {
+                throw new Error("Network response was not ok");
+            }
 
-                const data = await resp.json();
+            const data = await resp.json();
 
-                if (data.code == 0) {
-                    setTotalBales(data.message);
-                    setTotalBalesLavorate(data.message2);
-                    setTotalChili(totChiliResp.message.totale_chili);
-                }
-            // } catch (error) {
-            //     // console.log(error);
-            // }
+            if (data.code == 0) {
+                setTotalBales(data.message);
+                setTotalBalesLavorate(data.message2);
+                setTotalChili(totChiliResp.message.totale_chili);
+            }
         } 
 
         const interval = setInterval(() => {

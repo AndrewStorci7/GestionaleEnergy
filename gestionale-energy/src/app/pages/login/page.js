@@ -34,49 +34,56 @@ export default function LoginPage() {
         e.preventDefault();
         
         // Basic form validation
-        if (!username || !password || !implant) {
+        if (!username || !password) {
             setError('Compilare tutti i campi richiesti.');
             return;
-        } else {
+        } 
+        // Check for implants
+        if (implant.id_implant === 0 || !implant.id_implant) {
+            setError("Selezionare un impianto valido");
+            return;
+        }
 
-            // Crypting the password with innested md5
-            let crypted_pw = md5(md5(password));
+        // Crypting the password with innested md5
+        let crypted_pw = md5(md5(password));
 
-            try {
-                const url = getServerRoute("login");
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username, password: crypted_pw}),
-                });
-                const res = await resp.json();
+        try {
+            const url = getServerRoute("login");
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username, password: crypted_pw}),
+            });
+            const res = await resp.json();
 
-                if (res.code) {
-                    setError(`${res.message}`);
-                } else {
-                    const json = {
-                        id_user: res[0].id,
-                        name: res[0].name,
-                        surname: res[0].surname,
-                        username: res[0].username, 
-                        id_implant: implant.id_implant,
-                        implant: implant.text_implant, 
-                        type: res[0].type,
-                        last_a: res[0].last_access,
-                    };
-                    Cookies.set('user-info', JSON.stringify(json), { sameSite: 'Strict', path: '/', expires: 1 });
-                    router.push('/pages/panel');
-                }
-            } catch (error) {
-                setError(`Errore: ${error}`);
+            if (res.code) {
+                setError(`${res.message}`);
+            } else {
+                const json = {
+                    id_user: res[0].id,
+                    name: res[0].name,
+                    surname: res[0].surname,
+                    username: res[0].username, 
+                    id_implant: implant.id_implant,
+                    implant: implant.text_implant, 
+                    type: res[0].type,
+                    last_a: res[0].last_access,
+                };
+                Cookies.set('user-info', JSON.stringify(json), { sameSite: 'Strict', path: '/', expires: 1 });
+                router.push('/pages/panel');
             }
+        } catch (error) {
+            setError(`Errore: ${error}`);
         }
     }
 
-    const handleChange = () => {
-        const value = selectRef.current.value;
-        const text = selectRef.current.options[selectRef.current.selectedIndex].text;
-        setImplant({ id_implant: value, text_implant: text });
+    const handleChange = (id, name) => {
+        if (!id || id === "" || id === 0) {
+            setImplant({ id_implant: 0, text_implant: name });
+            return;
+        }
+
+        setImplant({ id_implant: id, text_implant: name });
     }
 
     return (

@@ -22,7 +22,7 @@ const CheckCookie = () => {
         router.push('/pages/login');
       }
     } catch (error) {
-      console.log('Error checking cookie: ', error);
+      // console.error('Error checking cookie: ', error);
     } finally {
       showLoader(false);
     }

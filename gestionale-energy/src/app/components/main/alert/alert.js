@@ -221,7 +221,6 @@ export default function Alert({
                         <div>{currentMessage}</div>
                         <button
                             onClick={async () => {
-                                // console.log("Click conferma")
                                 await onConfirm?.() ?? await handlePrintConfirm()
                                 closeAlert()
                             }}
