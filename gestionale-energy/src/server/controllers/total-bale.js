@@ -48,6 +48,7 @@ class TotalBale extends Common {
                 ? JSON.stringify({ is_rei_altro_mag: true, id_implant: data.implant == 1 ? 2 : 1 }) 
                 : JSON.stringify({ is_rei_altro_mag: false, id_implant: null });
             
+            // Controllo MDR per inserire come magazzino di default "Provvisorio"
             const checkIfIncludesMDR = data.body.id_plastic.includes('MDR');
 
             const Corepla = ["CTE", "FILM/C", "FILM/N", "RPO", "MPR/C", "MPR/S" ,"FINE STV2", "IPP", "IPS", "VPET", "FLEX/S", "CHEMIX"];

@@ -126,15 +126,11 @@ class PresserBale extends Bale {
 
             const arr_body = Object.values(body);
 
-            // console.info(body);
-
             const check_ins_pb = await this.db.query(
                 `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note, data_ins) 
                 VALUES( ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
                 arr_body,
             );
-
-            // console.info(check_ins_pb[0]);
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
