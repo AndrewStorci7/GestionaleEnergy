@@ -50,6 +50,9 @@ class TotalBale extends Common {
             
             const checkIfIncludesMDR = data.body.id_plastic.includes('MDR');
 
+            const Corepla = ["CTE", "FILM/C", "FILM/N", "RPO", "MPR/C", "MPR/S" ,"FINE STV2", "IPP", "IPS", "VPET", "FLEX/S", "CHEMIX"];
+            const checkIfIncludesCorepla = Corepla.some(i =>data.body.id_plastic.includes(i));  
+            
             const presserReq = data.body;
             const presserResult = await this.PresserInstance.set(presserReq, transaction);
             
@@ -60,7 +63,15 @@ class TotalBale extends Common {
 
             const id_new_presser_bale = presserResult.message.id;
 
-            const wheelmanReq = checkIfIncludesMDR ? { id_wd: 2 } : null;
+            let wheelmanReq = null; 
+            
+            if (checkIfIncludesCorepla) {
+                wheelmanReq = { id_wd: 3 };
+            } 
+            else if (checkIfIncludesMDR) {
+                wheelmanReq = { id_wd: 2 };
+            }
+
             const wheelmanResult = await this.WheelmanInstance.set(wheelmanReq, transaction);
             
             if (wheelmanResult.code !== 0) {
