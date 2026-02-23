@@ -48,7 +48,9 @@ export default function TableHeader({
             return (
                 <th
                     key={index}
-                    className={col !== "Stato"? (style + fixStyle + fixColor + bgExtension):(style + fixStyle + fixColor + bgExtension + styleCenter)}
+                    className={(col !== "Stato" && col !== "Sel." && col !== "N°")
+                        ? (style + fixStyle + fixColor + bgExtension)
+                        :(style + fixStyle + fixColor + bgExtension + styleCenter)}
                 >
                     {col}
                 </th>

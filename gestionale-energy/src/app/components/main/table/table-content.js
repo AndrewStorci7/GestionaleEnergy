@@ -220,7 +220,7 @@ export default function TableContent({
                                 )}
                             </td>
                         }
-                        <td className={style + bgAllumFerro + " font-bold"} >{idUnique}</td>
+                        <td className={style + bgAllumFerro + " font-bold text-center"} >{idUnique}</td>
                         <td className={style + bgAllumFerro}><Icon type={status} /></td>
                         <td className={style + bgAllumFerro}>{plastic}</td>
 
