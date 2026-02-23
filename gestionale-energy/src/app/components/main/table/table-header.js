@@ -19,7 +19,8 @@ export default function TableHeader({
     
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
-    const fixStyle = "resize-none !text-left";
+    const fixStyle = "resize-none text-left";
+    const styleCenter = " !text-center";
     const bgColorPresser = " bgWheelman";
     const bgColorWheelman = " bgPresser";
 
@@ -47,7 +48,7 @@ export default function TableHeader({
             return (
                 <th
                     key={index}
-                    className={style + fixStyle + fixColor + bgExtension}
+                    className={col !== "Stato"? (style + fixStyle + fixColor + bgExtension):(style + fixStyle + fixColor + bgExtension + styleCenter)}
                 >
                     {col}
                 </th>
