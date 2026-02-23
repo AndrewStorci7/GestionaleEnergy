@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
+
 import { useLoader } from '@main/loader/loaderProvider';
 
 /**
@@ -21,7 +22,7 @@ const CheckCookie = () => {
         router.push('/pages/login');
       }
     } catch (error) {
-      console.log('Error checking cookie: ', error);
+      console.error('Error checking cookie: ', error);
     } finally {
       showLoader(false);
     }

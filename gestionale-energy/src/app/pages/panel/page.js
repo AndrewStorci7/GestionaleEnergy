@@ -6,11 +6,13 @@ import Head from "next/head";
 
 import Footer from "@components/footer/footer";
 import Header from "@components/header/header";
-import MainContent from "@main/main-content";
 
+import MainContent from "@main/main-content";
 import { WebSocketProvider } from '@main/ws/use-web-socket';
 import { AlertProvider } from "@main/alert/alertProvider";
 import { LoaderProvider, useLoader } from "@main/loader/loaderProvider";
+
+import PropTypes from "prop-types"; // per ESLint
 
 const AdminContent = ({
     data
@@ -46,6 +48,17 @@ const AdminContent = ({
     )
 }
 
+AdminContent.propTypes = {
+    data: PropTypes.shape ({
+        implant: PropTypes.string,
+        user: PropTypes.string,
+        type: PropTypes.string,
+        name: PropTypes.string,
+        surname: PropTypes.string,
+        idImplant: PropTypes.number,
+        idUser: PropTypes.number,        
+    })
+};
 export default function Admin() {
 
     // Impianto

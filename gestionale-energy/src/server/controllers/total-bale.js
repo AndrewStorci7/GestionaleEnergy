@@ -48,8 +48,12 @@ class TotalBale extends Common {
                 ? JSON.stringify({ is_rei_altro_mag: true, id_implant: data.implant == 1 ? 2 : 1 }) 
                 : JSON.stringify({ is_rei_altro_mag: false, id_implant: null });
             
+            // Controllo MDR per inserire come magazzino di default "Provvisorio"
             const checkIfIncludesMDR = data.body.id_plastic.includes('MDR');
 
+            const Corepla = ["CTE", "FILM-C", "FILM-N", "RPO", "MPR/C", "MPR/S" ,"STV-2", "IPP", "IPS", "VPET", "FLEX/S", "CHEMIX"];
+            const checkIfIncludesCorepla = Corepla.some(i =>data.body.id_plastic.includes(i));  
+            console.log("corepla"+checkIfIncludesCorepla);
             const presserReq = data.body;
             const presserResult = await this.PresserInstance.set(presserReq, transaction);
             
@@ -60,7 +64,15 @@ class TotalBale extends Common {
 
             const id_new_presser_bale = presserResult.message.id;
 
-            const wheelmanReq = checkIfIncludesMDR ? { id_wd: 2 } : null;
+            let wheelmanReq = null; 
+            
+            if (checkIfIncludesCorepla) {
+                wheelmanReq = { id_wd: 3 };
+            } 
+            else if (checkIfIncludesMDR) {
+                wheelmanReq = { id_wd: 2 };
+            }
+
             const wheelmanResult = await this.WheelmanInstance.set(wheelmanReq, transaction);
             
             if (wheelmanResult.code !== 0) {
@@ -410,7 +422,9 @@ class TotalBale extends Common {
                 [id_bale],
                 true
             );
+
             console.debug(`Bale data retrieved: ${JSON.stringify(bale)}`);
+            console.debug("magazzino: " + bale[0].wd);
             if (bale[0].condition !== 1) {
                 return { code: -2, message: "Balla non stampata, risultava essere 'Non legata'" }
             } else if (bale[0].weight === 0 || !bale[0].weight) {
@@ -420,8 +434,14 @@ class TotalBale extends Common {
                 const onlyDate = this.formatDate(date, { format: "date-only", inverted: true, char: '/' });
                 const onlyTime = this.formatDate(date, { format: "time-only", noSeconds: true });
                 const turn = this.getTurnFromDate(date)
-                const corepla = bale[0].wd.toLowerCase() === "corepla" || bale[0].wd.toLowerCase() === "coripet" ? bale[0].wd.toLowerCase() : "";
-                return { ...bale[0], date_print: onlyDate, time_print: onlyTime, turn, wd: corepla };
+
+                // Controllo del magazzino di destinazione:
+                // v1.9.0
+                // Se il magazzino è Corepla o Coripet, verà stampato sull'etichetta
+                const wd =  bale[0].wd.toLowerCase() === "corepla" || bale[0].wd.toLowerCase() === "coripet" ? 
+                            bale[0].wd.toLowerCase() : "";
+
+                return { ...bale[0], date_print: onlyDate, time_print: onlyTime, turn, wd: wd };
             }
         } catch (error) {
             console.error(`Errore durante il recupero della balla: ${error.message}`);
@@ -536,9 +556,14 @@ class TotalBale extends Common {
                 res.json(data)
             } else if (data) {
                 const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
-                // const result = await printer.print(data.plastic, data.weight, data.turn, data.date_print, data.time_print, data.wd);
-                const result = await printer.print(data.plastic, data.weight, data.turn, data.date_print, data.time_print);
-                // console.log(JSON.stringify(result))
+                const result = await printer.print(
+                    data.plastic,       // Tipo di plastica
+                    data.weight,        // Peso
+                    data.turn,          // Turno
+                    data.date_print,    // Data di stampa
+                    data.time_print,    // Ora di stampa
+                    data.wd             // Nome del magazzino 
+                );
                 res.json(result);
             } else {
                 res.json({ code: 0, message: "Balla non stampata, risultava essere 'Non legata'" })

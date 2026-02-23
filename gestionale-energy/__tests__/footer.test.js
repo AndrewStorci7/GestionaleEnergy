@@ -20,7 +20,7 @@ describe("Footer", () => {
   it("shows current year", () => {
     render(<Footer />);
     const year = new Date().getFullYear();
-    const yearText = screen.getByText(new RegExp(`${year} @‌copyright`, "i"));
+    const yearText = screen.getByText(new RegExp(`${year} ©copyright`, "i"));
     expect(yearText).toBeInTheDocument();
   });
 

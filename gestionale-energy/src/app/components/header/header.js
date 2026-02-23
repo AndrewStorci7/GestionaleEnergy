@@ -1,16 +1,18 @@
 'use client'
-
-import Image from "next/image";
 import React, { useState, useEffect } from "react";
-import { refreshPage, getEnv, getServerRoute, COOKIE_NAME_USERINFO, COOKIES_SETTINGS } from "@config";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { useWebSocket } from "@main/ws/use-web-socket";
-import PropTypes from "prop-types"; // per ESLint
-import SelectImplants from "@main/select-implant";
-import { useAlert } from "@alert/alertProvider";
-import { useLoader } from "@main/loader/loaderProvider";
+import { refreshPage, getEnv, getServerRoute, COOKIE_NAME_USERINFO, COOKIES_SETTINGS } from "@config";
 import { sleep } from "@functions";
+
+import { useWebSocket } from "@main/ws/use-web-socket";
+import SelectImplants from "@main/select-implant";
+import { useLoader } from "@main/loader/loaderProvider";
+
+import { useAlert } from "@alert/alertProvider";
+
+import PropTypes from "prop-types"; // per ESLint
 
 /**
  * Header
@@ -18,7 +20,7 @@ import { sleep } from "@functions";
  * @returns 
  */
 export default function Header({ 
-    implant, 
+    // implant, 
     username, 
     type
 }) {
@@ -90,39 +92,35 @@ export default function Header({
      */
     useEffect(() => {
         const fetchData = async () => {
-            // try {
-                const cookies = await JSON.parse(Cookies.get('user-info'));
-                const url = getServerRoute("total-bale-count");
-                const urlTotChili = getServerRoute("totale-chili");
-                setIdImplant(cookies.id_implant);
-                const implant = cookies.id_implant;
-                
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ implant }),
-                });
-                const totChili = await fetch(urlTotChili, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ implant }),
-                });
-                const totChiliResp = await totChili.json();
+            const cookies = await JSON.parse(Cookies.get('user-info'));
+            const url = getServerRoute("total-bale-count");
+            const urlTotChili = getServerRoute("totale-chili");
+            setIdImplant(cookies.id_implant);
+            const implant = cookies.id_implant;
+            
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ implant }),
+            });
+            const totChili = await fetch(urlTotChili, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ implant }),
+            });
+            const totChiliResp = await totChili.json();
 
-                if (!resp.ok) {
-                    throw new Error("Network response was not ok");
-                }
+            if (!resp.ok) {
+                throw new Error("Network response was not ok");
+            }
 
-                const data = await resp.json();
+            const data = await resp.json();
 
-                if (data.code == 0) {
-                    setTotalBales(data.message);
-                    setTotalBalesLavorate(data.message2);
-                    setTotalChili(totChiliResp.message.totale_chili);
-                }
-            // } catch (error) {
-            //     // console.log(error);
-            // }
+            if (data.code == 0) {
+                setTotalBales(data.message);
+                setTotalBalesLavorate(data.message2);
+                setTotalChili(totChiliResp.message.totale_chili);
+            }
         } 
 
         const interval = setInterval(() => {

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 
 import PropTypes from 'prop-types'; // per ESLint
-import Loader from "./loader";
+import Loader from "@main/loader/loader";
 
 const LoaderContext = createContext();
 

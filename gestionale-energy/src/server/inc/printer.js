@@ -13,22 +13,22 @@ class Printer {
         this.port = port;
         this.fontSize = 150;
         this.fontSizeDate = 110;
-        this.fontSizeSpecificMsg = 70;
+        this.fontSizeWarehouse = 60;
         this.rotation = 'B';
         this.rotationSpecificMsg = 'I'
 
         // misure stampa
         // this.xOffset4thRow = 460; // X coordinate Quarta riga
         this.xOffset3rdRowDate = 420; // X coordinate Terza riga
-        this.xOffsetSpecificMsg = 200;
+        this.xOffsetWarehouse = 200; //xcoordinate magazzino
         this.xOffset3rdRow = 400; // X coordinate Terza riga
         this.xOffset2ndRow = 230; // X coordinate Seconda riga
-        this.xOffset1stRow = 50; // X coordinate Prima riga
+        this.xOffset1stRow = 400; // X coordinate Prima riga
 
         // this.yOffsetHour = 1050; // Y coordinate Ora
         this.yOffsetDate = 550; // Y coordinate Data 
         this.yOffsetTurn = 1700; // Y coordinate Turno
-        this.yOffsetSpecificMsg = 500;
+        this.yOffsetWarehouse = 500;// Y coordinate magazzino
         this.yOffsetWeight = 1500; // Y coordinate Peso 
         this.yOffsetPlastic = 900; // Y coordinate Plastica
     }
@@ -113,7 +113,7 @@ class Printer {
      * @param {*} date Data della stampa
      * @returns 
      */
-    async print(plastic = "", weight = 0, turn = 0, date = "", hour = "", corepla = "") {
+    async print(plastic = "", weight = 0, turn = 0, date = "", hour = "", wd = "") {
         return new Promise((resolve, reject) => {
             try {
                 if (plastic === "" || weight === 0 || turn === 0 || date === "" || hour === "") {
@@ -130,7 +130,7 @@ class Printer {
 ^FO${this.xOffset2ndRow},${this.yOffsetWeight}^A0${this.rotation},${this.fontSize},${this.fontSize}^FD${weight}^FS
 ^FO${this.xOffset3rdRow},${this.yOffsetTurn}^A0${this.rotation},${this.fontSize},${this.fontSize}^FD${turn}^FS
 ^FO${this.xOffset3rdRowDate},${this.yOffsetDate}^A0${this.rotation},${this.fontSizeDate},${this.fontSizeDate}^FD${date}|${hour}^FS
-^FO${this.xOffsetSpecificMsg},${this.yOffsetSpecificMsg}^A0${this.rotationSpecificMsg},${this.fontSizeSpecificMsg},${this.fontSizeSpecificMsg}^FD${corepla}^FS
+^FO${this.xOffsetWarehouse},${this.yOffsetWarehouse}^A0${this.rotationsWarehouse},${this.fontSizeWarehouse},${this.fontSizeWarehouse}^FD${wd}^FS
 ^XZ
                 `;
               

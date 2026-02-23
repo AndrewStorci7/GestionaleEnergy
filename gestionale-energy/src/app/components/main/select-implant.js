@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import { getServerRoute } from '@config';
-import { useAlert } from "@/app/components/main/alert/alertProvider";
+
+import { useAlert } from "@main/alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -61,10 +62,8 @@ export default function SelectImplants({
     }, [])
 
     useEffect(() => {
-        console.log(currentValue)
         if (currentValue) {
             setValue(currentValue);
-            // console.log(value);
         }
     }, [currentValue]);
 
@@ -93,13 +92,20 @@ export default function SelectImplants({
     return (
         <select
             ref={ref}
-            onChange={(e) => handleChange(e.target.value, content[e.target.value - 1]?.name)}
+            onChange={(e) => {
+                let val = e.target.value; 
+                if (val === "") {
+                    handleChange(0, "");
+                } else {
+                    handleChange(val, content[val - 1]?.name);
+                }
+            }}
             value={value}
             className={`rounded-md w-full text-black border-2 border-gray-300 p-1`}
             {...props}
         >
             {showDefaultValue && <option value={""}>Seleziona un&apos;impianto</option>}
-            {content.map((_m) => {
+            {content && content.length > 0 && content.map((_m) => {
                 let value = "", text = "";
                 
                 Object.keys(_m).map((key) => {
@@ -122,6 +128,8 @@ export default function SelectImplants({
 }
 
 SelectImplants.propTypes = {
+    currentValue:PropTypes.number,
+    showDefaultValue:PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     ref: PropTypes.object
 };

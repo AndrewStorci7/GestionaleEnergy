@@ -1,7 +1,8 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { useAlert } from "@main/alert/alertProvider";
 import Image from "next/image";
+
+import { useAlert } from "@main/alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -74,7 +75,7 @@ export default function BtnPresser({
 
     return (
         <>
-            <div className="w-1/2 font-bold on-fix-index">
+            <div className="w-full md:w-1/2 w-1/2 font-bold on-fix-index ">
                 <div className="flex flex-row-reverse">
                     <button 
                     data-testid="delete"

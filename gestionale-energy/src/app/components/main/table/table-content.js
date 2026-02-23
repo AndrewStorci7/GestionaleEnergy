@@ -1,17 +1,18 @@
 ﻿import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import Cookies from 'js-cookie';
-import CheckButton from "../select-button";
-import Icon from "../get-icon";
-import InsertNewBale from './insert-new-bale';
+import { checkIfAttributeIsValid } from '@functions';
+import { refreshPage } from '@config';
+import { fetchDataTotalBale } from '@fetch';
+
+import { useWebSocket } from "@main/ws/use-web-socket";
+import CheckButton from "@main/select-button";
+import Icon from "@main/get-icon";
+import InsertNewBale from '@main/table/insert-new-bale';
+import { useLoader } from '@main/loader/loaderProvider';
+
 import { useAlert } from "@alert/alertProvider";
 
-import { useWebSocket } from "@components/main/ws/use-web-socket";
-import { refreshPage } from '@config';
-import { fetchDataTotalBale } from '../fetch';
-
 import PropTypes from 'prop-types'; // per ESLint
-import { checkIfAttributeIsValid } from '@functions';
-import { useLoader } from '../loader/loaderProvider';
 
 /**
  * Custom component for handling the data of a bale
@@ -130,11 +131,10 @@ export default function TableContent({
 
         // gestire meglio l'errore
         if (typeof data !== "object") return;
-
+        
         // Data e ora del pressista
         const date = data.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
         const hour = data.data_ins?.substr(11, 5) || "";
-
         return (<>
             {/* Dati del pressista */}
             {Object.entries(data).map(([key, value]) => (
@@ -159,6 +159,7 @@ export default function TableContent({
                     ) : null
                 ) : null
             ))}
+            
             {showBtnOk && <td className={style + " !p-2"}></td>}{/* spazio del bottone dell'OK per la conferma dell'aggiunta */}
             <td className={style + " !p-2" + " font-bold"}>{date + " " + hour}</td>
         </>)
@@ -179,7 +180,7 @@ export default function TableContent({
     };
 
     return (
-        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll">
+        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll select-text">
             {useFor === 'regular' && add.state && (
                 <InsertNewBale style={style} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
@@ -187,6 +188,7 @@ export default function TableContent({
             {!isEmpty && content && content.map((bale) => {
 
                 const plastic = bale.presser.plastic;
+                const code = bale.presser.codePlastic;
                 const id = type === "presser" ? bale.presser.id : bale.wheelman.id;
                 const idUnique = bale.idUnique;
 
@@ -196,7 +198,7 @@ export default function TableContent({
                 
                 // variabile che controlla se la balla corrente è ferro o allum, 
                 // qualora sia vero la riga verrà colorato di grigio
-                const bgAllumFerro = plastic === "ALLUM." || plastic === "FERRO" ? "!bg-gray-400" : "";
+                const bgAllumFerro = (useFor !== "specific" && (plastic === "ALLUM." || plastic === "FERRO")) ? "!bg-gray-400" : "";
 
                 return (
                     <tr 
@@ -220,9 +222,11 @@ export default function TableContent({
                                 )}
                             </td>
                         }
-                        <td className={style + " font-bold"} >{idUnique}</td>
-                        <td className={style}><Icon type={status} /></td>
-                        <td className={style}>{plastic}</td>
+                        <td className={style + bgAllumFerro + " font-bold"} >{idUnique}</td>
+                        <td className={style + bgAllumFerro}><Icon type={status} /></td>
+                        <td className={style + bgAllumFerro}>{plastic}</td>
+
+                        {type === "presser" ? <td className={style + bgAllumFerro}>{code}</td> : ""}
 
                         {renderDataContent(
                             type === "presser" ? bale.presser : bale.wheelman,
@@ -232,10 +236,11 @@ export default function TableContent({
                         )}
                         {renderDataContent(
                             type === "presser" ? bale.wheelman : bale.presser,
-                            type === "presser" ? `${bgAllumFerro} bgWheelman300 ${style}`: `bgPresser300 ${style} ${bgAllumFerro}`,
+                            type === "presser" ? `  ${style} bgWheelman300 ${bgAllumFerro}`: `bgPresser300 ${style} ${bgAllumFerro}`,
                             idUnique,
                             false
                         )}
+
                     </tr>
                 );
             })}

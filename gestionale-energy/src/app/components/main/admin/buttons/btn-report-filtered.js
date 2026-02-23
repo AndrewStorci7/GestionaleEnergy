@@ -1,8 +1,11 @@
 'use client'
 import React, { useState } from 'react'
 import { formattedDateTime } from '@config'
+
 import SelectInput from '@main/search/select'
-import { reportFiltered } from '@/app/components/main/admin/export/export-report-filtered'
+
+import { reportFiltered } from '@admin/export/export-report-filtered'
+
 import { useAlert } from '@alert/alertProvider'
 
 // import PropTypes from 'prop-types'; // per ESLint
@@ -39,8 +42,6 @@ const BtnReportFiltered = (
 
         reportFiltered(implant, { startDate, endDate }, showAlert)
     }
-
-    // console.log("implant inside btn-report-filtered:", implant);
 
     return (
         <>

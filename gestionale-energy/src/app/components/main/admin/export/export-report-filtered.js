@@ -52,9 +52,7 @@ const applyBorders = (ws, range) => {
 const reportFiltered = async (reportFor, options, showAlert) => {
     try {
         if (options && options.startDate && options.endDate) {
-            // console.log("Start Date:", typeof options.startDate);
             if (options.startDate > options.endDate) {
-                // console.error("La data di inizio non può essere successiva alla data di fine.");
                 showAlert({
                     type: 'error',
                     title: 'Errore nelle date',
@@ -63,7 +61,6 @@ const reportFiltered = async (reportFor, options, showAlert) => {
                 return;
             }
         } else {
-            // console.error("Date non valide.");
             showAlert({
                 type: 'error',
                 title: 'Errore nelle date',
@@ -76,7 +73,6 @@ const reportFiltered = async (reportFor, options, showAlert) => {
         const fileString = `${options.startDate}_${options.endDate}`
 
         if (!data) {
-            // console.warn("Nessun dato fornito per il report Corepla.");
             showAlert({
                 type: 'info',
                 title: 'Nessun dato trovato',
@@ -103,10 +99,7 @@ const reportFiltered = async (reportFor, options, showAlert) => {
             char = String.fromCharCode(char.charCodeAt(0) + 1);
         }
 
-        // console.log("Data fetched for Corepla report:", typeof data);
-
         data.forEach((row) => {
-            // console.log(row)
             worksheet.addRow({
                 plastic_name: row.plastic,
                 code_plastic: row.code,

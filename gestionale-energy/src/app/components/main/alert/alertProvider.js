@@ -32,7 +32,6 @@ export const AlertProvider = ({ children }) => {
         data = null,
         onConfirm = null
     }) => {
-        // console.log('Showing alert:', { title, type, hasData: !!data });
 
         setAlertState({
             visible: true,

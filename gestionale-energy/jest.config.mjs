@@ -224,6 +224,7 @@ const config = {
     "^@alert/(.*)$": "<rootDir>/src/app/components/main/alert/$1", // mappa @alert/qualcosa a src/app/components/main/alert/qualcosa
     "^@config": "<rootDir>/src/app/config.js",
     "^@fetch": "<rootDir>/src/app/components/main/fetch.js",
+    "^@functions": "<rootDir>/src/app/functions.js",
   },
 };
 

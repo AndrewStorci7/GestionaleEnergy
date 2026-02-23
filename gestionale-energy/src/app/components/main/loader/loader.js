@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types"; // per ESLint
 
 const Loader = ({
     message
@@ -15,5 +16,11 @@ const Loader = ({
         </div>
     )
 }
+
+
+Loader.propTypes = {
+    message: PropTypes.string     
+};
+
 
 export default Loader;

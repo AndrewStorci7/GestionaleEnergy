@@ -1,6 +1,6 @@
 # Gestionale Energy 🌱
-### Version 1.8.0 :label: 📢
-#### :calendar: 2025/08/29
+### Version 1.9.0 :label: 📢
+#### :calendar: 2026/18/02
 
 Siamo lieti di annunciare il rilascio della nuova versione del **Gestionale Energy**, progettata per ottimizzare e automatizzare il processo di gestione della creazione delle balle di plastica.
 

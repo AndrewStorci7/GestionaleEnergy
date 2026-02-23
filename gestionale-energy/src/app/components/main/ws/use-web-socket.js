@@ -65,7 +65,6 @@ export const WebSocketProvider = ({
             if (ws.current.readyState === WebSocket.OPEN) {
                 ws.current.send(JSON.stringify({ type: "new-connection", data: userInfo }));
             } else {
-                // console.warn("WebSocket is not open yet. Retrying...");
                 setTimeout(() => {
                     if (ws.current.readyState === WebSocket.OPEN) {
                         ws.current.send(JSON.stringify({ type: "new-connection", data: userInfo }));
@@ -78,9 +77,7 @@ export const WebSocketProvider = ({
             setMessage(event.data);
         };
 
-        ws.current.onclose = () => {
-            // console.log('WebSocket connection closed');
-        };
+        // ws.current.onclose = () => {};
 
         return () => ws.current.close();
     }, [user]);
