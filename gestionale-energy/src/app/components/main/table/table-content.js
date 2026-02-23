@@ -131,7 +131,6 @@ export default function TableContent({
 
         // gestire meglio l'errore
         if (typeof data !== "object") return;
-        
         // Data e ora del pressista
         const date = data.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
         const hour = data.data_ins?.substr(11, 5) || "";
@@ -199,7 +198,6 @@ export default function TableContent({
                 // variabile che controlla se la balla corrente è ferro o allum, 
                 // qualora sia vero la riga verrà colorato di grigio
                 const bgAllumFerro = (useFor !== "specific" && (plastic === "ALLUM." || plastic === "FERRO")) ? "!bg-gray-400" : "";
-
                 return (
                     <tr 
                     key={idUnique} 
