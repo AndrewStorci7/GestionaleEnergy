@@ -20,7 +20,7 @@ class Printer {
         // misure stampa
         // this.xOffset4thRow = 460; // X coordinate Quarta riga
         this.xOffset3rdRowDate = 420; // X coordinate Terza riga
-        this.xOffsetWarehouse = 50; //xcoordinate magazzino
+        this.xOffsetWarehouse = 200; //xcoordinate magazzino
         this.xOffset3rdRow = 400; // X coordinate Terza riga
         this.xOffset2ndRow = 230; // X coordinate Seconda riga
         this.xOffset1stRow = 400; // X coordinate Prima riga
@@ -28,7 +28,7 @@ class Printer {
         // this.yOffsetHour = 1050; // Y coordinate Ora
         this.yOffsetDate = 550; // Y coordinate Data 
         this.yOffsetTurn = 1700; // Y coordinate Turno
-        this.yOffsetWarehouse = 450;// Y coordinate magazzino
+        this.yOffsetWarehouse = 500;// Y coordinate magazzino
         this.yOffsetWeight = 1500; // Y coordinate Peso 
         this.yOffsetPlastic = 900; // Y coordinate Plastica
     }
