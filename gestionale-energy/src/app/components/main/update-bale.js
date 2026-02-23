@@ -88,14 +88,14 @@ export default function UpdateValuesBale({
     const canProceed = useMemo(() => {
         if (type === 'presser') {
             return presserData.plastic !== null && presserData.plastic !== undefined && presserData.plastic !== "";
-        } else {
-            return cacheWeight > 0 || wheelmanData.cdbc == 2 || hasChanges;
+        } else if (type ==='wheelman') {
+            return ( (hasChanges)|| (cacheWeight > 0)|| (wheelmanData.cdbc == 2));
         }
-    }, [type, presserData.plastic, cacheWeight, wheelmanData.cdbc]);
+    }, [type, presserData.plastic, cacheWeight, wheelmanData.cdbc, hasChanges]);
 
     // Verifica se può stampare (peso > 0 e non deve necessariamente aver confermato)
     const canPrint = useMemo(() => {
-        return (type === 'wheelman' && cacheWeight > 0) || wheelmanData.cdbc == 2;
+        return (type === 'wheelman' && cacheWeight > 0) || wheelmanData.cdbc == 2 ;
     }, [type, wheelmanData.cdbc, cacheWeight, hasChanges]);
 
     const handleData = (response) => {
