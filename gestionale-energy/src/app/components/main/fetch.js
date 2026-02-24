@@ -177,7 +177,6 @@ const handleStampa = async (
 	const controller = new AbortController();
 	const timeout = setTimeout(() => controller.abort(), 2000);
 
-
 	const body = { printed: true, data_ins: "now", where: obj.idBale }; // Body per l'update della balla del carrellista
 	const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
 	const url_update_wheelman = getServerRoute("update-bale");
