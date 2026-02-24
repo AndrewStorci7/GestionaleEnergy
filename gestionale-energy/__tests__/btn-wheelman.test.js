@@ -1,44 +1,45 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import BtnWheelman from '@main/buttons/btn-wheelman';
-import '@testing-library/jest-dom';
+// biome-ignore-all lint: reason
+
+import BtnWheelman from "@/app/components/main/buttons/BtnWheelman";
+import { render, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
 
 jest.mock("next/image", () => ({
-    __esModule: true,
-    default: (props) => <img  {...props} />
-}))
+	__esModule: true,
+	default: (props) => <img {...props} />,
+}));
 
-const mockShowAlert = jest.fn()
+const mockShowAlert = jest.fn();
 
 jest.mock("@main/alert/alertProvider", () => ({
-    useAlert: () => ({
-        showAlert: mockShowAlert
-    })
-}))
+	useAlert: () => ({
+		showAlert: mockShowAlert,
+	}),
+}));
 
 describe("Componente BtnWheelman", () => {
-    beforeEach(() => {
-        mockShowAlert.mockClear()
-    })
+	beforeEach(() => {
+		mockShowAlert.mockClear();
+	});
 
-    const mockProps = {
-        baleObj: { 
-            idBale: null, 
-            setIdBale: jest.fn(), 
-            idUnique: 0 
-        },
-    }
+	const mockProps = {
+		baleObj: {
+			idBale: null,
+			setIdBale: jest.fn(),
+			idUnique: 0,
+		},
+	};
 
-    test("Renderizza correttamente i bottoni", () => {
-        render(<BtnWheelman {...mockProps} />)
+	test("Renderizza correttamente i bottoni", () => {
+		render(<BtnWheelman {...mockProps} />);
 
-        expect(screen.getByTestId("update")).toBeInTheDocument()
-        expect(screen.getByTestId("print")).toBeInTheDocument()
-    })
+		expect(screen.getByTestId("update")).toBeInTheDocument();
+		expect(screen.getByTestId("print")).toBeInTheDocument();
+	});
 
-    test("Click su Modifica: deve chiamare la funzione handleClick", () => {
-        render(<BtnWheelman {...mockProps} />)
+	test("Click su Modifica: deve chiamare la funzione handleClick", () => {
+		render(<BtnWheelman {...mockProps} />);
 
-        const updateBtn = screen.getByTestId("")
-    })
+		const _updateBtn = screen.getByTestId("");
+	});
 });

@@ -1,116 +1,126 @@
-/* eslint-env jest */
-import { render, screen, fireEvent } from "@testing-library/react";
-import BtnReport from "@admin/buttons/btn-report";
+// biome-ignore-all lint: reason
 
-jest.mock('exceljs');
-jest.mock('file-saver');
-jest.mock('@config', () => ({
-    fetchReportData: jest.fn(() => Promise.resolve([]))
+import BtnReport from "@/app/components/main/admin/buttons/BtnReport";
+import { fireEvent, render, screen } from "@testing-library/react";
+
+jest.mock("exceljs");
+jest.mock("file-saver");
+jest.mock("@config", () => ({
+	fetchReportData: jest.fn(() => Promise.resolve([])),
 }));
 
-jest.mock('@alert/alertProvider', () => ({
-    useAlert: () => ({
-        showAlert: jest.fn()
-    })
+jest.mock("@alert/alertProvider", () => ({
+	useAlert: () => ({
+		showAlert: jest.fn(),
+	}),
 }));
 
-jest.mock('@admin/export/export-report', () => {
-    return jest.fn(({ children, date, reportFor, className, disabled }) => (
-        <button 
-            data-testid={`export-${reportFor}`}
-            data-date={date}
-            className={className}
-            disabled={disabled}
-            onClick={() => {}}
-        >
-            {children}
-        </button>
-    ));
+jest.mock("@admin/export/export-report", () => {
+	return jest.fn(({ children, date, reportFor, className, disabled }) => (
+		<button
+			data-testid={`export-${reportFor}`}
+			data-date={date}
+			className={className}
+			disabled={disabled}
+			onClick={() => {}}
+		>
+			{children}
+		</button>
+	));
 });
 
-jest.mock('@main/get-icon', () => ({
-    __esModule: true,
-    default: jest.fn(({ type, className }) => (
-        <span className={className} data-testid={`icon-${type}`}>Icon</span>
-    )),
+jest.mock("@main/get-icon", () => ({
+	__esModule: true,
+	default: jest.fn(({ type, className }) => (
+		<span className={className} data-testid={`icon-${type}`}>
+			Icon
+		</span>
+	)),
 }));
 
-describe('BtnReport Component', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+describe("BtnReport Component", () => {
+	beforeEach(() => {
+		jest.clearAllMocks();
+	});
 
-    it('renders correctly', () => {
-        render(<BtnReport />);
-        const dateInput = screen.getByLabelText(/date/i);
+	it("renders correctly", () => {
+		render(<BtnReport />);
+		const dateInput = screen.getByLabelText(/date/i);
 
-        expect(dateInput).toBeInTheDocument();
+		expect(dateInput).toBeInTheDocument();
 
-        // Controlla presenza di tutti i testi dei pulsanti
-        expect(screen.getByTestId("export-impianto-a")).toBeInTheDocument();
-        expect(screen.getByTestId("export-impianto-a-tempi")).toBeInTheDocument();
-        expect(screen.getByTestId("export-impianto-b")).toBeInTheDocument();
-        expect(screen.getByTestId("export-impianto-b-tempi")).toBeInTheDocument();
-        expect(screen.getByTestId("export-impianto-ab")).toBeInTheDocument();
-        expect(screen.getByTestId("export-impianto-ab-tempi")).toBeInTheDocument();
-        
-        // Check if the info text and icon are rendered
-        expect(screen.getByTestId('icon-info')).toBeInTheDocument();
-        expect(screen.getByText(/I report giornalieri fanno riferimento alla data selezionata/i)).toBeInTheDocument();
-    });
+		// Controlla presenza di tutti i testi dei pulsanti
+		expect(screen.getByTestId("export-impianto-a")).toBeInTheDocument();
+		expect(screen.getByTestId("export-impianto-a-tempi")).toBeInTheDocument();
+		expect(screen.getByTestId("export-impianto-b")).toBeInTheDocument();
+		expect(screen.getByTestId("export-impianto-b-tempi")).toBeInTheDocument();
+		expect(screen.getByTestId("export-impianto-ab")).toBeInTheDocument();
+		expect(screen.getByTestId("export-impianto-ab-tempi")).toBeInTheDocument();
 
-    it('updates the date state and passes it to ExportReport components', () => {
-        render(<BtnReport />);
-        const testDate = '2023-10-05';
-        const dateInput = screen.getByLabelText(/date/i);
+		// Check if the info text and icon are rendered
+		expect(screen.getByTestId("icon-info")).toBeInTheDocument();
+		expect(
+			screen.getByText(
+				/I report giornalieri fanno riferimento alla data selezionata/i,
+			),
+		).toBeInTheDocument();
+	});
 
-        fireEvent.change(dateInput, { target: { value: testDate } });
+	it("updates the date state and passes it to ExportReport components", () => {
+		render(<BtnReport />);
+		const testDate = "2023-10-05";
+		const dateInput = screen.getByLabelText(/date/i);
 
-        // Verify input value updated
-        expect(dateInput.value).toBe(testDate);
+		fireEvent.change(dateInput, { target: { value: testDate } });
 
-        // Verify date is passed to all ExportReport components
-        const reports = [
-            'impianto-a',
-            'impianto-a-tempi',
-            'impianto-b',
-            'impianto-b-tempi',
-            'impianto-ab',
-            'impianto-ab-tempi'
-        ];
+		// Verify input value updated
+		expect(dateInput.value).toBe(testDate);
 
-        reports.forEach(reportFor => {
-            expect(screen.getByTestId(`export-${reportFor}`)).toHaveAttribute('data-date', testDate);
-        });
-    });
+		// Verify date is passed to all ExportReport components
+		const reports = [
+			"impianto-a",
+			"impianto-a-tempi",
+			"impianto-b",
+			"impianto-b-tempi",
+			"impianto-ab",
+			"impianto-ab-tempi",
+		];
 
-    // it('show alerts when date is null', () => {
-    //     const { showAlert } = require('@@/components/main/alert/alertProvider').useAlert();
-    //     render(
-    //         <BtnReport reportFor="impianto-a" />
-    //     );
+		reports.forEach((reportFor) => {
+			expect(screen.getByTestId(`export-${reportFor}`)).toHaveAttribute(
+				"data-date",
+				testDate,
+			);
+		});
+	});
 
-    //     // Simulate clicking the export button without setting a date
-    //     fireEvent.click(screen.getByTestId('export-impianto-a'));
+	// it('show alerts when date is null', () => {
+	//     const { showAlert } = require('@@/components/main/alert/alertProvider').useAlert();
+	//     render(
+	//         <BtnReport reportFor="impianto-a" />
+	//     );
 
-    //     // Verify alert was shown
-    //     expect(showAlert).toHaveBeenCalledWith({
-    //         title: null,
-    //         message: "Devi selezionare una data"
-    //     });
-    // });
+	//     // Simulate clicking the export button without setting a date
+	//     fireEvent.click(screen.getByTestId('export-impianto-a'));
 
-    it('passes correct disabled prop to tempo reports', () => {
-        render(<BtnReport />);
-        
-        // Regular reports should not be disabled
-        expect(screen.getByTestId('export-impianto-a')).not.toBeDisabled();
-        expect(screen.getByTestId('export-impianto-b')).not.toBeDisabled();
-        expect(screen.getByTestId('export-impianto-ab')).not.toBeDisabled();
+	//     // Verify alert was shown
+	//     expect(showAlert).toHaveBeenCalledWith({
+	//         title: null,
+	//         message: "Devi selezionare una data"
+	//     });
+	// });
 
-        // Tempo reports should be disabled
-        expect(screen.getByTestId('export-impianto-a-tempi')).toBeDisabled();
-        expect(screen.getByTestId('export-impianto-b-tempi')).toBeDisabled();
-        expect(screen.getByTestId('export-impianto-ab-tempi')).toBeDisabled();
-    });
+	it("passes correct disabled prop to tempo reports", () => {
+		render(<BtnReport />);
+
+		// Regular reports should not be disabled
+		expect(screen.getByTestId("export-impianto-a")).not.toBeDisabled();
+		expect(screen.getByTestId("export-impianto-b")).not.toBeDisabled();
+		expect(screen.getByTestId("export-impianto-ab")).not.toBeDisabled();
+
+		// Tempo reports should be disabled
+		expect(screen.getByTestId("export-impianto-a-tempi")).toBeDisabled();
+		expect(screen.getByTestId("export-impianto-b-tempi")).toBeDisabled();
+		expect(screen.getByTestId("export-impianto-ab-tempi")).toBeDisabled();
+	});
 });
