@@ -1,109 +1,110 @@
-'use client';
+"use client";
 
-import React, {useMemo } from 'react';
-
-import TableContent from '@main/table/table-content';
-import TableHeader from '@main/table/table-header';
-
-import PropTypes from 'prop-types'; // per ESLint
+import TableContent from "@main/table/TableContent";
+import TableHeader from "@main/table/TableHeader";
+import PropTypes from "prop-types"; // per ESLint
+import { useMemo } from "react";
 
 const TableWrapper = ({
-    admin = false,
-    tableContent = null,
-    type,
-    primary = false,
-    ...props
+	admin = false,
+	tableContent = null,
+	type,
+	primary = false,
+	...props
 }) => {
-    
-    const backgroundColor = useMemo(() => {
-        return type === 'presser' ? "bgPresser dark:bg-red-800/25" : "bgWheelman dark:bg-green-800/25";
-    }, [type]);
+	const backgroundColor = useMemo(() => {
+		return type === "presser"
+			? "bgPresser dark:bg-red-800/25"
+			: "bgWheelman dark:bg-green-800/25";
+	}, [type]);
 
-    const safeType = useMemo(() => {
-        if (!type || (type !== 'presser' && type !== 'wheelman')) {
-            return 'presser';
-        }
+	const safeType = useMemo(() => {
+		if (!type || (type !== "presser" && type !== "wheelman")) {
+			return "presser";
+		}
 
-        return type;
-    }, [type]);
+		return type;
+	}, [type]);
 
-    // useEffect(() => {
-    //     if (!tableContent) {
-    //         console.error("TableContent non definito");
-    //     }
-    // }, [tableContent]);
+	// useEffect(() => {
+	//     if (!tableContent) {
+	//         console.error("TableContent non definito");
+	//     }
+	// }, [tableContent]);
 
-    return (
-        <div {...props}>
-            <div className={`not-prose shadow-sm relative z-0 rounded-xl overflow-hidden ${backgroundColor}`}>
-                <div className="absolute inset-0 -z-10 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
-                    <h2 className='grid grid-cols-16 font-bold text-xl text-white'>
-                        <span className='text-left px-4 pt-[5px]'>
-                        {safeType === 'presser' ? 'Pressista' : 'Carrellista'}
-                        </span>
-                        <span className = "col-start-13 col-span-4 px-4 pt-[5px] text-left">
-                        {safeType === 'presser' ? 'Carrellista' : 'Pressista'}
-                        </span>
-                    </h2>
-                </div>
-                <div className="relative rounded-xl overflow-auto shadow-inner">
-                    <div className="shadow-sm overflow-hidden overflow-x-visible my-8">
-                        <table 
-                            id="gest-on-table" 
-                            className="border-collapse table-auto w-full text-sm"
-                        >
-                            <TableHeader 
-                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
-                                type={safeType} 
-                                primary={primary} 
-                                admin={admin}
-                            />
-                            
-                            {/* BALLE IN LAVORAZIONE */}
-                            <TableContent 
-                                key={`${safeType}-primary-regular`}
-                                type={safeType} 
-                                handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
-                                selectedBaleId={tableContent.selectedBaleId}
-                                add={tableContent.objAdd}  
-                                useFor={safeType === "wheelman" ? "reverse" : "regular"}
-                                noData={(e) => tableContent.noData(e)} 
-                                primary={primary}
-                                admin={admin}
-                                style="border-b border-slate-100 dark:border-slate-700 p-2 text" 
-                            />
+	return (
+		<div {...props}>
+			<div
+				className={`not-prose shadow-sm relative z-0 rounded-xl overflow-hidden ${backgroundColor}`}
+			>
+				<div className="absolute inset-0 -z-10 bg-grid-slate-100 [mask-image:linear-gradient(0deg,#fff,rgba(133, 50, 50, 0.6))] dark:bg-grid-slate-700/25 dark:[mask-image:linear-gradient(0deg,rgba(129, 79, 79, 0.6),rgba(187, 74, 74, 0.5))]">
+					<h2 className="grid grid-cols-16 font-bold text-xl text-white">
+						<span className="text-left px-4 pt-[5px]">
+							{safeType === "presser" ? "Pressista" : "Carrellista"}
+						</span>
+						<span className="col-start-13 col-span-4 px-4 pt-[5px] text-left">
+							{safeType === "presser" ? "Carrellista" : "Pressista"}
+						</span>
+					</h2>
+				</div>
+				<div className="relative rounded-xl overflow-auto shadow-inner">
+					<div className="shadow-sm overflow-hidden overflow-x-visible my-8">
+						<table
+							id="gest-on-table"
+							className="border-collapse table-auto w-full text-sm"
+						>
+							<TableHeader
+								style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400"
+								type={safeType}
+								primary={primary}
+								admin={admin}
+							/>
 
-                            {/* BALLE COMPLETATE */}
-                            <TableContent 
-                                key={`${safeType}-primary-specific`}
-                                type={safeType} 
-                                handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
-                                selectedBaleId={tableContent.selectedBaleId} 
-                                useFor={"specific"}
-                                noData={(e) => tableContent.noData(e)} 
-                                primary={primary}
-                                admin={admin}
-                                style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400 !bg-[#DAE7DA] "
-                            />
-                        </table>
-                    </div>
-                </div>
-                <div className="absolute inset-0 z-10 pointer-events-none border border-black/5 rounded-xl dark:border-white/5"></div>
-            </div>
-        </div>
-    )
-}
+							{/* BALLE IN LAVORAZIONE */}
+							<TableContent
+								key={`${safeType}-primary-regular`}
+								type={safeType}
+								handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
+								selectedBaleId={tableContent.selectedBaleId}
+								add={tableContent.objAdd}
+								useFor={safeType === "wheelman" ? "reverse" : "regular"}
+								noData={(e) => tableContent.noData(e)}
+								primary={primary}
+								admin={admin}
+								style="border-b border-slate-100 dark:border-slate-700 p-2 text"
+							/>
+
+							{/* BALLE COMPLETATE */}
+							<TableContent
+								key={`${safeType}-primary-specific`}
+								type={safeType}
+								handleSelect={(sel, idU) => tableContent.handleSelect(sel, idU)}
+								selectedBaleId={tableContent.selectedBaleId}
+								useFor={"specific"}
+								noData={(e) => tableContent.noData(e)}
+								primary={primary}
+								admin={admin}
+								style="border-b border-slate-100 dark:border-slate-700 p-2 text-slate-600 dark:text-slate-400 !bg-[#DAE7DA] "
+							/>
+						</table>
+					</div>
+				</div>
+				<div className="absolute inset-0 z-10 pointer-events-none border border-black/5 rounded-xl dark:border-white/5"></div>
+			</div>
+		</div>
+	);
+};
 
 TableWrapper.propTypes = {
-    admin: PropTypes.bool,
-    tableContent: PropTypes.shape({
-        handleSelect: PropTypes.func.isRequired,
-        selectedBaleId: PropTypes.string,
-        objAdd: PropTypes.object.isRequired,
-        noData: PropTypes.func.isRequired
-    }).isRequired,
-    type: PropTypes.oneOf(['presser', 'wheelman', 'both', 'admin']).isRequired,
-    primary: PropTypes.bool,
+	admin: PropTypes.bool,
+	tableContent: PropTypes.shape({
+		handleSelect: PropTypes.func.isRequired,
+		selectedBaleId: PropTypes.string,
+		objAdd: PropTypes.object.isRequired,
+		noData: PropTypes.func.isRequired,
+	}).isRequired,
+	type: PropTypes.oneOf(["presser", "wheelman", "both", "admin"]).isRequired,
+	primary: PropTypes.bool,
 };
 
 export default TableWrapper;

@@ -1,5 +1,5 @@
-import React from "react";
-import { getServerRoute, formatText } from "@config";
+import { formatText, getServerRoute } from "@config";
+import { HandleStampaError } from "@classes";
 
 //#region Fetch Single Bale
 /**
@@ -13,27 +13,28 @@ import { getServerRoute, formatText } from "@config";
  * @throws {Error} Se i parametri non sono settati correttamente o in caso di errore nella richiesta.
  */
 async function fetchDataBale(type = null, obj = null, hook = null) {
-    try {
-        
-        if ( !(type || obj || hook) ) {
-            throw new Error("Le prop `type`, `obj`, `hooks` non sono settate correttamente (non possono essere `null`)");
-        }
+	try {
+		if (!(type || obj || hook)) {
+			throw new Error(
+				"Le prop `type`, `obj`, `hooks` non sono settate correttamente (non possono essere `null`)",
+			);
+		}
 
-        const url = getServerRoute(type === 'presser' ? 'presser' : 'wheelman');
-        const resp = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ id: obj.idBale })
-        });
+		const url = getServerRoute(type === "presser" ? "presser" : "wheelman");
+		const resp = await fetch(url, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ id: obj.idBale }),
+		});
 
-        const data = await resp.json();
+		const data = await resp.json();
 
-        if (data) {
-            hook(data);
-        } 
-    } catch (error) {
-        throw new Error(error.message);
-    }
+		if (data) {
+			hook(data);
+		}
+	} catch (error) {
+		throw new Error(error.message);
+	}
 }
 
 //#region Fetch Total Bale
@@ -50,93 +51,105 @@ async function fetchDataBale(type = null, obj = null, hook = null) {
  * @param {function} showAlert - Funzione per mostrare un alert in caso di errore.
  * @throws {Error} Se il parametro `data` è nullo o in caso di errore nella richiesta.
  */
-async function fetchDataTotalBale(data = null, type = 'presser', setContent, setEmpty, hook, showAlert) {
-    try {
-        if (data === null || data === undefined) throw new Error("errore nella chiamata della funzione `fetchDataTotalBale`: parametro `data` risulta `null` o `undefined`");
-        if (type === null || type === undefined || type === "") throw new Error("errore nella chiamata della funzione `fetchDataTotalBale`: parametro `type` risulta `null`, `undefined` o una stringa vuota");
+async function fetchDataTotalBale(
+	data = null,
+	type = "presser",
+	setContent,
+	setEmpty,
+	hook,
+	showAlert,
+) {
+	try {
+		if (data === null || data === undefined)
+			throw new Error(
+				"errore nella chiamata della funzione `fetchDataTotalBale`: parametro `data` risulta `null` o `undefined`",
+			);
+		if (type === null || type === undefined || type === "")
+			throw new Error(
+				"errore nella chiamata della funzione `fetchDataTotalBale`: parametro `type` risulta `null`, `undefined` o una stringa vuota",
+			);
 
-        const url = getServerRoute("bale");
-        const resp = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ body: data }),
-        });
+		const url = getServerRoute("bale");
+		const resp = await fetch(url, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ body: data }),
+		});
 
-        const dataJson = await resp.json();
+		const dataJson = await resp.json();
 
-        /**
-         * forma del dato `data`:
-         * Array(
-         *   Object({
-         *      code: number // codice di ritorno dell'operazione, 0 equivale a OK
-         *      data: Array(
-         *          Object({
-         *              idUnique: number // numero identificativo della balla 
-         *              status: number   // stato della stampa 
-         *              presser: Object() // dati del pressista
-         *              wheelman: Object() // dati del carrellista
-         *          })
-         *      )
-         *   })
-         * )
-         */
+		/**
+		 * forma del dato `data`:
+		 * Array(
+		 *   Object({
+		 *      code: number // codice di ritorno dell'operazione, 0 equivale a OK
+		 *      data: Array(
+		 *          Object({
+		 *              idUnique: number // numero identificativo della balla
+		 *              status: number   // stato della stampa
+		 *              presser: Object() // dati del pressista
+		 *              wheelman: Object() // dati del carrellista
+		 *          })
+		 *      )
+		 *   })
+		 * )
+		 */
 
-        if (dataJson.code !== 0) {   
-            setEmpty(true);
-            hook && hook(dataJson.message);
-        }
+		if (dataJson.code !== 0) {
+			setEmpty(true);
+			hook?.(dataJson.message);
+		}
 
-        setEmpty(false);
-        setContent(dataJson.data);
-    } catch (error) {
-        console.error("Errore in fetchDataTotalBale:", error);
-        showAlert({
-            title: null,
-            message: error.message,
-            type: 'error'
-        });
-    }
+		setEmpty(false);
+		setContent(dataJson.data);
+	} catch (error) {
+		console.error("Errore in fetchDataTotalBale:", error);
+		showAlert({
+			title: null,
+			message: error.message,
+			type: "error",
+		});
+	}
 }
 //#endregion Fetch Total Bale
 
 //#region Fetch Single Elements
 /**
  * Fetches single elements from the server based on the specified type.
- * 
+ *
  * @param {string} searchFor - Tipo di elemento da cercare (es. 'implants', 'plastic', etc.).
  * @param {function} setContent - Funzione per aggiornare lo stato con i dati ottenuti.
  * @throws {Error} Se `searchFor` o `setContent` non sono definiti.
  */
 async function fetchDataSingleElements(
-    searchFor, 
-    // setContent
+	searchFor,
+	// setContent
 ) {
-    if (searchFor === undefined || searchFor === null) {
-        // throw new Error("searchFor is undefined or null");
-        return null;
-    } 
+	if (searchFor === undefined || searchFor === null) {
+		// throw new Error("searchFor is undefined or null");
+		return null;
+	}
 
-    const url = getServerRoute(searchFor);
+	const url = getServerRoute(searchFor);
 
-    if (url != -1) {
-        const resp = await fetch(url, {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'},
-        });
+	if (url !== -1) {
+		const resp = await fetch(url, {
+			method: "GET",
+			headers: { "Content-Type": "application/json" },
+		});
 
-        if (!resp.ok) {
-            throw new Error("Network response was not ok");
-        }
+		if (!resp.ok) {
+			throw new Error("Network response was not ok");
+		}
 
-        const data = await resp.json();
-        if (data.code === 0) return Promise.resolve(data.data);
-    } else {
-        return Promise.resolve(["In lavorazione", "Cambiat", "Completato"]);
-    }
+		const data = await resp.json();
+		if (data.code === 0) return Promise.resolve(data.data);
+	} else {
+		return Promise.resolve(["In lavorazione", "Cambiat", "Completato"]);
+	}
 }
 
-
-//#region Gestione Stampa 
+//#region Gestione Stampa
 /**
  * Gestisce la stampa lato server, aggiornando lo stato della balla totale a "stampato".
  *
@@ -149,124 +162,181 @@ async function fetchDataSingleElements(
  * @param {function} hookConfirm - Funzione chiamata in caso di conferma dell'operazione.
  * @param {boolean} [execute=true] - Se true aggiorna lo stato a "stampato", altrimenti mostra alert di conferma.
  */
-const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCheck = false) => {
-    
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2000); // ⏱️ Timeout di 1s
-    if (obj.idBale) {
-        if (execute) {
-            try {
-                const body = { printed: true, data_ins: 'now', where: obj.idBale }; // Body per l'update della balla del carrellista
-                const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
-                const url_update_wheelman = getServerRoute("update-bale");
-                const url_update_status = getServerRoute("update-status-bale");
-                const url_print = getServerRoute("print");
-                const url_check_printer = getServerRoute("check-printer"); 
+const handleStampa = async (
+	obj,
+	hookCancel,
+	hookConfirm,
+	execute = true,
+	skipCheck = false,
+) => {
+	
+	if (!obj.idBale) {
+		throw new HandleStampaError(2, "Id balla non specificato, devi selezionare una balla!");
+	}
 
-                if (!skipCheck) {
-                    const checkPrinter = await fetch(url_check_printer, {
-                        signal: controller.signal
-                    })
-                    const status = await checkPrinter.json();
-                    if (status.code !== 0) {
-                        hookCancel({
-                            title: "Errore nella stampante",
-                            message: (
-                                <p><span style={{ fontWeight: 'bold' }}>La stampante ha presentato degli errori</span>: <br/>
-                                <span className="consolas">{formatText(status.message)}</span>. <br/>
-                                Vuoi completare ugualmente il ciclo della balla ?</p>
-                            ),
-                            type: "confirm",
-                            onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, execute, true)
-                        })
-                        return;
-                    }
+	const controller = new AbortController();
+	const timeout = setTimeout(() => controller.abort(), 2000);
 
-                    const response3 = await fetch(url_print, {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ idUnique: obj.idUnique }),
-                        signal: controller.signal
-                    });
-                    const result3 = await response3.json();
 
-                    if (result3.code == -1) {
-                        hookCancel({
-                            title: "Attenzione",
-                            message: "Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?", 
-                            type: "confirm",
-                            onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
-                            data: obj
-                        });
-                        return;
-                    }
-                }
+	const body = { printed: true, data_ins: "now", where: obj.idBale }; // Body per l'update della balla del carrellista
+	const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
+	const url_update_wheelman = getServerRoute("update-bale");
+	const url_update_status = getServerRoute("update-status-bale");
+	const url_print = getServerRoute("print");
+	const url_check_printer = getServerRoute("check-printer");
 
-                clearTimeout(timeout);
+	if (execute) {
+		try {
 
-                // Invia la richiesta per aggiornare lo stato della balla
-                const response = await fetch(url_update_wheelman, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body: body, type: "wheelman" }),
-                });
+			if (!skipCheck) {
+				const checkPrinter = await fetch(url_check_printer, {
+					signal: controller.signal,
+				});
 
-                // Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
-                const response2 = await fetch(url_update_status, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ body: body2 }),
-                });
-                
-                const result = await response.json();
-                const result2 = await response2.json();
+				const status = await checkPrinter.json();
+				
+				if (status.code !== 0) {
+					throw new HandleStampaError(3, "La stampante ha presentato degli errori", status.message)
+					// hookCancel({
+					// 	title: "Errore nella stampante",
+					// 	message: (
+					// 		<p>
+					// 			<span style={{ fontWeight: "bold" }}>
+					// 				La stampante ha presentato degli errori
+					// 			</span>
+					// 			: <br />
+					// 			<span className="consolas">{formatText(status.message)}</span>
+					// 			. <br />
+					// 			Vuoi completare ugualmente il ciclo della balla ?
+					// 		</p>
+					// 	),
+					// 	type: "confirm",
+					// 	onConfirm: () =>
+					// 		handleStampa(obj, hookCancel, hookConfirm, execute, true),
+					// });
+					// return;
+				}
 
-                if (result.code === 0 && result2.code === 0) {
-                    // Se la risposta è positiva, mostra un messaggio di conferma
-                    hookConfirm();
-                } else {
-                    // Se c'è un errore, mostra un messaggio di errore
-                    // hookCancel(result.message);
-                    hookCancel({
-                        title: null,
-                        message: result.code !== 0 ? result.message : result2.code !== 0 ? result2.message : "Problema generico dovuto dalla stampa di una balla, contattare gli amministratori del sistema e/o i capi turno",
-                        type: "error"
-                    });
-                }
-            } catch (error) {
-                const checkIfErrorPrinter = String(error.message).includes("signal") || String(error.message).includes("aborted");
-                hookCancel({
-                    title: "Errore nella stampante",
-                    message: checkIfErrorPrinter ? 
-                            <p>
-                                <b>La stampante non è raggiungibile, contattare il tecnico oppure il capoturno</b>. <br/>
-                                Si desidera ugualmente completare la balla ?
-                            </p> : 
-                            error.message,
-                    type: checkIfErrorPrinter ? "confirm" : "error",
-                    onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
-                    data: obj
-                });
-            } finally {
-                clearTimeout(timeout);
-            }
-        } else {
-            hookCancel({
-                title: "Attenzione",
-                message: "Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?", 
-                type: "confirm",
-                onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
-                data: obj
-            });
-        }
-    } else {
-        // If no bale is selected, show an error alert
-        hookCancel({
-            title: null,
-            message: "Nessuna Balla selezionata",
-            type: "error"
-        });
-    }
+				const response3 = await fetch(url_print, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ idUnique: obj.idUnique }),
+					signal: controller.signal,
+				});
+
+				const result3 = await response3.json();
+
+				if (result3.code === -1) {
+					throw new Error(4, "Stai per stampare una balla con peso pari a zero")
+					// hookCancel({
+					// 	title: "Attenzione",
+					// 	message:
+					// 		"Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?",
+					// 	type: "confirm",
+					// 	onConfirm: () =>
+					// 		handleStampa(obj, hookCancel, hookConfirm, true, true),
+					// 	data: obj,
+					// });
+					// return;
+				}
+			}
+
+			clearTimeout(timeout);
+
+			// Invia la richiesta per aggiornare lo stato della balla
+			const response = await fetch(url_update_wheelman, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ body: body, type: "wheelman" }),
+			});
+
+			// Aggiorno lo stato della balla totale così da informare anche l'altro utente che c'è stata una modifica
+			const response2 = await fetch(url_update_status, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ body: body2 }),
+			});
+
+			const result = await response.json();
+			const result2 = await response2.json();
+
+			if (result.code !== 0 || result2.code !== 0) {
+				throw new HandleStampaError(1, "Problema generico dovuto dalla stampa di una balla, contattare gli amministratori del sistema e/o i capi turno");
+			}
+
+			// hookConfirm();
+			return true;
+
+			// if (result.code === 0 && result2.code === 0) {
+			// 	// Se la risposta è positiva, mostra un messaggio di conferma
+			// } else {
+			// 	// Se c'è un errore, mostra un messaggio di errore
+			// 	// hookCancel(result.message);
+			// 	hookCancel({
+			// 		title: null,
+			// 		message:
+			// 			result.code !== 0
+			// 				? result.message
+			// 				: result2.code !== 0
+			// 					? result2.message
+			// 					: "Problema generico dovuto dalla stampa di una balla, contattare gli amministratori del sistema e/o i capi turno",
+			// 		type: "error",
+			// 	});
+			// }
+		} catch (error) {
+			const checkIfErrorPrinter =
+				String(error.message).includes("signal") ||
+				String(error.message).includes("aborted");
+			
+			throw new HandleStampaError(
+				2, 
+				checkIfErrorPrinter ? "Stampante non raggiungibile" : error.message,
+				checkIfErrorPrinter
+			)
+			
+			// hookCancel({
+			// 	title: "Errore nella stampante",
+			// 	message: checkIfErrorPrinter ? (
+			// 		<p>
+			// 			<b>
+			// 				La stampante non è raggiungibile, contattare il tecnico oppure
+			// 				il capoturno
+			// 			</b>
+			// 			. <br />
+			// 			Si desidera ugualmente completare la balla ?
+			// 		</p>
+			// 	) : (
+			// 		error.message
+			// 	),
+			// 	type: checkIfErrorPrinter ? "confirm" : "error",
+			// 	onConfirm: () =>
+			// 		handleStampa(obj, hookCancel, hookConfirm, true, true),
+			// 	data: obj,
+			// });
+		} finally {
+			clearTimeout(timeout);
+		}
+	} else {
+		throw new HandleStampaError(4, "Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?");
+
+		// hookCancel({
+		// 	title: "Attenzione",
+		// 	message:
+		// 		"Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?",
+		// 	type: "confirm",
+		// 	onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
+		// 	data: obj,
+		// });
+	}
+
+	// } else {
+	// 	// If no bale is selected, show an error alert
+	// 	hookCancel({
+	// 		title: null,
+	// 		message: "Nessuna Balla selezionata",
+	// 		type: "error",
+	// 	});
+	// }
 };
 
 //#region Gestione Elimina
@@ -280,61 +350,60 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCh
  * @throws {Error} Se `handleAlertChange` non è una funzione o in caso di errore nella richiesta.
  */
 const handleDelete = async (id, handleAlertChange) => {
+	if (typeof handleAlertChange !== "function") {
+		throw new Error("Errore: `handleAlert` must be a function hook");
+	}
 
-    if (typeof handleAlertChange !== "function") {
-        throw new Error("Errore: `handleAlert` must be a function hook");
-    }
+	try {
+		const url = getServerRoute("delete-bale");
+		const check = await fetch(url, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ id_bale: id }),
+		});
 
-    try {
-        const url = getServerRoute('delete-bale');
-        const check = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_bale: id }),
-        });
+		const resp = await check.json();
 
-        const resp = await check.json();
-
-        if (resp.code < 0) {
-            throw new Error(resp.message);
-        } 
-    } catch (error) {
-        throw new Error(error);
-    }
-}
+		if (resp.code < 0) {
+			throw new Error(resp.message);
+		}
+	} catch (error) {
+		throw new Error(error);
+	}
+};
 
 //#region Totale Chili
 /**
- * 
- * @param {*} implant 
- * @returns 
+ *
+ * @param {*} implant
+ * @returns
  */
 const fetchTotaleChili = async (implant) => {
-    try {
-        const response = await fetch(getServerRoute("totale-chili"), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ implant })
-        });
-        
-        const data = await response.json();
-        
-        if (data.code === 0) {
-            return data.message;
-        } else {
-            throw new Error(data.message);
-        }
-    } catch (error) {
-        console.error("Errore nel recupero del totale chili:", error);
-        throw error;
-    }
-}
+	try {
+		const response = await fetch(getServerRoute("totale-chili"), {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ implant }),
+		});
+
+		const data = await response.json();
+
+		if (data.code === 0) {
+			return data.message;
+		} else {
+			throw new Error(data.message);
+		}
+	} catch (error) {
+		console.error("Errore nel recupero del totale chili:", error);
+		throw error;
+	}
+};
 
 export {
-    fetchDataBale,
-    fetchDataTotalBale,
-    fetchDataSingleElements,
-    handleStampa,
-    handleDelete,
-    fetchTotaleChili
-}
+	fetchDataBale,
+	fetchDataTotalBale,
+	fetchDataSingleElements,
+	handleStampa,
+	handleDelete,
+	fetchTotaleChili,
+};
