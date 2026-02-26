@@ -3,11 +3,14 @@
     "paths": {
       "@/*": ["./src/*"],
       "@@/*": ["./src/app/*"],
+      "@pages/*": ["./src/app/pages/*"],
+      "@components/*": ["./src/app/components/*"],
       "@main/*": ["./src/app/components/main/*"],
       "@admin/*": ["./src/app/components/main/admin/*"],
       "@alert/*": ["./src/app/components/main/alert/*"],
       "@config": ["./src/app/config.js"],
       "@fetch": ["./src/app/components/main/fetch.js"],
+      "@functions": ["./src/app/functions.js"],
     }
   }
 }

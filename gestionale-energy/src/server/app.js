@@ -41,6 +41,7 @@ import loginRouter from './routes/loginroutes.js';
 import reportRouter from './routes/report.js';
 
 import Monitoring from './inc/monitoring.js';
+import Printer from './inc/printer.js';
 
 // Istanza app Express 
 const app = express();
@@ -58,6 +59,7 @@ const server = createServer(app);
 const wss = new WebSocketServer({ server });
 const wsa = new WebSocketApp(wss);
 const monitoring = new Monitoring(db);
+const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
 
 wsa.onConnection();
 
@@ -66,6 +68,8 @@ app.use(loginRouter(db));
 // app.use(Monitoring(db));
 // HEALTH CHECK ENDPOINT
 app.get('/health', monitoring.healthCheck);
+// Check Printer Status
+app.get('/checkprinter', printer.check.bind(printer))
 
 app.use(presserRoute(db, "presser_bale"));
 app.use(wheelmanRoute(db, "wheelman_bale"));

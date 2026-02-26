@@ -6,6 +6,7 @@ import React, {
     useState 
 } from 'react';
 import { getWsUrl } from '@config';
+import CheckCookie from '../check-cookie';
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -32,6 +33,7 @@ export const WebSocketProvider = ({
      * @returns oggetto contenente le informazioni del dispositivo e del browser 
      */
     async function getUserDeviceInfo() {
+        
         let userInfo = {
             user: user,
             userAgent: navigator.userAgent, // Info generali
@@ -49,6 +51,7 @@ export const WebSocketProvider = ({
             userInfo.device = userAgentData.model || "Unknown"; // Modello dispositivo (solo mobile)
             userInfo.browserVersion = userAgentData.uaFullVersion;
         }
+
         return userInfo;
     }
 
@@ -62,7 +65,6 @@ export const WebSocketProvider = ({
             if (ws.current.readyState === WebSocket.OPEN) {
                 ws.current.send(JSON.stringify({ type: "new-connection", data: userInfo }));
             } else {
-                // console.warn("WebSocket is not open yet. Retrying...");
                 setTimeout(() => {
                     if (ws.current.readyState === WebSocket.OPEN) {
                         ws.current.send(JSON.stringify({ type: "new-connection", data: userInfo }));
@@ -75,9 +77,7 @@ export const WebSocketProvider = ({
             setMessage(event.data);
         };
 
-        ws.current.onclose = () => {
-            // console.log('WebSocket connection closed');
-        };
+        // ws.current.onclose = () => {};
 
         return () => ws.current.close();
     }, [user]);
@@ -85,6 +85,7 @@ export const WebSocketProvider = ({
     return (
         <WebSocketContext.Provider value={{ ws, message }}>
             {children}
+            <CheckCookie />
         </WebSocketContext.Provider>
     );
 };

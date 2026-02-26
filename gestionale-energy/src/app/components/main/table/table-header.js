@@ -13,32 +13,60 @@ import PropTypes from 'prop-types'; // per ESLint
 export default function TableHeader({ 
     admin = false,
     type, 
-    primary = false,
+    // primary = false,
     style
 }) {
     
     // const fixColor = type === "presser" ? " !text-white" : " testoProva";
     const fixColor = " !text-white"; 
-    const fixStyle = " !text-left";
+    const fixStyle = "resize-none text-left";
+    const styleCenter = " !text-center";
+    const bgColorPresser = " bgWheelman";
+    const bgColorWheelman = " bgPresser";
+
+
+    // Voci dell'interfaccia Pressista
+    const ArrayPresser = ["Sel.", "N°", "Stato", "Plastica", "Codice", "Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "", "Data Ora Press."];
+    const ArrayPresserExtension = ["Stato car.", "Motivaz.", "Peso (Kg)","Magazzino Dest.", "Note", "Etichetta", "Data Ora Carr"];
+    
+    // Voci dell'interfaccia Carrellista
+    const ArrayWheelman = ["Sel.", "N°", "Stato", "Plastica", "Stato car.", "Motivaz.", "Peso (Kg)","Magazzino Dest.", "Note", "Etichetta","Data Ora Carr"];
+    const ArrayWheelmanExtension = ["Utiliz. REI", "Stato balla", "Balla Selez.", "Note", "Data Ora Pressista"];
+
+    /**
+     * ColumnName
+     * funzione che renderizza, ovvero stampa le voci della tabella basandosi su
+     * un array di stringhe che equivalgono alle voci.
+     * Il colore di background viene impostato con il parametro `bgExtension`
+     * 
+     * @param {string[]}    voci Array contente le voci dell'header
+     * @param {string}      bgExtension 
+     */
+    function ColumnName (voci, bgExtension) {
+        return voci.map((col, index) => {
+            if (col == "Sel." && admin) return null;
+            return (
+                <th
+                    key={index}
+                    className={(col !== "Stato" && col !== "Sel." && col !== "N°")
+                        ? (style + fixStyle + fixColor + bgExtension)
+                        :(style + fixStyle + fixColor + bgExtension + styleCenter)}
+                >
+                    {col}
+                </th>
+            );
+        })
+    }
 
     switch (type) {
-        case 'presser': {
+        case 'presser': 
+        {
             return (
                 <>
                     <thead className="h-[52px]">
                         <tr>
-                            {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
-                            {(primary) && <th className={style + fixColor}>N°</th>}
-                            {(primary) && <th className={style + fixColor}>Stato</th>}
-                            <th className={style + fixStyle + fixColor}>Plastica</th>
-                            <th className={style + fixStyle + fixColor}>Codice</th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Utiliz. REI</p></th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Balla alla pressa</p></th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Balla Selez.</p></th>
-                            <th className={style + fixStyle + fixColor}>Note</th>
-                            {(primary) && <th className={style + fixStyle + fixColor + " w-[40px]"}></th>}
-                            <th className={style + fixStyle + fixColor}>Data</th>
-                            <th className={style + fixStyle + fixColor}>Ora</th>
+                            {ColumnName(ArrayPresser, bgColorWheelman)} 
+                            {ColumnName(ArrayPresserExtension, bgColorPresser)}                       
                         </tr>
                     </thead>
                 </>
@@ -49,19 +77,8 @@ export default function TableHeader({
                 <>
                     <thead className="h-[52px]">
                         <tr>
-                            {(primary && !admin) && <th className={style + fixColor + " !pl-3"}>Sel.</th>}
-                            {(primary) && <th className={style + fixColor}>N°</th>}
-                            {(primary) && <th className={style + fixColor}>Stato</th>}
-                            {(primary) && <th className={style + fixStyle + fixColor}>Plastica</th>}
-                            <th className={style + fixStyle + fixColor + fixStyle}><p className="truncate">Balla al carrello</p></th>
-                            <th className={style + fixStyle + fixColor}>Motivaz.</th>
-                            <th className={style + fixStyle + fixColor}>Peso (Kg)</th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Mag. Destinazione</p></th>
-                            <th className={style + fixStyle + fixColor}>Note</th>
-                            <th className={style + fixStyle + fixColor}><p className="truncate">Stato stampa</p></th>
-                            {(primary) && <th className={style + fixStyle + fixColor + "w-[40px]"}></th>}
-                            <th className={style + fixStyle + fixColor}>Data</th>
-                            <th className={style + fixStyle + fixColor}>Ora</th>
+                            {ColumnName(ArrayWheelman, bgColorPresser)}
+                            {ColumnName(ArrayWheelmanExtension, bgColorWheelman)}
                         </tr>
                     </thead>
                 </>
@@ -73,6 +90,6 @@ export default function TableHeader({
 TableHeader.propTypes = {
     admin: PropTypes.bool,
     type: PropTypes.string.isRequired,
-    primary: PropTypes.bool,
+    // primary: PropTypes.bool,
     style: PropTypes.string
 };

@@ -1,7 +1,12 @@
 'use client'
 import React from "react";
 import Image from 'next/image';
+import { handleStampa } from "@fetch";
+import { refreshPage } from "@config";
+
 import { useAlert } from '@main/alert/alertProvider';
+import { useLoader } from "@main/loader/loaderProvider";
+import { useWebSocket } from "@main/ws/use-web-socket";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -21,17 +26,25 @@ export default function BtnWheelman({
     baleObj
 }) {
 
-    const { showAlert } = useAlert();
+    const { ws } = useWebSocket();
+    const { showLoader } = useLoader();
+    const { showAlert, hideAlert } = useAlert();
 
-    const handleClick = (type) => {
+    const handleClick = async (type) => {
+        showLoader(true);
         if (baleObj && baleObj.idBale !== null) {
-            showAlert({ 
-                title: type === "update" ? null : "Attenzione", 
-                message: type === "update" ? null : `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`, 
-                type: type === "update" ? "update-w" : "confirm", 
-                // onConfirm: () => type === "update" ? null : handleStampa(baleObj, showAlert, hideAlert, false),
-                data: baleObj
-            });
+            if (type === "print") {
+                await handleStampa(baleObj, showAlert, hideAlert, true)
+            } else {
+                showAlert({ 
+                    title: type === "update" ? null : "Attenzione", 
+                    message: type === "update" ? null : `Sei sicuro di voler stampare la balla ${baleObj.idUnique} ?`, 
+                    type: type === "update" ? "update-w" : "confirm", 
+                    onConfirm: () => type === "update" ? null : handleStampa(baleObj, showAlert, hideAlert, true),
+                    data: baleObj
+                });
+            }
+            refreshPage(ws);
         } else {
             showAlert({
                 title: null,
@@ -39,11 +52,12 @@ export default function BtnWheelman({
                 type: "error",
             });
         }
+        showLoader(false);
     }
     
     return(
-        <div className="w-1/2 font-bold on-fix-index">
-            <div className="flex flex-row-reverse px-11">
+        <div className="w-full md:w-1/2 font-bold on-fix-index">
+            <div className="flex flex-row-reverse">
                 <button className="on-btn-wheelman" onClick={() => handleClick("update")}>
                     <div className="flex items-center p-1">
                         <Image 

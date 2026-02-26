@@ -14,7 +14,7 @@ class WheelmanBale extends Bale {
     }
 
     handleWheelmanData = async (req, debug) => {
-        console.debug(`Req ricevuto in handleWheelmanData: ${req.body}`);
+        // console.debug(`Req ricevuto in handleWheelmanData: ${req.body}`);
         
         let id;
         if (req && req.body) {
@@ -116,10 +116,10 @@ class WheelmanBale extends Bale {
                 if (typeof body.id_wd !== 'number' || body.id_wd <= 0) {
                     throw new Error("id_wd deve essere un numero positivo");
                 }
-                query = `INSERT INTO ${this.table}(id_wd, data_ins) VALUES (?, CURRENT_TIMESTAMP())`;
+                query = `INSERT INTO ${this.table}(id_wd) VALUES (?)`;
                 check_ins_pb = await this.db.query(query, [body.id_wd]);
             } else {
-                query = `INSERT INTO ${this.table}(data_ins) VALUES (CURRENT_TIMESTAMP())`;
+                query = `INSERT INTO ${this.table} VALUES ()`;
                 check_ins_pb = await this.db.query(query);
             }
 
@@ -149,6 +149,7 @@ class WheelmanBale extends Bale {
             // const validatedBody = this.validateUpdateBody(body);
             
             const san = this.checkParams(body, {scope: "update", table: this.table});
+            // const updateData = this.db.query("UPDATE wheelman_bale SET data_ins = CURRENT_TIMESTAMP() WHERE id = ?", []);
             
             const [check] = await this.db.query(san.query, san.params);
     

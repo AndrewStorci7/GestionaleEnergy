@@ -1,5 +1,6 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+
 import ExportReport from '@admin/export/export-report';
 import Icon from '@main/get-icon';
 
@@ -16,10 +17,6 @@ export default function BtnReport() {
   const [date, setDate] = useState(null); // data del report
 
   const COMMON_STYLE = "text-black font-semibold bg-sky-50 rounded-full text-sm px-2 py-2 text-center me-2 mb-3.5";
-
-  useEffect(() => {
-    console.log(date);
-  }, [date]);
 
   return (
     <>

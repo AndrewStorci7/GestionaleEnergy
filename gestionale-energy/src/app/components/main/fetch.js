@@ -1,4 +1,5 @@
-import { getServerRoute } from "@config";
+import React from "react";
+import { getServerRoute, formatText } from "@config";
 
 //#region Fetch Single Bale
 /**
@@ -18,8 +19,6 @@ async function fetchDataBale(type = null, obj = null, hook = null) {
             throw new Error("Le prop `type`, `obj`, `hooks` non sono settate correttamente (non possono essere `null`)");
         }
 
-        console.log(obj);
-
         const url = getServerRoute(type === 'presser' ? 'presser' : 'wheelman');
         const resp = await fetch(url, {
             method: 'POST',
@@ -29,13 +28,9 @@ async function fetchDataBale(type = null, obj = null, hook = null) {
 
         const data = await resp.json();
 
-        console.log(data);
         if (data) {
             hook(data);
         } 
-        // else {
-        //     throw new Error("SALAMALEKU")
-        // }
     } catch (error) {
         throw new Error(error.message);
     }
@@ -69,54 +64,30 @@ async function fetchDataTotalBale(data = null, type = 'presser', setContent, set
 
         const dataJson = await resp.json();
 
-        console.log(dataJson);
+        /**
+         * forma del dato `data`:
+         * Array(
+         *   Object({
+         *      code: number // codice di ritorno dell'operazione, 0 equivale a OK
+         *      data: Array(
+         *          Object({
+         *              idUnique: number // numero identificativo della balla 
+         *              status: number   // stato della stampa 
+         *              presser: Object() // dati del pressista
+         *              wheelman: Object() // dati del carrellista
+         *          })
+         *      )
+         *   })
+         * )
+         */
 
-        if (dataJson.code === 0) {
-            setEmpty(false);
-
-            if (dataJson.presser && Array.isArray(dataJson.presser) && dataJson.presser.length > 0) {
-                dataJson.presser.map((bale, index) => {
-                    if (dataJson.wheelman[index]) {
-                        dataJson.wheelman[index].plasticPresser = bale.plastic;
-                    }
-                });
-            }
-
-            if (dataJson.wheelman && Array.isArray(dataJson.wheelman) && dataJson.wheelman.length > 0) {
-                dataJson.wheelman.map((bale, index) => {
-                    if (dataJson.presser[index]) {
-                        dataJson.presser[index]._idCwb = bale._idCwb;
-                    }
-                });
-            }
-
-            let contentData = type === "presser" ? dataJson.presser : type === "wheelman" ? dataJson.wheelman : [];
-
-            console.log("Dati ricevuti all'interno di fetchDataTotalBale: " + data.useFor + " " + type);
-
-            if (data.useFor === 'regular' || data.useFor === 'specific') {
-                if (type === 'wheelman') {
-                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
-                } else if (type === 'presser') {
-                    contentData.sort((a, b) => new Date(b.data_ins) - new Date(a.data_ins));
-                }
-            } else if (data.useFor === 'reverse') {
-                if (type === 'wheelman') {
-                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
-                } else if (type === 'presser') {
-                    contentData.sort((a, b) => new Date(a.data_ins) - new Date(b.data_ins));
-                }
-            } 
-            // else if (data.useFor === 'specific') {
-            //     // Per le balle completate, mantieni l'ordinamento del database
-            //     // o applica una logica specifica se necessario
-            // }
-
-            setContent(contentData);
-        } else {
+        if (dataJson.code !== 0) {   
             setEmpty(true);
             hook && hook(dataJson.message);
         }
+
+        setEmpty(false);
+        setContent(dataJson.data);
     } catch (error) {
         console.error("Errore in fetchDataTotalBale:", error);
         showAlert({
@@ -140,38 +111,28 @@ async function fetchDataSingleElements(
     searchFor, 
     // setContent
 ) {
-    // try {
-        if (searchFor === undefined || searchFor === null) {
-            throw new Error("searchFor is undefined or null");
-        } 
-        // else if (setContent === undefined || setContent === null || typeof setContent !== "function") {
-        //     throw new Error("setContent is undefined, null, or not a function");
-        // }
+    if (searchFor === undefined || searchFor === null) {
+        // throw new Error("searchFor is undefined or null");
+        return null;
+    } 
 
-        const url = getServerRoute(searchFor);
+    const url = getServerRoute(searchFor);
 
-        if (url != -1) {
-            const resp = await fetch(url, {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-            });
+    if (url != -1) {
+        const resp = await fetch(url, {
+            method: 'GET',
+            headers: {'Content-Type': 'application/json'},
+        });
 
-            if (!resp.ok) {
-                throw new Error("Network response was not ok");
-            }
-
-            const data = await resp.json();
-
-            // if (data.code === 0) setContent(data.data);
-            if (data.code === 0) return Promise.resolve(data.data);
-        } else {
-            // setContent(["In lavorazione", "Cambiat", "Completato"]);
-            return Promise.resolve(["In lavorazione", "Cambiat", "Completato"]);
+        if (!resp.ok) {
+            throw new Error("Network response was not ok");
         }
-    // } catch (error) {
-    //     // console.log(error.message || "Failed to fetch data");
-    //     throw error;
-    // }
+
+        const data = await resp.json();
+        if (data.code === 0) return Promise.resolve(data.data);
+    } else {
+        return Promise.resolve(["In lavorazione", "Cambiat", "Completato"]);
+    }
 }
 
 
@@ -188,15 +149,60 @@ async function fetchDataSingleElements(
  * @param {function} hookConfirm - Funzione chiamata in caso di conferma dell'operazione.
  * @param {boolean} [execute=true] - Se true aggiorna lo stato a "stampato", altrimenti mostra alert di conferma.
  */
-const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
-
+const handleStampa = async (obj, hookCancel, hookConfirm, execute = true, skipCheck = false) => {
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000); // ⏱️ Timeout di 1s
     if (obj.idBale) {
         if (execute) {
             try {
-                const body = { printed: true, where: obj.idBale }; // Body per l'update della balla del carrellista
+                const body = { printed: true, data_ins: 'now', where: obj.idBale }; // Body per l'update della balla del carrellista
                 const body2 = { status: 1, where: obj.idUnique }; // Body per l'update dello stato della balla totale
                 const url_update_wheelman = getServerRoute("update-bale");
                 const url_update_status = getServerRoute("update-status-bale");
+                const url_print = getServerRoute("print");
+                const url_check_printer = getServerRoute("check-printer"); 
+
+                if (!skipCheck) {
+                    const checkPrinter = await fetch(url_check_printer, {
+                        signal: controller.signal
+                    })
+                    const status = await checkPrinter.json();
+                    if (status.code !== 0) {
+                        hookCancel({
+                            title: "Errore nella stampante",
+                            message: (
+                                <p><span style={{ fontWeight: 'bold' }}>La stampante ha presentato degli errori</span>: <br/>
+                                <span className="consolas">{formatText(status.message)}</span>. <br/>
+                                Vuoi completare ugualmente il ciclo della balla ?</p>
+                            ),
+                            type: "confirm",
+                            onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, execute, true)
+                        })
+                        return;
+                    }
+
+                    const response3 = await fetch(url_print, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ idUnique: obj.idUnique }),
+                        signal: controller.signal
+                    });
+                    const result3 = await response3.json();
+
+                    if (result3.code == -1) {
+                        hookCancel({
+                            title: "Attenzione",
+                            message: "Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?", 
+                            type: "confirm",
+                            onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
+                            data: obj
+                        });
+                        return;
+                    }
+                }
+
+                clearTimeout(timeout);
 
                 // Invia la richiesta per aggiornare lo stato della balla
                 const response = await fetch(url_update_wheelman, {
@@ -211,7 +217,7 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ body: body2 }),
                 });
-    
+                
                 const result = await response.json();
                 const result2 = await response2.json();
 
@@ -228,17 +234,28 @@ const handleStampa = async (obj, hookCancel, hookConfirm, execute = true) => {
                     });
                 }
             } catch (error) {
+                const checkIfErrorPrinter = String(error.message).includes("signal") || String(error.message).includes("aborted");
                 hookCancel({
-                    title: null,
-                    message: error,
-                    type: "error"
+                    title: "Errore nella stampante",
+                    message: checkIfErrorPrinter ? 
+                            <p>
+                                <b>La stampante non è raggiungibile, contattare il tecnico oppure il capoturno</b>. <br/>
+                                Si desidera ugualmente completare la balla ?
+                            </p> : 
+                            error.message,
+                    type: checkIfErrorPrinter ? "confirm" : "error",
+                    onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
+                    data: obj
                 });
+            } finally {
+                clearTimeout(timeout);
             }
         } else {
             hookCancel({
                 title: "Attenzione",
                 message: "Stai per stampare una balla con peso pari a zero, vuoi procedere ugualmente ?", 
                 type: "confirm",
+                onConfirm: () => handleStampa(obj, hookCancel, hookConfirm, true, true),
                 data: obj
             });
         }
@@ -269,7 +286,6 @@ const handleDelete = async (id, handleAlertChange) => {
     }
 
     try {
-        console.log("entrato nel try/catch di `handleDelete`: id balla => " + id);
         const url = getServerRoute('delete-bale');
         const check = await fetch(url, {
             method: 'POST',
@@ -280,7 +296,6 @@ const handleDelete = async (id, handleAlertChange) => {
         const resp = await check.json();
 
         if (resp.code < 0) {
-            console.log("risposta ottenuta da `handleDelete`: " + resp.message);
             throw new Error(resp.message);
         } 
     } catch (error) {
@@ -301,7 +316,9 @@ const fetchTotaleChili = async (implant) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ implant })
         });
+        
         const data = await response.json();
+        
         if (data.code === 0) {
             return data.message;
         } else {

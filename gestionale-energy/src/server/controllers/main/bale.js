@@ -50,7 +50,7 @@ class Bale extends Common {
                         
                         // Converti appropriatamente i valori
                         let sanitizedValue = this.sanitizeValue(value);
-                        params.push(sanitizedValue);
+                        if (key !== 'data_ins') params.push(sanitizedValue);
                         
                         // Gestione speciale per la tabella pb_wb
                         if (table === "pb_wb" && key === "where") {
@@ -63,15 +63,17 @@ class Bale extends Common {
                 console.debug(`Params before query construction: ${JSON.stringify(params)}`);
 
                 // Costruzione query migliorata
-                for (let i = 0; i < columns.length; i++) {
+                for ( let i = 0; i < columns.length; ++i ) {
                     const col = columns[i];
                     
                     if (col === 'where') {
                         // Gestione della clausola WHERE
-                        query += `WHERE ${(table === "pb_wb") ? "id=?" : "id=?"}`;
+                        query += "WHERE id = ?";
                     } else {
                         // Gestione delle colonne SET
-                        query += `${col}=?`;
+                        console.log(`col ===> ${col}`)
+                        query += col === 'data_ins' ? `data_ins = CURRENT_TIMESTAMP()` : `${col} = ?`;
+                        
                         if (i < columns.length - 1 && columns[i + 1] !== 'where') {
                             query += ', ';
                         } else if (i < columns.length - 1) {

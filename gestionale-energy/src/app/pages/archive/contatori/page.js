@@ -1,19 +1,16 @@
 'use client';
 import React from "react";
-import CheckCookie from "@/app/components/main/check-cookie";
-
 import RenderCounters from "./renderCounter/render-counters";
-
-import { WebSocketProvider } from "@/app/components/main/ws/use-web-socket";
+import { WebSocketProvider } from "@main/ws/use-web-socket";
+import { LoaderProvider } from "@main/loader/loaderProvider";
 
 export default function Contatori() {
 
     return (
-        <>
+        <LoaderProvider>
             <WebSocketProvider user={{ user: 'Admin', name: 'Administrator', surname: 'counters' }}>
-                <CheckCookie />
                 <RenderCounters />
             </WebSocketProvider>
-        </>
+        </LoaderProvider>
     );
 }

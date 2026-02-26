@@ -5,7 +5,7 @@ import {
     COND_GET_COUNT_PLASTIC_REPORT,
 } from '../../inc/config.js';
 
-const console = new Console("Common");
+const console = new Console("Common", 1);
 
 /**
  * 
@@ -35,7 +35,7 @@ class Common {
 
         const rangeTime = new Date();
         var _hour = rangeTime.getHours();
-        console.info("Ora calcolata: " + _hour);
+        // console.info("Ora calcolata: " + _hour);
         if (turn != 0) {
             // console.info(`Turno dentro checkTurn(): ${turn}`)
             if (turn != 1 && turn != 2 && turn != 3) {
@@ -204,21 +204,39 @@ class Common {
         }
     }
 
-    formatDate(date, onlyDate = true) {
+    formatDate(date, options = { format: "date-only", inverted: false, char: '-' }) {
         // console.debug("Data ricevuta ===> " + date);
-        if (onlyDate) {
-            const yyyy = date.getFullYear();
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`;
-        } else {
-            const yyyy = date.getFullYear();
-            const mm = String(date.getMonth() + 1).padStart(2, '0');
-            const dd = String(date.getDate()).padStart(2, '0');
-            const hh = String(date.getHours()).padStart(2, '0');
-            const min = String(date.getMinutes()).padStart(2, '0');
-            const ss = String(date.getSeconds()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+        switch (options.format.toLowerCase()) {
+            case "time-only": {
+                const hh = String(date.getHours()).padStart(2, '0');
+                const min = String(date.getMinutes()).padStart(2, '0');
+                const ss = String(date.getSeconds()).padStart(2, '0');
+                if (options.noSeconds) {
+                    return `${hh}:${min}`;
+                } else {
+                    return `${hh}:${min}:${ss}`;
+                }
+            }
+            case "full-date": {
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                const hh = String(date.getHours()).padStart(2, '0');
+                const min = String(date.getMinutes()).padStart(2, '0');
+                const ss = String(date.getSeconds()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
+            }
+            default:
+            case "date-only": {
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
+                const dd = String(date.getDate()).padStart(2, '0');
+                if (options.inverted) {
+                    return `${dd}${options.char}${mm}${options.char}${yyyy}`;
+                } else {
+                    return `${yyyy}${options.char}${mm}${options.char}${dd}`;
+                }
+            }
         }
     }
 
@@ -255,8 +273,8 @@ class Common {
             currentDate = new Date();
             yesterday = new Date();
             yesterday.setDate(currentDate.getDate() - 1);
-            yesterday = this.formatDate(yesterday);
-            currentDate = this.formatDate(currentDate);
+            yesterday = this.formatDate(yesterday); // 'YYYY-MM-DD'
+            currentDate = this.formatDate(currentDate); // 'YYYY-MM-DD'
         }
 
         // var condition = `(DATE(presser_bale.data_ins) = ${!check ? `'${tomorrow}'` : 'CURDATE()'} 
@@ -302,7 +320,8 @@ class Common {
                     first: `AND ((presser_bale.id_rei = 1 OR presser_bale.id_rei = 2) OR presser_bale.id_rei IS NULL) `,
                     second: `AND (presser_bale.data_ins BETWEEN ? AND ? )`,
                     third: `AND (pb_wb.id_implant = ? OR pb_wb.id_implant IS NULL) AND pb_wb.status = 1`,
-                    fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                    // fourth: `AND (wheelman_bale.id_cwb = 1 AND wheelman_bale.id_wd != 2)`,
+                    fourth: `AND wheelman_bale.id_cwb = 1`,
                 };
                 params = [turn3_a, turn3_b, id_implant];
             }
@@ -321,16 +340,16 @@ class Common {
      * @param {any}     params      Array con i parametri per la query
      * @param {number}  id_implant  ID dell'impianto di lavorazione
      */
-    updateIdImplant(params, id_implant) {
-        if (params !== null && id_implant !== 0) {
-            // aggiorno l'id
-            const updated_idImplant = id_implant == 1 ? 2 : 1;
-            // lo aggiungo in seconda posizione 
-            params.splice(1, 0, updated_idImplant);
-        } else {
-            throw new Error("Parametri non definiti {`params` e `id_implant`}"); 
-        }
-    }
+    // updateIdImplant(params, id_implant) {
+    //     if (params !== null && id_implant !== 0) {
+    //         // aggiorno l'id
+    //         const updated_idImplant = id_implant == 1 ? 2 : 1;
+    //         // lo aggiungo in seconda posizione 
+    //         params.splice(1, 0, updated_idImplant);
+    //     } else {
+    //         throw new Error("Parametri non definiti {`params` e `id_implant`}"); 
+    //     }
+    // }
 
     async getIdsBale(id, type) {
         try {
@@ -360,6 +379,22 @@ class Common {
             return { code: 1, message: `Errore all'interno di getIdsBale(): ${error.message}` };
         }
     }
+
+    getTurnFromDate(date) {
+        const hour = date.getHours();
+        // console.info(hour);
+        if (hour >= 6 && hour < 14) {
+            return 1;
+        } else if (hour >= 14 && hour < 22) {
+            return 2;
+        } else {
+            return 3;
+        }
+        
+        // else if (hour >= 22 && hour <= 0 || hour > 0 && hour < 6) {
+        //     return 3;
+        // }
+    } 
 }
 
 export default Common;

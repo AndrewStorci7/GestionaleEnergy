@@ -2,6 +2,7 @@ import Console from '../inc/console.js';
 import Common from './main/common.js';
 import PresserBale from './presser.js';
 import WheelmanBale from './wheelman.js';
+import Printer from '../inc/printer.js';
 
 const console = new Console("TotalBale", 1);
 
@@ -47,9 +48,12 @@ class TotalBale extends Common {
                 ? JSON.stringify({ is_rei_altro_mag: true, id_implant: data.implant == 1 ? 2 : 1 }) 
                 : JSON.stringify({ is_rei_altro_mag: false, id_implant: null });
             
+            // Controllo MDR per inserire come magazzino di default "Provvisorio"
             const checkIfIncludesMDR = data.body.id_plastic.includes('MDR');
 
-            // CHIAMATA DIRETTA invece di fetch - PRESSER
+            const Corepla = ["CTE", "FILM-C", "FILM-N", "RPO", "MPR/C", "MPR/S" ,"STV-2", "IPP", "IPS", "VPET", "FLEX/S", "CHEMIX"];
+            const checkIfIncludesCorepla = Corepla.some(i =>data.body.id_plastic.includes(i));  
+
             const presserReq = data.body;
             const presserResult = await this.PresserInstance.set(presserReq, transaction);
             
@@ -60,8 +64,15 @@ class TotalBale extends Common {
 
             const id_new_presser_bale = presserResult.message.id;
 
-            // CHIAMATA DIRETTA invece di fetch - WHEELMAN
-            const wheelmanReq = checkIfIncludesMDR ? { id_wd: 2 } : null;
+            let wheelmanReq = null; 
+            
+            if (checkIfIncludesCorepla) {
+                wheelmanReq = { id_wd: 3 };
+            } 
+            else if (checkIfIncludesMDR) {
+                wheelmanReq = { id_wd: 2 };
+            }
+
             const wheelmanResult = await this.WheelmanInstance.set(wheelmanReq, transaction);
             
             if (wheelmanResult.code !== 0) {
@@ -127,7 +138,8 @@ class TotalBale extends Common {
      * @param {object[]} presserResult     Array sul quale aggiugnere i dait del pressista
      * @param {object[]} wheelmanResult    Array sul quale aggiugnere i dait del carrellista
      */
-    createObjectArray = async (select, presserResult, wheelmanResult) => {
+    // createObjectArray = async (select, presserResult, wheelmanResult) => {
+    createObjectArray = async (select, totalBaleResult) => {
         console.debug("Select data ricevuto:", select);
         
         try {
@@ -144,23 +156,21 @@ class TotalBale extends Common {
                     continue;
                 }
 
-                const data_presser = await this.PresserInstance.get({ body: { id: id_presser } }, null, true);
-                if (data_presser === -1) {
-                    console.error(`Errore nel recupero dati presser per ID: ${id_presser}`);
-                    continue;
-                }
-                data_presser.status = status;
-                data_presser.idUnique = id;
-                presserResult.push(data_presser);
+                const [presserRes, wheelmanRes] = await Promise.all([
+                    this.PresserInstance.get({ body: { id: id_presser } }, null, true),
+                    this.WheelmanInstance.get({ body: { id: id_wheelman } }, null, true)
+                ])
 
-                const data_wheelman = await this.WheelmanInstance.get({ body: { id: id_wheelman } }, null, true);
-                if (data_wheelman === -1) {
-                    console.error(`Errore nel recupero dati wheelman per ID: ${id_wheelman}`);
-                    continue;
-                }
-                data_wheelman.status = status;
-                data_wheelman.idUnique = id;
-                wheelmanResult.push(data_wheelman);
+                // nel caso ci sia un errore nei dati li salto
+                if (presserRes === -1 || wheelmanRes === -1) continue;
+
+                // console.debug(presserRes)
+                totalBaleResult.push({
+                    idUnique: id,
+                    status,
+                    presser: presserRes,
+                    wheelman: wheelmanRes
+                });
             }
         } catch (error) {
             console.error("Errore in createObjectArray:", error);
@@ -191,25 +201,29 @@ class TotalBale extends Common {
             var order_by = 'DESC';
 
             // console.debug();
-
+            //condizioni per stampa balle completate
             if (useFor === 'specific') {
-                cond_status = ' AND pb_wb.status = 1';
+                cond_status = ' AND pb_wb.status = 1'; //= 1 balle completate
+                order_by = 'DESC';
             } 
-            // else if (useFor === 'reverse') {
-            //     order_by = 'ASC';
-            // }
-
+            //condizioni per stampa balle IFO
+            if (useFor === 'reverse') {
+                order_by = 'ASC';
+            }
             if (id_implant == 0) {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
 
-            const presserResult = [];
-            const wheelmanResult = [];
+            // const presserResult = [];
+            // const wheelmanResult = [];
+            const totalBaleResult = [];
             const _params = super.checkConditionForTurn(id_implant);
 
-            // balle completate
+            // balle non completate
             if (useFor === 'regular' || useFor === 'reverse' || useFor === 'undefined') {
-                await this.getBalesNotCompleted(id_implant, order_by, presserResult, wheelmanResult);
+                // ottengo le balle non completate
+                // await this.getBalesNotCompleted(id_implant, order_by, presserResult, wheelmanResult);
+                await this.getBalesNotCompleted(id_implant, order_by, totalBaleResult);
             } else {
                 const [select] = await this.db.query(
                     `SELECT 
@@ -225,23 +239,29 @@ class TotalBale extends Common {
                         ${this.table}.id_implant = ? AND (${_params.condition})
                         ${cond_status}
                     ORDER BY 
-                        presser_bale.data_ins, wheelman_bale.data_ins ${order_by}
+                        presser_bale.data_ins ${order_by}
                     LIMIT 300`,
-                    _params.params,
-                    true
+                    _params.params
                 );
 
                 if (select !== 'undefined' || select !== null) {
-                    console.debug(select);
-                    await this.createObjectArray(select, presserResult, wheelmanResult);
+                    // console.debug(select);
+                    // await this.createObjectArray(select, presserResult, wheelmanResult);
+                    await this.createObjectArray(select, totalBaleResult);
                 }
             }
 
-            if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
-                res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
+            if (totalBaleResult && totalBaleResult.length > 0) {
+                res.json({ code: 0, data: totalBaleResult });
             } else {
                 res.json({ code: 1, message: "Nessuna balla trovata" });
             }
+
+            // if ((presserResult && presserResult.length > 0) && (wheelmanResult && wheelmanResult.length > 0)) {
+            //     res.json({ code: 0, presser: presserResult, wheelman: wheelmanResult });
+            // } else {
+            //     res.json({ code: 1, message: "Nessuna balla trovata" });
+            // }
         } catch (error) {
             console.error(error);
             res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
@@ -255,7 +275,7 @@ class TotalBale extends Common {
      * @param {object[]}    presserResult  Array al quale verranno aggiunto il risultato (pressista)
      * @param {object[]}    wheelmanResult Array al quale verranno aggiunto il risultato (carrellista)
      */
-    async getBalesNotCompleted(implant, order_by, presserResult, wheelmanResult) {
+    async getBalesNotCompleted(implant, order_by, totalBaleResult) {
         // try {
             const [select] = await this.db.query(
                 `SELECT 
@@ -277,7 +297,7 @@ class TotalBale extends Common {
             );
 
             if (select !== 'undefined' || select !== null) {
-                await this.createObjectArray(select, presserResult, wheelmanResult);
+                await this.createObjectArray(select, totalBaleResult);
             }
         // } catch (error) {
         //     // res.status(500).send(`Errore durante l'esecuzione della query: ${error.message}`);
@@ -375,6 +395,64 @@ class TotalBale extends Common {
         }
     }
 
+    /**
+     * Fetch data form a single bale.
+     * Data fetched are:
+     * - plastic ID
+     * - weight
+     * - creation data
+     * @param {*} id_bale 
+     * @returns 
+     */
+    async getSingleBale(id_bale) {
+        try {
+            const [bale] = await this.db.query(
+                `SELECT 
+                    pb.id_plastic AS plastic,
+                    wb.weight as weight,
+                    pb.data_ins AS date_pb,
+                    wb.data_ins AS date_wb,
+                    wb.id_cwb AS 'condition',
+                    wd.name AS wd
+                FROM ${this.table} 
+                LEFT JOIN presser_bale pb ON ${this.table}.id_pb = pb.id
+                LEFT JOIN wheelman_bale wb ON ${this.table}.id_wb = wb.id
+                LEFT JOIN warehouse_dest wd ON wb.id_wd = wd.id
+                WHERE ${this.table}.id = ?`,
+                [id_bale],
+                true
+            );
+
+            console.debug(`Bale data retrieved: ${JSON.stringify(bale)}`);
+            console.debug("magazzino: " + bale[0].wd);
+            if (bale[0].condition !== 1) {
+                return { code: -2, message: "Balla non stampata, risultava essere 'Non legata'" }
+            } else if (bale[0].weight === 0 || !bale[0].weight) {
+                return { code: -1, message: "Peso pari a zero" }
+            } else {
+                const date = new Date();
+                const onlyDate = this.formatDate(date, { format: "date-only", inverted: true, char: '/' });
+                const onlyTime = this.formatDate(date, { format: "time-only", noSeconds: true });
+                const turn = this.getTurnFromDate(date)
+
+                // Controllo del magazzino di destinazione:
+                // v1.9.0
+                // Se il magazzino è Corepla o Coripet, verà stampato sull'etichetta
+                const wd =  bale[0].wd.toLowerCase() === "corepla" || bale[0].wd.toLowerCase() === "coripet" ? 
+                            bale[0].wd.toLowerCase() : "";
+
+                return { ...bale[0], date_print: onlyDate, time_print: onlyTime, turn, wd: wd };
+            }
+        } catch (error) {
+            console.error(`Errore durante il recupero della balla: ${error.message}`);
+            throw error;
+        }
+    }
+
+    //#region UPDATE
+    /**     
+     * Update bale data
+     */
     async update(req, res) {
         try {
             const { body, type } = req.body;
@@ -403,6 +481,7 @@ class TotalBale extends Common {
         }
     }
 
+    //#region DELETE
     /**
      * Delete a multiple bales from ids
      * 
@@ -462,6 +541,39 @@ class TotalBale extends Common {
             res.status(500).send(`Errore durante l'esecuzione della query: ${error}`);
         }
     }
+
+    //#region PRINT
+    /**
+     * 
+     * @param {*} req 
+     * @param {*} res 
+     */
+    async print(req, res) {
+        try {
+            const { idUnique } = req.body;
+            const data = await this.getSingleBale(idUnique);
+            if ("code" in data && data.code === -1) {
+                res.json(data)
+            } else if (data) {
+                const printer = new Printer(process.env.IP_STAMPANTE_ZEBRA, process.env.PORT_STAMPANTE_ZEBRA);
+                const result = await printer.print(
+                    data.plastic,       // Tipo di plastica
+                    data.weight,        // Peso
+                    data.turn,          // Turno
+                    data.date_print,    // Data di stampa
+                    data.time_print,    // Ora di stampa
+                    data.wd             // Nome del magazzino 
+                );
+                res.json(result);
+            } else {
+                res.json({ code: 0, message: "Balla non stampata, risultava essere 'Non legata'" })
+            }
+        } catch (error) {
+            console.error(`Errore durante la stampa: ${error.message}`);
+            res.status(500).json({ code: -1, message: `Errore durante la stampa: ${error.message}` });
+        }
+    }
+
 }
 
 export default TotalBale;

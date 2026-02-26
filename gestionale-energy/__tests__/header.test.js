@@ -18,6 +18,19 @@ jest.mock("@main/ws/use-web-socket", () => ({
     useWebSocket: () => ({ message: "test message" }),
 }));
 
+jest.mock("@main/loader/loaderProvider", () => ({
+    useLoader: () => ({
+        showLoader: jest.fn()
+    })
+}));
+
+jest.mock("@main/alert/alertProvider", () => ({
+    useAlert: () => ({
+        showAlert: jest.fn(),
+        hideAlert: jest.fn()
+    })
+}))
+
 global.fetch = jest.fn((url) =>
     Promise.resolve({
         ok: true,
@@ -34,6 +47,7 @@ describe("Header component", () => {
     const mockPush = jest.fn();
 
     beforeEach(() => {
+        jest.clearAllMocks();
         useRouter.mockReturnValue({ push: mockPush });
     });
 

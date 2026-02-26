@@ -43,7 +43,7 @@ class PresserBale extends Bale {
                 `SELECT 
                     ${this.table}.id AS 'id', 
                     code_plastic.code AS 'plastic',
-                    code_plastic.desc AS 'code',
+                    code_plastic.desc AS 'codePlastic',
                     rei.name AS 'rei',
                     ${this.table}.id_rei AS '_idRei',
                     cond_${this.table}.type AS 'condition',
@@ -52,11 +52,16 @@ class PresserBale extends Bale {
                     ${this.table}.id_sb AS '_idSb',
                     ${this.table}.note AS 'notes',
                     ${this.table}.data_ins AS 'data_ins'
-                FROM ${this.table} 
-                JOIN code_plastic ON ${this.table}.id_plastic = code_plastic.code
-                JOIN cond_${this.table} ON ${this.table}.id_cpb = cond_${this.table}.id
-                JOIN rei ON ${this.table}.id_rei = rei.id 
-                JOIN selected_bale ON ${this.table}.id_sb = selected_bale.id
+                FROM 
+                    ${this.table} 
+                JOIN 
+                    code_plastic ON ${this.table}.id_plastic = code_plastic.code
+                JOIN 
+                    cond_${this.table} ON ${this.table}.id_cpb = cond_${this.table}.id
+                JOIN 
+                    rei ON ${this.table}.id_rei = rei.id 
+                JOIN 
+                    selected_bale ON ${this.table}.id_sb = selected_bale.id
                 WHERE 
                     ${this.table}.id = ? LIMIT 1`,
                 [id] 
@@ -121,15 +126,11 @@ class PresserBale extends Bale {
 
             const arr_body = Object.values(body);
 
-            // console.info(body);
-
             const check_ins_pb = await this.db.query(
                 `INSERT INTO ${this.table}(id_presser, id_plastic, id_rei, id_cpb, id_sb, note, data_ins) 
                 VALUES( ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())`,
                 arr_body,
             );
-
-            // console.info(check_ins_pb[0]);
 
             if (check_ins_pb[0].serverStatus === 2) {
                 const id_new_bale = check_ins_pb[0].insertId;
@@ -161,21 +162,38 @@ class PresserBale extends Bale {
             
             const id_plastic = body?.id_plastic;
             const id_bale = body?.where;
+            const Corepla = ["CTE", "FILM-C", "FILM-N", "RPO", "MPR/C", "MPR/S" ,"STV-2", "IPP", "IPS", "VPET", "FLEX/S", "CHEMIX"];
             
-            if (id_plastic && id_plastic.includes("MDR")) {
+            if (id_plastic){
                 const wheelmanInstance = new WheelmanBale(this.db, "wheelman_bale");
                 const getIds = await this.getIdsBale(id_bale, 'presser');
 
                 console.debug(`UPDATE getIds: ${JSON.stringify(getIds)}`);
 
-                if (getIds.code === 0) {
+                if ((getIds.code === 0) && (id_plastic.includes("MDR"))) {
                     await wheelmanInstance.update({
                         id_wd: 2,
                         where: getIds.data[0].id_wb,
                     });
                 }
-            }
+                
+                else if ((getIds.code === 0) && (Corepla.some(i =>id_plastic.includes(i))))
+                {
+                    await wheelmanInstance.update({
+                        id_wd: 3,
+                        where: getIds.data[0].id_wb,
+                    });
+                }
 
+                else if ((getIds.code === 0) ){
+                        await wheelmanInstance.update({
+                        id_wd: 1,
+                        where: getIds.data[0].id_wb,
+                    });
+
+                }
+            }
+            
             const san = this.checkParams(body, {scope: "update", table: this.table});
             
             const [check] = await this.db.query(san.query, san.params);

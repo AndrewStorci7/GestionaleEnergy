@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-
 import { updateStatusTotalbale, getServerRoute, refreshPage } from '@config';
+
 import { fetchDataBale, handleStampa } from '@main/fetch';
-import { useAlert } from '@main/alert/alertProvider';
+import { useLoader } from '@main/loader/loaderProvider';
 import { useWebSocket } from '@main/ws/use-web-socket';
+import { useAlert } from '@main/alert/alertProvider';
 import SelectInput from '@main/search/select';
 
 import PropTypes from 'prop-types'; // per ESLint
@@ -22,43 +23,45 @@ export default function UpdateValuesBale({
     objBale, 
     handlerClose
 }) {
+    const { showLoader } = useLoader();
     const { showAlert } = useAlert();
     const { ws, message } = useWebSocket();
     
     // Stati per i dati originali (per confronto)
     const [originalPresserData, setOriginalPresserData] = useState({
-        plastic: null, 
-        rei: null,
-        cdbp: null,
-        selected_b: null,
-        notes: null
+        plastic: "", 
+        rei: 0,
+        cdbp: 0,
+        selected_b: 0,
+        notes: ""
     });
     const [originalWheelmanData, setOriginalWheelmanData] = useState({
-        cdbc: null, 
-        reason: null,
-        weight: null,
-        dest_wh: null,
-        notes: null
+        cdbc: 0, 
+        reason: 0,
+        weight: 0,
+        dest_wh: 0,
+        notes: ""
     });
     
     // Stati per i dati correnti
     const [presserData, setPresserData] = useState({
-        plastic: null, 
-        rei: null,
-        cdbp: null,
-        selected_b: null,
-        notes: null
+        plastic: "", 
+        rei: 0,
+        cdbp: 0,
+        selected_b: 0,
+        notes: ""
     });
     const [wheelmanData, setWheelmanData] = useState({
-        cdbc: null, 
-        reason: null,
-        weight: null,
-        dest_wh: null,
-        notes: null
+        cdbc: 0, 
+        reason: 0,
+        weight: 0,
+        dest_wh: 0,
+        notes: ""
     });
     
     const [cacheWeight, setCacheWeight] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [isPrinting, setIsPrinting] = useState(false);
 
     // Verifica se ci sono state modifiche confrontando i dati originali con quelli correnti
     const hasChanges = useMemo(() => {
@@ -85,19 +88,18 @@ export default function UpdateValuesBale({
     const canProceed = useMemo(() => {
         if (type === 'presser') {
             return presserData.plastic !== null && presserData.plastic !== undefined && presserData.plastic !== "";
-        } else {
-            return cacheWeight > 0 || hasChanges;
+        } else if (type ==='wheelman') {
+            return ( (hasChanges)|| (cacheWeight > 0)|| (wheelmanData.cdbc == 2));
         }
-    }, [type, presserData.plastic, cacheWeight]);
+    }, [type, presserData.plastic, cacheWeight, wheelmanData.cdbc, hasChanges]);
 
     // Verifica se può stampare (peso > 0 e non deve necessariamente aver confermato)
     const canPrint = useMemo(() => {
-        return (type === 'wheelman' && cacheWeight > 0) || wheelmanData.cdbc == 2;
-    }, [type, cacheWeight, hasChanges]);
+        return (type === 'wheelman' && cacheWeight > 0) || wheelmanData.cdbc == 2 ;
+    }, [type, wheelmanData.cdbc, cacheWeight, hasChanges]);
 
     const handleData = (response) => {
         const data = response.data;
-        console.log("UpdateBale Dati dentro handleData: ", data);
         
         if (type === "presser") {
             const tmpData = { 
@@ -146,7 +148,6 @@ export default function UpdateValuesBale({
                     id_sb: presserData.selected_b ? parseInt(presserData.selected_b) : null,
                     note: presserData.notes || null,
                     where: parseInt(objBale.idBale),
-                    // where: parseInt(objBale.idUnique),
                 };
             } else {
                 body = {
@@ -157,7 +158,6 @@ export default function UpdateValuesBale({
                     note: wheelmanData.notes || null,
                     weight: parseFloat(cacheWeight),
                     where: parseInt(objBale.idBale),
-                    // where: parseInt(objBale.idUnique),
                 };
             }
 
@@ -167,17 +167,6 @@ export default function UpdateValuesBale({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ body, type }),
             });
-
-            // Aggiorna lo stato della balla totale solo se è wheelman e cdbc === 2
-            // if (type === 'wheelman') {
-            //     const status = (wheelmanData.cdbc === 2) ? 1 : -1;
-            //     const body2 = { status: status, where: objBale.idUnique };
-            //     await updateStatusTotalbale(body2);
-                
-            //     if (status === 1) {
-            //         hideAlert();
-            //     }
-            // }
 
             // Aggiorna i dati originali per evitare false modifiche
             if (type === 'presser') {
@@ -222,11 +211,11 @@ export default function UpdateValuesBale({
      */
     const handlePrint = async () => {
         try {
+            showLoader(true);
+            setIsPrinting(true);
             if (hasChanges) {
                 const success = await saveBaleData(true);
-                if (!success) {
-                    return;
-                }
+                if (!success) return;
             }
 
             await handleStampa(objBale, showAlert, handlerClose, cacheWeight > 0);
@@ -237,6 +226,9 @@ export default function UpdateValuesBale({
                 message: "Errore durante la stampa dell'etichetta",
                 type: "error"
             });
+        } finally {
+            setIsPrinting(false);
+            showLoader(false);
         }
     };
 
@@ -254,7 +246,11 @@ export default function UpdateValuesBale({
                             if (type === 'presser') {
                                 setPresserData(prev => ({ ...prev, plastic: e.target.value })); 
                             } else {
-                                setWheelmanData(prev => ({ ...prev, cdbc: e.target.value }));
+                                if (e.target.value == 1) {
+                                    setWheelmanData(prev => ({ ...prev, cdbc: e.target.value, reason: 1 }));
+                                } else {
+                                    setWheelmanData(prev => ({ ...prev, cdbc: e.target.value }));
+                                }
                             }
                         }} 
                         fixedW 
@@ -280,7 +276,7 @@ export default function UpdateValuesBale({
                 </div>
                 <div className='relative px-[5px]'>
                     <label className='text-black absolute top-[-30px] left-[5px] font-bold'>
-                        {(type === 'presser') ? "Cond. Balla Press." : "Magaz. Destinazione"}
+                        {(type === 'presser') ? "Cond. Balla Press." : "Magazzino"}
                     </label>
                     <SelectInput 
                         searchFor={(type === 'presser') ? "cdbp" : "dest-wh"} 
@@ -300,7 +296,7 @@ export default function UpdateValuesBale({
                         <label className='text-black absolute top-[-30px] left-[5px] font-bold'>Balla Selez.</label>
                         <SelectInput 
                             searchFor={"selected-b"} 
-                            value={presserData.selected_b}
+                            value={presserData.selected_b ?? ""}
                             onChange={(e) => setPresserData(prev => ({ ...prev, selected_b: e.target.value }))} 
                             fixedW 
                         />
@@ -352,9 +348,9 @@ export default function UpdateValuesBale({
                 {type === 'wheelman' && (
                     <button 
                         className={`border px-[10px] py-[5px] rounded-xl mr-4 text-white font-semibold
-                            ${canPrint ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-no-drop'}`}
+                            ${canPrint && !isPrinting ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-no-drop'}`}
                         onClick={handlePrint}
-                        disabled={!canPrint || isLoading}
+                        disabled={!canPrint || isPrinting}
                         title={!canPrint ? "Inserisci un peso valido per stampare" : "Stampa etichetta"}
                     >
                         <div className="flex items-center p-1">
@@ -365,15 +361,15 @@ export default function UpdateValuesBale({
                                 alt="Stampa icona"
                                 className="mr-2"
                             />
-                            {isLoading ? 'Stampando...' : 'Stampa etich.'}
+                            {isPrinting ? 'Stampando...' : 'Stampa etich.'}
                         </div>
                     </button>
                 )}
                 <button 
                     className={`border px-[10px] py-[5px] rounded-xl mx-4 bg-blue-500 text-white font-semibold
-                        ${(!canProceed || !hasChanges) ? 'disabled:opacity-45 cursor-no-drop' : 'hover:bg-blue-600'}`}
+                        ${!canProceed ? 'disabled:opacity-45 cursor-no-drop' : 'hover:bg-blue-600'}`}
                     onClick={handleConfirm}
-                    disabled={!canProceed || !hasChanges || isLoading}
+                    disabled={!canProceed}
                 >
                     {isLoading ? 'Salvando...' : 'Conferma'}
                 </button>

@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from 'react'
 import { getServerRoute } from '@config';
-import { useAlert } from "@/app/components/main/alert/alertProvider";
+
+import { useAlert } from "@main/alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -11,18 +12,23 @@ import PropTypes from 'prop-types'; // per ESLint
  *  
  * @author Andrea Storci from Oppimittinetworking.com
  * 
- * @param {Function}    onCHange 
- * @param {Object}      ref
+ * @param {number}      currentValue Valore di default della select
+ * @param {boolean}     showDefaultValue Se `true` farà visualizzare il valore di defualt con valore "" (vuoto), altrimenti no
+ * @param {Function}    onChange Funzione che si attiva quando avviene un cambio di selezione  
+ * @param {Object}      ref Oggetto riferimento
  * @param {*}           props
  */
 export default function SelectImplants({ 
+    currentValue,
+    showDefaultValue = true,
     onChange, 
     ref, 
     ...props
 }) {
 
+    const [value, setValue] = useState(currentValue);
     const [content, setContent] = useState([])
-    const { showAlert } = useAlert();
+    const { showAlert, hideAlert } = useAlert();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,16 +59,53 @@ export default function SelectImplants({
         }
 
         fetchData();
-    }, [onChange])
-    
+    }, [])
+
+    useEffect(() => {
+        if (currentValue) {
+            setValue(currentValue);
+        }
+    }, [currentValue]);
+
+    /**
+     * Funzione per gestione cambio valore
+     * 
+     * @param {number} id ID dell'impianto 
+     * @param {string} name Nome dell'impianto
+     * @returns 
+     */
+    const handleChange = (id, name) => {
+        if (id === "") {
+            showAlert({
+                title: "Non puoi selezionare quell'opzione",
+                message: "L'opzione selezionata è solo a scopo informativo, devi selezionare un impianto valido",
+                type: "error",
+                onConfirm: hideAlert
+            })
+            return;
+        }
+
+        setValue(id);
+        onChange?.(id, name)
+    }
+
     return (
         <select
             ref={ref}
-            onChange={onChange}
+            onChange={(e) => {
+                let val = e.target.value; 
+                if (val === "") {
+                    handleChange(0, "");
+                } else {
+                    handleChange(val, content[val - 1]?.name);
+                }
+            }}
+            value={value}
+            className={`rounded-md w-full text-black border-2 border-gray-300 p-1`}
             {...props}
         >
-            <option value={""}>Seleziona un&apos;impianto</option>
-            {content.map((_m) => {
+            {showDefaultValue && <option value={""}>Seleziona un&apos;impianto</option>}
+            {content && content.length > 0 && content.map((_m) => {
                 let value = "", text = "";
                 
                 Object.keys(_m).map((key) => {
@@ -73,8 +116,8 @@ export default function SelectImplants({
                 
                 return ( 
                     <option
-                        key={value + text}
-                        value={value}
+                    key={value + text}
+                    value={value}
                     >
                         {text}
                     </option>
@@ -85,6 +128,8 @@ export default function SelectImplants({
 }
 
 SelectImplants.propTypes = {
+    currentValue:PropTypes.number,
+    showDefaultValue:PropTypes.bool,
     onChange: PropTypes.func.isRequired,
     ref: PropTypes.object
 };

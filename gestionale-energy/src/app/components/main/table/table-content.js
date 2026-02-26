@@ -1,13 +1,16 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+﻿import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import Cookies from 'js-cookie';
-import CheckButton from "../select-button";
-import Icon from "../get-icon";
-import InsertNewBale from '../insert-new-bale';
-import { useAlert } from "@alert/alertProvider";
-
-import { useWebSocket } from "@@/components/main/ws/use-web-socket";
+import { checkIfAttributeIsValid } from '@functions';
 import { refreshPage } from '@config';
-import { fetchDataTotalBale } from '../fetch';
+import { fetchDataTotalBale } from '@fetch';
+
+import { useWebSocket } from "@main/ws/use-web-socket";
+import CheckButton from "@main/select-button";
+import Icon from "@main/get-icon";
+import InsertNewBale from '@main/table/insert-new-bale';
+import { useLoader } from '@main/loader/loaderProvider';
+
+import { useAlert } from "@alert/alertProvider";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -20,9 +23,9 @@ import PropTypes from 'prop-types'; // per ESLint
  *                              [ `true` | `false` ]
  *                              True se il bottone di aggiunta è stato premuto, altrimenti false
  * @param {Object}      useFor  [ `regular` | `specific` | `reverse` ]
- *                              Di default è impostato su `regolar`, ovvero, che stampa tutte le alle ancora in lavorazione.
+ *                              Di default è impostato su `regular`, ovvero, che stampa tutte le alle ancora in lavorazione.
  *                              Se invece viene impostato su `specific`, allora stamperà le balle completate.
- *                              Se impostato su `reverse` verranno stampate le balle al contrario.
+ *                              Se impostato su `reverse` verranno stampate le balle al contrario in ordine di inserimento.
  * 
  * @param {Function}    noData  Funzione che aggiorna lo stato della variabile noData.
  *                              Serve per far visualizzare il messaggio "Nessun dato" nel caso in cui non vengano restituiti dati dal database
@@ -47,19 +50,24 @@ export default function TableContent({
     selectedBaleId,
     style
 }) {
-    // WebSocket instance
+
+    // serve solo per il conteggio dei render
+    // viene utilizzato per far visualizzare il caricamento dei dati
+    const [countRender, setRender] = useState(0);
+    const { showLoader } = useLoader();
     const { showAlert } = useAlert();
     const { ws, message } = useWebSocket();
 
     const [content, setContent] = useState([]);
+
     const [isEmpty, setEmpty] = useState(false);
 
     const selectedBaleIdRef = useRef([]);
 
-    const handleNoteClick = (note) => {
+    const handleNoteClick = (value) => {
         showAlert({
             title: "Nota dell'utente",
-            message: note,
+            message: value,
             type: "note"
         })
     };
@@ -71,32 +79,31 @@ export default function TableContent({
     const handleAddChange = async (valid = true) => {
         if (valid) {
             refreshPage(ws);
-            // add.setAdd();
             add.changeAddBtn();
         } else {
-            // fai visualizzare l'alert con errore plastica vuota
             handleError();
         }
     };
     
     const safeType = useMemo(() => {
         if (!type || (type !== 'presser' && type !== 'wheelman')) {
-            console.warn(`Invalid type in TableContent: ${type}, defaulting to 'presser'`);
+            // console.warn(`Invalid type in TableContent: ${type}, defaulting to 'presser'`);
             return 'presser';
         }
         return type;
     }, [type]);
 
-    // Usa useCallback per evitare re-render non necessari
     const fetchData = useCallback(async () => {
+        if (countRender === 0) {    
+            showLoader(true, "Caricamento dei dati")
+        } 
+
         try {
             const cookies = JSON.parse(Cookies.get('user-info'));
             const body = { id_implant: cookies.id_implant, useFor };
             
-            // Rimuovi la logica confusa di typeToFetch
-            console.log(`Fetching data for type: ${safeType}, useFor: ${useFor}`);
-            
             await fetchDataTotalBale(body, safeType, setContent, setEmpty, noData, showAlert);
+
         } catch (error) {
             console.error('Error fetching data:', error);
             showAlert({
@@ -104,26 +111,66 @@ export default function TableContent({
                 message: error.message,
                 type: "error"
             });
+        } finally {
+            showLoader(false)
         }
     }, [safeType, useFor, noData, showAlert]);
 
-    // Separare gli useEffect per una migliore gestione
+    /**
+     * renderDataContent
+     * 
+     * Renderizza i dati del carrellista e del pressista in un'unica riga
+     * 
+     * @param {Object}  data dati provenienti dal database che possono essere del pressista ("presser") o del carrellista ("wheelman")
+     * @param {string}  style stile del background da applicare a tutta la riga
+     * @param {number}  idUnique Id univoco della balla totale
+     * @param {boolean} showBtnOk se true inserirà uno spazio per il bottone di conferma aggiunta, altrimenti no
+     * @returns 
+     */
+    const renderDataContent = (data, style, idUnique, showBtnOk) => {
+
+        // gestire meglio l'errore
+        if (typeof data !== "object") return;
+        // Data e ora del pressista
+        const date = data.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
+        const hour = data.data_ins?.substr(11, 5) || "";
+        return (<>
+            {/* Dati del pressista */}
+            {Object.entries(data).map(([key, value]) => (
+                checkIfAttributeIsValid(key) ? (
+                    key === "notes" && value ? (
+                        <td key={idUnique + key} className={style + " !p-1"}>
+                            <button onClick={() => handleNoteClick(value)}>
+                                <Icon type="info" /> 
+                            </button>
+                        </td>
+                    ) : (key === "is_printed") ? (
+                        <td key={idUnique + key} className={style + " !p-2" + " font-bold"}>{value == 0 ? "Da stamp." : "Stampato"}</td>
+                    ) : (key === "weight") ? (
+                        <td 
+                            className={style + " !p-2"}
+                            key={idUnique + key}
+                        >
+                            {value}
+                        </td>
+                    ) : (key !== "data_ins") ? (
+                        <td key={idUnique + key} className={style + " !p-2"}>{value}</td>
+                    ) : null
+                ) : null
+            ))}
+            
+            {showBtnOk && <td className={style + " !p-2"}></td>}{/* spazio del bottone dell'OK per la conferma dell'aggiunta */}
+            <td className={style + " !p-2" + " font-bold"}>{date + " " + hour}</td>
+        </>)
+    }
+
     useEffect(() => {
+        // prelevo i dati
         fetchData();
-    }, [fetchData]);
 
-    // Separare la gestione dei messaggi WebSocket
-    useEffect(() => {
-        if (message) {
-            console.log('WebSocket message received, refreshing data...');
-            fetchData();
-        }
-    }, [message, fetchData]);
-
-    // Debug per verificare i valori
-    useEffect(() => {
-        console.log(`TableContent rendered with type: ${safeType}, useFor: ${useFor}, primary: ${primary}`);
-    }, [safeType, useFor, primary]);
+        // incremento il contatore dei render
+        setRender(prev => prev + 1);
+    }, [message]);
 
     const handleRowClick = (id, idUnique) => {
         const newSelectedBaleId = selectedBaleId === id ? null : id;
@@ -132,62 +179,66 @@ export default function TableContent({
     };
 
     return (
-        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll">            
+        <tbody className="bg-white dark:bg-slate-800 overflow-y-scroll select-text">
             {useFor === 'regular' && add.state && (
                 <InsertNewBale style={style} type={type} mod={primary} primary={primary} confirmHandle={handleAddChange} />
             )}
 
-            {!isEmpty && content.map((bale) => {
-                const plastic = bale.plasticPresser;
-                const id = bale.id;
+            {!isEmpty && content && content.map((bale) => {
+
+                const plastic = bale.presser.plastic;
+                const code = bale.presser.codePlastic;
+                const id = type === "presser" ? bale.presser.id : bale.wheelman.id;
                 const idUnique = bale.idUnique;
-                const date = bale.data_ins?.substr(0, 10).replaceAll('-', '/') || "";
-                const hour = bale.data_ins?.substr(11, 8) || "";
-                const status =  (bale.status === 1 && bale._idCwb === 2) ? "rei" : 
+
+                const status =  (bale.status === 1 && bale.wheelman._idCwb === 2) ? "rei" : 
                                 (bale.status === 0) ? "working" : 
                                 (bale.status === 1) ? "completed" : "warning";
                 
+                // variabile che controlla se la balla corrente è ferro o allum, 
+                // qualora sia vero la riga verrà colorato di grigio
+                const bgAllumFerro = (useFor !== "specific" && (plastic === "ALLUM." || plastic === "FERRO")) ? "!bg-gray-400" : "";
                 return (
-                    <tr key={idUnique} data-bale-id={id} className='max-h-[45px] h-[45px]'>
-                        {primary && (
-                            <>
-                                {!admin && 
-                                    <td key={idUnique + "_checkbtn"} className={style}>
-                                        {(useFor === 'regular' || useFor === 'reverse') && (
-                                            <CheckButton isSelected={selectedBaleId === id} handleClick={() => handleRowClick(id, idUnique)} />
-                                        )}
-                                    </td>
-                                }
-                                <td className={style + " font-bold"} >{idUnique}</td>
-                                <td className={style}><Icon type={status} /></td>
-                                {type === 'wheelman' ? <td className={style}>{plastic}</td> : <></>}
-                            </>
+                    <tr 
+                    key={idUnique} 
+                    data-bale-id={
+                        safeType === "wheelman" ? 
+                        bale.wheelman.id : 
+                        bale.presser.id
+                    } 
+                    className={`max-h-[45px] h-[45px] bg-gray-200 ${bgAllumFerro}`}
+                    >
+                        {/* Nel caso in cui viene chiamata la componente con la prop `primary` a `true`
+                        Verranno visualizzati il bottone di selezione, l'id e lo stato */}
+                        {!admin && 
+                            <td key={idUnique + "_checkbtn"} className={style}>
+                                {(useFor === 'regular' || useFor === 'reverse') && (
+                                    <CheckButton 
+                                    isSelected={selectedBaleId === id} 
+                                    handleClick={() => handleRowClick(id, idUnique)} 
+                                    />
+                                )}
+                            </td>
+                        }
+                        <td className={style + bgAllumFerro + " font-bold text-center"} >{idUnique}</td>
+                        <td className={style + bgAllumFerro}><Icon type={status} /></td>
+                        <td className={style + bgAllumFerro}>{plastic}</td>
+
+                        {type === "presser" ? <td className={style + bgAllumFerro}>{code}</td> : ""}
+
+                        {renderDataContent(
+                            type === "presser" ? bale.presser : bale.wheelman,
+                            `${style} ${bgAllumFerro}`,
+                            idUnique,
+                            (type === "presser")
                         )}
-                        {Object.entries(bale).map(([key, value]) => (
-                            key.startsWith("_") || ["id", "status", "idUnique", "plasticPresser"].includes(key) ? null : (
-                                key === "notes" && value ? (
-                                    <td key={idUnique + key} className={style + " !p-1"}>
-                                        <button onClick={() => handleNoteClick(id, value)}>
-                                            <Icon type="info" /> 
-                                        </button>
-                                    </td>
-                                ) : (key === "is_printed") ? (
-                                    <td key={idUnique + key} className={style + " font-bold"}>{value == 0 ? "Da stamp." : "Stampato"}</td>
-                                ) : (key === "weight") ? (
-                                    <td 
-                                        className={style}
-                                        key={idUnique + key}
-                                    >
-                                        {value}
-                                    </td>
-                                ) : (key !== "data_ins") ? (
-                                    <td key={idUnique + key} className={style}>{value}</td>
-                                ) : null
-                            )
-                        ))}
-                        {primary && <td className={style}></td>}  
-                        <td className={style + " font-bold"}>{date}</td>
-                        <td className={style + " font-bold"}>{hour}</td>
+                        {renderDataContent(
+                            type === "presser" ? bale.wheelman : bale.presser,
+                            type === "presser" ? `  ${style} bgWheelman300 ${bgAllumFerro}`: `bgPresser300 ${style} ${bgAllumFerro}`,
+                            idUnique,
+                            false
+                        )}
+
                     </tr>
                 );
             })}

@@ -1,15 +1,18 @@
 'use client'
 
 import React, { useState } from "react";
-import TableWrapper from "@main/table/tableWrapper";
-import DownloadReport from "@admin/buttons/btn-report";
-import BtnWheelman from "@main/btn-wheelman";
-import BtnPresser from "@main/btn-presser";
-import Switch from "@admin/switch";
-import { useWebSocket } from "@main/ws/use-web-socket";
 import Image from "next/image";
-import { refreshPage } from "@config";
+
+import TableWrapper from "@main/table/tableWrapper";
+import BtnWheelman from "@main/buttons/btn-wheelman";
+import BtnPresser from "@main/buttons/btn-presser";
+import { useWebSocket } from "@main/ws/use-web-socket";
+
 import BtnReportFiltered from "@admin/buttons/btn-report-filtered";
+import DownloadReport from "@admin/buttons/btn-report";
+import Switch from "@admin/switch";
+
+import { refreshPage } from "@config";
 
 import PropTypes from 'prop-types'; // per ESLint
 
@@ -34,8 +37,8 @@ export default function Table({
     // WebSocket instance
     const { ws } = useWebSocket();
     /// Common style
-    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 h-screen w-screen";
-    const _CMNSTYLE_EMPTY = "text-2xl w-screen h-screen flex justify-center items-center";
+    const _CMNSTYLE_DIV_EMPTY = "fixed top-0 left-0 min-h-screen w-screen";
+    const _CMNSTYLE_EMPTY = "text-2xl w-screen min-h-screen flex justify-center items-center";
     const _CMNSTYLE_TITLE = "text-3xl font-bold";
 
     const [addWasClicked, setAddClick] = useState(false); // gestisce il click del bottone "aggiungi"
@@ -88,31 +91,26 @@ export default function Table({
         case "presser": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner">
-                        <TableWrapper 
-                            className="col-span-5"
-                            type={"presser"}
-                            tableContent={{
-                                handleSelect: (i, y) => handleSelect(i, y),
-                                selectedBaleId: isSelected,
-                                objAdd: objAdd,
-                                noData: (e) => noData(e)
-                            }}
-                            primary />
-
-                        <TableWrapper 
-                            className="col-span-4" 
-                            type={"wheelman"} 
-                            tableContent={{ objAdd: objAdd }} />
-                    </div>
-
                     <BtnPresser 
-                        implant={implant}
-                        idUser={idUser}
-                        clickAddHandle={handleAddPressed}
-                        handleConfirmAdd={confirmedAdd}
-                        baleObj={objIdBale}
+                    implant={implant}
+                    idUser={idUser}
+                    clickAddHandle={handleAddPressed}
+                    handleConfirmAdd={confirmedAdd}
+                    baleObj={objIdBale}
                     />
+
+                    <div className="table-wrapper grid grid-cols-9 gap-2 relative overflow-y-scroll shadow-inner w-full" >
+                        <TableWrapper 
+                        className="col-span-12"
+                        type={"presser"}
+                        tableContent={{
+                            handleSelect: (i, y) => handleSelect(i, y),
+                            selectedBaleId: isSelected,
+                            objAdd: objAdd,
+                            noData: (e) => noData(e)
+                        }}
+                        primary />
+                    </div>
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
@@ -127,29 +125,24 @@ export default function Table({
         case "wheelman": {
             return (
                 <>
-                    <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[60vh] overflow-y-scroll shadow-inner">
-                        <TableWrapper 
-                            className="col-span-5"
-                            type={"wheelman"}
-                            tableContent={{
-                                handleSelect: (i, y) => handleSelect(i, y),
-                                selectedBaleId: isSelected,
-                                objAdd: objAdd,
-                                noData: (e) => noData(e)
-                            }}
-                            primary />
-
-                        <TableWrapper 
-                            className="col-span-4" 
-                            type={"presser"} 
-                            tableContent={{ objAdd: objAdd }} />
-                    </div>
-
                     <BtnWheelman 
-                        implant={implant}
-                        idUser={idUser}
-                        baleObj={objIdBale}
+                    implant={implant}
+                    idUser={idUser}
+                    baleObj={objIdBale}
                     />
+
+                    <div className="table-wrapper grid grid-cols-9 gap-2 relative overflow-y-scroll shadow-inner w-full">
+                        <TableWrapper 
+                        className="col-span-12"
+                        type={"wheelman"}
+                        tableContent={{
+                            handleSelect: (i, y) => handleSelect(i, y),
+                            selectedBaleId: isSelected,
+                            objAdd: objAdd,
+                            noData: (e) => noData(e)
+                        }}
+                        primary />
+                    </div>
 
                     {(!addWasClicked) ? (
                         <div className={`${(isEmpty || addWasClicked) ? "visible" : "invisible"} ${_CMNSTYLE_DIV_EMPTY}`}>
@@ -201,7 +194,10 @@ export default function Table({
                     </div>
                     
                     {!handleToggleSwitch ? (
-                        <div className="grid grid-cols-2 gap-2 relative h-[60vh] rounded-lg">
+                        <div className="grid grid-cols-2 gap-2 relative rounded-lg
+                                        sm:h-[40vh]
+                                        md:h-[55vh]
+                                        lg:h-[80vh]">
                             <div className="bg-blue-100 mt-[10px] border-[0.1px] border-slate-200 shadow-lg rounded-lg">
                                 <h1 className="text-center bg-blue-300 font-bold text-xl py-[15px] rounded-t-lg">
                                     REPORT PREDEFINITI
@@ -222,7 +218,7 @@ export default function Table({
                     ) : (
                         <div className="grid grid-cols-9 gap-2 mt-[10px] relative h-[58vh] overflow-y-scroll shadow-inner mb-[40px]">
                             <TableWrapper 
-                                className="col-span-5"
+                                className="col-span-12"
                                 type={"presser"}
                                 tableContent={{
                                     handleSelect: (i, y) => handleSelect(i, y),
@@ -233,7 +229,6 @@ export default function Table({
                                 primary
                                 admin
                             />
-                            <TableWrapper className="col-span-4" type={"wheelman"} tableContent={{ objAdd: objAdd }} />
                         </div>
                     )}
                 </>

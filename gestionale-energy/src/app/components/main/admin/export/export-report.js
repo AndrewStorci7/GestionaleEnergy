@@ -98,7 +98,6 @@ export const handleDownload = async (
 
   var count = 0; // conta per i turni
   data.forEach((report, index) => {
-    console.log(index, report);
     report.forEach((item) => {
       const productCode = item.code;
       const provvisorio = item.code.includes('MDR') ? 'Provvisorio' : 'Interno';
@@ -137,16 +136,15 @@ export const handleDownload = async (
   const indexTotalCount = new Set(); // Insieme degli indici da sommare nel conteggio totale del giorno
 
   Object.keys(prova_array).forEach((index) => {
-    console.log(prova_array[index]);
     row = worksheet.addRow({  
       desc: prova_array[index].codice,
       code: index,
       magazzino: prova_array[index].magazzino,
-      totale_peso_turno_1: Number(prova_array[index].totale_peso_1),
+      totale_peso_turno_1: { formula: createRoundingFormula(Number(prova_array[index].totale_peso_1)) },
       totale_balle_turno_1: Number(prova_array[index].totale_balle_1),
-      totale_peso_turno_2: Number(prova_array[index].totale_peso_2),  
-      totale_balle_turno_2: Number(prova_array[index].totale_balle_2),  
-      totale_peso_turno_3: Number(prova_array[index].totale_peso_3),  
+      totale_peso_turno_2: { formula: createRoundingFormula(Number(prova_array[index].totale_peso_2)) },
+      totale_balle_turno_2: Number(prova_array[index].totale_balle_2),
+      totale_peso_turno_3: { formula: createRoundingFormula(Number(prova_array[index].totale_peso_3)) },
       totale_balle_turno_3: Number(prova_array[index].totale_balle_3),
     });
 
@@ -171,7 +169,7 @@ export const handleDownload = async (
       worksheet.getCell(`K${rowNum}`).value = { formula: `SUM(F${rowNum},H${rowNum},J${rowNum})` };
       // MODIFICA: Applica l'arrotondamento personalizzato ai totali chili
       worksheet.getCell(`L${rowNum}`).value = { 
-        formula: createRoundingFormula(`SUM(E${rowNum},G${rowNum},I${rowNum})`) 
+        formula: `SUM(E${rowNum},G${rowNum},I${rowNum})` 
       };
     });
   });
@@ -209,14 +207,13 @@ export const handleDownload = async (
   for ( let y = 0; y < 6; ++y ) {
     var indiceInizioTotali = 0;
     Object.keys(specialIndex).forEach((key) => {
-      // console.log(key, specialIndex[key]);
       var sum = 'SUM(';
       for ( let i = 0; i < specialIndex[key].length; ++i ) {
         sum += i === specialIndex[key].length - 1 ? `${charInizio}${specialIndex[key][i]})` : `${charInizio}${specialIndex[key][i]},`;
       }
 
       if (charInizio.charCodeAt(0) % 2 !== 0) {
-        worksheet.getCell(`${charInizio}${dimFixed + indiceInizioTotali}`).value = { formula: createRoundingFormula(sum) };
+        worksheet.getCell(`${charInizio}${dimFixed + indiceInizioTotali}`).value = { formula: sum };
       } else {
         worksheet.getCell(`${charInizio}${dimFixed + indiceInizioTotali}`).value = { formula: sum };
       }
@@ -234,7 +231,7 @@ export const handleDownload = async (
     }
 
     if (charInizio.charCodeAt(0) % 2 !== 0) {
-      worksheet.getCell(`${charInizio}${dimFixed + 3}`).value = { formula: createRoundingFormula(sum) };
+      worksheet.getCell(`${charInizio}${dimFixed + 3}`).value = { formula: sum };
     } else {
       worksheet.getCell(`${charInizio}${dimFixed + 3}`).value = { formula: sum };
     }
@@ -279,15 +276,15 @@ export const handleDownload = async (
 
   // Conteggio balle totali
   worksheet.getCell(`E${dimensione + gapFineConteggioCelle}`).value = { 
-    formula: createRoundingFormula(`SUM(E5:E${dimensione + gapInizioConteggioCelle})`) 
+    formula: `SUM(E5:E${dimensione + gapInizioConteggioCelle})` 
   };
   worksheet.getCell(`F${dimensione + gapFineConteggioCelle}`).value = { formula: `SUM(F5:F${dimensione + gapInizioConteggioCelle})` };
   worksheet.getCell(`G${dimensione + gapFineConteggioCelle}`).value = { 
-    formula: createRoundingFormula(`SUM(G5:G${dimensione + gapInizioConteggioCelle})`) 
+    formula: `SUM(G5:G${dimensione + gapInizioConteggioCelle})` 
   };
   worksheet.getCell(`H${dimensione + gapFineConteggioCelle}`).value = { formula: `SUM(H5:H${dimensione + gapInizioConteggioCelle})` };
   worksheet.getCell(`I${dimensione + gapFineConteggioCelle}`).value = { 
-    formula: createRoundingFormula(`SUM(I5:I${dimensione + gapInizioConteggioCelle})`) 
+    formula: `SUM(I5:I${dimensione + gapInizioConteggioCelle})`
   };
   worksheet.getCell(`J${dimensione + gapFineConteggioCelle}`).value = { formula: `SUM(J5:J${dimensione + gapInizioConteggioCelle})` };
 

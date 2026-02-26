@@ -134,7 +134,7 @@ class Console {
     }
 
     debug(str, color = "") {
-        if (process.env.NODE_ENV === "development") {
+        if (process.env.NODE_ENV === "development" && process.env.DEBUG === "true") {
             const fontColor = this.getColor(color);
             const date = new Date();
             const callerInfo = this.getCallerInfo();
