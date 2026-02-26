@@ -44,9 +44,7 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: |
-          npm install eslint@latest --legacy-peer-deps
-          npm install @microsoft/eslint-formatter-sarif@3.1.0 --legacy-peer-deps
+        run: npm ci
         working-directory: gestionale-energy
         shell: bash
 
