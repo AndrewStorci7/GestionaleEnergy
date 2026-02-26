@@ -53,7 +53,7 @@ class TotalBale extends Common {
 
             const Corepla = ["CTE", "FILM-C", "FILM-N", "RPO", "MPR/C", "MPR/S" ,"STV-2", "IPP", "IPS", "VPET", "FLEX/S", "CHEMIX"];
             const checkIfIncludesCorepla = Corepla.some(i =>data.body.id_plastic.includes(i));  
-            console.log("corepla"+checkIfIncludesCorepla);
+
             const presserReq = data.body;
             const presserResult = await this.PresserInstance.set(presserReq, transaction);
             
