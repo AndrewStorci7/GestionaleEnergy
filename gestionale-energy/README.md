@@ -42,3 +42,5 @@ Questa release introduce importanti miglioramenti in termini di usabilità e ges
   * Maggiore precisione nella gestione logistica.
   * Riduzione degli errori di inserimento manuale.
   * Miglior controllo dei flussi di stoccaggio.
+
+Powered by [Oppimittinetworking.com](https://oppimittinetworking.com)
